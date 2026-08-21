@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Robert Azucena — UX/UI Designer &amp; Creative Strategist</title>
+<script>(function(){try{if(localStorage.getItem('ra-theme')==='light'){document.documentElement.setAttribute('data-theme','light');}}catch(e){}})();</script>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body class="pl-loading">
+
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+<div id="preloader">
+  <div class="pl-ring"></div>
+  <canvas id="pl-canvas"></canvas>
+  <div class="pl-pct mono" id="pl-pct">0%</div>
+  <div class="pl-rail"><div class="pl-fill" id="pl-fill"></div></div>
+</div>
+
+
+<canvas id="bg3d"></canvas>
+
+<div id="desktop">
+  <div id="stars"></div>
+
+  <!-- Menu bar -->
+  <div id="menubar">
+    <div class="left">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M16.365 1.43c0 1.14-.44 2.09-1.34 2.85-.9.76-1.99 1.2-3.15 1.1-.13-1.09.38-2.19 1.25-2.98.9-.83 2.05-1.28 3.24-1.32.01.12.01.24.01.35zM20.1 17.24c-.55 1.27-.81 1.84-1.51 2.96-.98 1.56-2.36 3.51-4.06 3.53-1.51.02-1.9-.98-3.95-.97-2.05.01-2.48.99-4 .97-1.7-.02-3-1.79-3.98-3.35C.36 17.05-.62 12.35 1 9.24c.85-1.64 2.36-2.68 4.02-2.7 1.6-.03 3.1 1.08 4.06 1.08.96 0 2.79-1.33 4.7-1.14.8.03 3.05.32 4.5 2.44-.12.07-2.68 1.57-2.65 4.67.03 3.71 3.25 4.94 3.29 4.96-.03.08-.5 1.79-1.82 3.69z"/></svg>
+      <b>Robert Azucena</b>
+      <span class="menuitem">File</span><span class="menuitem">Edit</span><span class="menuitem">View</span>
+      <span class="menuitem">Go</span><span class="menuitem">Window</span><span class="menuitem">Help</span>
+    </div>
+    <div class="right">
+      <button id="theme-toggle" type="button" aria-label="Toggle light/dark appearance" title="Toggle appearance">
+        <svg class="icon-sun" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.4M12 19.1v2.4M4.2 4.2l1.7 1.7M18.1 18.1l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7"/></svg>
+        <svg class="icon-moon" width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M20.4 14.7A8.5 8.5 0 019.3 3.6a.6.6 0 00-.7-.8A10 10 0 1021.2 15.4a.6.6 0 00-.8-.7z"/></svg>
+      </button>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 8.5a17 17 0 0120 0M5.5 12.2a12 12 0 0113 0M9 16a6.5 6.5 0 016 0"/><circle cx="12" cy="19.5" r="1" fill="currentColor"/></svg>
+      <svg width="20" height="12" viewBox="0 0 26 14" fill="none"><rect x="1" y="1" width="21" height="12" rx="2.5" stroke="currentColor" stroke-width="1.3"/><rect x="24" y="4.5" width="1.6" height="5" rx="1" fill="currentColor"/><rect x="3" y="3" width="17" height="8" rx="1.3" fill="currentColor"/></svg>
+      <span id="clock" class="mono">Mon 9:41 AM</span>
+    </div>
+  </div>
+
+  <!-- Terminal -->
+  <div class="win" id="win-terminal" style="width:430px; height:250px; top:74px; left:60px;">
+    <div class="titlebar" data-drag>
+      <div class="traffic"><span class="r" data-close></span><span class="y" data-minimize></span><span class="g" data-maximize></span></div>
+      <div class="wtitle">zsh — robert@macbook-pro</div>
+    </div>
+    <div class="winbody mono">
+      <div class="term-line" style="color:var(--text-low);">Last login: Mon Oct 14 08:32:11 on ttys001</div>
+      <div class="term-line">&nbsp;</div>
+      <div class="term-line"><span class="term-prompt">~ </span>whoami</div>
+      <div class="term-line term-out">robert_azucena (UX/UI Architect &amp; Creative Strategist)</div>
+      <div class="term-line">&nbsp;</div>
+      <div class="term-line"><span class="term-prompt">~ </span>cat skills.json</div>
+      <div class="term-line"><span class="term-key">{ "design"</span>: ["Figma","Adobe XD","Claude"], <span class="term-key">"dev"</span>: ["HTML","CSS","Javascript"] }</div>
+      <div class="term-line">&nbsp;</div>
+      <div class="term-line" id="term-input-line"><span class="term-prompt">~ </span><span id="term-typed"></span><span class="cursor"></span></div>
+      <input id="term-hidden-input" autocomplete="off" autocapitalize="off" spellcheck="false" style="position:absolute; opacity:0; pointer-events:none; width:1px; height:1px;">
+    </div>
+  </div>
+
+  <!-- About Me / Finder -->
+  <div class="win" id="win-about" style="width:520px; height:390px; top:330px; left:96px;">
+    <div class="titlebar" data-drag>
+      <div class="traffic"><span class="r" data-close></span><span class="y" data-minimize></span><span class="g" data-maximize></span></div>
+      <div class="wtitle">About Me <span class="app">Finder</span></div>
+    </div>
+    <div class="winbody">
+      <div class="finder-sidebar">
+        <h6>Favorites</h6>
+        <div class="finder-item active" data-pane="about">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="3.4"/><path d="M4.5 20c1.4-4 4-6 7.5-6s6.1 2 7.5 6"/></svg>
+          About Me
+        </div>
+        <div class="finder-item" data-pane="projects">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 7a2 2 0 012-2h4l2 2h8a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2V7z"/></svg>
+          Projects
+        </div>
+        <div class="finder-item" data-pane="documents">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M7 3h7l4 4v14a1 1 0 01-1 1H7a1 1 0 01-1-1V4a1 1 0 011-1z"/><path d="M14 3v4h4"/></svg>
+          Documents
+        </div>
+        <div class="finder-item" data-pane="downloads">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 19h16"/></svg>
+          Downloads
+        </div>
+      </div>
+      <div class="finder-content" id="finder-content"><!-- injected --></div>
+    </div>
+  </div>
+
+  <!-- Oracle AD case study -->
+  <div class="win case-win" id="win-autonomous" style="width:660px; height:300px; top:66px; left:630px; --brand-rgb:255,107,74;">
+    <div class="titlebar" data-drag>
+      <div class="traffic"><span class="r" data-close></span><span class="y" data-minimize></span><span class="g" data-maximize></span></div>
+      <div class="wtitle">Oracle AD <span class="app">Safari</span></div>
+    </div>
+    <div class="browser-toolbar">
+      <span class="navbtn">‹</span><span class="navbtn">›</span>
+      <div class="urlbar">🔒 featured-work/oracle-ad</div>
+    </div>
+    <div class="winbody">
+      <div class="mac-frame">
+        <div class="mac-screen"><div class="mac-fade">
+          <img id="autonomous-thumb-1" class="is-active" alt="Oracle AD campaign preview — Ever Vigilant">
+          <img id="autonomous-thumb-2" alt="Oracle AD campaign preview — No Human Error">
+          <img id="autonomous-thumb-3" alt="Oracle AD campaign preview — Engineered for Autonomy">
+          <img id="autonomous-thumb-4" alt="Oracle AD campaign preview — closing call to action">
+        </div></div>
+        <div class="mac-hinge"></div>
+        <div class="laptop-base"></div>
+      </div>
+      <div class="case-copy">
+        <div class="eyebrow" style="color:rgb(var(--brand-rgb));">Case Study</div>
+        <h3>Oracle AD</h3>
+        <p>Experience the Power of Autonomous Innovation.</p>
+        <ul class="case-list">
+          <li>Role: Creative Technologist</li>
+          <li>Status: Live — 2023</li>
+        </ul>
+        <div class="case-cta" data-open-project="oracle-ad">View full case study →</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Grab case study -->
+  <div class="win case-win" id="win-grab" style="width:585px; height:330px; top:372px; left:650px; --brand-rgb:0,177,79;">
+    <div class="titlebar" data-drag>
+      <div class="traffic"><span class="r" data-close></span><span class="y" data-minimize></span><span class="g" data-maximize></span></div>
+      <div class="wtitle">Grab <span class="app">Safari</span></div>
+    </div>
+    <div class="browser-toolbar">
+      <span class="navbtn">‹</span><span class="navbtn">›</span>
+      <div class="urlbar">🔒 featured-work/grab</div>
+    </div>
+    <div class="winbody">
+      <div class="mac-frame">
+        <div class="mac-screen"><img id="grab-thumb-img" class="mac-scroll" alt="Grab employee portal preview"></div>
+        <div class="mac-hinge"></div>
+        <div class="laptop-base"></div>
+      </div>
+      <div class="case-copy">
+        <div class="eyebrow" style="color:rgb(var(--brand-rgb));">Case Study</div>
+        <h3>Grab</h3>
+        <p>A spatial intelligence dashboard.</p>
+        <ul class="case-list">
+          <li>Role: Lead Designer</li>
+          <li>Status: Shipped — 2024</li>
+        </ul>
+        <div class="case-cta" data-open-project="grab">View full case study →</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sticky note -->
+  <div class="win" id="win-sticky" style="width:300px; height:250px; top:64px; left:1330px;">
+    <div class="titlebar" data-drag><div class="traffic"><span class="r" data-close></span><span class="y" data-minimize></span><span class="g" data-maximize></span></div></div>
+    <div class="winbody">
+      <div class="signature" id="sig-link" data-text="What's up doc?"><span id="sig-text"></span><span class="sig-cursor"></span></div>
+      <p>Open to select collaborations or work, i'm always happy to connect, share ideas, and see what we can create together.</p>
+      <button type="button" id="connect-btn" class="connect-btn">Let's connect</button>
+    </div>
+  </div>
+
+  <!-- Connect chat panel (independent AI chat, wired up separately) -->
+  <div id="connect-chat-backdrop"></div>
+  <div id="connect-chat-panel" role="dialog" aria-modal="true" aria-labelledby="connect-chat-title" aria-hidden="true">
+    <div id="connect-chat-header">
+      <div class="title" id="connect-chat-title">Let's Connect</div>
+      <button type="button" id="connect-chat-close" aria-label="Close chat">✕</button>
+    </div>
+    <div id="connect-chat-body">
+      <div id="connect-chat-placeholder">
+        <div class="emoji">🤖</div>
+        <p class="headline">Ask me anything about Robert</p>
+        <p>Try "What's his experience with design systems?" or "Has he worked with fintech clients?"</p>
+      </div>
+      <div id="connect-chat-messages"></div>
+    </div>
+    <div id="connect-chat-inputbar">
+      <input type="text" id="connect-chat-input" placeholder="Ask about Robert's work, experience, skills…" autocomplete="off">
+      <button type="button" id="connect-chat-send">Send</button>
+    </div>
+  </div>
+
+  <!-- Email Me -->
+  <div id="mail-backdrop"></div>
+  <div class="win hidden-win" id="win-mail" style="width:380px; height:470px; bottom:130px; left:560px;">
+    <div class="titlebar" data-drag>
+      <div class="traffic"><span class="r" data-close></span><span class="y" data-minimize></span><span class="g" data-maximize></span></div>
+      <div class="wtitle">New Message <span class="app">Mail</span></div>
+    </div>
+    <div class="winbody">
+      <p class="mail-lead">Send me a message and I'll get back to you.</p>
+      <form id="mail-form" novalidate>
+        <div class="mail-field">
+          <label for="mail-name">Full Name</label>
+          <input id="mail-name" name="fullname" type="text" required placeholder="Jane Doe">
+          <span class="mail-error" id="mail-name-error"></span>
+        </div>
+        <div class="mail-field">
+          <label for="mail-email">Email</label>
+          <input id="mail-email" name="email" type="email" required placeholder="jane@email.com">
+          <span class="mail-error" id="mail-email-error"></span>
+        </div>
+        <div class="mail-field">
+          <label for="mail-message">Message</label>
+          <textarea id="mail-message" name="message" required placeholder="What's on your mind?"></textarea>
+          <span class="mail-error" id="mail-message-error"></span>
+        </div>
+        <button type="submit" id="mail-submit">Send Message</button>
+        <div id="mail-status"></div>
+      </form>
+      <div id="mail-success">
+        <div class="mail-success-icon">
+          <span class="rocket-emoji">🚀</span>
+          <span class="rocket-trail"></span>
+        </div>
+        <p id="mail-success-text"></p>
+        <button type="button" id="mail-reset">Reset</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating shortcuts -->
+  <div id="shortcuts">
+    <div class="shortcut" data-open-project="grab">
+      <div class="sc-icon" style="background:linear-gradient(150deg,#3fd977,#00893a);">🚗</div>
+      <span>Grab</span>
+    </div>
+    <div class="shortcut" data-open-project="changi">
+      <div class="sc-icon" style="background:linear-gradient(150deg,#9b7ef0,#5a3fc0);">✈️</div>
+      <span>Changi</span>
+    </div>
+    <div class="shortcut" data-open-project="oracle-ad">
+      <div class="sc-icon" style="background:linear-gradient(150deg,#ff8a5c,#c1391f);">🗄️</div>
+      <span>Oracle AD</span>
+    </div>
+    <div class="shortcut" data-open-project="oracle-egen">
+      <div class="sc-icon" style="background:linear-gradient(150deg,#ff8a5c,#c1391f);">
+        <svg viewBox="0 0 40 40" width="22" height="22">
+          <defs>
+            <filter id="egen-env-shadow" x="-30%" y="-30%" width="160%" height="160%">
+              <feDropShadow dx="0" dy="1.4" stdDeviation="1.1" flood-color="#3a0f04" flood-opacity="0.35"></feDropShadow>
+            </filter>
+          </defs>
+          <rect x="3" y="8" width="34" height="24" rx="3.5" fill="#ffffff" stroke="#e2e5ea" stroke-width="1" filter="url(#egen-env-shadow)"></rect>
+          <path d="M4.5 9.5 L20 21.5 L35.5 9.5" fill="none" stroke="#ea4335" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></path>
+        </svg>
+      </div>
+      <span>Oracle EG</span>
+    </div>
+    <div class="shortcut" data-open-project="great-eastern">
+      <div class="sc-icon" style="background:linear-gradient(150deg,#ff6b5c,#a30f1f);">🦁</div>
+      <span>Great Eastern</span>
+    </div>
+  </div>
+
+  <!-- shared gradient def, same stops as the preloader polygon / progress rail -->
+  <svg width="0" height="0" style="position:absolute;">
+    <defs>
+      <linearGradient id="dock-line-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" style="stop-color:var(--purple);"/>
+        <stop offset="50%" style="stop-color:var(--pink);"/>
+        <stop offset="100%" style="stop-color:var(--teal);"/>
+      </linearGradient>
+    </defs>
+  </svg>
+
+  <!-- Dock -->
+  <div id="dock">
+    <div class="dockitem active" data-dock="about"><span class="dock-tip">About Me</span>
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="3.4"/><path d="M4.5 20c1.4-4 4-6 7.5-6s6.1 2 7.5 6"/></svg>
+    </div>
+    <div class="dockitem" data-dock="safari"><span class="dock-tip">Projects</span>
+      <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9.2"/><path d="M15.5 8.5l-2.2 5.2-5.2 2.2 2.2-5.2z" fill="currentColor" stroke="none"/></svg>
+    </div>
+    <div class="dockitem" data-dock="documents"><span class="dock-tip">Documents</span>
+      <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M7 3h7l4 4v14a1 1 0 01-1 1H7a1 1 0 01-1-1V4a1 1 0 011-1z"/><path d="M14 3v4h4"/></svg>
+    </div>
+    <div class="dockitem" data-dock="mail"><span class="dock-tip">Email Me</span>
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 6l9 7 9-7"/></svg>
+    </div>
+    <div class="dockitem" data-dock="linkedin"><span class="dock-tip">LinkedIn</span>
+      <svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor"><path d="M4.98 3.5C4.98 4.88 3.9 6 2.5 6S0 4.88 0 3.5 1.12 1 2.5 1s2.48 1.12 2.48 2.5zM.5 8.25h4V23h-4V8.25zM8.5 8.25h3.83v2.02h.05c.53-1 1.83-2.05 3.77-2.05 4.03 0 4.78 2.65 4.78 6.1V23h-4v-6.9c0-1.65-.03-3.77-2.3-3.77-2.3 0-2.65 1.8-2.65 3.65V23h-4V8.25z"/></svg>
+    </div>
+    <div class="dock-fixed-sep"></div>
+    <div class="dockitem dock-reset" id="dock-reset" aria-disabled="true"><span class="dock-tip">Reset Windows</span>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 1 2.64 6.36"/><path d="M3 5v6h6"/></svg>
+    </div>
+  </div>
+</div>
+
+<!-- Project detail overlay -->
+<div id="project-overlay">
+  <div class="proj-window">
+    <div class="proj-toolbar">
+      <div class="traffic"><span class="r" id="proj-close-dot"></span><span class="y"></span><span class="g"></span></div>
+      <div class="urlbar" id="proj-url" style="max-width:280px;">🔒 featured-work/…</div>
+    </div>
+    <div class="proj-body" id="proj-body"><!-- injected --></div>
+  </div>
+</div>
+
+<!-- EmailJS SDK: lets the "Email Me" form send mail directly from the browser, no backend needed -->
+<script defer src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+
+
+
+
+<script src="script.js" defer></script>
+</body>
+</html>
