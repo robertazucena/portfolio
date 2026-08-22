@@ -44,27 +44,27 @@
   </div>
 
   <!-- Terminal -->
-  <div class="win" id="win-terminal" style="width:430px; height:250px; top:74px; left:60px;">
+  <div class="win" id="win-terminal" style="width:480px; height:320px; top:74px; left:60px;">
     <div class="titlebar" data-drag>
       <div class="traffic"><span class="r" data-close></span><span class="y" data-minimize></span><span class="g" data-maximize></span></div>
       <div class="wtitle">zsh — robert@macbook-pro</div>
     </div>
     <div class="winbody mono">
-      <div class="term-line" style="color:var(--text-low);">Last login: Mon Oct 14 08:32:11 on ttys001</div>
+      <div class="term-line" id="term-line-login" style="color:var(--text-low); opacity:0;">Last login: Mon Oct 14 08:32:11 on ttys001</div>
       <div class="term-line">&nbsp;</div>
-      <div class="term-line"><span class="term-prompt">~ </span>whoami</div>
-      <div class="term-line term-out">robert_azucena (UX/UI Architect &amp; Creative Strategist)</div>
+      <div class="term-line"><span class="term-prompt">~ </span><span id="term-cmd-1"></span><span class="cursor" id="term-cursor-1" style="display:none;"></span></div>
+      <div class="term-line term-out" id="term-out-1" style="opacity:0;">robert_azucena (UX/UI Architect &amp; Creative Strategist)</div>
       <div class="term-line">&nbsp;</div>
-      <div class="term-line"><span class="term-prompt">~ </span>cat skills.json</div>
-      <div class="term-line"><span class="term-key">{ "design"</span>: ["Figma","Adobe XD","Claude"], <span class="term-key">"dev"</span>: ["HTML","CSS","Javascript"] }</div>
+      <div class="term-line"><span class="term-prompt">~ </span><span id="term-cmd-2"></span><span class="cursor" id="term-cursor-2" style="display:none;"></span></div>
+      <div class="term-line" id="term-out-2" style="opacity:0;"><span class="term-key">{ "design"</span>: ["Figma","Adobe XD","Claude"], <span class="term-key">"dev"</span>: ["HTML","CSS","Javascript"] }</div>
       <div class="term-line">&nbsp;</div>
-      <div class="term-line" id="term-input-line"><span class="term-prompt">~ </span><span id="term-typed"></span><span class="cursor"></span></div>
+      <div class="term-line" id="term-input-line" style="opacity:0;"><span class="term-prompt">~ </span><span id="term-typed"></span><span class="cursor"></span></div>
       <input id="term-hidden-input" autocomplete="off" autocapitalize="off" spellcheck="false" style="position:absolute; opacity:0; pointer-events:none; width:1px; height:1px;">
     </div>
   </div>
 
   <!-- About Me / Finder -->
-  <div class="win" id="win-about" style="width:520px; height:390px; top:330px; left:96px;">
+  <div class="win" id="win-about" style="width:520px; height:355px; top:370px; left:96px;">
     <div class="titlebar" data-drag>
       <div class="traffic"><span class="r" data-close></span><span class="y" data-minimize></span><span class="g" data-maximize></span></div>
       <div class="wtitle">About Me <span class="app">Finder</span></div>

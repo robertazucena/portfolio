@@ -240,6 +240,85 @@ updateClock(); setInterval(updateClock,15000);
   });
 })();
 
+/* ---------------- terminal boot sequence: type effect after preloader finishes ---------------- */
+(function(){
+  const loginLine = document.getElementById('term-line-login');
+  const cmd1 = document.getElementById('term-cmd-1');
+  const cursor1 = document.getElementById('term-cursor-1');
+  const out1 = document.getElementById('term-out-1');
+  const cmd2 = document.getElementById('term-cmd-2');
+  const cursor2 = document.getElementById('term-cursor-2');
+  const out2 = document.getElementById('term-out-2');
+  const inputLine = document.getElementById('term-input-line');
+  if(!loginLine || !cmd1 || !cmd2 || !inputLine) return;
+
+  const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let started = false;
+
+  function typeInto(el, text, speed, cb){
+    let i = 0;
+    const interval = setInterval(()=>{
+      i++;
+      el.textContent = text.slice(0, i);
+      if(i >= text.length){
+        clearInterval(interval);
+        if(cb) cb();
+      }
+    }, speed);
+  }
+
+  function fadeIn(el){
+    el.style.transition = 'opacity .35s ease';
+    requestAnimationFrame(()=>{ el.style.opacity = '1'; });
+  }
+
+  function showInstantly(){
+    loginLine.style.opacity = '1';
+    cmd1.textContent = 'whoami';
+    out1.style.opacity = '1';
+    cmd2.textContent = 'cat skills.json';
+    out2.style.opacity = '1';
+    inputLine.style.opacity = '1';
+  }
+
+  function runBoot(){
+    if(started) return;
+    started = true;
+
+    if(reduceMotion){
+      showInstantly();
+      return;
+    }
+
+    fadeIn(loginLine);
+
+    setTimeout(()=>{
+      cursor1.style.display = 'inline-block';
+      typeInto(cmd1, 'whoami', 70, ()=>{
+        cursor1.style.display = 'none';
+        setTimeout(()=>{
+          fadeIn(out1);
+          setTimeout(()=>{
+            cursor2.style.display = 'inline-block';
+            typeInto(cmd2, 'cat skills.json', 55, ()=>{
+              cursor2.style.display = 'none';
+              setTimeout(()=>{
+                fadeIn(out2);
+                setTimeout(()=>{
+                  fadeIn(inputLine);
+                }, 400);
+              }, 300);
+            });
+          }, 500);
+        }, 300);
+      });
+    }, 500);
+  }
+
+  if(!document.body.classList.contains('pl-loading')) runBoot();
+  document.addEventListener('preloader:done', runBoot, {once:true});
+})();
+
 /* ---------------- sticky-note signature: type on when visible ---------------- */
 (function(){
   const link = document.getElementById('sig-link');
@@ -895,7 +974,7 @@ if(dockResetBtn){
      NEVER call api.anthropic.com directly from this page — that would
      require putting a secret key in public JS. See /api/chat (backend)
      for the server-side piece. */
-  const CHAT_ENDPOINT = '/api/chat'; // <-- point this at your deployed backend function
+  const CHAT_ENDPOINT = '/api/chat'; // <-- after deploying the Cloudflare Worker (see portfolio-chat-backend/README.md), set this to your Worker URL, e.g. 'https://robert-portfolio-chat.YOUR-SUBDOMAIN.workers.dev'
 
   const chatInput = document.getElementById('connect-chat-input');
   const chatSendBtn = document.getElementById('connect-chat-send');
@@ -1103,7 +1182,19 @@ document.getElementById('grab-thumb-img').src = GRAB_IMG.landing;
     const overflow = renderedHeight - frame.clientHeight;
     img.style.setProperty('--scroll-end', (overflow > 0 ? -overflow : 0) + 'px');
   }
-  if(img.complete && img.naturalWidth) setScrollDistance();
+  /* embedded/base64 images can finish decoding before a 'load' listener is even
+     attached (the event fires and gets missed), so poll a couple of frames
+     instead of relying on 'load' alone */
+  function trySetScrollDistance(attemptsLeft){
+    if(img.naturalWidth && img.naturalHeight){
+      setScrollDistance();
+      return;
+    }
+    if(attemptsLeft > 0){
+      requestAnimationFrame(()=>trySetScrollDistance(attemptsLeft - 1));
+    }
+  }
+  trySetScrollDistance(30);
   img.addEventListener('load', setScrollDistance);
   window.addEventListener('resize', setScrollDistance);
 })();
