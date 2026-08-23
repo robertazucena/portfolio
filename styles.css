@@ -370,7 +370,7 @@ body.no-webgl #desktop{
 [data-theme="light"] #win-sticky{ box-shadow:0 14px 20px -16px rgba(0,0,0,.25); }
 #win-sticky .titlebar{background:transparent; border:none; height:16px; cursor:grab;}
 #win-sticky .winbody{
-  padding:0 22px; color:#5b4a09;
+  padding:30px 22px 22px; color:#5b4a09;
   display:flex; flex-direction:column; align-items:flex-start; justify-content:center;
   gap:16px;
 }
@@ -809,7 +809,7 @@ body.no-webgl #desktop{
   #win-mail.show{opacity:1;}
   #win-mail .winbody{overflow:auto !important;}
   #win-sticky .signature{margin-top:0;}
-  #win-sticky{padding-bottom:2px; margin-bottom:20px;}
+  #win-sticky{padding-bottom:2px; margin-bottom:40px;}
 
   /* Finder: sidebar becomes a horizontal strip instead of eating width */
   #win-about .winbody{flex-direction:column; height:auto;}
