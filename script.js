@@ -1071,6 +1071,22 @@ if(dockResetBtn){
     return UNCLEAR_REPLY_PATTERNS.some(p => lower.includes(p));
   }
 
+  /* also reveal instantly, no need to wait for 3 strikes, if the visitor
+     directly asks to talk to Rob / a human instead of the bot */
+  const DIRECT_CONTACT_PATTERNS = [
+    "talk to rob", "talk to robert", "speak to rob", "speak to robert",
+    "speak with rob", "speak with robert", "chat with rob", "chat with robert",
+    "talk directly", "speak directly", "contact rob directly", "contact robert directly",
+    "real person", "actual person", "human please", "talk to a human", "speak to a human",
+    "message rob", "message robert", "call rob", "call robert",
+    "connect me with rob", "connect me with robert", "connect with rob directly",
+    "whatsapp", "talk to the real", "speak to the real"
+  ];
+  function wantsDirectContact(userText){
+    const lower = userText.toLowerCase();
+    return DIRECT_CONTACT_PATTERNS.some(p => lower.includes(p));
+  }
+
   let unclearCount = 0;
   let whatsappRevealed = false;
   function registerUnclearMoment(){
@@ -1115,6 +1131,7 @@ if(dockResetBtn){
 
     addBubble('user', text);
     chatHistory.push({role:'user', content:text});
+    if(wantsDirectContact(text)) revealWhatsAppFallback();
     const pending = addBubble('pending', 'Thinking…');
 
     try {
