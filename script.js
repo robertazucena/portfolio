@@ -1056,6 +1056,54 @@ if(dockResetBtn){
     return row;
   }
 
+  /* WhatsApp fallback: stays hidden until the AI genuinely seems to be
+     failing the visitor — either a request error, or a reply that reads
+     as uncertain/unhelpful. Reveals after the 3rd such instance. */
+  const UNCLEAR_REPLY_PATTERNS = [
+    "not sure", "don't have that", "do not have that", "don't know that",
+    "do not know that", "isn't covered", "is not covered", "unable to answer",
+    "couldn't find", "could not find", "not something i have",
+    "reach out to robert", "email me directly", "use the email me option",
+    "didn't get a response", "try again"
+  ];
+  function looksUnclear(replyText){
+    const lower = replyText.toLowerCase();
+    return UNCLEAR_REPLY_PATTERNS.some(p => lower.includes(p));
+  }
+
+  let unclearCount = 0;
+  let whatsappRevealed = false;
+  function registerUnclearMoment(){
+    if(whatsappRevealed) return;
+    unclearCount++;
+    if(unclearCount >= 3) revealWhatsAppFallback();
+  }
+  function revealWhatsAppFallback(){
+    if(whatsappRevealed) return;
+    whatsappRevealed = true;
+
+    const headerLink = document.getElementById('whatsapp-header-link');
+    if(headerLink) headerLink.style.display = 'flex';
+
+    const row = document.createElement('div');
+    row.className = 'chat-row';
+    const avatar = document.createElement('img');
+    avatar.className = 'chat-avatar';
+    avatar.src = AVATAR_IMG;
+    avatar.alt = '';
+    const el = document.createElement('div');
+    el.className = 'chat-msg assistant';
+    el.innerHTML = `<p>It looks like I might not be getting you the answers you need — want to talk to Rob directly instead?</p>
+      <a class="whatsapp-btn" href="${WHATSAPP_LINK}" target="_blank" rel="noopener">
+        <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor"><path d="M16.004 3C9.107 3 3.51 8.597 3.51 15.494c0 2.727.883 5.253 2.383 7.312L4 29l6.36-1.858a12.44 12.44 0 0 0 5.644 1.352h.005c6.897 0 12.494-5.597 12.494-12.494C28.503 8.597 22.906 3 16.004 3zm0 22.85a10.32 10.32 0 0 1-5.263-1.44l-.378-.224-3.775 1.103 1.12-3.68-.246-.378a10.31 10.31 0 0 1-1.588-5.517c0-5.713 4.65-10.36 10.363-10.36 5.712 0 10.36 4.647 10.36 10.36 0 5.713-4.648 10.136-10.593 10.136zm5.727-7.73c-.314-.157-1.86-.918-2.148-1.022-.288-.105-.498-.157-.708.157-.21.314-.812 1.022-.996 1.232-.183.21-.367.236-.681.079-.314-.157-1.325-.488-2.523-1.556-.933-.832-1.563-1.86-1.746-2.174-.183-.314-.02-.484.138-.64.142-.14.314-.367.472-.55.157-.183.21-.314.314-.524.105-.21.052-.393-.026-.55-.079-.157-.708-1.706-.97-2.336-.256-.615-.516-.532-.708-.542l-.603-.011a1.16 1.16 0 0 0-.838.393c-.288.314-1.1 1.075-1.1 2.622s1.126 3.043 1.283 3.253c.157.21 2.217 3.386 5.373 4.75.75.324 1.335.518 1.79.663.752.24 1.436.206 1.978.125.603-.09 1.86-.76 2.122-1.494.262-.734.262-1.363.183-1.494-.078-.13-.288-.21-.602-.367z"/></svg>
+        Chat on WhatsApp
+      </a>`;
+    row.appendChild(avatar);
+    row.appendChild(el);
+    chatMessages.appendChild(row);
+    chatMessages.parentElement.scrollTop = chatMessages.parentElement.scrollHeight;
+  }
+
   async function sendChatMessage(){
     const text = chatInput.value.trim();
     if(!text || chatBusy) return;
@@ -1081,10 +1129,12 @@ if(dockResetBtn){
       pending.remove();
       addBubble('assistant', reply);
       chatHistory.push({role:'assistant', content:reply});
+      if(looksUnclear(reply)) registerUnclearMoment();
     } catch (err) {
       pending.remove();
       addBubble('error', "Couldn't reach the chat right now. Please try again in a moment, or use the Email Me option.");
       console.error('Chat error:', err);
+      registerUnclearMoment();
     } finally {
       chatBusy = false;
       chatInput.disabled = false;
@@ -1207,7 +1257,15 @@ const CHANGI_IMG = {
   mobile:'assets/images/changi/mobile.jpg',
 };
 
-const CV_PDF = 'assets/cv/RA_CV.pdf';
+const CV_PDF = 'assets/files/Robert_Azucena_CV.pdf';
+
+const WHATSAPP_NUMBER = '6589275688';
+const WHATSAPP_MESSAGE = "Hi Robert! I found your portfolio and wanted to connect.";
+const WHATSAPP_LINK = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(WHATSAPP_MESSAGE)}`;
+(function(){
+  const headerLink = document.getElementById('whatsapp-header-link');
+  if(headerLink) headerLink.href = WHATSAPP_LINK;
+})();
 
 const GRAB_IMG = {
   landing:'assets/images/grab/landing.jpg',
@@ -1395,7 +1453,7 @@ function renderFinderPane(pane){
     c.innerHTML = `<div class="proj-grid">
       <a class="proj-folder" href="${CV_PDF}" target="_blank" rel="noopener" style="text-decoration:none;">
         <div class="folder-icon" style="background:linear-gradient(150deg,#ff6f6b,#c23636);">📄</div>
-        <span>RA_CV.pdf</span>
+        <span>Robert_Azucena_CV.pdf</span>
       </a>
     </div>`;
   } else {
