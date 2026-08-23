@@ -951,10 +951,27 @@ if(dockResetBtn){
   const chatClose = document.getElementById('connect-chat-close');
   if(!connectBtn || !chatPanel || !chatBackdrop) return;
 
+  /* iOS Safari doesn't reliably reflow position:fixed / 100dvh containers
+     above the on-screen keyboard, so the input bar (last flex child) can end
+     up hidden behind it. window.visualViewport is the only thing that
+     accurately reports the *actual* visible height including keyboard
+     state, so we size the panel to that directly and keep it in sync. */
+  function syncChatPanelHeight(){
+    if(!window.visualViewport) return;
+    const vv = window.visualViewport;
+    chatPanel.style.height = vv.height + 'px';
+    chatPanel.style.top = vv.offsetTop + 'px';
+  }
+  if(window.visualViewport){
+    window.visualViewport.addEventListener('resize', syncChatPanelHeight);
+    window.visualViewport.addEventListener('scroll', syncChatPanelHeight);
+  }
+
   function openChat(){
     chatBackdrop.classList.add('show');
     chatPanel.classList.add('show');
     chatPanel.setAttribute('aria-hidden', 'false');
+    syncChatPanelHeight();
   }
   function closeChat(){
     chatBackdrop.classList.remove('show');
