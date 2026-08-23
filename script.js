@@ -1494,9 +1494,31 @@ function galleryHTML(p){
   </div>`;
 }
 
+/* locks background scroll while the project overlay is open (mobile Safari
+   can visually glitch fixed-position overlays if the page underneath is
+   still scrollable, so this also prevents that class of bug) */
+let projectScrollY = 0;
+function lockBodyScroll(){
+  projectScrollY = window.scrollY || window.pageYOffset || 0;
+  document.body.style.position = 'fixed';
+  document.body.style.top = `-${projectScrollY}px`;
+  document.body.style.left = '0';
+  document.body.style.right = '0';
+  document.body.style.width = '100%';
+}
+function unlockBodyScroll(){
+  document.body.style.position = '';
+  document.body.style.top = '';
+  document.body.style.left = '';
+  document.body.style.right = '';
+  document.body.style.width = '';
+  window.scrollTo(0, projectScrollY);
+}
+
 function openProject(slug){
   const p = projects[slug];
   if(!p) return;
+  if(isMobile()) lockBodyScroll();
   document.getElementById('proj-body').className = 'proj-body' + (slug==='courtly' ? ' proj-courtly' : '');
   document.getElementById('proj-url').textContent = `🔒 featured-work/${p.slug}`;
   const labels = p.metaLabels || {role:'Role', timeline:'Timeline', tools:'Tools'};
@@ -1683,6 +1705,7 @@ function initShotPreloaders(){
 }
 function closeProject(){
   document.getElementById('project-overlay').classList.remove('open');
+  if(isMobile()) unlockBodyScroll();
 }
 document.getElementById('proj-close-dot').addEventListener('click', closeProject);
 document.getElementById('project-overlay').addEventListener('click', (e)=>{

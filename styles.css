@@ -452,6 +452,7 @@ body.no-webgl #desktop{
 #connect-chat-inputbar{
   flex:0 0 auto; display:flex; gap:10px; padding:16px 20px;
   border-top:1px solid var(--border-soft); background:rgba(var(--on-surface),0.02);
+  position:fixed; bottom:0; width:100%;
 }
 #connect-chat-inputbar input{
   flex:1; padding:11px 14px; border-radius:10px; border:1px solid var(--border);
