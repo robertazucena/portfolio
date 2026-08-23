@@ -1001,14 +1001,59 @@ if(dockResetBtn){
   let chatHistory = []; // [{role:'user'|'assistant', content:'...'}, ...]
   let chatBusy = false;
 
+  /* Lightweight, safe markdown-lite renderer for assistant replies: supports
+     **bold** (for company/project highlights), "- " bullet lists, and blank-line
+     paragraph breaks. Everything is HTML-escaped first so there's no injection
+     risk even though the text ultimately comes from an API response. */
+  function escapeHtml(str){
+    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+  function renderAssistantMarkdown(raw){
+    const paragraphs = raw.split(/\n\s*\n/);
+    return paragraphs.map(block=>{
+      const lines = block.split('\n').map(l=>l.trim()).filter(Boolean);
+      const isList = lines.length > 0 && lines.every(l=>l.startsWith('- '));
+      if(isList){
+        const items = lines.map(l=>{
+          const escaped = escapeHtml(l.slice(2));
+          const bolded = escaped.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+          return `<li>${bolded}</li>`;
+        }).join('');
+        return `<ul class="chat-list">${items}</ul>`;
+      }
+      const escaped = escapeHtml(block.trim());
+      const bolded = escaped.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>');
+      return `<p>${bolded}</p>`;
+    }).join('');
+  }
+
   function addBubble(role, text){
     if(chatPlaceholder) chatPlaceholder.style.display = 'none';
     const el = document.createElement('div');
     el.className = 'chat-msg ' + role;
-    el.textContent = text;
-    chatMessages.appendChild(el);
+    if(role === 'assistant'){
+      el.innerHTML = renderAssistantMarkdown(text);
+    } else {
+      el.textContent = text;
+    }
+    if(role === 'user'){
+      chatMessages.appendChild(el);
+      chatMessages.parentElement.scrollTop = chatMessages.parentElement.scrollHeight;
+      return el;
+    }
+    /* bot-side messages (assistant/pending/error) show next to Robert's avatar,
+       like a normal chat app */
+    const row = document.createElement('div');
+    row.className = 'chat-row';
+    const avatar = document.createElement('img');
+    avatar.className = 'chat-avatar';
+    avatar.src = AVATAR_IMG;
+    avatar.alt = '';
+    row.appendChild(avatar);
+    row.appendChild(el);
+    chatMessages.appendChild(row);
     chatMessages.parentElement.scrollTop = chatMessages.parentElement.scrollHeight;
-    return el;
+    return row;
   }
 
   async function sendChatMessage(){
@@ -1186,6 +1231,7 @@ document.getElementById('autonomous-thumb-2').src = AUTONOMOUS_IMG.autopilot;
 document.getElementById('autonomous-thumb-3').src = AUTONOMOUS_IMG.features;
 document.getElementById('autonomous-thumb-4').src = AUTONOMOUS_IMG.cta;
 document.getElementById('grab-thumb-img').src = GRAB_IMG.landing;
+document.getElementById('chat-hero-avatar').src = AVATAR_IMG;
 
 /* compute the exact top-to-bottom scroll distance for the Grab auto-scroll screenshot,
    so the animation travels precisely from the top to the true bottom of the image */
