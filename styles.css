@@ -517,10 +517,10 @@ body.no-webgl #desktop{
   backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);
   opacity:0; pointer-events:none;
   transition:opacity .35s ease;
-  z-index:2000;
+  z-index:5499;
 }
 #mail-backdrop.show{opacity:1; pointer-events:auto;}
-#win-mail{z-index:2001;}
+#win-mail{z-index:5500;}
 #win-mail .winbody{
   padding:26px 28px 28px; display:flex; flex-direction:column; gap:20px;
   position:relative; overflow:hidden;
@@ -772,13 +772,13 @@ body.no-webgl #desktop{
 @media (max-width:760px){
   body{overflow-y:auto; overflow-x:hidden;}
   #menubar{display:none;}
-  #desktop{height:auto; min-height:100vh; padding:15px 12px 0;}
+  #desktop{height:auto; min-height:100vh; padding:15px 12px 90px;}
   .win{
     position:static !important; width:100% !important; height:auto !important; max-width:none !important;
     margin-bottom:16px; opacity:1; transform:none;
   }
   #shortcuts{display:none;}
-  #dock{display:none;}
+  #dock{position:fixed; bottom:14px; left:50%; transform:translateX(-50%); z-index:5000;}
   .case-win .winbody{flex-direction:column; width:100%;}
   .case-copy{width:100%;}
   .mac-frame{width:100%; flex:none;}
@@ -800,14 +800,19 @@ body.no-webgl #desktop{
 
   /* New Message stays a centered modal on mobile instead of joining the stacked flow */
   #win-mail{
-    position:fixed !important; top:50% !important; left:50% !important;
+    position:fixed !important; top:50% !important; left:50% !important; bottom:auto !important;
     transform:translate(-50%,-50%) !important;
     width:92vw !important; max-width:380px !important;
     height:auto !important; max-height:82vh !important;
     margin-bottom:0 !important; opacity:0;
   }
   #win-mail.show{opacity:1;}
-  #win-mail .winbody{overflow:auto !important;}
+  #win-mail .winbody{
+    flex:none !important;
+    min-height:0;
+    max-height:calc(82vh - 42px) !important;
+    overflow:auto !important;
+  }
   #win-sticky .signature{margin-top:0;}
   #win-sticky{padding-bottom:2px; margin-bottom:40px;}
 

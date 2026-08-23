@@ -594,7 +594,7 @@ function focusWin(win){
   if(win.id === 'win-mail'){
     const backdrop = document.getElementById('mail-backdrop');
     if(backdrop && backdrop.classList.contains('show')){
-      win.style.zIndex = 2001;
+      win.style.zIndex = 5500;
       return;
     }
   }
@@ -1862,12 +1862,25 @@ document.querySelectorAll('.dockitem').forEach(d=>{
     document.querySelectorAll('.dockitem').forEach(x=>x.classList.remove('active'));
     d.classList.add('active');
     const action = d.dataset.dock;
+    /* on mobile, windows stack vertically in normal document flow, so
+       opening a window from the dock (which sits fixed at the bottom)
+       needs to also scroll that window into view, wherever it lives
+       in the stacked page */
+    function anchorToWindow(win){
+      if(!win || !isMobile()) return;
+      requestAnimationFrame(()=>{
+        win.scrollIntoView({behavior:'smooth', block:'start'});
+      });
+    }
     if(action==='about'){
       const w=document.getElementById('win-about'); openWin(w); renderFinderPane('about');
+      anchorToWindow(w);
     } else if(action==='safari'){
       const w=document.getElementById('win-about'); openWin(w); renderFinderPane('projects');
+      anchorToWindow(w);
     } else if(action==='documents'){
       const w=document.getElementById('win-about'); openWin(w); renderFinderPane('documents');
+      anchorToWindow(w);
     } else if(action==='mail'){
       const w=document.getElementById('win-mail');
       const backdrop=document.getElementById('mail-backdrop');
@@ -1878,6 +1891,7 @@ document.querySelectorAll('.dockitem').forEach(d=>{
       requestAnimationFrame(()=>{
         requestAnimationFrame(()=>{ if(window.syncMailWindowHeight) window.syncMailWindowHeight(); });
       });
+      if(isMobile()) anchorToWindow(w);
     } else if(action==='linkedin'){
       window.open('https://www.linkedin.com/in/robertazucena/','_blank');
     }
