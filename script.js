@@ -991,7 +991,7 @@ if(dockResetBtn){
      NEVER call api.anthropic.com directly from this page — that would
      require putting a secret key in public JS. See /api/chat (backend)
      for the server-side piece. */
-  const CHAT_ENDPOINT = '/api/chat'; // <-- after deploying the Cloudflare Worker (see portfolio-chat-backend/README.md), set this to your Worker URL, e.g. 'https://robert-portfolio-chat.YOUR-SUBDOMAIN.workers.dev'
+  const CHAT_ENDPOINT = 'https://chat.robertazucena.workers.dev';
 
   const chatInput = document.getElementById('connect-chat-input');
   const chatSendBtn = document.getElementById('connect-chat-send');
