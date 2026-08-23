@@ -1,6 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6LXZ7ELJ99"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-6LXZ7ELJ99');
+</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Robert Azucena — UX/UI Designer &amp; Creative Strategist</title>
@@ -27,8 +35,7 @@
   <!-- Menu bar -->
   <div id="menubar">
     <div class="left">
-      <canvas id="menubar-icon-canvas" width="18" height="18" style="display:block;"></canvas>
-      <svg id="menubar-icon-fallback" width="15" height="15" viewBox="0 0 24 24" fill="currentColor" style="display:none;"><path d="M16.365 1.43c0 1.14-.44 2.09-1.34 2.85-.9.76-1.99 1.2-3.15 1.1-.13-1.09.38-2.19 1.25-2.98.9-.83 2.05-1.28 3.24-1.32.01.12.01.24.01.35zM20.1 17.24c-.55 1.27-.81 1.84-1.51 2.96-.98 1.56-2.36 3.51-4.06 3.53-1.51.02-1.9-.98-3.95-.97-2.05.01-2.48.99-4 .97-1.7-.02-3-1.79-3.98-3.35C.36 17.05-.62 12.35 1 9.24c.85-1.64 2.36-2.68 4.02-2.7 1.6-.03 3.1 1.08 4.06 1.08.96 0 2.79-1.33 4.7-1.14.8.03 3.05.32 4.5 2.44-.12.07-2.68 1.57-2.65 4.67.03 3.71 3.25 4.94 3.29 4.96-.03.08-.5 1.79-1.82 3.69z"/></svg>
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M16.365 1.43c0 1.14-.44 2.09-1.34 2.85-.9.76-1.99 1.2-3.15 1.1-.13-1.09.38-2.19 1.25-2.98.9-.83 2.05-1.28 3.24-1.32.01.12.01.24.01.35zM20.1 17.24c-.55 1.27-.81 1.84-1.51 2.96-.98 1.56-2.36 3.51-4.06 3.53-1.51.02-1.9-.98-3.95-.97-2.05.01-2.48.99-4 .97-1.7-.02-3-1.79-3.98-3.35C.36 17.05-.62 12.35 1 9.24c.85-1.64 2.36-2.68 4.02-2.7 1.6-.03 3.1 1.08 4.06 1.08.96 0 2.79-1.33 4.7-1.14.8.03 3.05.32 4.5 2.44-.12.07-2.68 1.57-2.65 4.67.03 3.71 3.25 4.94 3.29 4.96-.03.08-.5 1.79-1.82 3.69z"/></svg>
       <b>Robert Azucena</b>
       <span class="menuitem">File</span><span class="menuitem">Edit</span><span class="menuitem">View</span>
       <span class="menuitem">Go</span><span class="menuitem">Window</span><span class="menuitem">Help</span>
@@ -163,7 +170,7 @@
     <div class="winbody">
       <div class="signature" id="sig-link" data-text="What's up doc?"><span id="sig-text"></span><span class="sig-cursor"></span></div>
       <p>Open to select collaborations or work, i'm always happy to connect, share ideas, and see what we can create together.</p>
-      <button type="button" id="connect-btn" class="connect-btn">Let's connect</button>
+      <button type="button" id="connect-btn" class="connect-btn">Ask questions</button>
     </div>
   </div>
 
@@ -171,7 +178,7 @@
   <div id="connect-chat-backdrop"></div>
   <div id="connect-chat-panel" role="dialog" aria-modal="true" aria-labelledby="connect-chat-title" aria-hidden="true">
     <div id="connect-chat-header">
-      <div class="title" id="connect-chat-title">Let's Connect</div>
+      <div class="title" id="connect-chat-title">Ask Questions</div>
       <div class="header-actions">
         <a id="whatsapp-header-link" class="whatsapp-icon-btn" href="#" target="_blank" rel="noopener" aria-label="Chat on WhatsApp" title="Chat on WhatsApp" style="display:none;">
           <svg width="17" height="17" viewBox="0 0 32 32" fill="currentColor"><path d="M16.004 3C9.107 3 3.51 8.597 3.51 15.494c0 2.727.883 5.253 2.383 7.312L4 29l6.36-1.858a12.44 12.44 0 0 0 5.644 1.352h.005c6.897 0 12.494-5.597 12.494-12.494C28.503 8.597 22.906 3 16.004 3zm0 22.85a10.32 10.32 0 0 1-5.263-1.44l-.378-.224-3.775 1.103 1.12-3.68-.246-.378a10.31 10.31 0 0 1-1.588-5.517c0-5.713 4.65-10.36 10.363-10.36 5.712 0 10.36 4.647 10.36 10.36 0 5.713-4.648 10.136-10.593 10.136zm5.727-7.73c-.314-.157-1.86-.918-2.148-1.022-.288-.105-.498-.157-.708.157-.21.314-.812 1.022-.996 1.232-.183.21-.367.236-.681.079-.314-.157-1.325-.488-2.523-1.556-.933-.832-1.563-1.86-1.746-2.174-.183-.314-.02-.484.138-.64.142-.14.314-.367.472-.55.157-.183.21-.314.314-.524.105-.21.052-.393-.026-.55-.079-.157-.708-1.706-.97-2.336-.256-.615-.516-.532-.708-.542l-.603-.011a1.16 1.16 0 0 0-.838.393c-.288.314-1.1 1.075-1.1 2.622s1.126 3.043 1.283 3.253c.157.21 2.217 3.386 5.373 4.75.75.324 1.335.518 1.79.663.752.24 1.436.206 1.978.125.603-.09 1.86-.76 2.122-1.494.262-.734.262-1.363.183-1.494-.078-.13-.288-.21-.602-.367z"/></svg>
