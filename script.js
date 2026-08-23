@@ -1342,7 +1342,7 @@ function renderFinderPane(pane){
 document.querySelectorAll('.finder-item').forEach(it=>{
   it.addEventListener('click', ()=>renderFinderPane(it.dataset.pane));
 });
-renderFinderPane('about');
+renderFinderPane(isMobile() ? 'projects' : 'about');
 
 /* ---------------- Project overlay ---------------- */
 function galleryHTML(p){

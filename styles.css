@@ -83,6 +83,7 @@ body{background:var(--bg-0);}
   height:100vh;
   background:transparent;
   overflow:hidden;
+  padding:20px;
   transition:opacity .6s ease;
 }
 body.pl-loading #desktop{opacity:0; pointer-events:none;}
@@ -288,7 +289,7 @@ body.no-webgl #desktop{
   color:var(--text-low); padding:5px 10px; display:flex; align-items:center; gap:6px;
 }
 
-.case-win .winbody{padding:22px 24px; display:flex; flex-direction:row; align-items:center; gap:26px; max-width:660px; justify-content:center; align-self:center;}
+.case-win .winbody{padding:22px 24px; display:flex; flex-direction:row; align-items:center; gap:26px; max-width:660px; width:100%; justify-content:center; align-self:center;}
 .mac-frame{flex:0 0 250px; width:250px;}
 .mac-screen{
   position:relative;
@@ -362,6 +363,7 @@ body.no-webgl #desktop{
 #win-sticky{
   background:linear-gradient(165deg,#fbe27a,#f5cf4a);
   color:#5b4a09; box-shadow:0 20px 40px -14px rgba(0,0,0,.5); border:none; border-radius:4px;
+  padding-bottom:20px;
 }
 [data-theme="light"] #win-sticky{ box-shadow:0 14px 20px -16px rgba(0,0,0,.25); }
 #win-sticky .titlebar{background:transparent; border:none; height:16px; cursor:grab;}
@@ -734,19 +736,23 @@ body.no-webgl #desktop{
 }
 @media (max-width:760px){
   body{overflow-y:auto; overflow-x:hidden;}
-  #desktop{height:auto; min-height:100vh; padding:44px 12px 110px;}
+  #menubar{display:none;}
+  #desktop{height:auto; min-height:100vh; padding:15px 12px 0;}
   .win{
     position:static !important; width:100% !important; height:auto !important; max-width:none !important;
     margin-bottom:16px; opacity:1; transform:none;
   }
-  #shortcuts{display:flex; position:static; flex-direction:row; flex-wrap:wrap; margin-bottom:16px;}
-  .case-win .winbody{flex-direction:column;}
+  #shortcuts{display:none;}
+  #dock{display:none;}
+  .case-win .winbody{flex-direction:column; width:100%;}
+  .case-copy{width:100%;}
   .mac-frame{width:100%; flex:none;}
   .mac-frame .laptop-base{max-width:100%;}
   .titlebar{cursor:default;}
   .proj-body{padding:26px 20px 40px;}
   .meta-row{gap:20px;}
   .stat-row{grid-template-columns:1fr;}
+  .proj-grid{grid-template-columns:repeat(auto-fill,minmax(84px,1fr));}
 
   /* New Message stays a centered modal on mobile instead of joining the stacked flow */
   #win-mail{
@@ -759,6 +765,7 @@ body.no-webgl #desktop{
   #win-mail.show{opacity:1;}
   #win-mail .winbody{overflow:auto !important;}
   #win-sticky .signature{margin-top:0;}
+  #win-sticky{padding-bottom:20px;}
 
   /* Finder: sidebar becomes a horizontal strip instead of eating width */
   #win-about .winbody{flex-direction:column; height:auto;}
