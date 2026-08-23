@@ -9,6 +9,8 @@
 // Only allow requests from your own site (swap in your real domain(s))
 const ALLOWED_ORIGINS = [
   'https://robertazucena.com',
+  'https://www.robertazucena.com',
+  'https://robertazucena.github.io',
   'http://localhost:3000', // handy for local testing, remove if not needed
 ];
 
