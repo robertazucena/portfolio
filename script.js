@@ -1521,6 +1521,7 @@ function openProject(slug){
   if(isMobile()) lockBodyScroll();
   document.getElementById('proj-body').className = 'proj-body' + (slug==='courtly' ? ' proj-courtly' : '');
   document.getElementById('proj-url').textContent = `🔒 featured-work/${p.slug}`;
+  document.getElementById('proj-wtitle').innerHTML = `${p.name} <span class="app">Safari</span>`;
   const labels = p.metaLabels || {role:'Role', timeline:'Timeline', tools:'Tools'};
   const extra = p.gallery==='brand' ? `
     <div class="section">
