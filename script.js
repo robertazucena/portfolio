@@ -149,19 +149,22 @@
   });
 })();
 
-/* ---------------- background music toggle ----------------
-   Never autoplays with sound on load — browsers block that anyway, and
-   unsolicited audio is bad UX regardless. Only plays after the visitor
-   explicitly clicks the toggle. Preference is remembered across visits,
-   but resuming playback on return visits still requires a user gesture
-   per browser autoplay policy, so we just leave the button in the
-   correct state and let them click again if playback was blocked. */
+/* ---------------- background music: button + auto-start on first interaction ----------------
+   Browsers block audio-with-sound until the visitor interacts with the
+   page at all, so a plain autoplay-on-load never works reliably. Instead:
+   the button lets them start/stop it manually any time, AND the very
+   first click, scroll, or keypress anywhere on the page also starts it
+   automatically (so most visitors get music without ever touching the
+   button). If they explicitly mute via the button, we remember that and
+   don't auto-start again on future visits. */
 (function(){
   const btn = document.getElementById('music-toggle');
   const audio = document.getElementById('bg-music');
   if(!btn || !audio) return;
 
   audio.volume = 0.35;
+  let userMuted = false;
+  try{ userMuted = localStorage.getItem('ra-music') === 'off'; }catch(e){}
 
   function setPlayingState(isPlaying){
     btn.classList.toggle('playing', isPlaying);
@@ -169,20 +172,36 @@
     btn.title = isPlaying ? 'Mute background music' : 'Play background music';
   }
 
+  function play(){
+    audio.play().then(()=>{
+      setPlayingState(true);
+    }).catch(()=>{
+      setPlayingState(false);
+    });
+  }
+
   btn.addEventListener('click', ()=>{
     if(audio.paused){
-      audio.play().then(()=>{
-        setPlayingState(true);
-        try{ localStorage.setItem('ra-music','on'); }catch(e){}
-      }).catch(()=>{
-        setPlayingState(false);
-      });
+      userMuted = false;
+      play();
+      try{ localStorage.setItem('ra-music','on'); }catch(e){}
     } else {
       audio.pause();
       setPlayingState(false);
+      userMuted = true;
       try{ localStorage.setItem('ra-music','off'); }catch(e){}
     }
   });
+
+  function autoStartOnGesture(){
+    const events = ['click','touchstart','keydown','scroll','wheel'];
+    function onGesture(){
+      events.forEach(ev=> document.removeEventListener(ev, onGesture));
+      if(!userMuted && audio.paused) play();
+    }
+    events.forEach(ev=> document.addEventListener(ev, onGesture, {passive:true}));
+  }
+  autoStartOnGesture();
 
   audio.addEventListener('ended', ()=> setPlayingState(false));
   audio.addEventListener('error', ()=> setPlayingState(false));
