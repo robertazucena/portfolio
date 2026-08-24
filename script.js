@@ -187,6 +187,25 @@
   audio.addEventListener('ended', ()=> setPlayingState(false));
   audio.addEventListener('error', ()=> setPlayingState(false));
   setPlayingState(false);
+
+  /* first click anywhere on the page starts the music automatically,
+     unless the visitor has already explicitly muted it via the icon.
+     Runs on document (bubble phase), so if that first click IS the
+     icon itself, the icon's own handler above fires first and this
+     just sees the already-correct state and does nothing extra. */
+  document.addEventListener('click', function firstInteractionPlay(){
+    document.removeEventListener('click', firstInteractionPlay);
+    let pref;
+    try{ pref = localStorage.getItem('ra-music'); }catch(e){ pref = null; }
+    if(pref === 'off') return; // respect an explicit mute
+    if(audio.paused){
+      audio.play().then(()=>{
+        setPlayingState(true);
+      }).catch(()=>{
+        setPlayingState(false);
+      });
+    }
+  }, {once:true});
 })();
 
 /* ---------------- stars ---------------- */
