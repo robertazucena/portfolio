@@ -13,7 +13,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Robert Azucena — UX/UI Designer &amp; Creative Strategist</title>
 <script>(function(){try{if(localStorage.getItem('ra-theme')==='light'){document.documentElement.setAttribute('data-theme','light');}}catch(e){}})();</script>
-<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="style.css">
 </head>
 <body class="pl-loading">
 
@@ -41,6 +41,13 @@
       <span class="menuitem">Go</span><span class="menuitem">Window</span><span class="menuitem">Help</span>
     </div>
     <div class="right">
+      <button id="music-toggle" type="button" aria-label="Toggle background music" title="Toggle background music">
+        <svg class="icon-sound-on" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M17 8a5 5 0 010 8"/><path d="M19.5 5.5a9 9 0 010 13"/></svg>
+        <svg class="icon-sound-off" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M16 9l5 5M21 9l-5 5"/></svg>
+      </button>
+      <audio id="bg-music" loop preload="none">
+        <source src="assets/audio/background-music.mp3" type="audio/mpeg">
+      </audio>
       <button id="theme-toggle" type="button" aria-label="Toggle light/dark appearance" title="Toggle appearance">
         <svg class="icon-sun" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.4M12 19.1v2.4M4.2 4.2l1.7 1.7M18.1 18.1l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7"/></svg>
         <svg class="icon-moon" width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M20.4 14.7A8.5 8.5 0 019.3 3.6a.6.6 0 00-.7-.8A10 10 0 1021.2 15.4a.6.6 0 00-.8-.7z"/></svg>
