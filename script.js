@@ -1103,7 +1103,7 @@ if(dockResetBtn){
     "not sure", "don't have that", "do not have that", "don't know that",
     "do not know that", "isn't covered", "is not covered", "unable to answer",
     "couldn't find", "could not find", "not something i have",
-    "reach out to robert", "email me directly", "use the email me option",
+    "reach out to robert", "chat on whatsapp", "use the whatsapp option",
     "didn't get a response", "try again"
   ];
   function looksUnclear(replyText){
@@ -1189,7 +1189,7 @@ if(dockResetBtn){
       if(looksUnclear(reply)) registerUnclearMoment();
     } catch (err) {
       pending.remove();
-      addBubble('error', "Couldn't reach the chat right now. Please try again in a moment, or use the Email Me option.");
+      addBubble('error', "Couldn't reach the chat right now. Please try again in a moment, or use the Chat on WhatsApp option.");
       console.error('Chat error:', err);
       registerUnclearMoment();
     } finally {
@@ -1471,6 +1471,7 @@ const projects = {
     role:'Lead Designer', timeline:'Shipped — 2024',
     tools:['Design System','Prototypes','Motion'],
     metaLabels:{role:'Role', timeline:'Status', tools:'Deliverables'},
+    prototypeUrl:'https://robertazucena.com/assets/prototype/grab/index.html',
     gallery:'grab',
     detail:"The Grab employee portal features a clean, modern, and user-friendly interface that prioritizes accessibility and efficiency. Its card-based layout organizes personalized tasks, announcements, company news, and workplace resources into clear, easy-to-navigate sections. Combined with Grab's signature green branding and intuitive navigation, the design creates a seamless experience that helps employees stay informed, productive, and connected."
   }

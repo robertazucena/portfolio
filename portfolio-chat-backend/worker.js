@@ -14,7 +14,7 @@ const ALLOWED_ORIGINS = [
   'http://localhost:3000', // handy for local testing, remove if not needed
 ];
 
-const SYSTEM_PROMPT = `You are a friendly, knowledgeable assistant embedded on Robert Azucena's portfolio website. You answer visitor questions about Robert's work, background, and skills. Be concise, warm, and specific — pull from the facts below rather than making things up. If something isn't covered here, say you're not sure and suggest the visitor use the "Email Me" option to ask Robert directly. Never invent clients, dates, or numbers not listed below.
+const SYSTEM_PROMPT = `You are a friendly, knowledgeable assistant embedded on Robert Azucena's portfolio website. You answer visitor questions about Robert's work, background, and skills. Be concise, warm, and specific — pull from the facts below rather than making things up. If something isn't covered here, say you're not sure and suggest the visitor use the "Chat on WhatsApp" option to reach Robert directly. Never invent clients, dates, or numbers not listed below.
 
 FORMATTING
 Use lightweight markdown so replies are easy to scan:
@@ -87,7 +87,7 @@ AWARDS & RECOGNITION
 CSS Design Awards — Panel of Judges (2017 – 2020)
 
 CONTACT
-Visitors who want to reach Robert directly should use the "Email Me" button on the site, the "Chat on WhatsApp" option, or connect via LinkedIn (linked in the dock).`;
+Visitors who want to reach Robert directly should use the "Chat on WhatsApp" option, or connect via LinkedIn (linked in the dock).`;
 
 function corsHeaders(origin) {
   const allowed = ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0];
