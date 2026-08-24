@@ -716,6 +716,17 @@ body.no-webgl #desktop{
 .proj-body h1{font-size:32px; margin:0 0 14px; letter-spacing:-.01em;}
 .proj-body>p.lead{font-size:14.5px; line-height:1.8; color:var(--text-mid); max-width:640px; margin:0 0 28px;}
 .meta-row{display:flex; flex-wrap:wrap; gap:34px; margin-bottom:36px; padding-bottom:28px; border-bottom:1px solid var(--border-soft);}
+.toolbar-prototype-pill{
+  display:inline-flex; align-items:center; gap:6px;
+  background:linear-gradient(135deg, var(--purple), var(--pink));
+  color:#fff; font-weight:700; font-size:11.5px; text-decoration:none;
+  padding:6px 12px; border-radius:4px; white-space:nowrap;
+  box-shadow:0 4px 12px -4px rgba(155,126,240,.5);
+  flex:0 0 auto;
+  transition:opacity .15s ease, transform .15s ease;
+}
+.toolbar-prototype-pill:hover{opacity:.9; transform:translateY(-1px);}
+.toolbar-prototype-pill:active{transform:translateY(0);}
 .meta-col h6{font-size:10.5px; text-transform:uppercase; letter-spacing:.08em; color:var(--text-low); margin:0 0 8px;}
 .meta-col div{font-size:13px; color:var(--text-hi);}
 .meta-tags{display:flex; flex-wrap:wrap; gap:6px;}

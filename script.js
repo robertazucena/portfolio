@@ -1400,6 +1400,7 @@ const projects = {
     role:'Creative Technologist', timeline:'Live — 2023',
     tools:['Web Experience','Motion 3D Experience'],
     metaLabels:{role:'Role', timeline:'Status', tools:'Deliverables'},
+    prototypeUrl:'https://robertazucena.com/prototype/oracle-ad/',
     gallery:'oracle-ad',
     detail:"This interactive campaign showcases how Oracle Autonomous Database transforms database management with intelligent automation, self-healing, and always-on security. I had the opportunity to collaborate with Larry Ellison's team, leading the UI/UX design and delivering the campaign web application from concept to launch with a polished, engaging user experience. Inspired by autonomous driving, the experience simplifies complex technology into an intuitive story that highlights Oracle's innovation."
   },
@@ -1660,6 +1661,15 @@ function openProject(slug){
   document.getElementById('proj-body').className = 'proj-body' + (slug==='courtly' ? ' proj-courtly' : '');
   document.getElementById('proj-url').textContent = `🔒 featured-work/${p.slug}`;
   document.getElementById('proj-wtitle').innerHTML = `${p.name} <span class="app">Safari</span>`;
+  const prototypePill = document.getElementById('proj-prototype-pill');
+  if(prototypePill){
+    if(p.prototypeUrl){
+      prototypePill.href = p.prototypeUrl;
+      prototypePill.style.display = 'inline-flex';
+    } else {
+      prototypePill.style.display = 'none';
+    }
+  }
   const labels = p.metaLabels || {role:'Role', timeline:'Timeline', tools:'Tools'};
   const extra = p.gallery==='brand' ? `
     <div class="section">
