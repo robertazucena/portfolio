@@ -851,7 +851,7 @@ body.no-webgl #desktop{
 }
 
 .hint{
-  position:absolute; left:50%; transform:translateX(-50%); bottom:78px; z-index:4000;
+  position:absolute; left:50%; transform:translateX(-50%); bottom:81px; z-index:4000;
   font-size:11.5px; color:var(--text-low); background:var(--hint-bg); border:1px solid var(--border);
   padding:6px 12px; border-radius:20px; opacity:0; animation:hintshow 1s ease forwards .8s;
   transition:opacity .25s ease; pointer-events:none;
