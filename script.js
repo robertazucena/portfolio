@@ -1514,7 +1514,7 @@ function renderFinderPane(pane){
         <div class="avatar"><img src="${AVATAR_IMG}" alt="Robert Azucena"></div>
         <div>
           <h2>Robert Azucena</h2>
-          <p>UX/UI Architect &amp; Creative Strategist</p>
+          <p>UI/UX Architect &amp; AI Strategist</p>
         </div>
       </div>
       <p class="about-bio">I design at the intersection of AI and function — where systems thinking meets thoughtful craft and human experience.<br><br>Based in Singapore. previously at <strong>Oracle</strong>, and various early‑stage ventures.</p>
