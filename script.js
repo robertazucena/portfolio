@@ -640,8 +640,16 @@ try{
   const menubar = document.getElementById('menubar');
   if(!hint) return;
   const hide = ()=> hint.classList.add('hint-hide');
-  if(dock) dock.addEventListener('mouseenter', hide);
-  if(menubar) menubar.addEventListener('mouseenter', hide);
+  /* Some browsers (and headless/testing environments) treat the cursor as
+     resting at (0,0) by default, which overlaps the full-width menubar —
+     that can fire a spurious mouseenter with no real user interaction.
+     Real cursor movement (a 'mousemove') has to happen at least once
+     before an enter on dock/menubar counts as an intentional hover. */
+  let hasMouseMoved = false;
+  document.addEventListener('mousemove', ()=>{ hasMouseMoved = true; }, {once:true, passive:true});
+  const hideIfIntentional = ()=>{ if(hasMouseMoved) hide(); };
+  if(dock) dock.addEventListener('mouseenter', hideIfIntentional);
+  if(menubar) menubar.addEventListener('mouseenter', hideIfIntentional);
 })();
 
 /* ---------------- windows: show + drag + focus ---------------- */
