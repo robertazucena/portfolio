@@ -119,6 +119,23 @@
     var shead = el("div", { class: "suggested-head" });
     shead.innerHTML = '<h2>Suggested Starting Points</h2><a href="#/templates">View all 48 templates →</a>';
     sug.appendChild(shead);
+
+    var homeToolbar = el("div", { class: "tpl-toolbar" });
+    homeToolbar.innerHTML =
+      '<div class="search-box">' + iconSearch() + '<input type="text" placeholder="Search templates..." /></div>';
+    var homeFilters = el("div", { class: "tpl-filters" });
+    ["All", "Marketing", "Newsletter", "Welcome", "Promo", "Product Update", "Onboarding"].forEach(function (f, i) {
+      var c = el("button", { class: "chip" + (i === 0 ? " is-active" : ""), type: "button" });
+      c.textContent = f;
+      c.addEventListener("click", function () {
+        homeFilters.querySelectorAll(".chip").forEach(function (x) { x.classList.remove("is-active"); });
+        c.classList.add("is-active");
+      });
+      homeFilters.appendChild(c);
+    });
+    homeToolbar.appendChild(homeFilters);
+    sug.appendChild(homeToolbar);
+
     var grid = el("div", { class: "start-grid" });
     var starts = [
       { img: "https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=600&q=80", pill: "SAAS", t: "Win Story Announcement", d: "Share inspiring customer milestones, ROI metrics, and success summaries across the global team." },
