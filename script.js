@@ -860,6 +860,8 @@ function getDockThumb(win){
   const thumb = document.createElement('div');
   thumb.className = 'dock-min-item';
   thumb.innerHTML = `${meta.icon}<span class="dock-tip">${meta.label}</span>`;
+  thumb.setAttribute('tabindex', '0');
+  thumb.setAttribute('role', 'button');
   thumb.addEventListener('click', ()=>restoreWin(win));
   dockEl.appendChild(thumb);
   minimizedThumbs[win.id] = thumb;
@@ -1470,7 +1472,11 @@ const projects = {
     metaLabels:{role:'Role', timeline:'Status', tools:'Deliverables'},
     prototypeUrl:'https://robertazucena.com/assets/prototype/oracle-ad/index.html',
     gallery:'oracle-ad',
-    detail:"This interactive campaign showcases how Oracle Autonomous Database transforms database management with intelligent automation, self-healing, and always-on security. I had the opportunity to collaborate with Larry Ellison's team, leading the UI/UX design and delivering the campaign web application from concept to launch with a polished, engaging user experience. Inspired by autonomous driving, the experience simplifies complex technology into an intuitive story that highlights Oracle's innovation."
+    stats:[
+      ['30%', 'Faster time-to-first-insight'],
+      ['20%', 'Fewer navigation-related support tickets']
+    ],
+    detail:"This interactive campaign showcases how Oracle Autonomous Database transforms database management with intelligent automation, self-healing, and always-on security. I had the opportunity to collaborate with Larry Ellison's team, leading the UI/UX design and delivering the campaign web application from concept to launch with a polished, engaging user experience. Inspired by autonomous driving, the experience simplifies complex technology into an intuitive story that highlights Oracle's innovation.<br><br>Alongside the campaign, I also worked as UX/UI Designer on the OCI administration and monitoring dashboards used by enterprise DBAs — redesigning the information architecture with at-a-glance status cards and guided setup flows, which reduced time-to-first-insight by approximately 30% and navigation-related support tickets by approximately 20%."
   },
   steady:{
     name:'Steady', slug:'steady', category:'Product Design · Health & Wellness',
@@ -1530,7 +1536,7 @@ function renderFinderPane(pane){
   } else if(pane==='projects'){
     let grid = '<div class="proj-grid">';
     Object.values(projects).forEach(p=>{
-      grid += `<div class="proj-folder" data-open-project="${p.slug}">
+      grid += `<div class="proj-folder" data-open-project="${p.slug}" tabindex="0" role="button">
         <div class="folder-icon" style="background:${p.folderBg};">${p.icon}</div>
         <span>${p.name}</span>
       </div>`;
@@ -1930,10 +1936,24 @@ document.getElementById('proj-close-dot').addEventListener('click', closeProject
 document.getElementById('project-overlay').addEventListener('click', (e)=>{
   if(e.target.id==='project-overlay') closeProject();
 });
+document.addEventListener('keydown', e=>{
+  if(e.key === 'Escape' && document.getElementById('project-overlay').classList.contains('open')) closeProject();
+});
 
 document.body.addEventListener('click', (e)=>{
   const t = e.target.closest('[data-open-project]');
   if(t) openProject(t.dataset.openProject);
+});
+
+/* keyboard accessibility: activate any custom [role="button"] element
+   (dock icons, Finder items, project folders, traffic-light dots, etc.)
+   with Enter or Space, same as a native button would respond to */
+document.addEventListener('keydown', e=>{
+  if(e.key !== 'Enter' && e.key !== ' ') return;
+  const target = e.target.closest('[role="button"]');
+  if(!target) return;
+  e.preventDefault();
+  target.click();
 });
 
 /* ---------------- Dock actions ---------------- */

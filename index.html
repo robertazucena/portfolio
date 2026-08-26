@@ -60,6 +60,8 @@
 </head>
 <body class="pl-loading">
 
+<h1 class="visually-hidden">Robert Azucena — UI/UX Architect &amp; AI Strategist Portfolio</h1>
+
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
 <div id="preloader">
@@ -104,7 +106,7 @@
   <!-- Terminal -->
   <div class="win" id="win-terminal" style="width:480px; height:320px; top:74px; left:60px;">
     <div class="titlebar" data-drag>
-      <div class="traffic"><span class="r" data-close></span><span class="y" data-minimize></span><span class="g" data-maximize></span></div>
+      <div class="traffic"><span class="r" data-close tabindex="0" role="button" aria-label="Close window"></span><span class="y" data-minimize tabindex="0" role="button" aria-label="Minimize window"></span><span class="g" data-maximize tabindex="0" role="button" aria-label="Maximize window"></span></div>
       <div class="wtitle">zsh — robert@macbook-pro</div>
     </div>
     <div class="winbody mono">
@@ -124,25 +126,25 @@
   <!-- About Me / Finder -->
   <div class="win" id="win-about" style="width:520px; height:355px; top:370px; left:96px;">
     <div class="titlebar" data-drag>
-      <div class="traffic"><span class="r" data-close></span><span class="y" data-minimize></span><span class="g" data-maximize></span></div>
+      <div class="traffic"><span class="r" data-close tabindex="0" role="button" aria-label="Close window"></span><span class="y" data-minimize tabindex="0" role="button" aria-label="Minimize window"></span><span class="g" data-maximize tabindex="0" role="button" aria-label="Maximize window"></span></div>
       <div class="wtitle">About Me <span class="app">Finder</span></div>
     </div>
     <div class="winbody">
       <div class="finder-sidebar">
         <h6>Favorites</h6>
-        <div class="finder-item active" data-pane="about">
+        <div class="finder-item active" data-pane="about" tabindex="0" role="button">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="3.4"/><path d="M4.5 20c1.4-4 4-6 7.5-6s6.1 2 7.5 6"/></svg>
           About Me
         </div>
-        <div class="finder-item" data-pane="projects">
+        <div class="finder-item" data-pane="projects" tabindex="0" role="button">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 7a2 2 0 012-2h4l2 2h8a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2V7z"/></svg>
           Projects
         </div>
-        <div class="finder-item" data-pane="documents">
+        <div class="finder-item" data-pane="documents" tabindex="0" role="button">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M7 3h7l4 4v14a1 1 0 01-1 1H7a1 1 0 01-1-1V4a1 1 0 011-1z"/><path d="M14 3v4h4"/></svg>
           Documents
         </div>
-        <div class="finder-item" data-pane="downloads">
+        <div class="finder-item" data-pane="downloads" tabindex="0" role="button">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 19h16"/></svg>
           Downloads
         </div>
@@ -154,7 +156,7 @@
   <!-- Oracle AD case study -->
   <div class="win case-win" id="win-autonomous" style="width:660px; height:300px; top:66px; left:630px; --brand-rgb:255,107,74;">
     <div class="titlebar" data-drag>
-      <div class="traffic"><span class="r" data-close></span><span class="y" data-minimize></span><span class="g" data-maximize></span></div>
+      <div class="traffic"><span class="r" data-close tabindex="0" role="button" aria-label="Close window"></span><span class="y" data-minimize tabindex="0" role="button" aria-label="Minimize window"></span><span class="g" data-maximize tabindex="0" role="button" aria-label="Maximize window"></span></div>
       <div class="wtitle">Oracle AD <span class="app">Safari</span></div>
     </div>
     <div class="browser-toolbar">
@@ -180,7 +182,7 @@
           <li>Role: Creative Technologist</li>
           <li>Status: Live — 2023</li>
         </ul>
-        <div class="case-cta" data-open-project="oracle-ad">View full case study →</div>
+        <div class="case-cta" data-open-project="oracle-ad" tabindex="0" role="button">View full case study →</div>
       </div>
     </div>
   </div>
@@ -188,7 +190,7 @@
   <!-- Grab case study -->
   <div class="win case-win" id="win-grab" style="width:585px; height:305px; top:372px; left:650px; --brand-rgb:0,177,79;">
     <div class="titlebar" data-drag>
-      <div class="traffic"><span class="r" data-close></span><span class="y" data-minimize></span><span class="g" data-maximize></span></div>
+      <div class="traffic"><span class="r" data-close tabindex="0" role="button" aria-label="Close window"></span><span class="y" data-minimize tabindex="0" role="button" aria-label="Minimize window"></span><span class="g" data-maximize tabindex="0" role="button" aria-label="Maximize window"></span></div>
       <div class="wtitle">Grab <span class="app">Safari</span></div>
     </div>
     <div class="browser-toolbar">
@@ -209,14 +211,14 @@
           <li>Role: Lead Designer</li>
           <li>Status: Shipped — 2024</li>
         </ul>
-        <div class="case-cta" data-open-project="grab">View full case study →</div>
+        <div class="case-cta" data-open-project="grab" tabindex="0" role="button">View full case study →</div>
       </div>
     </div>
   </div>
 
   <!-- Sticky note -->
   <div class="win" id="win-sticky" style="width:300px; height:auto; top:64px; left:1330px;">
-    <div class="titlebar" data-drag><div class="traffic"><span class="r" data-close></span><span class="y" data-minimize></span><span class="g" data-maximize></span></div></div>
+    <div class="titlebar" data-drag><div class="traffic"><span class="r" data-close tabindex="0" role="button" aria-label="Close window"></span><span class="y" data-minimize tabindex="0" role="button" aria-label="Minimize window"></span><span class="g" data-maximize tabindex="0" role="button" aria-label="Maximize window"></span></div></div>
     <div class="winbody">
       <div class="signature" id="sig-link" data-text="What's up doc?"><span id="sig-text"></span><span class="sig-cursor"></span></div>
       <p>Open to select collaborations or work, i'm always happy to connect, share ideas, and see what we can create together.</p>
@@ -242,7 +244,7 @@
         <p class="headline">Ask me anything about Robert</p>
         <p>Try "What's his experience with design systems?" or "Has he worked with fintech clients?"</p>
       </div>
-      <div id="connect-chat-messages"></div>
+      <div id="connect-chat-messages" aria-live="polite" aria-atomic="false"></div>
     </div>
     <div id="connect-chat-inputbar">
       <input type="text" id="connect-chat-input" placeholder="Ask about Robert's work, experience, skills…" autocomplete="off">
@@ -254,7 +256,7 @@
   <div id="mail-backdrop"></div>
   <div class="win hidden-win" id="win-mail" style="width:380px; height:470px; bottom:130px; left:560px;">
     <div class="titlebar" data-drag>
-      <div class="traffic"><span class="r" data-close></span><span class="y" data-minimize></span><span class="g" data-maximize></span></div>
+      <div class="traffic"><span class="r" data-close tabindex="0" role="button" aria-label="Close window"></span><span class="y" data-minimize tabindex="0" role="button" aria-label="Minimize window"></span><span class="g" data-maximize tabindex="0" role="button" aria-label="Maximize window"></span></div>
       <div class="wtitle">New Message <span class="app">Mail</span></div>
     </div>
     <div class="winbody">
@@ -291,19 +293,19 @@
 
   <!-- Floating shortcuts -->
   <div id="shortcuts">
-    <div class="shortcut" data-open-project="grab">
+    <div class="shortcut" data-open-project="grab" tabindex="0" role="button">
       <div class="sc-icon" style="background:linear-gradient(150deg,#3fd977,#00893a);">🚗</div>
       <span>Grab</span>
     </div>
-    <div class="shortcut" data-open-project="changi">
+    <div class="shortcut" data-open-project="changi" tabindex="0" role="button">
       <div class="sc-icon" style="background:linear-gradient(150deg,#9b7ef0,#5a3fc0);">✈️</div>
       <span>Changi</span>
     </div>
-    <div class="shortcut" data-open-project="oracle-ad">
+    <div class="shortcut" data-open-project="oracle-ad" tabindex="0" role="button">
       <div class="sc-icon" style="background:linear-gradient(150deg,#ff8a5c,#c1391f);">🗄️</div>
       <span>Oracle AD</span>
     </div>
-    <div class="shortcut" data-open-project="oracle-egen">
+    <div class="shortcut" data-open-project="oracle-egen" tabindex="0" role="button">
       <div class="sc-icon" style="background:linear-gradient(150deg,#ff8a5c,#c1391f);">
         <svg viewBox="0 0 40 40" width="22" height="22">
           <defs>
@@ -317,7 +319,7 @@
       </div>
       <span>Oracle EG</span>
     </div>
-    <div class="shortcut" data-open-project="great-eastern">
+    <div class="shortcut" data-open-project="great-eastern" tabindex="0" role="button">
       <div class="sc-icon" style="background:linear-gradient(150deg,#ff6b5c,#a30f1f);">🦁</div>
       <span>Great Eastern</span>
     </div>
@@ -338,23 +340,23 @@
   <div id="hint" class="hint">Drag the windows around, or explore the dock below ↓</div>
 
   <div id="dock">
-    <div class="dockitem active" data-dock="about"><span class="dock-tip">About Me</span>
+    <div class="dockitem active" data-dock="about" tabindex="0" role="button"><span class="dock-tip">About Me</span>
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="3.4"/><path d="M4.5 20c1.4-4 4-6 7.5-6s6.1 2 7.5 6"/></svg>
     </div>
-    <div class="dockitem" data-dock="safari"><span class="dock-tip">Projects</span>
+    <div class="dockitem" data-dock="safari" tabindex="0" role="button"><span class="dock-tip">Projects</span>
       <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9.2"/><path d="M15.5 8.5l-2.2 5.2-5.2 2.2 2.2-5.2z" fill="currentColor" stroke="none"/></svg>
     </div>
-    <div class="dockitem" data-dock="documents"><span class="dock-tip">Documents</span>
+    <div class="dockitem" data-dock="documents" tabindex="0" role="button"><span class="dock-tip">Documents</span>
       <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M7 3h7l4 4v14a1 1 0 01-1 1H7a1 1 0 01-1-1V4a1 1 0 011-1z"/><path d="M14 3v4h4"/></svg>
     </div>
-    <div class="dockitem" data-dock="mail"><span class="dock-tip">Email Me</span>
+    <div class="dockitem" data-dock="mail" tabindex="0" role="button"><span class="dock-tip">Email Me</span>
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 6l9 7 9-7"/></svg>
     </div>
-    <div class="dockitem" data-dock="linkedin"><span class="dock-tip">LinkedIn</span>
+    <div class="dockitem" data-dock="linkedin" tabindex="0" role="button"><span class="dock-tip">LinkedIn</span>
       <svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor"><path d="M4.98 3.5C4.98 4.88 3.9 6 2.5 6S0 4.88 0 3.5 1.12 1 2.5 1s2.48 1.12 2.48 2.5zM.5 8.25h4V23h-4V8.25zM8.5 8.25h3.83v2.02h.05c.53-1 1.83-2.05 3.77-2.05 4.03 0 4.78 2.65 4.78 6.1V23h-4v-6.9c0-1.65-.03-3.77-2.3-3.77-2.3 0-2.65 1.8-2.65 3.65V23h-4V8.25z"/></svg>
     </div>
     <div class="dock-fixed-sep"></div>
-    <div class="dockitem dock-reset" id="dock-reset" aria-disabled="true"><span class="dock-tip">Reset Windows</span>
+    <div class="dockitem dock-reset" id="dock-reset" aria-disabled="true" tabindex="0" role="button"><span class="dock-tip">Reset Windows</span>
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 1 2.64 6.36"/><path d="M3 5v6h6"/></svg>
     </div>
   </div>
@@ -364,7 +366,7 @@
 <div id="project-overlay">
   <div class="proj-window">
     <div class="titlebar proj-titlebar">
-      <div class="traffic"><span class="r" id="proj-close-dot"></span><span class="y"></span><span class="g"></span></div>
+      <div class="traffic"><span class="r" id="proj-close-dot" tabindex="0" role="button" aria-label="Close case study"></span><span class="y"></span><span class="g"></span></div>
       <div class="wtitle" id="proj-wtitle">Case Study <span class="app">Safari</span></div>
     </div>
     <div class="browser-toolbar">

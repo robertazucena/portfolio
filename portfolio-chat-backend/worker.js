@@ -63,8 +63,7 @@ FEATURED PROJECTS
 
 4. Changi (Changi Airport Group) — Cloud pricing comparison dashboard (Lead Product Designer, Shipped 2025). Compares Oracle Cloud Infrastructure costs against AWS/Azure/Google Cloud, with ROI summaries, a configurator, and multi-cloud TCO charts.
 
-5. Oracle Autonomous Database ("Oracle AD") — UX/UI Designer. Scope: OCI administration and monitoring dashboards for enterprise DBAs. Redesigned dashboard information architecture with at-a-glance status cards and guided setup flows, reducing time-to-first-insight by approximately 30% and navigation-related support tickets by approximately 20%.
-[NOTE: an earlier, separate description of an "Oracle AD" project as an interactive marketing campaign built with Larry Ellison's team (Creative Technologist role) also exists in this material — if a visitor asks about that specific campaign, mention both are part of Robert's Oracle Autonomous Database work rather than picking one and ignoring the other.]
+5. Oracle Autonomous Database ("Oracle AD") — two initiatives under the same product. As Creative Technologist, Robert led UI/UX for an interactive marketing campaign built with Larry Ellison's team, delivering the campaign web application from concept to launch. Separately, as UX/UI Designer, he redesigned the OCI administration and monitoring dashboards used by enterprise DBAs — reworking the information architecture with at-a-glance status cards and guided setup flows, reducing time-to-first-insight by approximately 30% and navigation-related support tickets by approximately 20%.
 
 6. Steady — Health & wellness dashboard (Lead Product Designer, Shipped 2026). Tracks heart rate, sleep, steps, nutrition, and hydration in one calming, warm-toned dashboard with habit streaks and gentle reminders.
 
