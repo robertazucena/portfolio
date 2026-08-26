@@ -1488,6 +1488,7 @@ const projects = {
     role:'UI/UX Designer and Creative Technologist', timeline:'Beta — 2023',
     tools:['Web App','Mobile Responsive'],
     metaLabels:{role:'Role', timeline:'Status', tools:'Deliverables'},
+    prototypeUrl:'https://robertazucena.com/assets/prototype/mufg/index.html',
     gallery:'mufg',
     detail:'The MUFG UI features a modern, professional design with a prominent hero banner that highlights key business initiatives alongside strong visual imagery. A clean navigation bar and card-based layout showcase financial services with clear icons, concise descriptions, and bold red accents, creating an intuitive and trustworthy user experience.'
   },
