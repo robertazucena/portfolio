@@ -1,4 +1,4 @@
-  // Theme toggle: cycles explicit light -> dark -> (system default), stored
+// Theme toggle: cycles explicit light -> dark -> (system default), stored
   // only in memory for this view (no persistence needed for a preview).
   function gpToggleTheme(){
     var root = document.documentElement;
