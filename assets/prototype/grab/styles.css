@@ -94,7 +94,7 @@
      WELCOME BANNER
      ===================================================================== */
   .gp-welcome{display:grid;grid-template-columns:368px 1fr;gap:0;flex:1}
-  .gp-toprow{display:flex;gap:0;align-items:stretch;padding:32px 0 0}
+  .gp-toprow{display:flex;gap:0;align-items:stretch;padding:48px 0 0}
   .gp-welcome__card{padding:24px;display:flex;flex-direction:column;gap:20px}
   .gp-welcome__greeting{font-size:30px;line-height:1.2;font-weight:300}
   .gp-welcome__greeting strong{color:var(--grab-green);font-weight:700}
