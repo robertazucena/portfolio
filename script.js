@@ -1447,6 +1447,7 @@ const projects = {
     role:'Lead Product Designer', timeline:'Shipped — 2024',
     tools:['Design System','Prototypes','Modern Dashboard'],
     metaLabels:{role:'Role', timeline:'Status', tools:'Deliverables'},
+    prototypeUrl:'https://robertazucena.com/assets/prototype/oracle-eg/index.html',
     gallery:'oracle-egen',
     detail:"Oracle AI Email Generator is an AI-powered platform that transforms simple prompts into professional, ready-to-send HTML email templates. Users can customize tone, add contextual data, and generate personalized email content in seconds. Built for enterprise teams, it streamlines email creation while ensuring consistency, efficiency, and brand alignment."
   },
