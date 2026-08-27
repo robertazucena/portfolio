@@ -1432,13 +1432,14 @@ const projects = {
     gallery:'great-eastern',
     detail:"This web app is an AI-powered insurance claims management dashboard that centralizes claim intake, review, and resolution workflows. It provides real-time insights into claim volumes, processing status, and AI-assisted outcomes, enabling claims teams to prioritize cases and improve operational efficiency. The interface also includes a submission queue for tracking claim progress and streamlining case management."
   },
-  courtly:{
+  'courtly':{
     name:'Courtly', slug:'courtly', category:'Product Design · Sports Court Booking',
     accent:'#22c07a', icon:'🏀', folderBg:'linear-gradient(150deg,#34d399,#0f9d63)',
     lead:'Your all-in-one platform for sports court bookings.',
     role:'Lead Product Designer', timeline:'Shipped — 2025',
     tools:['Product Design','Design System','Prototypes'],
     metaLabels:{role:'Role', timeline:'Status', tools:'Deliverables'},
+    prototypeUrl:'https://robertazucena.com/assets/prototype/courtly/index.html',
     gallery:'courtly',
     detail:"Courtly is a modern sports court booking platform that helps users discover nearby venues, reserve courts, and manage their bookings in one place. The dashboard provides personalized recommendations, upcoming schedules, booking history, and activity streaks to encourage regular play. With a clean, intuitive interface, users can quickly find courts, join community matches, and stay active."
   },
