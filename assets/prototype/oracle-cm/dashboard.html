@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Moments Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css?v=2" />
+</head>
+<body>
+
+  <div class="mobile-topbar">
+    <button class="hamburger" id="sidebar-open" aria-label="Open menu"></button>
+    <div class="brand"><div class="logo" id="mobile-logo" style="width:32px;height:32px;border-radius:8px;overflow:hidden;"></div><span class="brand-name">myDash</span></div>
+  </div>
+  <div class="sidebar-backdrop" id="sidebar-backdrop"></div>
+
+  <div class="app">
+    <div id="sidebar-mount"></div>
+
+    <main class="main">
+      <div class="page-bg">
+      <div class="dash-content">
+
+        <div class="dash-header">
+          <div>
+            <div class="breadcrumbs">
+              <span class="bc-muted">myDash Workspace</span>
+              <span class="bc-sep">/</span>
+              <span class="bc-active">Performance Analytics</span>
+            </div>
+            <h1>Moments Dashboard</h1>
+          </div>
+          <div class="dash-filters">
+            <div class="filter-dd">All Campaigns <span id="ic-chev1"></span></div>
+            <div class="filter-dd">Last 30 Days <span id="ic-chev2"></span></div>
+            <a class="primary-cta" href="index.html"><span id="ic-plus"></span>New Moment</a>
+          </div>
+        </div>
+
+        <div class="stats-row">
+          <div class="kpi-card">
+            <div class="kpi-head"><p>Total Cards Sent</p><span class="kpi-icon" id="ic-mail"></span></div>
+            <p class="kpi-value">14,820</p>
+            <div class="kpi-trend"><span class="trend-badge">+12.4%</span><span class="vs">vs last month</span></div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-head"><p>Cards Opened</p><span class="kpi-icon" id="ic-eye"></span></div>
+            <p class="kpi-value">13,190</p>
+            <div class="kpi-trend"><span class="trend-badge">+8.6%</span><span class="vs">vs last month</span></div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-head"><p>Open Rate %</p><span class="kpi-icon" id="ic-trend"></span></div>
+            <p class="kpi-value">89.0%</p>
+            <div class="kpi-trend"><span class="trend-badge">+2.1%</span><span class="vs">vs last month</span></div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-head"><p>Avg Response Time</p><span class="kpi-icon" id="ic-clock"></span></div>
+            <p class="kpi-value">4.2 hrs</p>
+            <div class="kpi-trend"><span class="trend-badge">-15%</span><span class="vs">vs last month</span></div>
+          </div>
+        </div>
+
+        <div class="charts-row">
+          <div class="panel">
+            <h2>Delivery Funnel Status</h2>
+            <p class="panel-sub">Current status distribution of sent cards</p>
+            <div class="donut-wrap">
+              <div class="donut"><div class="donut-center"><span class="dc-num">95%</span><span class="dc-label">Delivery Rate</span></div></div>
+              <div class="legend">
+                <div class="legend-row"><span><span class="dot" style="background:#387753"></span><span class="l-name">Opened</span></span><span class="l-val">55%</span></div>
+                <div class="legend-row"><span><span class="dot" style="background:#2563eb"></span><span class="l-name">Clicked</span></span><span class="l-val">30%</span></div>
+                <div class="legend-row"><span><span class="dot" style="background:#d97706"></span><span class="l-name">Delivered</span></span><span class="l-val">10%</span></div>
+                <div class="legend-row"><span><span class="dot" style="background:#c74634"></span><span class="l-name">Bounced</span></span><span class="l-val">5%</span></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="trend-head">
+              <div>
+                <h2>Card Delivery Volume</h2>
+                <p class="panel-sub" style="margin:0;">Monthly trend of cards sent across all workspaces</p>
+              </div>
+              <div class="trend-legend"><span class="dot"></span>Sent Volume</div>
+            </div>
+            <div class="line-chart-wrap" id="line-chart"></div>
+          </div>
+        </div>
+
+        <div class="recent-activity">
+          <div class="ra-head">
+            <div>
+              <h2>Recent Card Activity</h2>
+              <p>Detailed stream of individual card delivery events</p>
+            </div>
+            <a class="view-all" href="#">View All Events</a>
+          </div>
+          <table class="activity-table">
+            <thead>
+              <tr><th>Recipient</th><th>Template Used</th><th>Sent Date</th><th>Status</th><th style="text-align:right;">Last Update</th></tr>
+            </thead>
+            <tbody id="activity-body"></tbody>
+          </table>
+        </div>
+
+        <div class="page-footer">
+          <span class="f-brand">Customer Moments</span>
+          <span class="f-sep">|</span>
+          <div class="footer-links">
+            <span>About</span><span>Privacy</span><span>Terms</span><span>Contact</span>
+          </div>
+        </div>
+
+      </div>
+      </div>
+    </main>
+  </div>
+
+<script src="transitions.js"></script>
+<script src="icons.js"></script>
+<script src="data.js"></script>
+<script src="nav.js"></script>
+<script>
+  mountSidebar("dashboard");
+  document.getElementById("sidebar-open").innerHTML = ICONS.menu;
+  document.getElementById("mobile-logo").innerHTML = ICONS.logo;
+  document.getElementById("ic-chev1").innerHTML = ICONS.chevronDown;
+  document.getElementById("ic-chev2").innerHTML = ICONS.chevronDown;
+  document.getElementById("ic-plus").innerHTML = ICONS.plus;
+  document.getElementById("ic-mail").innerHTML = ICONS.mail;
+  document.getElementById("ic-eye").innerHTML = ICONS.eye;
+  document.getElementById("ic-trend").innerHTML = ICONS.trendingUp;
+  document.getElementById("ic-clock").innerHTML = ICONS.clock;
+
+  // Line chart (SVG) — monthly delivery volume
+  const months = ["May","Jun","Jul","Aug","Sep","Oct"];
+  const values = [2450, 3050, 3550, 3350, 4550, 5800];
+  const w = 630, h = 250, padL = 38, padR = 10, padT = 44, padB = 30;
+  const maxV = 6000;
+  const plotW = w - padL - padR;
+  const plotH = h - padT - padB;
+  const x = (i) => padL + (i / (months.length - 1)) * plotW;
+  const y = (v) => padT + plotH - (v / maxV) * plotH;
+  const gridVals = [0, 1500, 3000, 4500, 6000];
+  const points = values.map((v, i) => `${x(i)},${y(v)}`).join(" ");
+
+  let svg = `<svg viewBox="0 0 ${w} ${h}" xmlns="http://www.w3.org/2000/svg">`;
+  gridVals.forEach((gv) => {
+    svg += `<text x="${padL - 8}" y="${y(gv) + 3}" font-size="10" fill="#a39e9a" text-anchor="end" font-family="Inter, sans-serif">${gv}</text>`;
+    svg += `<line x1="${padL}" y1="${y(gv)}" x2="${w - padR}" y2="${y(gv)}" stroke="#eaeaea" stroke-width="1" />`;
+  });
+  svg += `<polyline points="${points}" fill="none" stroke="#387753" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />`;
+  values.forEach((v, i) => {
+    svg += `<circle cx="${x(i)}" cy="${y(v)}" r="4" fill="#387753" stroke="#fff" stroke-width="2" />`;
+  });
+  const lastI = values.length - 1;
+  const lastX = x(lastI);
+  const lastY = y(values[lastI]);
+  const tipLabel = "Oct: 5.8K Sent";
+  const tipW = 98, tipH = 26, tipGap = 10, arrowH = 6, arrowW = 8;
+  let tipX = lastX - tipW / 2;
+  tipX = Math.max(4, Math.min(tipX, w - padR - tipW));
+  let tipY = lastY - tipH - tipGap - arrowH;
+  tipY = Math.max(4, tipY);
+  const arrowCx = Math.min(Math.max(lastX, tipX + 14), tipX + tipW - 14);
+  const arrowTopY = tipY + tipH;
+  svg += `<g>
+    <rect x="${tipX}" y="${tipY}" width="${tipW}" height="${tipH}" rx="6" fill="#312d2a" />
+    <path d="M ${arrowCx - arrowW / 2} ${arrowTopY} L ${arrowCx + arrowW / 2} ${arrowTopY} L ${arrowCx} ${arrowTopY + arrowH} Z" fill="#312d2a" />
+    <text x="${tipX + tipW / 2}" y="${tipY + tipH / 2 + 4}" font-size="11" font-weight="600" fill="#fff" text-anchor="middle" font-family="Inter, sans-serif">${tipLabel}</text>
+  </g>`;
+  months.forEach((m, i) => {
+    svg += `<text x="${x(i)}" y="${h - 8}" font-size="11" fill="#6e6a66" text-anchor="middle" font-family="Inter, sans-serif">${m}</text>`;
+  });
+  svg += `</svg>`;
+  document.getElementById("line-chart").innerHTML = svg;
+
+  // Recent activity table
+  const rows = [
+    { name: "Jordan Doe", email: "jordan.doe@acme-corp.com", template: "Diwali Celebration E-Card", date: "Oct 28, 2025", status: "opened", updated: "2 min ago" },
+    { name: "Sarah Jenkins", email: "s.jenkins@globex.io", template: "Team Welcome E-Card", date: "Oct 28, 2025", status: "clicked", updated: "15 min ago" },
+    { name: "Alex Mercer", email: "alex.m@halycon.tech", template: "Milestone Anniversary", date: "Oct 27, 2025", status: "delivered", updated: "Pending" },
+    { name: "David Vance", email: "d.vance@vanceinc.co", template: "Thank You & Appreciations", date: "Oct 26, 2025", status: "bounced", updated: "--" },
+    { name: "Emma Watson", email: "emma@star-enterprises.com", template: "Annual Holiday Blessing", date: "Oct 25, 2025", status: "opened", updated: "1 day ago" },
+  ];
+  const statusLabel = { opened: "OPENED", clicked: "CLICKED", delivered: "DELIVERED", bounced: "BOUNCED" };
+  document.getElementById("activity-body").innerHTML = rows.map((r) => `
+    <tr>
+      <td><span class="recipient-name">${r.name}</span><span class="recipient-email">${r.email}</span></td>
+      <td>${r.template}</td>
+      <td>${r.date}</td>
+      <td><span class="status-badge status-${r.status}">${statusLabel[r.status]}</span></td>
+      <td>${r.updated}</td>
+    </tr>
+  `).join("");
+</script>
+</body>
+</html>

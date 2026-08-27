@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Help &amp; Support — Customer Moments</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css?v=2" />
+</head>
+<body>
+
+  <div class="mobile-topbar">
+    <button class="hamburger" id="sidebar-open" aria-label="Open menu"></button>
+    <div class="brand"><div class="logo" id="mobile-logo" style="width:32px;height:32px;border-radius:8px;overflow:hidden;"></div><span class="brand-name">myDash</span></div>
+  </div>
+  <div class="sidebar-backdrop" id="sidebar-backdrop"></div>
+
+  <div class="app">
+    <div id="sidebar-mount"></div>
+
+    <main class="main">
+      <div class="page-bg">
+      <div class="dash-content">
+
+        <div class="dash-header">
+          <div>
+            <div class="breadcrumbs">
+              <span class="bc-muted">myDash Workspace</span>
+              <span class="bc-sep">/</span>
+              <span class="bc-active">Help</span>
+            </div>
+            <h1>Help &amp; Support</h1>
+            <p class="dash-subtitle">Find answers, guides, and ways to reach our team.</p>
+          </div>
+        </div>
+
+        <div class="search-box help-hero-search">
+          <span class="icon" id="ic-search"></span>
+          <input type="text" placeholder="Search help articles..." />
+        </div>
+
+        <div class="panel">
+          <h2>Quick Links</h2>
+          <p class="panel-sub">The most common places people start</p>
+          <div class="quick-link-grid" id="quick-links"></div>
+        </div>
+
+        <div class="panel">
+          <h2>Frequently Asked Questions</h2>
+          <p class="panel-sub">Can't find what you need? Reach out below.</p>
+          <div id="faq-list"></div>
+        </div>
+
+        <div class="contact-panel">
+          <div>
+            <h3>Still need a hand?</h3>
+            <p>Our support team typically replies within a few hours on weekdays.</p>
+          </div>
+          <div class="contact-actions">
+            <a class="btn-outline" href="mailto:support@mydash.com"><span id="ic-mail"></span>Email Support</a>
+            <button class="btn-fill" type="button" id="chat-btn"><span id="ic-chat"></span>Chat with Us</button>
+          </div>
+        </div>
+
+        <div class="page-footer">
+          <span class="f-brand">Customer Moments</span>
+          <span class="f-sep">|</span>
+          <div class="footer-links">
+            <span>About</span><span>Privacy</span><span>Terms</span><span>Contact</span>
+          </div>
+        </div>
+
+      </div>
+      </div>
+    </main>
+  </div>
+
+<script src="transitions.js"></script>
+<script src="icons.js"></script>
+<script src="data.js"></script>
+<script src="nav.js"></script>
+<script>
+  mountSidebar("help");
+  document.getElementById("sidebar-open").innerHTML = ICONS.menu;
+  document.getElementById("mobile-logo").innerHTML = ICONS.logo;
+  document.getElementById("ic-search").innerHTML = ICONS.search;
+  document.getElementById("ic-mail").innerHTML = ICONS.mail;
+  document.getElementById("ic-chat").innerHTML = ICONS.messageCircle;
+
+  const quickLinks = [
+    { icon: "rocket", title: "Getting Started", desc: "Set up your workspace and send your first moment in minutes." },
+    { icon: "sparkles", title: "Sending Your First Moment", desc: "A step-by-step walkthrough of the personalization editor." },
+    { icon: "bookOpen", title: "Templates & Personalization", desc: "Tips for writing messages that get opened and remembered." },
+    { icon: "wrench", title: "Troubleshooting Delivery", desc: "What to do when a card bounces or doesn't send." },
+  ];
+  document.getElementById("quick-links").innerHTML = quickLinks.map((q) => `
+    <div class="template-card">
+      <div class="tc-icon">${ICONS[q.icon]}</div>
+      <h3>${q.title}</h3>
+      <p>${q.desc}</p>
+      <button class="tc-action" type="button">Read guide${ICONS.externalLink}</button>
+    </div>
+  `).join("");
+
+  const faqs = [
+    { q: "How do I schedule a moment to send later?", a: "Open the moment editor, personalize your message, and choose \u201cSchedule\u201d instead of \u201cSend\u201d on the final step. You can pick any future date and time, and edit or cancel it any time before it goes out." },
+    { q: "Can I use my own images or videos in a card?", a: "Yes \u2014 open any template, click the preview image, and upload your own artwork or a short video clip. We support PNG, JPG, and MP4 up to 50MB." },
+    { q: "Why did a card bounce?", a: "Bounces usually mean the recipient's email address was mistyped or their inbox rejected the message. Check the Recent Card Activity table on your Dashboard for the exact reason next to each bounced send." },
+    { q: "Can teammates see moments I've sent?", a: "Yes, if your workspace has team visibility turned on. Anyone on your team can see aggregate stats on the Team Activity page, though personal message content stays private to the sender and recipient." },
+    { q: "How do I connect Salesforce or Slack?", a: "Head to Settings \u2192 Connected Apps and click Connect next to the tool you'd like to sync. You'll be asked to sign in and authorize access \u2014 it takes about a minute." },
+  ];
+  document.getElementById("faq-list").innerHTML = faqs.map((f, i) => `
+    <details class="faq-item" ${i === 0 ? "open" : ""}>
+      <summary>${f.q}<span class="faq-chevron">${ICONS.chevronDown}</span></summary>
+      <p>${f.a}</p>
+    </details>
+  `).join("");
+
+  document.getElementById("chat-btn").addEventListener("click", () => {
+    alert("Live chat isn't wired up in this prototype yet \u2014 try Email Support instead!");
+  });
+</script>
+</body>
+</html>

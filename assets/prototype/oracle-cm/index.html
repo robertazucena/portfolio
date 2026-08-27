@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Customer Moments</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css?v=2" />
+</head>
+<body>
+
+  <!-- mobile top bar -->
+  <div class="mobile-topbar">
+    <button class="hamburger" id="sidebar-open" aria-label="Open menu"></button>
+    <div class="brand"><div class="logo" id="mobile-logo" style="width:32px;height:32px;border-radius:8px;overflow:hidden;"></div><span class="brand-name">myDash</span></div>
+  </div>
+  <div class="sidebar-backdrop" id="sidebar-backdrop"></div>
+
+  <div class="app">
+    <div id="sidebar-mount"></div>
+
+    <main class="main">
+      <div class="moments-bg">
+        <div class="moments-content">
+
+          <div class="title-row">
+            <div class="title-text">
+              <h1>Customer Moments</h1>
+              <p>Send personalized e-moments or videos to thank and celebrate your customers. Powered by AI.</p>
+            </div>
+            <button class="cta-pill" id="new-moment-cta">Got a moment?</button>
+          </div>
+
+          <div class="toolbar">
+            <div class="search-box">
+              <span class="icon" id="icon-search"></span>
+              <input type="text" placeholder="Search for the right moment by using the filter or keywords. Eg. Thank you" />
+            </div>
+            <button class="chip-btn"><span class="icon" id="icon-layers"></span>All Categories</button>
+            <button class="chip-btn"><span class="icon" id="icon-filter"></span>Most recent</button>
+            <button class="icon-round-btn" id="icon-bookmark" aria-label="Saved moments"></button>
+          </div>
+
+          <div class="moments-grid" id="moments-grid"></div>
+
+          <div class="moments-footer">
+            <span class="f-brand">Customer Moments</span>
+            <span class="f-sep">|</span>
+            <div class="footer-links">
+              <span>About</span><span>Privacy</span><span>Terms</span><span>Contact</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </main>
+  </div>
+
+<script src="transitions.js"></script>
+<script src="icons.js"></script>
+<script src="data.js"></script>
+<script src="nav.js"></script>
+<script>
+  mountSidebar("moments");
+
+  document.getElementById("sidebar-open").innerHTML = ICONS.menu;
+  document.getElementById("mobile-logo").innerHTML = ICONS.logo;
+  document.getElementById("icon-search").innerHTML = ICONS.search;
+  document.getElementById("icon-layers").innerHTML = ICONS.layers;
+  document.getElementById("icon-filter").innerHTML = ICONS.filter;
+  document.getElementById("icon-bookmark").innerHTML = ICONS.bookmarkPlus;
+
+  const grid = document.getElementById("moments-grid");
+  grid.innerHTML = MOMENTS.map((m) => {
+    if (m.type === "video") {
+      return `
+        <a class="moment-card type-video" href="moment.html?id=${m.id}">
+          <div class="card-img">
+            <img src="${m.img}" alt="${m.title}" loading="lazy" />
+            <span class="play-btn">${ICONS.playCircle}</span>
+          </div>
+        </a>`;
+    }
+    return `
+      <a class="moment-card type-simple" href="moment.html?id=${m.id}">
+        <div class="card-img"><img src="${m.img}" alt="${m.title}" loading="lazy" /></div>
+        <div class="card-meta">
+          <p class="m-title">${m.title}</p>
+          <p class="m-sub">E-card</p>
+        </div>
+      </a>`;
+  }).join("");
+
+  document.getElementById("new-moment-cta").addEventListener("click", () => {
+    pageNavigate("moment.html?id=" + MOMENTS[0].id);
+  });
+</script>
+</body>
+</html>

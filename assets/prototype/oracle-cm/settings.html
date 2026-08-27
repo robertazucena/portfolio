@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Settings — Customer Moments</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css?v=2" />
+</head>
+<body>
+
+  <div class="mobile-topbar">
+    <button class="hamburger" id="sidebar-open" aria-label="Open menu"></button>
+    <div class="brand"><div class="logo" id="mobile-logo" style="width:32px;height:32px;border-radius:8px;overflow:hidden;"></div><span class="brand-name">myDash</span></div>
+  </div>
+  <div class="sidebar-backdrop" id="sidebar-backdrop"></div>
+
+  <div class="app">
+    <div id="sidebar-mount"></div>
+
+    <main class="main">
+      <div class="page-bg">
+      <div class="dash-content" style="max-width:820px;">
+
+        <div class="dash-header">
+          <div>
+            <div class="breadcrumbs">
+              <span class="bc-muted">myDash Workspace</span>
+              <span class="bc-sep">/</span>
+              <span class="bc-active">Settings</span>
+            </div>
+            <h1>Settings</h1>
+            <p class="dash-subtitle">Manage your profile, notifications, sender branding, and connected apps.</p>
+          </div>
+        </div>
+
+        <div class="settings-panel">
+          <div class="settings-head"><h2>Profile</h2><p>This information appears on moments you send and across your workspace.</p></div>
+          <div class="settings-profile-row">
+            <div class="settings-avatar"><img src="https://images.unsplash.com/photo-1758691737605-69a0e78bd193?auto=format&fit=crop&w=200&h=200&q=80" alt="Fatima Nguyen" /></div>
+            <div class="settings-avatar-meta">
+              <p class="sa-name">Fatima Nguyen</p>
+              <p class="sa-role">Marketing Ops · myDash Workspace</p>
+              <button type="button">Change photo</button>
+            </div>
+          </div>
+          <div class="settings-grid">
+            <div class="form-group"><label>FULL NAME</label><input class="field-input" type="text" value="Fatima Nguyen" /></div>
+            <div class="form-group"><label>ROLE</label><input class="field-input" type="text" value="Marketing Ops" /></div>
+            <div class="form-group"><label>EMAIL</label><input class="field-input" type="text" value="fatima.nguyen@mydash.com" /></div>
+            <div class="form-group"><label>PHONE</label><input class="field-input" type="text" value="+1 (555) 019-2837" /></div>
+          </div>
+          <div class="form-actions" style="flex-direction:row;gap:12px;margin-top:24px;padding-top:0;">
+            <button class="btn-primary" style="width:auto;padding-left:24px;padding-right:24px;">Save Changes</button>
+          </div>
+        </div>
+
+        <div class="settings-panel">
+          <div class="settings-head"><h2>Notifications</h2><p>Choose what you're notified about, and how often.</p></div>
+          <div id="toggle-list"></div>
+        </div>
+
+        <div class="settings-panel">
+          <div class="settings-head"><h2>Sender Branding</h2><p>Applied by default whenever you personalize a new moment.</p></div>
+          <div class="form-group" style="margin-bottom:20px;">
+            <label>SENDER SIGNATURE</label>
+            <input class="field-input" type="text" value="From your partners at myDash" />
+          </div>
+          <div class="form-group">
+            <label>DEFAULT EMAIL SIGN-OFF</label>
+            <textarea class="field-textarea" style="min-height:90px;">Warm regards,
+Fatima Nguyen
+Marketing Ops, myDash</textarea>
+          </div>
+        </div>
+
+        <div class="settings-panel">
+          <div class="settings-head"><h2>Connected Apps</h2><p>Sync moments and customer data with the tools your team already uses.</p></div>
+          <div id="integrations-list"></div>
+        </div>
+
+        <div class="page-footer">
+          <span class="f-brand">Customer Moments</span>
+          <span class="f-sep">|</span>
+          <div class="footer-links">
+            <span>About</span><span>Privacy</span><span>Terms</span><span>Contact</span>
+          </div>
+        </div>
+
+      </div>
+      </div>
+    </main>
+  </div>
+
+<script src="transitions.js"></script>
+<script src="icons.js"></script>
+<script src="data.js"></script>
+<script src="nav.js"></script>
+<script>
+  mountSidebar("settings");
+  document.getElementById("sidebar-open").innerHTML = ICONS.menu;
+  document.getElementById("mobile-logo").innerHTML = ICONS.logo;
+
+  const toggles = [
+    { title: "Email me when a moment is opened", sub: "Get a real-time alert the moment a recipient views their card.", on: true },
+    { title: "Weekly performance digest", sub: "A Monday-morning summary of everything your team sent last week.", on: true },
+    { title: "Product updates & tips", sub: "Occasional emails about new templates and features.", on: false },
+    { title: "SMS alerts for bounced sends", sub: "Text me immediately if a moment fails to deliver.", on: false },
+  ];
+  document.getElementById("toggle-list").innerHTML = toggles.map((t, i) => `
+    <div class="toggle-row">
+      <div class="toggle-copy">
+        <p class="tr-title">${t.title}</p>
+        <p class="tr-sub">${t.sub}</p>
+      </div>
+      <button class="toggle-switch ${t.on ? "on" : ""}" data-index="${i}" aria-pressed="${t.on}" aria-label="${t.title}"></button>
+    </div>
+  `).join("");
+  document.querySelectorAll(".toggle-switch").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const isOn = btn.classList.toggle("on");
+      btn.setAttribute("aria-pressed", isOn);
+    });
+  });
+
+  const integrations = [
+    { icon: "mail", name: "Salesforce", desc: "Sync customer records and send moments from opportunities.", connected: true },
+    { icon: "messageCircle", name: "Slack", desc: "Get notified in-channel when a moment is opened or clicked.", connected: true },
+    { icon: "calendar", name: "Outlook", desc: "Trigger moments from calendar milestones and renewal dates.", connected: false },
+    { icon: "layers", name: "Google Calendar", desc: "Keep DemGen and marketing events in sync automatically.", connected: false },
+  ];
+  document.getElementById("integrations-list").innerHTML = integrations.map((a) => `
+    <div class="integration-row">
+      <div class="integration-icon">${ICONS[a.icon]}</div>
+      <div class="integration-meta">
+        <p class="im-name">${a.name}</p>
+        <p class="im-status ${a.connected ? "connected" : "disconnected"}">${a.connected ? ICONS.check + "Connected" : "Not connected"}</p>
+      </div>
+      <button class="integration-btn ${a.connected ? "connected" : ""}" type="button">${a.connected ? "Disconnect" : "Connect"}</button>
+    </div>
+  `).join("");
+</script>
+</body>
+</html>

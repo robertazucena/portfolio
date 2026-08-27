@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Moment Editor — Customer Moments</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css?v=2" />
+</head>
+<body>
+
+  <div class="mobile-topbar">
+    <button class="hamburger" id="sidebar-open" aria-label="Open menu"></button>
+    <div class="brand"><div class="logo" id="mobile-logo" style="width:32px;height:32px;border-radius:8px;overflow:hidden;"></div><span class="brand-name">myDash</span></div>
+  </div>
+  <div class="sidebar-backdrop" id="sidebar-backdrop"></div>
+
+  <div class="app">
+    <div id="sidebar-mount"></div>
+
+    <main class="main">
+      <div class="editor-content">
+        <div class="editor-inner">
+
+          <div class="editor-title-row">
+            <div>
+              <div class="editor-breadcrumbs">
+                <a class="back-btn" href="index.html"><span id="ic-back"></span>Back to Gallery</a>
+                <span class="bc-tail">/ Customizing Template</span>
+              </div>
+              <h1 id="moment-title">Diwali Celebration E-Card</h1>
+            </div>
+            <div class="steps-indicator">
+              <span class="step on" id="step1">1. Personalize</span>
+              <span class="step-line"></span>
+              <span class="step off" id="step2">2. Preview &amp; Send</span>
+            </div>
+          </div>
+
+          <div class="editor-workspace">
+            <div class="preview-column">
+              <div class="preview-head">
+                <p>Interactive Template Preview</p>
+                <span class="badge-special" id="moment-badge">DIWALI SPECIAL</span>
+              </div>
+              <div class="card-art" id="card-art">
+                <img id="art-img" src="" alt="" />
+                <span class="art-play" id="art-play" style="display:none;"></span>
+                <div class="text-overlay">
+                  <p class="to-title" id="ov-title"></p>
+                  <p class="to-msg" id="ov-msg"></p>
+                  <hr />
+                  <p class="to-sig" id="ov-sig">From your partners at myDash</p>
+                </div>
+              </div>
+              <div class="tips-box">
+                <span id="ic-lightbulb"></span>
+                <p>Personalize the greeting with customer-specific highlights like project names or joint wins to increase response rates by 42%.</p>
+              </div>
+            </div>
+
+            <div class="form-column">
+              <h2>Personalize Moment</h2>
+
+              <div class="form-group">
+                <label>RECIPIENT NAME</label>
+                <input class="field-input" id="in-name" type="text" value="Jordan Doe" />
+              </div>
+
+              <div class="form-group">
+                <label>RECIPIENT EMAIL / PHONE</label>
+                <input class="field-input" id="in-email" type="text" value="jordan.doe@acme-corp.com" />
+              </div>
+
+              <div class="form-group">
+                <div class="label-row">
+                  <label>PERSONAL MESSAGE</label>
+                  <button class="ai-action" id="ai-rewrite" type="button"><span id="ic-sparkles"></span>Rewrite with AI</button>
+                </div>
+                <textarea class="field-textarea" id="in-message"></textarea>
+              </div>
+
+              <div class="form-group">
+                <label>SENDER SIGNATURE</label>
+                <input class="field-input" id="in-signature" type="text" value="From your partners at myDash" />
+              </div>
+
+              <hr class="form-divider" />
+
+              <div class="form-actions">
+                <button class="btn-primary" id="next-btn">Next: Preview E-Card</button>
+                <button class="btn-secondary" id="save-btn">Save Draft</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="editor-footer">
+            <span class="f-brand" style="font-weight:700;">Customer Moments</span>
+            <span class="f-sep" style="opacity:.4;">|</span>
+            <div class="footer-links" style="display:flex;gap:18px;">
+              <span style="opacity:.7;">About</span><span style="opacity:.7;">Privacy</span><span style="opacity:.7;">Terms</span><span style="opacity:.7;">Contact</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </main>
+  </div>
+
+<script src="transitions.js"></script>
+<script src="icons.js"></script>
+<script src="data.js"></script>
+<script src="nav.js"></script>
+<script>
+  mountSidebar("moments");
+  document.getElementById("sidebar-open").innerHTML = ICONS.menu;
+  document.getElementById("mobile-logo").innerHTML = ICONS.logo;
+  document.getElementById("ic-back").innerHTML = ICONS.arrowLeft;
+  document.getElementById("ic-lightbulb").innerHTML = ICONS.lightbulb;
+  document.getElementById("ic-sparkles").innerHTML = ICONS.sparkles;
+
+  const params = new URLSearchParams(window.location.search);
+  const id = params.get("id") || "2";
+  const moment = getMomentById(id) || MOMENTS[0];
+
+  document.title = moment.title + " — Customer Moments";
+  document.getElementById("moment-title").textContent = moment.title;
+  document.getElementById("moment-badge").textContent = moment.badge;
+  document.getElementById("art-img").src = moment.art || moment.img;
+  document.getElementById("art-img").alt = moment.title;
+  document.getElementById("ov-title").textContent = moment.heading;
+  document.getElementById("ov-msg").textContent = moment.message;
+  document.getElementById("in-message").value = moment.message.replace(/[\u201c\u201d]/g, "");
+
+  if (moment.type === "video") {
+    document.getElementById("art-play").style.display = "flex";
+    document.getElementById("art-play").innerHTML = ICONS.playCircle;
+    document.getElementById("next-btn").textContent = "Next: Preview & Send Video";
+  }
+
+  document.getElementById("in-name").addEventListener("input", (e) => {
+    const first = e.target.value.trim().split(" ")[0] || "there";
+    document.getElementById("ov-title").textContent = moment.heading.replace(/Jordan/g, first);
+  });
+  document.getElementById("in-message").addEventListener("input", (e) => {
+    document.getElementById("ov-msg").textContent = e.target.value;
+  });
+  document.getElementById("in-signature").addEventListener("input", (e) => {
+    document.getElementById("ov-sig").textContent = e.target.value;
+  });
+
+  document.getElementById("ai-rewrite").addEventListener("click", () => {
+    const ta = document.getElementById("in-message");
+    ta.value = "What a joy it's been working alongside you and your team, Jordan — here's to celebrating this moment together!";
+    ta.dispatchEvent(new Event("input"));
+  });
+
+  document.getElementById("step2").addEventListener("click", () => {
+    document.getElementById("step1").classList.remove("on");
+    document.getElementById("step1").classList.add("off");
+    document.getElementById("step2").classList.remove("off");
+    document.getElementById("step2").classList.add("on");
+  });
+
+  document.getElementById("next-btn").addEventListener("click", () => {
+    document.getElementById("step2").click();
+  });
+</script>
+</body>
+</html>

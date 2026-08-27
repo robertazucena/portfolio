@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Team Activity — Customer Moments</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css?v=2" />
+</head>
+<body>
+
+  <div class="mobile-topbar">
+    <button class="hamburger" id="sidebar-open" aria-label="Open menu"></button>
+    <div class="brand"><div class="logo" id="mobile-logo" style="width:32px;height:32px;border-radius:8px;overflow:hidden;"></div><span class="brand-name">myDash</span></div>
+  </div>
+  <div class="sidebar-backdrop" id="sidebar-backdrop"></div>
+
+  <div class="app">
+    <div id="sidebar-mount"></div>
+
+    <main class="main">
+      <div class="page-bg">
+      <div class="dash-content">
+
+        <div class="dash-header">
+          <div>
+            <div class="breadcrumbs">
+              <span class="bc-muted">myDash Workspace</span>
+              <span class="bc-sep">/</span>
+              <span class="bc-active">Team Activity</span>
+            </div>
+            <h1>Team Activity</h1>
+            <p class="dash-subtitle">See how your team is connecting with customers through personalized moments.</p>
+          </div>
+          <div class="dash-filters">
+            <div class="filter-dd">This Month <span id="ic-chev1"></span></div>
+            <button class="primary-cta" id="invite-btn"><span id="ic-userplus"></span>Invite Teammate</button>
+          </div>
+        </div>
+
+        <div class="stats-row">
+          <div class="kpi-card">
+            <div class="kpi-head"><p>Active Members</p><span class="kpi-icon" id="ic-users"></span></div>
+            <p class="kpi-value">18</p>
+            <div class="kpi-trend"><span class="trend-badge">+2</span><span class="vs">new this month</span></div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-head"><p>Moments Sent</p><span class="kpi-icon" id="ic-mail"></span></div>
+            <p class="kpi-value">1,240</p>
+            <div class="kpi-trend"><span class="trend-badge">+9%</span><span class="vs">vs last month</span></div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-head"><p>Team Response Rate</p><span class="kpi-icon" id="ic-trend"></span></div>
+            <p class="kpi-value">91%</p>
+            <div class="kpi-trend"><span class="trend-badge">+3%</span><span class="vs">vs last month</span></div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-head"><p>Avg Moments / Member</p><span class="kpi-icon" id="ic-award"></span></div>
+            <p class="kpi-value">68.9</p>
+            <div class="kpi-trend"><span class="trend-badge">+5%</span><span class="vs">vs last month</span></div>
+          </div>
+        </div>
+
+        <div class="recent-activity">
+          <div class="ra-head">
+            <div>
+              <h2>Team Leaderboard</h2>
+              <p>Ranked by moments sent this month</p>
+            </div>
+            <a class="view-all" href="#">View Full Team</a>
+          </div>
+          <table class="activity-table">
+            <thead>
+              <tr><th>Rank</th><th>Member</th><th>Moments Sent</th><th>Open Rate</th><th style="text-align:right;">Last Active</th></tr>
+            </thead>
+            <tbody id="leaderboard-body"></tbody>
+          </table>
+        </div>
+
+        <div class="panel">
+          <h2>Recent Team Activity</h2>
+          <p class="panel-sub">Live stream of moments sent across your workspace</p>
+          <div class="activity-feed" id="activity-feed"></div>
+        </div>
+
+        <div class="page-footer">
+          <span class="f-brand">Customer Moments</span>
+          <span class="f-sep">|</span>
+          <div class="footer-links">
+            <span>About</span><span>Privacy</span><span>Terms</span><span>Contact</span>
+          </div>
+        </div>
+
+      </div>
+      </div>
+    </main>
+  </div>
+
+<script src="transitions.js"></script>
+<script src="icons.js"></script>
+<script src="data.js"></script>
+<script src="nav.js"></script>
+<script>
+  mountSidebar("team");
+  document.getElementById("sidebar-open").innerHTML = ICONS.menu;
+  document.getElementById("mobile-logo").innerHTML = ICONS.logo;
+  document.getElementById("ic-chev1").innerHTML = ICONS.chevronDown;
+  document.getElementById("ic-userplus").innerHTML = ICONS.userPlus;
+  document.getElementById("ic-users").innerHTML = ICONS.users;
+  document.getElementById("ic-mail").innerHTML = ICONS.mail;
+  document.getElementById("ic-trend").innerHTML = ICONS.trendingUp;
+  document.getElementById("ic-award").innerHTML = ICONS.award;
+
+  const FN_AVATAR = "https://images.unsplash.com/photo-1758691737605-69a0e78bd193?auto=format&fit=crop&w=80&h=80&q=80";
+
+  const leaderboard = [
+    { name: "Fatima Nguyen", you: true, role: "Marketing Ops", sent: 214, open: "94%", active: "Just now", avatar: FN_AVATAR },
+    { name: "Sarah Jenkins", role: "Customer Success", sent: 198, open: "91%", active: "12 min ago" },
+    { name: "Priya Shah", role: "Sales Enablement", sent: 176, open: "89%", active: "1 hour ago" },
+    { name: "Marcus Lee", role: "Account Management", sent: 152, open: "88%", active: "3 hours ago" },
+    { name: "Alex Chen", role: "Marketing Ops", sent: 121, open: "85%", active: "Yesterday" },
+    { name: "David Vance", role: "Sales", sent: 98, open: "82%", active: "2 days ago" },
+  ];
+  const initials = (n) => n.split(" ").map((p) => p[0]).join("").slice(0, 2).toUpperCase();
+  document.getElementById("leaderboard-body").innerHTML = leaderboard.map((m, i) => `
+    <tr>
+      <td><span class="rank-pill ${i === 0 ? "top" : ""}">${i + 1}</span></td>
+      <td>
+        <div class="member-cell">
+          <div class="member-avatar">${m.avatar ? `<img src="${m.avatar}" alt="${m.name}" />` : initials(m.name)}</div>
+          <div>
+            <div style="font-weight:600;color:var(--ink);${m.you ? "color:var(--green);" : ""}">${m.name}${m.you ? " (You)" : ""}</div>
+            <div style="font-size:12px;color:var(--muted-2);">${m.role}</div>
+          </div>
+        </div>
+      </td>
+      <td>${m.sent}</td>
+      <td>${m.open}</td>
+      <td style="text-align:right;">${m.active}</td>
+    </tr>
+  `).join("");
+
+  const feed = [
+    { icon: "heart", text: `<b>Sarah Jenkins</b> sent a Team Welcome E-Card to <b>Priya Anand</b>`, time: "12 minutes ago" },
+    { icon: "eye", text: `<b>Jordan Doe</b> opened the Diwali Celebration E-Card from Fatima Nguyen`, time: "48 minutes ago" },
+    { icon: "heart", text: `<b>Marcus Lee</b> sent a Milestone Anniversary video to <b>Alex Mercer</b>`, time: "1 hour ago" },
+    { icon: "trendingUp", text: `<b>Priya Shah</b> hit a 96% open rate on this week's sends`, time: "3 hours ago" },
+    { icon: "heart", text: `<b>Fatima Nguyen</b> scheduled 8 Happy Easter cards for next week`, time: "Yesterday" },
+    { icon: "userPlus", text: `<b>Alex Chen</b> joined the workspace`, time: "2 days ago" },
+  ];
+  document.getElementById("activity-feed").innerHTML = feed.map((f) => `
+    <div class="feed-item">
+      <div class="feed-icon">${ICONS[f.icon]}</div>
+      <div class="feed-body">
+        <p class="feed-text">${f.text}</p>
+        <p class="feed-time">${f.time}</p>
+      </div>
+    </div>
+  `).join("");
+</script>
+</body>
+</html>
