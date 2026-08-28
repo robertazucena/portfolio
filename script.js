@@ -1345,6 +1345,14 @@ const CHANGI_IMG = {
 
 const CV_PDF = 'assets/files/Robert_Azucena_CV.pdf';
 
+const CUSTOMER_MOMENTS_IMG = {
+  browse:'assets/images/customer-moments/browse.jpg',
+  dashboard:'assets/images/customer-moments/dashboard.jpg',
+  team:'assets/images/customer-moments/team.jpg',
+  settings:'assets/images/customer-moments/settings.jpg',
+  mobile:'assets/images/customer-moments/mobile.jpg',
+};
+
 const WHATSAPP_NUMBER = '6589275688';
 const WHATSAPP_MESSAGE = "Hi Robert! I found your portfolio and wanted to connect.";
 const WHATSAPP_LINK = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(WHATSAPP_MESSAGE)}`;
@@ -1432,14 +1440,13 @@ const projects = {
     gallery:'great-eastern',
     detail:"This web app is an AI-powered insurance claims management dashboard that centralizes claim intake, review, and resolution workflows. It provides real-time insights into claim volumes, processing status, and AI-assisted outcomes, enabling claims teams to prioritize cases and improve operational efficiency. The interface also includes a submission queue for tracking claim progress and streamlining case management."
   },
-  'courtly':{
+  courtly:{
     name:'Courtly', slug:'courtly', category:'Product Design · Sports Court Booking',
     accent:'#22c07a', icon:'🏀', folderBg:'linear-gradient(150deg,#34d399,#0f9d63)',
     lead:'Your all-in-one platform for sports court bookings.',
     role:'Lead Product Designer', timeline:'Shipped — 2025',
     tools:['Product Design','Design System','Prototypes'],
     metaLabels:{role:'Role', timeline:'Status', tools:'Deliverables'},
-    prototypeUrl:'https://robertazucena.com/assets/prototype/courtly/index.html',
     gallery:'courtly',
     detail:"Courtly is a modern sports court booking platform that helps users discover nearby venues, reserve courts, and manage their bookings in one place. The dashboard provides personalized recommendations, upcoming schedules, booking history, and activity streaks to encourage regular play. With a clean, intuitive interface, users can quickly find courts, join community matches, and stay active."
   },
@@ -1510,6 +1517,17 @@ const projects = {
     prototypeUrl:'https://robertazucena.com/assets/prototype/grab/index.html',
     gallery:'grab',
     detail:"The Grab employee portal features a clean, modern, and user-friendly interface that prioritizes accessibility and efficiency. Its card-based layout organizes personalized tasks, announcements, company news, and workplace resources into clear, easy-to-navigate sections. Combined with Grab's signature green branding and intuitive navigation, the design creates a seamless experience that helps employees stay informed, productive, and connected."
+  },
+  'customer-moments':{
+    name:'Customer Moments', slug:'customer-moments', category:'Systems Design · Customer Engagement',
+    accent:'#ff6b4a', icon:'💌', folderBg:'linear-gradient(150deg,#ff8a5c,#c1391f)',
+    lead:'A clean, modern, and visually engaging design that makes it easy for employees to discover and share personalized customer content.',
+    role:'Lead Designer', timeline:'In deployment — 2025',
+    tools:['UX Framework','UI Design','Research'],
+    metaLabels:{role:'Role', timeline:'Status', tools:'Deliverables'},
+    prototypeUrl:'https://robertazucena.com/assets/prototype/oracle-cm/index.html',
+    gallery:'customer-moments',
+    detail:"Customer Moments is an internal Oracle platform that gives employees an easy way to recognize and celebrate one another — from a quick \"job well done\" or congratulations, to birthdays and other meaningful milestones. It's designed to reach across the whole organization, so appreciation flows freely between peers and up to executives alike, not just top-down.<br><br>The card-based layout showcases e-cards and videos with intuitive search, filtering, and category options for quick navigation. Combined with Oracle's minimalist styling, consistent branding, and clear information hierarchy, the interface delivers a seamless and efficient user experience."
   }
 };
 
@@ -1563,6 +1581,23 @@ renderFinderPane(isMobile() ? 'projects' : 'about');
 /* ---------------- Project overlay ---------------- */
 function galleryHTML(p){
   const t = (icon,label,grad)=>`<div class="placeholder-tile" style="background:${grad};"><span class="icon">${icon}</span><span class="label">${label}</span></div>`;
+  if(p.gallery==='customer-moments'){
+    return `<div class="gallery g1">
+      <div class="shot-tile wide"><img src="${CUSTOMER_MOMENTS_IMG.browse}" alt="Customer Moments browse page — e-card and video templates for holidays, milestones, and appreciation moments" loading="lazy"></div>
+    </div>
+    <div class="gallery g1" style="margin-top:16px;">
+      <div class="shot-tile wide"><img src="${CUSTOMER_MOMENTS_IMG.dashboard}" alt="Customer Moments dashboard — cards sent, open rate, delivery funnel, and send volume trends" loading="lazy"></div>
+    </div>
+    <div class="gallery g1" style="margin-top:16px;">
+      <div class="shot-tile wide"><img src="${CUSTOMER_MOMENTS_IMG.team}" alt="Customer Moments team activity — leaderboard and live stream of moments sent across the workspace" loading="lazy"></div>
+    </div>
+    <div class="gallery g1" style="margin-top:16px;">
+      <div class="shot-tile wide"><img src="${CUSTOMER_MOMENTS_IMG.settings}" alt="Customer Moments settings — profile, notifications, sender branding, and connected apps" loading="lazy"></div>
+    </div>
+    <div class="gallery g1" style="margin-top:16px;">
+      <div class="shot-tile wide"><img src="${CUSTOMER_MOMENTS_IMG.mobile}" alt="Customer Moments mobile flow — browse moments, delivery funnel analytics, report templates, and team leaderboard" loading="lazy"></div>
+    </div>`;
+  }
   if(p.gallery==='phones'){
     return `<div class="gallery g2">
       ${t('📱','Home feed — placeholder','linear-gradient(160deg,rgba(255,122,69,.25),rgba(255,95,109,.12))')}
