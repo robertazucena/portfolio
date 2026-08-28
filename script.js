@@ -1447,6 +1447,7 @@ const projects = {
     role:'Lead Product Designer', timeline:'Shipped — 2025',
     tools:['Product Design','Design System','Prototypes'],
     metaLabels:{role:'Role', timeline:'Status', tools:'Deliverables'},
+    prototypeUrl:'https://robertazucena.com/assets/prototype/courtly/index.html',
     gallery:'courtly',
     detail:"Courtly is a modern sports court booking platform that helps users discover nearby venues, reserve courts, and manage their bookings in one place. The dashboard provides personalized recommendations, upcoming schedules, booking history, and activity streaks to encourage regular play. With a clean, intuitive interface, users can quickly find courts, join community matches, and stay active."
   },
@@ -1530,6 +1531,32 @@ const projects = {
     detail:"Customer Moments is an internal Oracle platform that gives employees an easy way to recognize and celebrate one another — from a quick \"job well done\" or congratulations, to birthdays and other meaningful milestones. It's designed to reach across the whole organization, so appreciation flows freely between peers and up to executives alike, not just top-down.<br><br>The card-based layout showcases e-cards and videos with intuitive search, filtering, and category options for quick navigation. Combined with Oracle's minimalist styling, consistent branding, and clear information hierarchy, the interface delivers a seamless and efficient user experience."
   }
 };
+
+/* Curated order for Prev/Next case-study navigation — deliberately not
+   alphabetical or by date, but arranged to show range: alternating
+   high-profile enterprise/AI work with consumer/lifestyle projects,
+   opening and closing on strong notes. Edit this array to reorder. */
+const PROJECT_ORDER = [
+  'oracle-ad',
+  'courtly',
+  'great-eastern',
+  'steady',
+  'grab',
+  'oracle-egen',
+  'mufg',
+  'customer-moments',
+  'changi'
+];
+function getPrevNextProjects(slug){
+  const idx = PROJECT_ORDER.indexOf(slug);
+  if(idx === -1) return null;
+  const prevSlug = PROJECT_ORDER[(idx - 1 + PROJECT_ORDER.length) % PROJECT_ORDER.length];
+  const nextSlug = PROJECT_ORDER[(idx + 1) % PROJECT_ORDER.length];
+  return {
+    prev: {slug: prevSlug, name: projects[prevSlug].name},
+    next: {slug: nextSlug, name: projects[nextSlug].name}
+  };
+}
 
 function renderFinderPane(pane){
   const c = document.getElementById('finder-content');
@@ -1766,22 +1793,10 @@ function unlockBodyScroll(){
   window.scrollTo(0, projectScrollY);
 }
 
-function openProject(slug){
+function openProject(slug, direction){
   const p = projects[slug];
   if(!p) return;
   if(isMobile()) lockBodyScroll();
-  document.getElementById('proj-body').className = 'proj-body' + (slug==='courtly' ? ' proj-courtly' : '');
-  document.getElementById('proj-url').textContent = `🔒 featured-work/${p.slug}`;
-  document.getElementById('proj-wtitle').innerHTML = `${p.name} <span class="app">Safari</span>`;
-  const prototypePill = document.getElementById('proj-prototype-pill');
-  if(prototypePill){
-    if(p.prototypeUrl){
-      prototypePill.href = p.prototypeUrl;
-      prototypePill.style.display = 'inline-flex';
-    } else {
-      prototypePill.style.display = 'none';
-    }
-  }
   const labels = p.metaLabels || {role:'Role', timeline:'Timeline', tools:'Tools'};
   const extra = p.gallery==='brand' ? `
     <div class="section">
@@ -1925,7 +1940,40 @@ function openProject(slug){
     <div class="stat-row">
       ${p.stats.map(s=>`<div class="stat-card"><b style="color:${p.accent};">${s[0]}</b><span>${s[1]}</span></div>`).join('')}
     </div>` : '';
-  document.getElementById('proj-body').innerHTML = `
+
+  const nav = getPrevNextProjects(slug);
+  const prevNextHTML = nav ? `
+    <div class="proj-prevnext">
+      <a class="proj-prevnext-link prev" href="#" data-nav-project="${nav.prev.slug}" data-nav-dir="prev">
+        <span class="dir-label">← Previous</span>
+        <span class="proj-name">${nav.prev.name}</span>
+      </a>
+      <a class="proj-prevnext-link next" href="#" data-nav-project="${nav.next.slug}" data-nav-dir="next">
+        <span class="dir-label">Next →</span>
+        <span class="proj-name">${nav.next.name}</span>
+      </a>
+    </div>` : '';
+
+  const bodyEl = document.getElementById('proj-body');
+  const windowEl = document.querySelector('.proj-window');
+
+  function applyChrome(){
+    bodyEl.className = 'proj-body' + (slug==='courtly' ? ' proj-courtly' : '');
+    document.getElementById('proj-url').textContent = `🔒 featured-work/${p.slug}`;
+    document.getElementById('proj-wtitle').innerHTML = `${p.name} <span class="app">Safari</span>`;
+    const prototypePill = document.getElementById('proj-prototype-pill');
+    if(prototypePill){
+      if(p.prototypeUrl){
+        prototypePill.href = p.prototypeUrl;
+        prototypePill.style.display = 'inline-flex';
+      } else {
+        prototypePill.style.display = 'none';
+      }
+    }
+  }
+
+  function renderBody(){
+    bodyEl.innerHTML = `
     <div class="back-btn" id="proj-back">← Back to desktop</div>
     <div class="proj-hero-eyebrow" style="color:${p.accent};">${p.category}</div>
     <h1>${p.pageTitle || p.name}</h1>
@@ -1942,15 +1990,43 @@ function openProject(slug){
     ${galleryHTML(p)}
     ${statRow}
     ${extra}
+    ${prevNextHTML}
   `;
-  document.getElementById('proj-back').addEventListener('click', closeProject);
-  document.getElementById('project-overlay').classList.add('open');
-  initShotPreloaders();
-  const bodyEl = document.getElementById('proj-body');
-  bodyEl.scrollTop = 0; /* always land on the top of the case study, even when switching straight from another project */
-  bodyEl.classList.remove('proj-anim-in');
-  void bodyEl.offsetWidth; /* force reflow so the entrance animation replays every open */
-  bodyEl.classList.add('proj-anim-in');
+    document.getElementById('proj-back').addEventListener('click', closeProject);
+    bodyEl.querySelectorAll('.proj-prevnext-link').forEach(link=>{
+      link.addEventListener('click', (e)=>{
+        e.preventDefault();
+        openProject(link.dataset.navProject, link.dataset.navDir);
+      });
+    });
+    document.getElementById('project-overlay').classList.add('open');
+    initShotPreloaders();
+  }
+
+  if((direction === 'next' || direction === 'prev') && windowEl){
+    /* directional slide, TikTok-style: the whole browser window (title
+       bar, URL bar, prototype button, and body) moves together as one
+       card — Next exits/enters upward, Previous exits/enters downward */
+    const outClass = direction === 'next' ? 'proj-slide-out-up' : 'proj-slide-out-down';
+    const inClass = direction === 'next' ? 'proj-slide-in-up' : 'proj-slide-in-down';
+    windowEl.classList.remove('proj-slide-in-up', 'proj-slide-in-down');
+    windowEl.classList.add(outClass);
+    setTimeout(()=>{
+      windowEl.classList.remove(outClass);
+      applyChrome();
+      renderBody();
+      bodyEl.scrollTop = 0;
+      windowEl.classList.add(inClass);
+      setTimeout(()=>{ windowEl.classList.remove(inClass); }, 420);
+    }, 260);
+  } else {
+    applyChrome();
+    renderBody();
+    bodyEl.scrollTop = 0; /* always land on the top of the case study, even when switching straight from another project */
+    bodyEl.classList.remove('proj-anim-in');
+    void bodyEl.offsetWidth; /* force reflow so the entrance animation replays every open */
+    bodyEl.classList.add('proj-anim-in');
+  }
 }
 function initShotPreloaders(){
   document.querySelectorAll('#proj-body .shot-tile img').forEach(img=>{

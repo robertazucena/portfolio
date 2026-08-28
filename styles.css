@@ -734,6 +734,44 @@ body.no-webgl #desktop{
 @media (prefers-reduced-motion: reduce){
   .proj-body.proj-anim-in{ animation:none; }
 }
+
+/* Prev/Next case-study navigation: TikTok-style directional slide —
+   Next exits/enters upward, Previous exits/enters downward */
+@keyframes proj-slide-out-up{ to{ opacity:0; transform:translateY(-40px); } }
+@keyframes proj-slide-out-down{ to{ opacity:0; transform:translateY(40px); } }
+@keyframes proj-slide-in-up{ from{ opacity:0; transform:translateY(40px); } to{ opacity:1; transform:translateY(0); } }
+@keyframes proj-slide-in-down{ from{ opacity:0; transform:translateY(-40px); } to{ opacity:1; transform:translateY(0); } }
+.proj-window.proj-slide-out-up{ animation:proj-slide-out-up .26s cubic-bezier(.4,0,1,1) both; }
+.proj-window.proj-slide-out-down{ animation:proj-slide-out-down .26s cubic-bezier(.4,0,1,1) both; }
+.proj-window.proj-slide-in-up{ animation:proj-slide-in-up .4s cubic-bezier(.22,.9,.32,1) both; }
+.proj-window.proj-slide-in-down{ animation:proj-slide-in-down .4s cubic-bezier(.22,.9,.32,1) both; }
+@media (prefers-reduced-motion: reduce){
+  .proj-window.proj-slide-out-up, .proj-window.proj-slide-out-down,
+  .proj-window.proj-slide-in-up, .proj-window.proj-slide-in-down{ animation:none; }
+}
+
+.proj-prevnext{
+  display:flex; align-items:stretch; margin-top:48px;
+  border-top:1px solid var(--border-soft);
+}
+.proj-prevnext-link{
+  flex:1; padding:28px 32px; text-decoration:none; color:var(--text-hi);
+  display:flex; flex-direction:column; gap:6px; cursor:pointer;
+  transition:background-color .15s ease;
+}
+.proj-prevnext-link:hover{ background:rgba(var(--on-surface),0.03); }
+.proj-prevnext-link.prev{ text-align:left; border-right:1px solid var(--border-soft); }
+.proj-prevnext-link.next{ text-align:right; align-items:flex-end; }
+.proj-prevnext-link .dir-label{
+  font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--text-low); font-weight:700;
+  display:flex; align-items:center; gap:6px;
+}
+.proj-prevnext-link.next .dir-label{ flex-direction:row-reverse; }
+.proj-prevnext-link .proj-name{ font-size:19px; font-weight:700; }
+@media (max-width:760px){
+  .proj-prevnext-link{ padding:20px; }
+  .proj-prevnext-link .proj-name{ font-size:16px; }
+}
 .back-btn{
   display:inline-flex; align-items:center; gap:6px; font-size:12.5px; color:var(--text-mid);
   background:rgba(var(--on-surface),0.05); border:1px solid var(--border); padding:7px 13px; border-radius:8px; cursor:pointer; margin-bottom:26px;
