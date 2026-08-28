@@ -1346,11 +1346,11 @@ const CHANGI_IMG = {
 const CV_PDF = 'assets/files/Robert_Azucena_CV.pdf';
 
 const CUSTOMER_MOMENTS_IMG = {
-  browse:'assets/images/customer-moments/browse.jpg',
-  dashboard:'assets/images/customer-moments/dashboard.jpg',
-  team:'assets/images/customer-moments/team.jpg',
-  settings:'assets/images/customer-moments/settings.jpg',
-  mobile:'assets/images/customer-moments/mobile.jpg',
+  browse:'assets/images/cm/browse.jpg',
+  dashboard:'assets/images/cm/dashboard.jpg',
+  team:'assets/images/cm/team.jpg',
+  settings:'assets/images/cm/settings.jpg',
+  mobile:'assets/images/cm/mobile.jpg',
 };
 
 const WHATSAPP_NUMBER = '6589275688';
