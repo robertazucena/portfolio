@@ -19,6 +19,7 @@ function renderSidebar(activeSection) {
             <div class="logo">${ICONS.logo}</div>
             <span class="brand-name">myDash</span>
           </div>
+          <button class="sidebar-close-btn" id="sidebar-close" aria-label="Close menu">${ICONS.x}</button>
         </div>
 
         <a class="profile-row" href="settings.html">
@@ -100,6 +101,7 @@ function mountSidebar(activeSection) {
 
   const sidebar = document.getElementById("sidebar");
   const openBtn = document.getElementById("sidebar-open");
+  const closeBtn = document.getElementById("sidebar-close");
   const backdrop = document.getElementById("sidebar-backdrop");
   const collapseBtn = document.getElementById("collapse-btn");
 
@@ -112,6 +114,7 @@ function mountSidebar(activeSection) {
     backdrop.classList.remove("open");
   }
   if (openBtn) openBtn.addEventListener("click", open);
+  if (closeBtn) closeBtn.addEventListener("click", close);
   if (backdrop) backdrop.addEventListener("click", close);
   sidebar.querySelectorAll("a.nav-item").forEach((a) => a.addEventListener("click", close));
 
