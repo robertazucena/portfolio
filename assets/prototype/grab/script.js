@@ -75,3 +75,56 @@ function gpShiftDial(delta){
     a.addEventListener('click', function(){ menu.classList.remove('is-open'); });
   });
 })();
+
+// Tools page (tools.html only): chip category filter + live text search over
+// the tool cards. Guarded on gpToolChips so it's a no-op on every other page.
+(function(){
+  var chipRow = document.getElementById('gpToolChips');
+  var searchInput = document.getElementById('gpToolSearchInput');
+  var sections = document.querySelectorAll('.gp-tool-section');
+  var emptyState = document.getElementById('gpToolEmpty');
+  if (!chipRow || !sections.length) return;
+
+  var activeCategory = 'All';
+
+  function applyFilters(){
+    var query = (searchInput && searchInput.value || '').trim().toLowerCase();
+    var anyVisible = false;
+
+    sections.forEach(function(section){
+      var category = section.getAttribute('data-category');
+      var categoryMatches = activeCategory === 'All' || activeCategory === category;
+      var cards = section.querySelectorAll('.gp-tool-card');
+      var visibleInSection = 0;
+
+      cards.forEach(function(card){
+        var title = card.querySelector('.gp-tool-card__title');
+        var desc = card.querySelector('.gp-tool-card__desc');
+        var text = ((title ? title.textContent : '') + ' ' + (desc ? desc.textContent : '')).toLowerCase();
+        var textMatches = !query || text.indexOf(query) !== -1;
+        var show = categoryMatches && textMatches;
+        card.style.display = show ? '' : 'none';
+        if (show) visibleInSection++;
+      });
+
+      var showSection = visibleInSection > 0;
+      section.style.display = showSection ? '' : 'none';
+      if (showSection) anyVisible = true;
+    });
+
+    if (emptyState) emptyState.classList.toggle('is-visible', !anyVisible);
+  }
+
+  chipRow.addEventListener('click', function(e){
+    var chip = e.target.closest('.gp-tool-chip');
+    if (!chip) return;
+    chipRow.querySelectorAll('.gp-tool-chip').forEach(function(c){ c.classList.remove('is-active'); });
+    chip.classList.add('is-active');
+    activeCategory = chip.textContent.trim();
+    applyFilters();
+  });
+
+  if (searchInput){
+    searchInput.addEventListener('input', applyFilters);
+  }
+})();

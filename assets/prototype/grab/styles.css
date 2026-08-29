@@ -535,3 +535,51 @@ body{background:#fcfcfc;color:var(--ink);font-family:var(--font-body);font-size:
 /* app-shared .gp-footer is flush against the last section on other pages;
    resources.html needs extra breathing room above it. */
 .gp-footer{margin-top:64px}
+
+/* ----- tools page (tools.html) ----- */
+.gp-tool-hero{padding:48px 0 0}
+.gp-tool-hero__sub{color:var(--slate);font-size:15px;max-width:640px;margin-top:10px}
+.gp-tool-search{display:flex;align-items:center;gap:12px;border:1px solid var(--line);border-radius:12px;
+  padding:14px 18px;margin-top:24px;max-width:520px;background:var(--paper)}
+.gp-tool-search svg{width:18px;height:18px;color:var(--slate);flex-shrink:0}
+.gp-tool-search input{border:none;outline:none;flex:1;font-size:14px;font-family:inherit;background:transparent;color:var(--ink)}
+.gp-tool-search input::placeholder{color:var(--slate-soft)}
+.gp-tool-chips{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}
+.gp-tool-chip{padding:8px 16px;border-radius:999px;font-size:13px;font-weight:600;border:1px solid var(--line);
+  color:var(--slate);cursor:pointer;background:var(--paper);transition:background .15s ease,color .15s ease,border-color .15s ease}
+.gp-tool-chip.is-active{background:var(--grab-green);border-color:var(--grab-green);color:#fff}
+.gp-tool-chip:hover:not(.is-active){border-color:var(--grab-green);color:var(--grab-green-dark)}
+
+.gp-tool-section{margin-top:48px}
+.gp-tool-section__head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.gp-tool-section h2{font-size:22px;font-weight:800}
+.gp-tool-section__sub{font-size:13px;color:var(--slate);margin-top:4px}
+.gp-tool-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:20px}
+.gp-tool-card{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:22px;
+  display:flex;flex-direction:column;gap:12px;transition:transform .15s ease,box-shadow .15s ease,border-color .15s ease}
+.gp-tool-card:hover{transform:translateY(-2px);box-shadow:0 10px 24px hsl(var(--shadow-color)/.14);border-color:var(--grab-green)}
+.gp-tool-card__icon{width:48px;height:48px;border-radius:50%;background:var(--grab-green-pale);color:var(--grab-green-dark);
+  display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}
+.gp-tool-card__icon svg{width:22px;height:22px}
+.gp-tool-card__title{font-size:15px;font-weight:700}
+.gp-tool-card__desc{font-size:13px;color:var(--slate);line-height:1.5}
+.gp-tool-card__foot{display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--line);
+  padding-top:12px;margin-top:auto}
+.gp-tool-card__foot span{color:var(--grab-green-dark);font-weight:700;font-size:12.5px}
+.gp-tool-card__foot svg{width:14px;height:14px;color:var(--grab-green-dark)}
+.gp-tool-empty{display:none;text-align:center;color:var(--slate);font-size:14px;padding:48px 0}
+.gp-tool-empty.is-visible{display:block}
+
+@media (max-width:980px){.gp-tool-grid{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:640px){.gp-tool-grid{grid-template-columns:1fr}.gp-tool-search{max-width:100%}}
+
+/* ----- footer top: keep brand block on the left, push all link columns
+   to the far right as a group (works regardless of 4- or 5-column pages) ----- */
+.gp-footer__top{display:flex;flex-wrap:wrap;align-items:flex-start;gap:24px 40px}
+.gp-footer__top > *:first-child{margin-right:auto}
+.gp-footer__links{display:flex;flex-wrap:wrap;gap:24px 32px;width:65%}
+.gp-footer__links .gp-footer__col{flex:1 1 0;min-width:120px}
+@media (max-width:900px){
+  .gp-footer__top > *:first-child{margin-right:0;flex:1 1 100%}
+  .gp-footer__links{width:100%}
+}
