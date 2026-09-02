@@ -149,6 +149,65 @@
   });
 })();
 
+/* ---------------- background music toggle ----------------
+   Never autoplays with sound on load — browsers block that anyway, and
+   unsolicited audio is bad UX regardless. Only plays after the visitor
+   explicitly clicks the toggle. Preference is remembered across visits,
+   but resuming playback on return visits still requires a user gesture
+   per browser autoplay policy, so we just leave the button in the
+   correct state and let them click again if playback was blocked. */
+(function(){
+  const btn = document.getElementById('music-toggle');
+  const audio = document.getElementById('bg-music');
+  if(!btn || !audio) return;
+
+  audio.volume = 0.35;
+
+  function setPlayingState(isPlaying){
+    btn.classList.toggle('playing', isPlaying);
+    btn.setAttribute('aria-label', isPlaying ? 'Mute background music' : 'Play background music');
+    btn.title = isPlaying ? 'Mute background music' : 'Play background music';
+  }
+
+  btn.addEventListener('click', ()=>{
+    if(audio.paused){
+      audio.play().then(()=>{
+        setPlayingState(true);
+        try{ localStorage.setItem('ra-music','on'); }catch(e){}
+      }).catch(()=>{
+        setPlayingState(false);
+      });
+    } else {
+      audio.pause();
+      setPlayingState(false);
+      try{ localStorage.setItem('ra-music','off'); }catch(e){}
+    }
+  });
+
+  audio.addEventListener('ended', ()=> setPlayingState(false));
+  audio.addEventListener('error', ()=> setPlayingState(false));
+  setPlayingState(false);
+
+  /* first click anywhere on the page starts the music automatically,
+     unless the visitor has already explicitly muted it via the icon.
+     Runs on document (bubble phase), so if that first click IS the
+     icon itself, the icon's own handler above fires first and this
+     just sees the already-correct state and does nothing extra. */
+  document.addEventListener('click', function firstInteractionPlay(){
+    document.removeEventListener('click', firstInteractionPlay);
+    let pref;
+    try{ pref = localStorage.getItem('ra-music'); }catch(e){ pref = null; }
+    if(pref === 'off') return; // respect an explicit mute
+    if(audio.paused){
+      audio.play().then(()=>{
+        setPlayingState(true);
+      }).catch(()=>{
+        setPlayingState(false);
+      });
+    }
+  }, {once:true});
+})();
+
 /* ---------------- stars ---------------- */
 (function(){
   const s = document.getElementById('stars');
@@ -238,6 +297,85 @@ updateClock(); setInterval(updateClock,15000);
     hiddenInput.value = '';
     body.scrollTop = body.scrollHeight;
   });
+})();
+
+/* ---------------- terminal boot sequence: type effect after preloader finishes ---------------- */
+(function(){
+  const loginLine = document.getElementById('term-line-login');
+  const cmd1 = document.getElementById('term-cmd-1');
+  const cursor1 = document.getElementById('term-cursor-1');
+  const out1 = document.getElementById('term-out-1');
+  const cmd2 = document.getElementById('term-cmd-2');
+  const cursor2 = document.getElementById('term-cursor-2');
+  const out2 = document.getElementById('term-out-2');
+  const inputLine = document.getElementById('term-input-line');
+  if(!loginLine || !cmd1 || !cmd2 || !inputLine) return;
+
+  const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let started = false;
+
+  function typeInto(el, text, speed, cb){
+    let i = 0;
+    const interval = setInterval(()=>{
+      i++;
+      el.textContent = text.slice(0, i);
+      if(i >= text.length){
+        clearInterval(interval);
+        if(cb) cb();
+      }
+    }, speed);
+  }
+
+  function fadeIn(el){
+    el.style.transition = 'opacity .35s ease';
+    requestAnimationFrame(()=>{ el.style.opacity = '1'; });
+  }
+
+  function showInstantly(){
+    loginLine.style.opacity = '1';
+    cmd1.textContent = 'whoami';
+    out1.style.opacity = '1';
+    cmd2.textContent = 'cat skills.json';
+    out2.style.opacity = '1';
+    inputLine.style.opacity = '1';
+  }
+
+  function runBoot(){
+    if(started) return;
+    started = true;
+
+    if(reduceMotion){
+      showInstantly();
+      return;
+    }
+
+    fadeIn(loginLine);
+
+    setTimeout(()=>{
+      cursor1.style.display = 'inline-block';
+      typeInto(cmd1, 'whoami', 70, ()=>{
+        cursor1.style.display = 'none';
+        setTimeout(()=>{
+          fadeIn(out1);
+          setTimeout(()=>{
+            cursor2.style.display = 'inline-block';
+            typeInto(cmd2, 'cat skills.json', 55, ()=>{
+              cursor2.style.display = 'none';
+              setTimeout(()=>{
+                fadeIn(out2);
+                setTimeout(()=>{
+                  fadeIn(inputLine);
+                }, 400);
+              }, 300);
+            });
+          }, 500);
+        }, 300);
+      });
+    }, 500);
+  }
+
+  if(!document.body.classList.contains('pl-loading')) runBoot();
+  document.addEventListener('preloader:done', runBoot, {once:true});
 })();
 
 /* ---------------- sticky-note signature: type on when visible ---------------- */
@@ -502,8 +640,16 @@ try{
   const menubar = document.getElementById('menubar');
   if(!hint) return;
   const hide = ()=> hint.classList.add('hint-hide');
-  if(dock) dock.addEventListener('mouseenter', hide);
-  if(menubar) menubar.addEventListener('mouseenter', hide);
+  /* Some browsers (and headless/testing environments) treat the cursor as
+     resting at (0,0) by default, which overlaps the full-width menubar —
+     that can fire a spurious mouseenter with no real user interaction.
+     Real cursor movement (a 'mousemove') has to happen at least once
+     before an enter on dock/menubar counts as an intentional hover. */
+  let hasMouseMoved = false;
+  document.addEventListener('mousemove', ()=>{ hasMouseMoved = true; }, {once:true, passive:true});
+  const hideIfIntentional = ()=>{ if(hasMouseMoved) hide(); };
+  if(dock) dock.addEventListener('mouseenter', hideIfIntentional);
+  if(menubar) menubar.addEventListener('mouseenter', hideIfIntentional);
 })();
 
 /* ---------------- windows: show + drag + focus ---------------- */
@@ -515,7 +661,7 @@ function focusWin(win){
   if(win.id === 'win-mail'){
     const backdrop = document.getElementById('mail-backdrop');
     if(backdrop && backdrop.classList.contains('show')){
-      win.style.zIndex = 2001;
+      win.style.zIndex = 5500;
       return;
     }
   }
@@ -714,6 +860,8 @@ function getDockThumb(win){
   const thumb = document.createElement('div');
   thumb.className = 'dock-min-item';
   thumb.innerHTML = `${meta.icon}<span class="dock-tip">${meta.label}</span>`;
+  thumb.setAttribute('tabindex', '0');
+  thumb.setAttribute('role', 'button');
   thumb.addEventListener('click', ()=>restoreWin(win));
   dockEl.appendChild(thumb);
   minimizedThumbs[win.id] = thumb;
@@ -872,10 +1020,27 @@ if(dockResetBtn){
   const chatClose = document.getElementById('connect-chat-close');
   if(!connectBtn || !chatPanel || !chatBackdrop) return;
 
+  /* iOS Safari doesn't reliably reflow position:fixed / 100dvh containers
+     above the on-screen keyboard, so the input bar (last flex child) can end
+     up hidden behind it. window.visualViewport is the only thing that
+     accurately reports the *actual* visible height including keyboard
+     state, so we size the panel to that directly and keep it in sync. */
+  function syncChatPanelHeight(){
+    if(!window.visualViewport) return;
+    const vv = window.visualViewport;
+    chatPanel.style.height = vv.height + 'px';
+    chatPanel.style.top = vv.offsetTop + 'px';
+  }
+  if(window.visualViewport){
+    window.visualViewport.addEventListener('resize', syncChatPanelHeight);
+    window.visualViewport.addEventListener('scroll', syncChatPanelHeight);
+  }
+
   function openChat(){
     chatBackdrop.classList.add('show');
     chatPanel.classList.add('show');
     chatPanel.setAttribute('aria-hidden', 'false');
+    syncChatPanelHeight();
   }
   function closeChat(){
     chatBackdrop.classList.remove('show');
@@ -895,7 +1060,7 @@ if(dockResetBtn){
      NEVER call api.anthropic.com directly from this page — that would
      require putting a secret key in public JS. See /api/chat (backend)
      for the server-side piece. */
-  const CHAT_ENDPOINT = '/api/chat'; // <-- point this at your deployed backend function
+  const CHAT_ENDPOINT = 'https://chat.robertazucena.workers.dev';
 
   const chatInput = document.getElementById('connect-chat-input');
   const chatSendBtn = document.getElementById('connect-chat-send');
@@ -905,14 +1070,123 @@ if(dockResetBtn){
   let chatHistory = []; // [{role:'user'|'assistant', content:'...'}, ...]
   let chatBusy = false;
 
+  /* Lightweight, safe markdown-lite renderer for assistant replies: supports
+     **bold** (for company/project highlights), "- " bullet lists, and blank-line
+     paragraph breaks. Everything is HTML-escaped first so there's no injection
+     risk even though the text ultimately comes from an API response. */
+  function escapeHtml(str){
+    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+  function renderAssistantMarkdown(raw){
+    const paragraphs = raw.split(/\n\s*\n/);
+    return paragraphs.map(block=>{
+      const lines = block.split('\n').map(l=>l.trim()).filter(Boolean);
+      const isList = lines.length > 0 && lines.every(l=>l.startsWith('- '));
+      if(isList){
+        const items = lines.map(l=>{
+          const escaped = escapeHtml(l.slice(2));
+          const bolded = escaped.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+          return `<li>${bolded}</li>`;
+        }).join('');
+        return `<ul class="chat-list">${items}</ul>`;
+      }
+      const escaped = escapeHtml(block.trim());
+      const bolded = escaped.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>');
+      return `<p>${bolded}</p>`;
+    }).join('');
+  }
+
   function addBubble(role, text){
     if(chatPlaceholder) chatPlaceholder.style.display = 'none';
     const el = document.createElement('div');
     el.className = 'chat-msg ' + role;
-    el.textContent = text;
-    chatMessages.appendChild(el);
+    if(role === 'assistant'){
+      el.innerHTML = renderAssistantMarkdown(text);
+    } else {
+      el.textContent = text;
+    }
+    if(role === 'user'){
+      chatMessages.appendChild(el);
+      chatMessages.parentElement.scrollTop = chatMessages.parentElement.scrollHeight;
+      return el;
+    }
+    /* bot-side messages (assistant/pending/error) show next to Robert's avatar,
+       like a normal chat app */
+    const row = document.createElement('div');
+    row.className = 'chat-row';
+    const avatar = document.createElement('img');
+    avatar.className = 'chat-avatar';
+    avatar.src = AVATAR_IMG;
+    avatar.alt = '';
+    row.appendChild(avatar);
+    row.appendChild(el);
+    chatMessages.appendChild(row);
     chatMessages.parentElement.scrollTop = chatMessages.parentElement.scrollHeight;
-    return el;
+    return row;
+  }
+
+  /* WhatsApp fallback: stays hidden until the AI genuinely seems to be
+     failing the visitor — either a request error, or a reply that reads
+     as uncertain/unhelpful. Reveals after the 3rd such instance. */
+  const UNCLEAR_REPLY_PATTERNS = [
+    "not sure", "don't have that", "do not have that", "don't know that",
+    "do not know that", "isn't covered", "is not covered", "unable to answer",
+    "couldn't find", "could not find", "not something i have",
+    "reach out to robert", "chat on whatsapp", "use the whatsapp option",
+    "didn't get a response", "try again"
+  ];
+  function looksUnclear(replyText){
+    const lower = replyText.toLowerCase();
+    return UNCLEAR_REPLY_PATTERNS.some(p => lower.includes(p));
+  }
+
+  /* also reveal instantly, no need to wait for 3 strikes, if the visitor
+     directly asks to talk to Rob / a human instead of the bot */
+  const DIRECT_CONTACT_PATTERNS = [
+    "talk to rob", "talk to robert", "speak to rob", "speak to robert",
+    "speak with rob", "speak with robert", "chat with rob", "chat with robert",
+    "talk directly", "speak directly", "contact rob directly", "contact robert directly",
+    "real person", "actual person", "human please", "talk to a human", "speak to a human",
+    "message rob", "message robert", "call rob", "call robert",
+    "connect me with rob", "connect me with robert", "connect with rob directly",
+    "whatsapp", "talk to the real", "speak to the real"
+  ];
+  function wantsDirectContact(userText){
+    const lower = userText.toLowerCase();
+    return DIRECT_CONTACT_PATTERNS.some(p => lower.includes(p));
+  }
+
+  let unclearCount = 0;
+  let whatsappRevealed = false;
+  function registerUnclearMoment(){
+    if(whatsappRevealed) return;
+    unclearCount++;
+    if(unclearCount >= 3) revealWhatsAppFallback();
+  }
+  function revealWhatsAppFallback(){
+    if(whatsappRevealed) return;
+    whatsappRevealed = true;
+
+    const headerLink = document.getElementById('whatsapp-header-link');
+    if(headerLink) headerLink.style.display = 'flex';
+
+    const row = document.createElement('div');
+    row.className = 'chat-row';
+    const avatar = document.createElement('img');
+    avatar.className = 'chat-avatar';
+    avatar.src = AVATAR_IMG;
+    avatar.alt = '';
+    const el = document.createElement('div');
+    el.className = 'chat-msg assistant';
+    el.innerHTML = `<p>It looks like I might not be getting you the answers you need — want to talk to Rob directly instead?</p>
+      <a class="whatsapp-btn" href="${WHATSAPP_LINK}" target="_blank" rel="noopener">
+        <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor"><path d="M16.004 3C9.107 3 3.51 8.597 3.51 15.494c0 2.727.883 5.253 2.383 7.312L4 29l6.36-1.858a12.44 12.44 0 0 0 5.644 1.352h.005c6.897 0 12.494-5.597 12.494-12.494C28.503 8.597 22.906 3 16.004 3zm0 22.85a10.32 10.32 0 0 1-5.263-1.44l-.378-.224-3.775 1.103 1.12-3.68-.246-.378a10.31 10.31 0 0 1-1.588-5.517c0-5.713 4.65-10.36 10.363-10.36 5.712 0 10.36 4.647 10.36 10.36 0 5.713-4.648 10.136-10.593 10.136zm5.727-7.73c-.314-.157-1.86-.918-2.148-1.022-.288-.105-.498-.157-.708.157-.21.314-.812 1.022-.996 1.232-.183.21-.367.236-.681.079-.314-.157-1.325-.488-2.523-1.556-.933-.832-1.563-1.86-1.746-2.174-.183-.314-.02-.484.138-.64.142-.14.314-.367.472-.55.157-.183.21-.314.314-.524.105-.21.052-.393-.026-.55-.079-.157-.708-1.706-.97-2.336-.256-.615-.516-.532-.708-.542l-.603-.011a1.16 1.16 0 0 0-.838.393c-.288.314-1.1 1.075-1.1 2.622s1.126 3.043 1.283 3.253c.157.21 2.217 3.386 5.373 4.75.75.324 1.335.518 1.79.663.752.24 1.436.206 1.978.125.603-.09 1.86-.76 2.122-1.494.262-.734.262-1.363.183-1.494-.078-.13-.288-.21-.602-.367z"/></svg>
+        Chat on WhatsApp
+      </a>`;
+    row.appendChild(avatar);
+    row.appendChild(el);
+    chatMessages.appendChild(row);
+    chatMessages.parentElement.scrollTop = chatMessages.parentElement.scrollHeight;
   }
 
   async function sendChatMessage(){
@@ -926,6 +1200,7 @@ if(dockResetBtn){
 
     addBubble('user', text);
     chatHistory.push({role:'user', content:text});
+    if(wantsDirectContact(text)) revealWhatsAppFallback();
     const pending = addBubble('pending', 'Thinking…');
 
     try {
@@ -940,10 +1215,12 @@ if(dockResetBtn){
       pending.remove();
       addBubble('assistant', reply);
       chatHistory.push({role:'assistant', content:reply});
+      if(looksUnclear(reply)) registerUnclearMoment();
     } catch (err) {
       pending.remove();
-      addBubble('error', "Couldn't reach the chat right now. Please try again in a moment, or use the Email Me option.");
+      addBubble('error', "Couldn't reach the chat right now. Please try again in a moment, or use the Chat on WhatsApp option.");
       console.error('Chat error:', err);
+      registerUnclearMoment();
     } finally {
       chatBusy = false;
       chatInput.disabled = false;
@@ -1066,7 +1343,23 @@ const CHANGI_IMG = {
   mobile:'assets/images/changi/mobile.jpg',
 };
 
-const CV_PDF = 'assets/cv/RA_CV.pdf';
+const CV_PDF = 'assets/files/Robert_Azucena_CV.pdf';
+
+const CUSTOMER_MOMENTS_IMG = {
+  browse:'assets/images/cm/browse.jpg',
+  dashboard:'assets/images/cm/dashboard.jpg',
+  team:'assets/images/cm/team.jpg',
+  settings:'assets/images/cm/settings.jpg',
+  mobile:'assets/images/cm/mobile.jpg',
+};
+
+const WHATSAPP_NUMBER = '6589275688';
+const WHATSAPP_MESSAGE = "Hi Robert! I found your portfolio and wanted to connect.";
+const WHATSAPP_LINK = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(WHATSAPP_MESSAGE)}`;
+(function(){
+  const headerLink = document.getElementById('whatsapp-header-link');
+  if(headerLink) headerLink.href = WHATSAPP_LINK;
+})();
 
 const GRAB_IMG = {
   landing:'assets/images/grab/landing.jpg',
@@ -1090,6 +1383,7 @@ document.getElementById('autonomous-thumb-2').src = AUTONOMOUS_IMG.autopilot;
 document.getElementById('autonomous-thumb-3').src = AUTONOMOUS_IMG.features;
 document.getElementById('autonomous-thumb-4').src = AUTONOMOUS_IMG.cta;
 document.getElementById('grab-thumb-img').src = GRAB_IMG.landing;
+document.getElementById('chat-hero-avatar').src = AVATAR_IMG;
 
 /* compute the exact top-to-bottom scroll distance for the Grab auto-scroll screenshot,
    so the animation travels precisely from the top to the true bottom of the image */
@@ -1103,7 +1397,19 @@ document.getElementById('grab-thumb-img').src = GRAB_IMG.landing;
     const overflow = renderedHeight - frame.clientHeight;
     img.style.setProperty('--scroll-end', (overflow > 0 ? -overflow : 0) + 'px');
   }
-  if(img.complete && img.naturalWidth) setScrollDistance();
+  /* embedded/base64 images can finish decoding before a 'load' listener is even
+     attached (the event fires and gets missed), so poll a couple of frames
+     instead of relying on 'load' alone */
+  function trySetScrollDistance(attemptsLeft){
+    if(img.naturalWidth && img.naturalHeight){
+      setScrollDistance();
+      return;
+    }
+    if(attemptsLeft > 0){
+      requestAnimationFrame(()=>trySetScrollDistance(attemptsLeft - 1));
+    }
+  }
+  trySetScrollDistance(30);
   img.addEventListener('load', setScrollDistance);
   window.addEventListener('resize', setScrollDistance);
 })();
@@ -1141,6 +1447,7 @@ const projects = {
     role:'Lead Product Designer', timeline:'Shipped — 2025',
     tools:['Product Design','Design System','Prototypes'],
     metaLabels:{role:'Role', timeline:'Status', tools:'Deliverables'},
+    prototypeUrl:'https://robertazucena.com/assets/prototype/courtly/index.html',
     gallery:'courtly',
     detail:"Courtly is a modern sports court booking platform that helps users discover nearby venues, reserve courts, and manage their bookings in one place. The dashboard provides personalized recommendations, upcoming schedules, booking history, and activity streaks to encourage regular play. With a clean, intuitive interface, users can quickly find courts, join community matches, and stay active."
   },
@@ -1151,6 +1458,7 @@ const projects = {
     role:'Lead Product Designer', timeline:'Shipped — 2024',
     tools:['Design System','Prototypes','Modern Dashboard'],
     metaLabels:{role:'Role', timeline:'Status', tools:'Deliverables'},
+    prototypeUrl:'https://robertazucena.com/assets/prototype/oracle-eg/index.html',
     gallery:'oracle-egen',
     detail:"Oracle AI Email Generator is an AI-powered platform that transforms simple prompts into professional, ready-to-send HTML email templates. Users can customize tone, add contextual data, and generate personalized email content in seconds. Built for enterprise teams, it streamlines email creation while ensuring consistency, efficiency, and brand alignment."
   },
@@ -1171,8 +1479,13 @@ const projects = {
     role:'Creative Technologist', timeline:'Live — 2023',
     tools:['Web Experience','Motion 3D Experience'],
     metaLabels:{role:'Role', timeline:'Status', tools:'Deliverables'},
+    prototypeUrl:'https://robertazucena.com/assets/prototype/oracle-ad/index.html',
     gallery:'oracle-ad',
-    detail:"This interactive campaign showcases how Oracle Autonomous Database transforms database management with intelligent automation, self-healing, and always-on security. I had the opportunity to collaborate with Larry Ellison's team, leading the UI/UX design and delivering the campaign web application from concept to launch with a polished, engaging user experience. Inspired by autonomous driving, the experience simplifies complex technology into an intuitive story that highlights Oracle's innovation."
+    stats:[
+      ['30%', 'Faster time-to-first-insight'],
+      ['20%', 'Fewer navigation-related support tickets']
+    ],
+    detail:"This interactive campaign showcases how Oracle Autonomous Database transforms database management with intelligent automation, self-healing, and always-on security. I had the opportunity to collaborate with Larry Ellison's team, leading the UI/UX design and delivering the campaign web application from concept to launch with a polished, engaging user experience. Inspired by autonomous driving, the experience simplifies complex technology into an intuitive story that highlights Oracle's innovation.<br><br>Alongside the campaign, I also worked as UX/UI Designer on the OCI administration and monitoring dashboards used by enterprise DBAs — redesigning the information architecture with at-a-glance status cards and guided setup flows, which reduced time-to-first-insight by approximately 30% and navigation-related support tickets by approximately 20%."
   },
   steady:{
     name:'Steady', slug:'steady', category:'Product Design · Health & Wellness',
@@ -1182,7 +1495,6 @@ const projects = {
     tools:['Product Design','Design System','Prototypes'],
     metaLabels:{role:'Role', timeline:'Status', tools:'Deliverables'},
     gallery:'steady',
-    prototype:'https://robertazucena.com/assets/prototype/steady/index.html',
     detail:'A thoughtfully designed wellness dashboard that brings your daily health habits into one clear, calming space. Track heart rate, sleep, steps, nutrition, and hydration at a glance. Personalized insights and gentle reminders help turn everyday actions into steady, sustainable habits. The warm visual language makes health tracking feel simple, approachable, and motivating.'
   },
   mufg:{
@@ -1192,6 +1504,7 @@ const projects = {
     role:'UI/UX Designer and Creative Technologist', timeline:'Beta — 2023',
     tools:['Web App','Mobile Responsive'],
     metaLabels:{role:'Role', timeline:'Status', tools:'Deliverables'},
+    prototypeUrl:'https://robertazucena.com/assets/prototype/mufg/index.html',
     gallery:'mufg',
     detail:'The MUFG UI features a modern, professional design with a prominent hero banner that highlights key business initiatives alongside strong visual imagery. A clean navigation bar and card-based layout showcase financial services with clear icons, concise descriptions, and bold red accents, creating an intuitive and trustworthy user experience.'
   },
@@ -1202,10 +1515,48 @@ const projects = {
     role:'Lead Designer', timeline:'Shipped — 2024',
     tools:['Design System','Prototypes','Motion'],
     metaLabels:{role:'Role', timeline:'Status', tools:'Deliverables'},
+    prototypeUrl:'https://robertazucena.com/assets/prototype/grab/index.html',
     gallery:'grab',
     detail:"The Grab employee portal features a clean, modern, and user-friendly interface that prioritizes accessibility and efficiency. Its card-based layout organizes personalized tasks, announcements, company news, and workplace resources into clear, easy-to-navigate sections. Combined with Grab's signature green branding and intuitive navigation, the design creates a seamless experience that helps employees stay informed, productive, and connected."
+  },
+  'customer-moments':{
+    name:'Customer Moments', slug:'customer-moments', category:'Systems Design · Customer Engagement',
+    accent:'#ff6b4a', icon:'💌', folderBg:'linear-gradient(150deg,#ff8a5c,#c1391f)',
+    lead:'A clean, modern, and visually engaging design that makes it easy for employees to discover and share personalized customer content.',
+    role:'Lead Designer', timeline:'In deployment — 2025',
+    tools:['UX Framework','UI Design','Research'],
+    metaLabels:{role:'Role', timeline:'Status', tools:'Deliverables'},
+    prototypeUrl:'https://robertazucena.com/assets/prototype/oracle-cm/index.html',
+    gallery:'customer-moments',
+    detail:"Customer Moments is an internal Oracle platform that gives employees an easy way to recognize and celebrate one another — from a quick \"job well done\" or congratulations, to birthdays and other meaningful milestones. It's designed to reach across the whole organization, so appreciation flows freely between peers and up to executives alike, not just top-down.<br><br>The card-based layout showcases e-cards and videos with intuitive search, filtering, and category options for quick navigation. Combined with Oracle's minimalist styling, consistent branding, and clear information hierarchy, the interface delivers a seamless and efficient user experience."
   }
 };
+
+/* Curated order for Prev/Next case-study navigation — deliberately not
+   alphabetical or by date, but arranged to show range: alternating
+   high-profile enterprise/AI work with consumer/lifestyle projects,
+   opening and closing on strong notes. Edit this array to reorder. */
+const PROJECT_ORDER = [
+  'oracle-ad',
+  'courtly',
+  'great-eastern',
+  'steady',
+  'grab',
+  'oracle-egen',
+  'mufg',
+  'customer-moments',
+  'changi'
+];
+function getPrevNextProjects(slug){
+  const idx = PROJECT_ORDER.indexOf(slug);
+  if(idx === -1) return null;
+  const prevSlug = PROJECT_ORDER[(idx - 1 + PROJECT_ORDER.length) % PROJECT_ORDER.length];
+  const nextSlug = PROJECT_ORDER[(idx + 1) % PROJECT_ORDER.length];
+  return {
+    prev: {slug: prevSlug, name: projects[prevSlug].name},
+    next: {slug: nextSlug, name: projects[nextSlug].name}
+  };
+}
 
 function renderFinderPane(pane){
   const c = document.getElementById('finder-content');
@@ -1217,7 +1568,7 @@ function renderFinderPane(pane){
         <div class="avatar"><img src="${AVATAR_IMG}" alt="Robert Azucena"></div>
         <div>
           <h2>Robert Azucena</h2>
-          <p>UX/UI Architect &amp; Creative Strategist</p>
+          <p>UI/UX Architect &amp; AI Strategist</p>
         </div>
       </div>
       <p class="about-bio">I design at the intersection of AI and function — where systems thinking meets thoughtful craft and human experience.<br><br>Based in Singapore. previously at <strong>Oracle</strong>, and various early‑stage ventures.</p>
@@ -1231,7 +1582,7 @@ function renderFinderPane(pane){
   } else if(pane==='projects'){
     let grid = '<div class="proj-grid">';
     Object.values(projects).forEach(p=>{
-      grid += `<div class="proj-folder" data-open-project="${p.slug}">
+      grid += `<div class="proj-folder" data-open-project="${p.slug}" tabindex="0" role="button">
         <div class="folder-icon" style="background:${p.folderBg};">${p.icon}</div>
         <span>${p.name}</span>
       </div>`;
@@ -1242,7 +1593,7 @@ function renderFinderPane(pane){
     c.innerHTML = `<div class="proj-grid">
       <a class="proj-folder" href="${CV_PDF}" target="_blank" rel="noopener" style="text-decoration:none;">
         <div class="folder-icon" style="background:linear-gradient(150deg,#ff6f6b,#c23636);">📄</div>
-        <span>RA_CV.pdf</span>
+        <span>Robert_Azucena_CV.pdf</span>
       </a>
     </div>`;
   } else {
@@ -1252,11 +1603,28 @@ function renderFinderPane(pane){
 document.querySelectorAll('.finder-item').forEach(it=>{
   it.addEventListener('click', ()=>renderFinderPane(it.dataset.pane));
 });
-renderFinderPane('about');
+renderFinderPane(isMobile() ? 'projects' : 'about');
 
 /* ---------------- Project overlay ---------------- */
 function galleryHTML(p){
   const t = (icon,label,grad)=>`<div class="placeholder-tile" style="background:${grad};"><span class="icon">${icon}</span><span class="label">${label}</span></div>`;
+  if(p.gallery==='customer-moments'){
+    return `<div class="gallery g1">
+      <div class="shot-tile wide"><img src="${CUSTOMER_MOMENTS_IMG.browse}" alt="Customer Moments browse page — e-card and video templates for holidays, milestones, and appreciation moments" loading="lazy"></div>
+    </div>
+    <div class="gallery g1" style="margin-top:16px;">
+      <div class="shot-tile wide"><img src="${CUSTOMER_MOMENTS_IMG.dashboard}" alt="Customer Moments dashboard — cards sent, open rate, delivery funnel, and send volume trends" loading="lazy"></div>
+    </div>
+    <div class="gallery g1" style="margin-top:16px;">
+      <div class="shot-tile wide"><img src="${CUSTOMER_MOMENTS_IMG.team}" alt="Customer Moments team activity — leaderboard and live stream of moments sent across the workspace" loading="lazy"></div>
+    </div>
+    <div class="gallery g1" style="margin-top:16px;">
+      <div class="shot-tile wide"><img src="${CUSTOMER_MOMENTS_IMG.settings}" alt="Customer Moments settings — profile, notifications, sender branding, and connected apps" loading="lazy"></div>
+    </div>
+    <div class="gallery g1" style="margin-top:16px;">
+      <div class="shot-tile wide"><img src="${CUSTOMER_MOMENTS_IMG.mobile}" alt="Customer Moments mobile flow — browse moments, delivery funnel analytics, report templates, and team leaderboard" loading="lazy"></div>
+    </div>`;
+  }
   if(p.gallery==='phones'){
     return `<div class="gallery g2">
       ${t('📱','Home feed — placeholder','linear-gradient(160deg,rgba(255,122,69,.25),rgba(255,95,109,.12))')}
@@ -1404,16 +1772,32 @@ function galleryHTML(p){
   </div>`;
 }
 
-function openProject(slug){
+/* locks background scroll while the project overlay is open (mobile Safari
+   can visually glitch fixed-position overlays if the page underneath is
+   still scrollable, so this also prevents that class of bug) */
+let projectScrollY = 0;
+function lockBodyScroll(){
+  projectScrollY = window.scrollY || window.pageYOffset || 0;
+  document.body.style.position = 'fixed';
+  document.body.style.top = `-${projectScrollY}px`;
+  document.body.style.left = '0';
+  document.body.style.right = '0';
+  document.body.style.width = '100%';
+}
+function unlockBodyScroll(){
+  document.body.style.position = '';
+  document.body.style.top = '';
+  document.body.style.left = '';
+  document.body.style.right = '';
+  document.body.style.width = '';
+  window.scrollTo(0, projectScrollY);
+}
+
+function openProject(slug, direction){
   const p = projects[slug];
   if(!p) return;
-  document.getElementById('proj-body').className = 'proj-body' + (slug==='courtly' ? ' proj-courtly' : '');
-  document.getElementById('proj-url').textContent = `🔒 featured-work/${p.slug}`;
+  if(isMobile()) lockBodyScroll();
   const labels = p.metaLabels || {role:'Role', timeline:'Timeline', tools:'Tools'};
-  const protoCta = p.prototype ? `<a class="proto-cta" href="${p.prototype}" target="_blank" rel="noopener" style="--brand-rgb:${p.accent && p.accent.startsWith('#') ? hexToRgbStr(p.accent) : '255,122,69'};">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3h7v7"/><path d="M10 14 21 3"/><path d="M21 14v6a1 1 0 01-1 1H4a1 1 0 01-1-1V6a1 1 0 011-1h6"/></svg>
-      Launch Prototype
-    </a>` : '';
   const extra = p.gallery==='brand' ? `
     <div class="section">
       <h5>Palette</h5>
@@ -1556,12 +1940,44 @@ function openProject(slug){
     <div class="stat-row">
       ${p.stats.map(s=>`<div class="stat-card"><b style="color:${p.accent};">${s[0]}</b><span>${s[1]}</span></div>`).join('')}
     </div>` : '';
-  document.getElementById('proj-body').innerHTML = `
+
+  const nav = getPrevNextProjects(slug);
+  const prevNextHTML = nav ? `
+    <div class="proj-prevnext">
+      <a class="proj-prevnext-link prev" href="#" data-nav-project="${nav.prev.slug}" data-nav-dir="prev">
+        <span class="dir-label">← Previous</span>
+        <span class="proj-name">${nav.prev.name}</span>
+      </a>
+      <a class="proj-prevnext-link next" href="#" data-nav-project="${nav.next.slug}" data-nav-dir="next">
+        <span class="dir-label">Next →</span>
+        <span class="proj-name">${nav.next.name}</span>
+      </a>
+    </div>` : '';
+
+  const bodyEl = document.getElementById('proj-body');
+  const windowEl = document.querySelector('.proj-window');
+
+  function applyChrome(){
+    bodyEl.className = 'proj-body' + (slug==='courtly' ? ' proj-courtly' : '');
+    document.getElementById('proj-url').textContent = `🔒 featured-work/${p.slug}`;
+    document.getElementById('proj-wtitle').innerHTML = `${p.name} <span class="app">Safari</span>`;
+    const prototypePill = document.getElementById('proj-prototype-pill');
+    if(prototypePill){
+      if(p.prototypeUrl){
+        prototypePill.href = p.prototypeUrl;
+        prototypePill.style.display = 'inline-flex';
+      } else {
+        prototypePill.style.display = 'none';
+      }
+    }
+  }
+
+  function renderBody(){
+    bodyEl.innerHTML = `
     <div class="back-btn" id="proj-back">← Back to desktop</div>
     <div class="proj-hero-eyebrow" style="color:${p.accent};">${p.category}</div>
     <h1>${p.pageTitle || p.name}</h1>
     <p class="lead">${p.lead}</p>
-    ${protoCta}
     <div class="section">
       <h5>Approach</h5>
       <p style="color:var(--text-mid); font-size:13.5px; line-height:1.8;">${p.detail}</p>
@@ -1574,23 +1990,43 @@ function openProject(slug){
     ${galleryHTML(p)}
     ${statRow}
     ${extra}
+    ${prevNextHTML}
   `;
-  document.getElementById('proj-back').addEventListener('click', closeProject);
-  document.getElementById('project-overlay').classList.add('open');
-  initShotPreloaders();
-  const bodyEl = document.getElementById('proj-body');
-  bodyEl.scrollTop = 0; /* always land on the top of the case study, even when switching straight from another project */
-  bodyEl.classList.remove('proj-anim-in');
-  void bodyEl.offsetWidth; /* force reflow so the entrance animation replays every open */
-  bodyEl.classList.add('proj-anim-in');
-}
-function hexToRgbStr(hex){
-  const h = hex.replace('#','');
-  const full = h.length===3 ? h.split('').map(c=>c+c).join('') : h;
-  const r = parseInt(full.substring(0,2),16);
-  const g = parseInt(full.substring(2,4),16);
-  const b = parseInt(full.substring(4,6),16);
-  return `${r},${g},${b}`;
+    document.getElementById('proj-back').addEventListener('click', closeProject);
+    bodyEl.querySelectorAll('.proj-prevnext-link').forEach(link=>{
+      link.addEventListener('click', (e)=>{
+        e.preventDefault();
+        openProject(link.dataset.navProject, link.dataset.navDir);
+      });
+    });
+    document.getElementById('project-overlay').classList.add('open');
+    initShotPreloaders();
+  }
+
+  if((direction === 'next' || direction === 'prev') && windowEl){
+    /* directional slide, TikTok-style: the whole browser window (title
+       bar, URL bar, prototype button, and body) moves together as one
+       card — Next exits/enters upward, Previous exits/enters downward */
+    const outClass = direction === 'next' ? 'proj-slide-out-up' : 'proj-slide-out-down';
+    const inClass = direction === 'next' ? 'proj-slide-in-up' : 'proj-slide-in-down';
+    windowEl.classList.remove('proj-slide-in-up', 'proj-slide-in-down');
+    windowEl.classList.add(outClass);
+    setTimeout(()=>{
+      windowEl.classList.remove(outClass);
+      applyChrome();
+      renderBody();
+      bodyEl.scrollTop = 0;
+      windowEl.classList.add(inClass);
+      setTimeout(()=>{ windowEl.classList.remove(inClass); }, 420);
+    }, 260);
+  } else {
+    applyChrome();
+    renderBody();
+    bodyEl.scrollTop = 0; /* always land on the top of the case study, even when switching straight from another project */
+    bodyEl.classList.remove('proj-anim-in');
+    void bodyEl.offsetWidth; /* force reflow so the entrance animation replays every open */
+    bodyEl.classList.add('proj-anim-in');
+  }
 }
 function initShotPreloaders(){
   document.querySelectorAll('#proj-body .shot-tile img').forEach(img=>{
@@ -1606,15 +2042,30 @@ function initShotPreloaders(){
 }
 function closeProject(){
   document.getElementById('project-overlay').classList.remove('open');
+  if(isMobile()) unlockBodyScroll();
 }
 document.getElementById('proj-close-dot').addEventListener('click', closeProject);
 document.getElementById('project-overlay').addEventListener('click', (e)=>{
   if(e.target.id==='project-overlay') closeProject();
 });
+document.addEventListener('keydown', e=>{
+  if(e.key === 'Escape' && document.getElementById('project-overlay').classList.contains('open')) closeProject();
+});
 
 document.body.addEventListener('click', (e)=>{
   const t = e.target.closest('[data-open-project]');
   if(t) openProject(t.dataset.openProject);
+});
+
+/* keyboard accessibility: activate any custom [role="button"] element
+   (dock icons, Finder items, project folders, traffic-light dots, etc.)
+   with Enter or Space, same as a native button would respond to */
+document.addEventListener('keydown', e=>{
+  if(e.key !== 'Enter' && e.key !== ' ') return;
+  const target = e.target.closest('[role="button"]');
+  if(!target) return;
+  e.preventDefault();
+  target.click();
 });
 
 /* ---------------- Dock actions ---------------- */
@@ -1623,12 +2074,25 @@ document.querySelectorAll('.dockitem').forEach(d=>{
     document.querySelectorAll('.dockitem').forEach(x=>x.classList.remove('active'));
     d.classList.add('active');
     const action = d.dataset.dock;
+    /* on mobile, windows stack vertically in normal document flow, so
+       opening a window from the dock (which sits fixed at the bottom)
+       needs to also scroll that window into view, wherever it lives
+       in the stacked page */
+    function anchorToWindow(win){
+      if(!win || !isMobile()) return;
+      requestAnimationFrame(()=>{
+        win.scrollIntoView({behavior:'smooth', block:'start'});
+      });
+    }
     if(action==='about'){
       const w=document.getElementById('win-about'); openWin(w); renderFinderPane('about');
+      anchorToWindow(w);
     } else if(action==='safari'){
       const w=document.getElementById('win-about'); openWin(w); renderFinderPane('projects');
+      anchorToWindow(w);
     } else if(action==='documents'){
       const w=document.getElementById('win-about'); openWin(w); renderFinderPane('documents');
+      anchorToWindow(w);
     } else if(action==='mail'){
       const w=document.getElementById('win-mail');
       const backdrop=document.getElementById('mail-backdrop');
@@ -1639,6 +2103,7 @@ document.querySelectorAll('.dockitem').forEach(d=>{
       requestAnimationFrame(()=>{
         requestAnimationFrame(()=>{ if(window.syncMailWindowHeight) window.syncMailWindowHeight(); });
       });
+      if(isMobile()) anchorToWindow(w);
     } else if(action==='linkedin'){
       window.open('https://www.linkedin.com/in/robertazucena/','_blank');
     }
