@@ -1494,6 +1494,7 @@ const projects = {
     role:'Lead Product Designer', timeline:'Shipped — 2026',
     tools:['Product Design','Design System','Prototypes'],
     metaLabels:{role:'Role', timeline:'Status', tools:'Deliverables'},
+    prototypeUrl:'https://robertazucena.com/assets/prototype/steady/index.html',
     gallery:'steady',
     detail:'A thoughtfully designed wellness dashboard that brings your daily health habits into one clear, calming space. Track heart rate, sleep, steps, nutrition, and hydration at a glance. Personalized insights and gentle reminders help turn everyday actions into steady, sustainable habits. The warm visual language makes health tracking feel simple, approachable, and motivating.'
   },
