@@ -1469,6 +1469,7 @@ const projects = {
     role:'Lead Product Designer', timeline:'Shipped — 2025',
     tools:['Calculator Dashboard','Design System','Prototypes'],
     metaLabels:{role:'Role', timeline:'Status', tools:'Deliverables'},
+    prototypeUrl:'https://robertazucena.com/assets/prototype/changi/index.html',
     gallery:'changi',
     detail:"This web app is a cloud pricing comparison dashboard that helps organizations evaluate infrastructure costs across leading cloud providers. It presents side-by-side comparisons of compute, storage, and other services, highlighting cost differences and potential savings. The platform enables users to make informed cloud adoption and optimization decisions with clear, data-driven insights."
   },
