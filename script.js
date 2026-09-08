@@ -1437,6 +1437,7 @@ const projects = {
     role:'Lead Product Designer', timeline:'Shipped — 2026',
     tools:['Modern Dashboard','Design System','Prototypes'],
     metaLabels:{role:'Role', timeline:'Status', tools:'Deliverables'},
+    prototypeUrl:'https://robertazucena.com/assets/prototype/great-eastern/index.html',
     gallery:'great-eastern',
     detail:"This web app is an AI-powered insurance claims management dashboard that centralizes claim intake, review, and resolution workflows. It provides real-time insights into claim volumes, processing status, and AI-assisted outcomes, enabling claims teams to prioritize cases and improve operational efficiency. The interface also includes a submission queue for tracking claim progress and streamlining case management."
   },

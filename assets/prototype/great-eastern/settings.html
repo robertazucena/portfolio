@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Settings · Great Eastern</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div id="preloader">
+  <div class="preloader-mark">
+    <img class="ge-logo-img" src="ge-logo.svg" alt="Great Eastern">
+    <div class="preloader-ring" aria-hidden="true"></div>
+  </div>
+</div>
+
+<svg style="display:none" aria-hidden="true">
+  <symbol id="icon-car" viewBox="0 0 24 24"><path fill="currentColor" d="M5 11l1.5-4.5A2 2 0 0 1 8.4 5h7.2a2 2 0 0 1 1.9 1.5L19 11h.5A1.5 1.5 0 0 1 21 12.5V17a1 1 0 0 1-1 1h-1a2 2 0 1 1-4 0H9a2 2 0 1 1-4 0H4a1 1 0 0 1-1-1v-4.5A1.5 1.5 0 0 1 4.5 11H5zm2.1 0h9.8l-1-3H8.1l-1 3zM6.5 16a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm11 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"/></symbol>
+  <symbol id="icon-house" viewBox="0 0 24 24"><path fill="currentColor" d="M12 3.2 3 10.5V20a1 1 0 0 0 1 1h5v-6h6v6h5a1 1 0 0 0 1-1v-9.5L12 3.2z"/></symbol>
+  <symbol id="icon-building" viewBox="0 0 24 24"><path fill="currentColor" d="M4 21V4a1 1 0 0 1 1-1h9a1 1 0 0 1 1 1v6h5a1 1 0 0 1 1 1v10h-7v-4h-3v4H4zm3-14h2v2H7V7zm4 0h2v2h-2V7zm-4 4h2v2H7v-2zm4 0h2v2h-2v-2zm-4 4h2v2H7v-2zm4 0h2v2h-2v-2zm6-1h2v2h-2v-2zm0 4h2v2h-2v-2z"/></symbol>
+  <symbol id="icon-industry" viewBox="0 0 24 24"><path fill="currentColor" d="M3 21V11l5 3.2V11l5 3.2V11l6 3.75V21H3zM6 5h2v3H6V5zm5-2h2v3h-2V3zm5 3h2v3h-2V6z"/></symbol>
+</svg>
+
+<div class="page">
+
+  <header class="header-bar">
+    <a href="index.html" class="brand-logo" data-no-transition>
+      <img class="ge-logo-img" src="ge-logo.svg" alt="Great Eastern">
+    </a>
+    <nav class="nav-tabs">
+      <a href="index.html">Dashboard</a>
+      <a href="claims.html">Claims</a>
+      <a href="reports.html">Reports</a>
+      <a href="settings.html" class="active">Settings</a>
+    </nav>
+    <div class="user-profile">
+      <div class="user-info">
+        <span class="name">Johnathan S.</span>
+        <span class="role">Senior Claims Adjuster</span>
+      </div>
+      <img class="avatar" src="https://images.unsplash.com/photo-1642257859842-c95f9fa8121d?auto=format&fit=crop&crop=faces&w=160&q=80" alt="Johnathan S.">
+    </div>
+  </header>
+
+  <div class="main-split">
+    <aside class="sidebar">
+      <div class="sidebar-header">Claims Portfolio</div>
+      <nav class="categories-list">
+        <a class="cat-item" href="claims.html"><svg><use href="#icon-car"/></svg>Auto (Vehicles)</a>
+        <a class="cat-item" href="homeowners.html"><svg><use href="#icon-house"/></svg>Homeowners</a>
+        <a class="cat-item" href="building-owners.html"><svg><use href="#icon-building"/></svg>Building Owners</a>
+        <a class="cat-item" href="manufacturers.html"><svg><use href="#icon-industry"/></svg>Manufacturers</a>
+      </nav>
+      <div class="sidebar-promo">
+        <div class="title">AI Autopilot Enabled</div>
+        <div class="body">Anomaly detection running on live claim payloads for instant verification.</div>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <div class="page-head">
+        <div>
+          <h1>Settings</h1>
+          <p>Manage your profile, notifications, and AI Autopilot preferences.</p>
+        </div>
+      </div>
+
+      <div class="settings-layout">
+        <nav class="settings-nav">
+          <a class="active" href="#profile">Profile</a>
+          <a href="#notifications">Notifications</a>
+          <a href="#autopilot">AI Autopilot</a>
+          <a href="#security">Security</a>
+        </nav>
+
+        <div class="settings-panels">
+          <section class="settings-panel" id="profile">
+            <h2>Profile</h2>
+            <p class="desc">This information appears on your claims and internal reports.</p>
+            <div class="profile-row">
+              <img src="https://images.unsplash.com/photo-1642257859842-c95f9fa8121d?auto=format&fit=crop&crop=faces&w=200&q=80" alt="Johnathan S.">
+              <div class="meta">
+                <p class="pname">Johnathan S.</p>
+                <p class="prole">Senior Claims Adjuster · Auto (Vehicles)</p>
+              </div>
+              <button class="btn btn-ghost" type="button" id="change-photo-btn">Change Photo</button>
+            </div>
+            <form id="profile-form">
+              <div class="settings-form-grid">
+                <div class="form-row">
+                  <label for="s-name">Full Name</label>
+                  <input id="s-name" type="text" value="Johnathan S.">
+                </div>
+                <div class="form-row">
+                  <label for="s-role">Role</label>
+                  <input id="s-role" type="text" value="Senior Claims Adjuster">
+                </div>
+                <div class="form-row">
+                  <label for="s-email">Email Address</label>
+                  <input id="s-email" type="email" value="johnathan.s@greateasternlife.com">
+                </div>
+                <div class="form-row">
+                  <label for="s-phone">Phone Number</label>
+                  <input id="s-phone" type="tel" value="+65 9123 4567">
+                </div>
+              </div>
+              <div class="modal-actions" style="margin-top:20px;">
+                <button type="submit" class="btn btn-primary">Save Changes</button>
+              </div>
+            </form>
+          </section>
+
+          <section class="settings-panel" id="notifications">
+            <h2>Notification Preferences</h2>
+            <p class="desc">Choose how you'd like to be kept in the loop.</p>
+            <div class="toggle-row">
+              <div><p class="t-title">Email notifications</p><p class="t-desc">New claim assignments and status changes.</p></div>
+              <label class="switch"><input type="checkbox" checked><span class="track"></span></label>
+            </div>
+            <div class="toggle-row">
+              <div><p class="t-title">SMS alerts</p><p class="t-desc">Urgent anomaly flags on high-value claims.</p></div>
+              <label class="switch"><input type="checkbox"><span class="track"></span></label>
+            </div>
+            <div class="toggle-row">
+              <div><p class="t-title">Weekly summary report</p><p class="t-desc">A digest of your portfolio every Monday morning.</p></div>
+              <label class="switch"><input type="checkbox" checked><span class="track"></span></label>
+            </div>
+          </section>
+
+          <section class="settings-panel" id="autopilot">
+            <h2>AI Autopilot</h2>
+            <p class="desc">Control how much automated processing runs on your incoming claims.</p>
+            <div class="toggle-row">
+              <div><p class="t-title">Enable AI Autopilot</p><p class="t-desc">Automatically runs anomaly detection on new submissions.</p></div>
+              <label class="switch"><input type="checkbox" checked id="autopilot-toggle"><span class="track"></span></label>
+            </div>
+            <div class="toggle-row">
+              <div><p class="t-title">Auto-approve under S$200</p><p class="t-desc">Skip manual review for low-value, high-confidence claims.</p></div>
+              <label class="switch"><input type="checkbox"><span class="track"></span></label>
+            </div>
+            <div class="form-row" style="margin-top:16px; max-width:320px;">
+              <label for="confidence-threshold">Minimum confidence threshold</label>
+              <select id="confidence-threshold">
+                <option>85%</option>
+                <option selected>90%</option>
+                <option>95%</option>
+                <option>99%</option>
+              </select>
+            </div>
+          </section>
+
+          <section class="settings-panel" id="security">
+            <h2>Security</h2>
+            <p class="desc">Keep your account secure.</p>
+            <div class="toggle-row">
+              <div><p class="t-title">Two-factor authentication</p><p class="t-desc">Require a verification code when signing in.</p></div>
+              <label class="switch"><input type="checkbox" checked><span class="track"></span></label>
+            </div>
+            <div class="toggle-row">
+              <div><p class="t-title">Password</p><p class="t-desc">Last changed 3 months ago.</p></div>
+              <button class="btn btn-ghost" type="button" id="change-password-btn">Change Password</button>
+            </div>
+            <div class="danger-zone" style="margin-top:20px;">
+              <p>Signing out will end your session on this device.</p>
+              <button class="btn btn-danger" type="button" id="sign-out-btn">Sign Out</button>
+            </div>
+          </section>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <footer class="footer-bar">
+    <span>© 2025 Great Eastern Life. All rights reserved.</span>
+    <div class="footer-links"><a href="#">Legal Notice</a><a href="#">Terms of Use</a><a href="#">Privacy Policy</a></div>
+  </footer>
+</div>
+
+<nav class="mobile-nav">
+  <ul>
+    <li><a href="index.html"><svg><use href="#icon-house"/></svg>Dashboard</a></li>
+    <li><a href="claims.html"><svg><use href="#icon-car"/></svg>Claims</a></li>
+    <li><a href="reports.html"><svg><use href="#icon-building"/></svg>Reports</a></li>
+    <li><a href="settings.html" class="active"><svg><use href="#icon-industry"/></svg>Settings</a></li>
+  </ul>
+</nav>
+
+<script src="script.js"></script>
+</body>
+</html>

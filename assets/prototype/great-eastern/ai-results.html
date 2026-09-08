@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Assessment Results · Great Eastern</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body class="theme-slate">
+
+<div id="preloader">
+  <div class="preloader-mark">
+    <img class="ge-logo-img" src="ge-logo.svg" alt="Great Eastern">
+    <div class="preloader-ring" aria-hidden="true"></div>
+  </div>
+</div>
+
+<svg style="display:none" aria-hidden="true">
+  <symbol id="icon-photo" viewBox="0 0 24 24"><path fill="currentColor" d="M4 5h16a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1zm1 2v9.6L9 12l3 3 4-4 3 3V7H5zm3 1a2 2 0 1 1 0 4 2 2 0 0 1 0-4z"/></symbol>
+  <symbol id="icon-car" viewBox="0 0 24 24"><path fill="currentColor" d="M5 11l1.5-4.5A2 2 0 0 1 8.4 5h7.2a2 2 0 0 1 1.9 1.5L19 11h.5A1.5 1.5 0 0 1 21 12.5V17a1 1 0 0 1-1 1h-1a2 2 0 1 1-4 0H9a2 2 0 1 1-4 0H4a1 1 0 0 1-1-1v-4.5A1.5 1.5 0 0 1 4.5 11H5zm2.1 0h9.8l-1-3H8.1l-1 3zM6.5 16a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm11 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"/></symbol>
+  <symbol id="icon-house" viewBox="0 0 24 24"><path fill="currentColor" d="M12 3.2 3 10.5V20a1 1 0 0 0 1 1h5v-6h6v6h5a1 1 0 0 0 1-1v-9.5L12 3.2z"/></symbol>
+  <symbol id="icon-building" viewBox="0 0 24 24"><path fill="currentColor" d="M4 21V4a1 1 0 0 1 1-1h9a1 1 0 0 1 1 1v6h5a1 1 0 0 1 1 1v10h-7v-4h-3v4H4zm3-14h2v2H7V7zm4 0h2v2h-2V7zm-4 4h2v2H7v-2zm4 0h2v2h-2v-2zm-4 4h2v2H7v-2zm4 0h2v2h-2v-2zm6-1h2v2h-2v-2zm0 4h2v2h-2v-2z"/></symbol>
+  <symbol id="icon-industry" viewBox="0 0 24 24"><path fill="currentColor" d="M3 21V11l5 3.2V11l5 3.2V11l6 3.75V21H3zM6 5h2v3H6V5zm5-2h2v3h-2V3zm5 3h2v3h-2V6z"/></symbol>
+  <symbol id="icon-report" viewBox="0 0 24 24"><path fill="currentColor" d="M6 2h9l5 5v15a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1zm8 1.5V8h4.5L14 3.5zM8 13h8v1.5H8V13zm0 3.5h8V18H8v-1.5zM8 9.5h4V11H8V9.5z"/></symbol>
+</svg>
+
+<div class="page" style="position:relative; overflow:hidden;">
+
+  <header class="header-bar">
+    <a href="index.html" class="brand-logo" data-no-transition>
+      <img class="ge-logo-img" src="ge-logo.svg" alt="Great Eastern">
+    </a>
+    <nav class="nav-tabs">
+      <a href="index.html">Dashboard</a>
+      <a href="claims.html" class="active">Claims</a>
+      <a href="reports.html">Reports</a>
+      <a href="settings.html">Settings</a>
+    </nav>
+    <div class="user-profile">
+      <div class="user-info">
+        <span class="name">Johnathan S.</span>
+        <span class="role">Senior Claims Adjuster</span>
+      </div>
+      <img class="avatar" src="https://images.unsplash.com/photo-1642257859842-c95f9fa8121d?auto=format&fit=crop&crop=faces&w=160&q=80" alt="Johnathan S.">
+    </div>
+  </header>
+
+  <div class="main-split">
+    <aside class="sidebar">
+      <div class="sidebar-header">Claims Portfolio</div>
+      <nav class="categories-list">
+        <a class="cat-item active" href="claims.html"><svg><use href="#icon-car"/></svg>Auto (Vehicles)</a>
+        <a class="cat-item" href="homeowners.html"><svg><use href="#icon-house"/></svg>Homeowners</a>
+        <a class="cat-item" href="building-owners.html"><svg><use href="#icon-building"/></svg>Building Owners</a>
+        <a class="cat-item" href="manufacturers.html"><svg><use href="#icon-industry"/></svg>Manufacturers</a>
+      </nav>
+      <div class="sidebar-promo">
+        <div class="title">AI Autopilot Enabled</div>
+        <div class="body">Anomaly detection running on live claim payloads for instant verification.</div>
+      </div>
+    </aside>
+
+    <main class="main-content" style="position:relative;">
+      
+
+      <div class="breadcrumb" style="position:relative;z-index:1;">
+        <a class="muted" href="claim-detail.html">Claims</a><span class="muted">&gt;</span><span class="current">Assessment Results</span>
+      </div>
+
+      <div class="page-head" style="position:relative;z-index:1;">
+        <div>
+          <h1 style="font-size:24px;">SGH492L Assessment Payload</h1>
+          <p>Toyota Hybrid AI Anomaly Flagging Results</p>
+        </div>
+      </div>
+
+      <div class="results-list" style="position:relative;z-index:1;">
+        <div class="result-card">
+          <img class="result-thumb" src="https://images.unsplash.com/photo-1749043140503-da3546679d54?auto=format&fit=crop&w=300&q=80" alt="Damage close-up">
+          <div class="result-main">
+            <p class="title">Left Headlight - Crack Detected</p>
+            <div class="result-meta">
+              <span class="severity-pill severity-medium">Severity: Medium</span>
+              <span class="confidence">Confidence Score: 94%</span>
+            </div>
+            <p class="desc">Outer plastic glass casing possesses a 4.2cm fissure originating from lower bezel structure. Housing unit replacement suggested.</p>
+          </div>
+          <div class="result-cost"><span class="label">Estimated Cost</span><span class="amount">S$280.00</span></div>
+        </div>
+
+        <div class="result-card">
+          <img class="result-thumb" src="https://images.unsplash.com/photo-1597328290883-50c5787b7c7e?auto=format&fit=crop&w=300&q=80" alt="Damage close-up">
+          <div class="result-main">
+            <p class="title">Right Headlight - Microcrack detected</p>
+            <div class="result-meta">
+              <span class="severity-pill severity-low">Severity: Low</span>
+              <span class="confidence">Confidence Score: 91%</span>
+            </div>
+            <p class="desc">Minor abrasive scratching along the bumper guard side. Buffing/polishing suggested.</p>
+          </div>
+          <div class="result-cost"><span class="label">Estimated Cost</span><span class="amount">S$120.00</span></div>
+        </div>
+      </div>
+
+      <div class="aggregate-bar" style="position:relative;z-index:1;">
+        <div>
+          <p class="label">Aggregate Estimated Repair Cost</p>
+          <p class="sub">Evaluated across 2 verified claim elements • Overall Confidence: 92%</p>
+        </div>
+        <span class="amount">S$400.00</span>
+      </div>
+
+      <div class="detail-actions" style="position:relative;z-index:1;">
+        <a class="btn-link" href="claim-detail.html">&lt; Return to detail logs</a>
+        <a class="btn btn-primary" href="final-report.html"><svg class="icon-sm"><use href="#icon-report"/></svg>Compile Comprehensive Report</a>
+      </div>
+    </main>
+  </div>
+
+  <footer class="footer-bar">
+    <span>© 2025 Great Eastern Life. All rights reserved.</span>
+    <div class="footer-links"><a href="#">Legal Notice</a><a href="#">Terms of Use</a><a href="#">Privacy Policy</a></div>
+  </footer>
+</div>
+
+<nav class="mobile-nav">
+  <ul>
+    <li><a href="index.html"><svg><use href="#icon-house"/></svg>Dashboard</a></li>
+    <li><a href="claims.html" class="active"><svg><use href="#icon-car"/></svg>Claims</a></li>
+    <li><a href="reports.html"><svg><use href="#icon-building"/></svg>Reports</a></li>
+    <li><a href="settings.html"><svg><use href="#icon-industry"/></svg>Settings</a></li>
+  </ul>
+</nav>
+
+<script src="script.js"></script>
+</body>
+</html>
