@@ -120,6 +120,7 @@ body.is-entering .app-shell{
 #preloader.hide{ opacity:0; visibility:hidden; pointer-events:none; }
 body.preloading{ overflow:hidden; }
 body.nav-open{ overflow:hidden; }
+body.modal-open{ overflow:hidden; }
 
 .pre-stage{
   display:flex; flex-direction:column; align-items:center; gap:22px;
@@ -439,6 +440,96 @@ body.nav-open{ overflow:hidden; }
 .meal-empty{ text-align:center; padding:12px 0; font-style:italic; font-size:12px; color:var(--text-mid); }
 
 /* ============================================================
+   Heart-rate trend chart (Health page) + paired mini rings
+   ============================================================ */
+.trend-card{ padding:24px; display:flex; flex-direction:column; gap:12px; }
+.trend-header-row{ display:flex; justify-content:space-between; align-items:flex-start; gap:16px; }
+.trend-value{ margin:0; font-weight:700; font-size:26px; color:var(--accent); text-align:right; white-space:nowrap; }
+.trend-value span{ font-size:13px; font-weight:500; color:var(--text-mid); margin-left:4px; }
+.trend-svg{ width:100%; height:130px; overflow:visible; display:block; }
+.trend-svg .grid{ stroke:var(--border); stroke-width:1; stroke-dasharray:2 4; }
+.trend-svg .trend-line{ fill:none; stroke:var(--accent); stroke-width:2.5; stroke-linecap:round; stroke-dasharray:1 6; }
+.trend-axis{ display:flex; justify-content:space-between; font-size:11px; color:var(--text-mid); }
+
+.mini-ring-row{ display:flex; gap:16px; }
+.trio-row{ display:flex; gap:16px; align-items:stretch; }
+.trio-row > .trend-card{ flex:1.4; min-width:0; }
+.trio-row > .mini-ring-card{ flex:1; min-width:0; }
+.trend-card.compact{ padding:20px; gap:10px; }
+.trend-card.compact .trend-svg{ height:100px; }
+.trend-card.compact .card-title{ font-size:15px; }
+.trend-card.compact .trend-value{ font-size:22px; }
+.mini-ring-card{ flex:1; padding:20px; text-align:center; display:flex; flex-direction:column; gap:6px; align-items:center; }
+.mini-ring-title{ margin:0; font-weight:700; font-size:14px; color:var(--text-dark); }
+.mini-ring-sub{ margin:0 0 8px; font-size:12px; color:var(--text-mid); }
+.mini-ring-caption{ margin:8px 0 0; font-size:12px; color:var(--text-mid); display:flex; align-items:center; justify-content:center; gap:5px; }
+.mini-ring-caption svg{ width:13px; height:13px; stroke:var(--accent); flex:none; }
+
+/* ============================================================
+   Sleep Goals zigzag trend chart + Morning Focus card
+   ============================================================ */
+.sleep-goals-card{ padding:24px; display:flex; flex-direction:column; gap:10px; }
+.delta-badge{ display:inline-flex; align-items:center; gap:3px; margin-left:8px; background:var(--surface-chip); color:var(--accent); font-weight:700; font-size:11px; padding:3px 9px; border-radius:99px; vertical-align:middle; }
+.delta-badge svg{ width:11px; height:11px; stroke:var(--accent); flex:none; }
+.sleep-goals-chart{ width:100%; height:150px; overflow:visible; display:block; margin-top:6px; }
+.sleep-goals-chart .sg-goal{ stroke:var(--text-light); stroke-width:1.5; stroke-dasharray:4 4; }
+.sleep-goals-chart .sg-goal-label{ font-size:10px; font-weight:600; fill:var(--text-mid); }
+.sleep-goals-chart .sg-area{ fill:#fdba74; opacity:.22; }
+.sleep-goals-chart .sg-line{ fill:none; stroke:#ea580c; stroke-width:2.5; stroke-linejoin:round; stroke-linecap:round; }
+.sleep-goals-chart .sg-dot{ fill:#ea580c; stroke:#fffdf7; stroke-width:2; }
+.sleep-bars-axis{ display:flex; gap:10px; }
+.sleep-bars-axis span{ flex:1; text-align:center; font-size:11px; color:var(--text-mid); }
+.sleep-bars-caption{ margin:0; font-size:12px; color:var(--text-mid); text-align:center; }
+
+
+
+.morning-focus-card{ padding:20px; display:flex; flex-direction:column; gap:16px; }
+.mf-header{ display:flex; justify-content:space-between; align-items:center; }
+.mf-eyebrow{ display:flex; align-items:center; gap:6px; font-weight:700; font-size:12px; text-transform:uppercase; color:var(--accent); }
+.mf-eyebrow svg{ width:14px; height:14px; stroke:var(--accent); }
+.mf-pct{ font-weight:700; font-size:12px; color:var(--text-mid); }
+.mf-body{ display:flex; align-items:center; gap:16px; }
+.mf-ring{ position:relative; width:64px; height:64px; flex:none; display:flex; align-items:center; justify-content:center; }
+.mf-ring svg{ width:100%; height:100%; transform:rotate(-90deg); }
+.mf-ring-icon{ position:absolute; display:flex; }
+.mf-ring-icon svg{ width:20px; height:20px; stroke:#d97706; transform:none; }
+.mf-copy p{ margin:0; }
+.mf-title{ font-weight:700; font-size:16px; color:var(--text-dark); }
+.mf-sub{ font-size:13px; color:var(--text-mid); }
+.mf-cta{ width:100%; justify-content:center; padding:12px; font-size:14px; }
+
+/* ============================================================
+   Rhythm page — steps trend + "Pick one small thing"
+   ============================================================ */
+.trend-callout-wrap{ position:relative; }
+.trend-callout{
+  position:absolute; transform:translate(-50%,-100%); margin-top:-10px;
+  background:var(--text-dark); color:#fff; padding:6px 10px; border-radius:10px;
+  font-size:11px; text-align:center; white-space:nowrap; box-shadow:0 6px 14px rgba(90,64,50,.2);
+}
+.trend-callout b{ display:block; font-size:13px; }
+.trend-callout::after{
+  content:""; position:absolute; left:50%; bottom:-5px; transform:translateX(-50%);
+  border:5px solid transparent; border-top-color:var(--text-dark);
+}
+
+.small-thing-list{ display:flex; flex-direction:column; gap:12px; }
+.small-thing-item{
+  display:flex; align-items:center; gap:14px; width:100%; text-align:left;
+  background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:16px;
+  transition:border-color .15s, transform .15s var(--ease-out);
+}
+.small-thing-item:hover{ border-color:var(--accent); transform:translateY(-1px); }
+.sti-icon{ width:40px; height:40px; border-radius:20px; background:var(--surface-chip); display:flex; align-items:center; justify-content:center; flex:none; }
+.sti-icon svg{ width:18px; height:18px; stroke:var(--accent); }
+.sti-copy{ flex:1; min-width:0; display:flex; flex-direction:column; }
+.sti-title{ font-weight:700; font-size:14px; color:var(--text-dark); }
+.sti-sub{ font-size:12px; color:var(--text-mid); }
+.sti-chevron{ flex:none; display:flex; }
+.sti-chevron svg{ width:16px; height:16px; stroke:var(--text-mid); }
+
+
+/* ============================================================
    Morning routine page
    ============================================================ */
 .routine-canvas{ display:flex; gap:24px; align-items:flex-start; padding-bottom:64px; }
@@ -453,7 +544,9 @@ body.nav-open{ overflow:hidden; }
 
 .routine-card{ background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:24px; display:flex; flex-direction:column; gap:16px; transition:box-shadow .2s, border-color .2s; }
 .routine-card.is-active{ border:1.5px solid #d97706; box-shadow:0 4px 6px rgba(255,214,165,.25); }
-.routine-card.is-done{ opacity:.72; }
+.routine-card.is-done{ background:var(--bg); }
+.routine-card.is-done .rc-name{ color:var(--text-mid); }
+.routine-card.is-done .rc-body{ color:var(--text-light); }
 .rc-header{ display:flex; align-items:center; justify-content:space-between; gap:12px; }
 .rc-left{ display:flex; gap:12px; align-items:center; min-width:0; }
 .rc-icon{ width:40px; height:40px; border-radius:50px; background:rgba(140,107,93,.1); display:flex; align-items:center; justify-content:center; flex:none; }
@@ -464,9 +557,9 @@ body.nav-open{ overflow:hidden; }
 .rc-step{ font-weight:600; font-size:11px; text-transform:uppercase; color:var(--text-mid); }
 .rc-name{ font-weight:700; font-size:18px; color:var(--text-dark); }
 .rc-body{ margin:0; font-size:14px; line-height:1.5; color:#8a6f5a; }
-.rc-check{ width:24px; height:24px; border-radius:100px; border:2px solid var(--border); flex:none; }
-.rc-check.done{ background:var(--accent-grad); border:none; display:flex; align-items:center; justify-content:center; }
-.rc-check.done svg{ width:12px; height:12px; stroke:#fff; }
+.rc-check{ width:30px; height:30px; border-radius:100px; border:2px solid var(--border); flex:none; display:flex; align-items:center; justify-content:center; }
+.rc-check.done{ background:var(--accent-grad); border:none; box-shadow:0 3px 8px rgba(234,88,12,.4); }
+.rc-check.done svg{ width:15px; height:15px; stroke:#fff; stroke-width:3; }
 .rc-timer{ display:flex; gap:4px; align-items:center; background:#ffe6c6; color:#d97706; font-weight:700; font-size:12px; padding:6px 12px; border-radius:100px; }
 .rc-timer svg{ width:10px; height:10px; }
 .rc-actions{ display:flex; gap:12px; padding-top:8px; }
@@ -651,6 +744,156 @@ body.nav-open{ overflow:hidden; }
 .ai-input-row button{ width:40px; height:40px; border-radius:50%; border:none; background:var(--accent-grad); display:flex; align-items:center; justify-content:center; flex:none; transition:transform .15s var(--ease-out); }
 .ai-input-row button:active{ transform:scale(.92); }
 .ai-input-row button svg{ width:16px; height:16px; stroke:#fff; }
+.ai-input-mic{ width:32px; height:32px; border-radius:50%; border:none; background:transparent; display:flex; align-items:center; justify-content:center; flex:none; }
+.ai-input-mic svg{ width:16px; height:16px; stroke:var(--text-mid); }
+
+/* Inline data widgets rendered inside AI Companion bot bubbles */
+.ai-msg.bot.has-widget{ max-width:92%; padding:12px 14px; display:flex; flex-direction:column; gap:10px; }
+.ai-inline-widget{ background:var(--bg); border:1px solid var(--border); border-radius:10px; padding:10px 12px; display:flex; flex-direction:column; gap:8px; }
+.ai-inline-header{ display:flex; align-items:center; justify-content:space-between; gap:8px; }
+.ai-inline-left{ display:flex; align-items:center; gap:6px; }
+.ai-inline-icon-pill{ width:20px; height:20px; border-radius:99px; background:var(--surface-chip); display:flex; align-items:center; justify-content:center; flex:none; }
+.ai-inline-icon-pill svg{ width:11px; height:11px; stroke:var(--accent); }
+.ai-inline-label{ font-weight:600; font-size:10px; letter-spacing:.03em; text-transform:uppercase; color:var(--text-mid); }
+.ai-inline-badge{ font-weight:700; font-size:11px; color:var(--accent); }
+.ai-inline-stat-row{ display:flex; align-items:center; justify-content:space-between; gap:10px; }
+.ai-inline-stat{ margin:0; font-weight:700; font-size:17px; color:var(--text-dark); }
+.ai-inline-stat span{ font-weight:400; font-size:10px; color:var(--text-mid); margin-left:2px; }
+.ai-sparkline-mini{ display:flex; align-items:flex-end; gap:2px; height:22px; }
+.ai-sparkline-mini i{ width:3px; border-radius:2px; background:var(--accent); display:block; }
+.ai-sleep-stage-row{ display:flex; gap:14px; }
+.ai-stage-block{ display:flex; flex-direction:column; gap:2px; }
+.ai-stage-block span{ font-weight:600; font-size:9px; letter-spacing:.03em; text-transform:uppercase; color:var(--text-mid); }
+.ai-stage-block b{ font-size:13px; color:var(--text-dark); }
+
+/* ============================================================
+   Health page — "Log food" modal (Search / Scan barcode / Photo)
+   Reuses .chat-modal-backdrop for the dimmed overlay.
+   ============================================================ */
+.log-food-cta{
+  display:flex; align-items:center; justify-content:center; gap:10px;
+  width:100%; padding:16px; border:none; border-radius:14px; margin-bottom:4px;
+  background:var(--accent-grad); color:#fff; font-weight:700; font-size:15px;
+  box-shadow:0 8px 20px rgba(234,88,12,.28); transition:transform .15s var(--ease-out), box-shadow .15s;
+}
+.log-food-cta svg{ width:18px; height:18px; stroke:#fff; }
+.log-food-cta:hover{ transform:translateY(-1px); box-shadow:0 10px 24px rgba(234,88,12,.34); }
+.log-food-cta:active{ transform:scale(.98); }
+
+.food-modal{
+  position:fixed; left:50%; top:50%; z-index:90;
+  width:560px; max-width:calc(100vw - 32px); max-height:calc(100vh - 48px);
+  background:var(--surface); border-radius:22px; box-shadow:0 30px 60px rgba(60,47,47,.28);
+  display:flex; flex-direction:column; overflow:hidden;
+  transform:translate(-50%,-50%) scale(.94); opacity:0; visibility:hidden;
+  transition:transform .25s var(--ease-spring), opacity .2s var(--ease-out), visibility .25s;
+}
+.food-modal.open{ transform:translate(-50%,-50%) scale(1); opacity:1; visibility:visible; }
+.food-modal-header{ display:flex; align-items:flex-start; justify-content:space-between; gap:12px; padding:24px 26px 0; flex:none; }
+.food-modal-header p{ margin:0; }
+.food-modal-title{ font-weight:700; font-size:19px; color:var(--text-dark); }
+.food-modal-sub{ font-size:13px; color:var(--text-mid); margin-top:3px; }
+.food-modal-sub span{ font-weight:600; color:var(--accent); }
+
+.food-meal-picker{ display:flex; gap:8px; padding:16px 26px 0; flex:none; }
+.food-meal-btn{ flex:1; border:1px solid var(--border); background:var(--surface); border-radius:10px; padding:9px 6px; font-size:13px; font-weight:600; color:var(--text-mid); }
+.food-meal-btn.active{ background:var(--accent-grad); border-color:transparent; color:#fff; }
+
+.food-tabs{ display:flex; gap:8px; padding:16px 26px 0; flex:none; }
+.food-tab{ flex:1; display:flex; align-items:center; justify-content:center; gap:6px; border:none; border-bottom:2px solid transparent; background:transparent; padding:9px 4px 12px; font-size:13px; font-weight:600; color:var(--text-mid); }
+.food-tab svg{ width:14px; height:14px; stroke:currentColor; }
+.food-tab.active{ color:var(--accent); border-bottom-color:var(--accent); }
+
+.food-panel{ padding:18px 26px 26px; overflow-y:auto; display:flex; flex-direction:column; gap:14px; }
+.food-panel[hidden]{ display:none; }
+.food-search-input{ border:1px solid var(--border); border-radius:12px; padding:12px 16px; font-size:14px; font-family:inherit; background:var(--bg); color:var(--text-dark); width:100%; }
+.food-search-input:focus{ outline:2px solid var(--accent-2); outline-offset:1px; }
+.food-results{ display:flex; flex-direction:column; gap:10px; max-height:360px; overflow-y:auto; }
+.food-result-row{ display:flex; align-items:center; gap:12px; padding:13px 16px; border:1px solid var(--border); border-radius:12px; background:var(--surface); }
+.food-result-info{ flex:1; min-width:0; }
+.food-result-info p{ margin:0; }
+.food-result-name{ font-weight:600; font-size:14px; color:var(--text-dark); }
+.food-result-detail{ font-size:12px; color:var(--text-mid); margin-top:2px; }
+.food-result-kcal{ font-weight:700; font-size:13px; color:var(--text-dark); white-space:nowrap; }
+.food-result-add{ width:30px; height:30px; border-radius:50%; border:none; background:var(--accent-grad); display:flex; align-items:center; justify-content:center; flex:none; }
+.food-result-add svg{ width:14px; height:14px; stroke:#fff; }
+.food-empty-hint{ font-size:13px; color:var(--text-mid); text-align:center; padding:16px 0; font-style:italic; }
+
+.food-scan-frame{
+  position:relative; height:220px; border-radius:16px; background:#2b2320;
+  display:flex; align-items:center; justify-content:center; overflow:hidden;
+}
+.food-scan-frame svg{ width:64px; height:64px; stroke:rgba(255,255,255,.25); }
+.food-scan-corner{ position:absolute; width:26px; height:26px; border:2.5px solid #fbbf24; }
+.food-scan-corner.tl{ left:16px; top:16px; border-right:none; border-bottom:none; border-radius:6px 0 0 0; }
+.food-scan-corner.tr{ right:16px; top:16px; border-left:none; border-bottom:none; border-radius:0 6px 0 0; }
+.food-scan-corner.bl{ left:16px; bottom:16px; border-right:none; border-top:none; border-radius:0 0 0 6px; }
+.food-scan-corner.br{ right:16px; bottom:16px; border-left:none; border-top:none; border-radius:0 0 6px 0; }
+.food-scan-line{ position:absolute; left:16px; right:16px; top:16px; height:2px; background:#fbbf24; box-shadow:0 0 8px 1px rgba(251,191,36,.7); opacity:0; }
+.food-scan-frame.scanning .food-scan-line{ opacity:1; animation:food-scan-move 1.1s ease-in-out infinite; }
+@keyframes food-scan-move{ 0%{ top:16px; } 50%{ top:calc(100% - 18px); } 100%{ top:16px; } }
+.food-scan-btn{ width:100%; justify-content:center; }
+
+.food-photo-drop{
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px;
+  height:220px; border-radius:16px; border:1.5px dashed var(--border); background:var(--bg);
+  color:var(--text-mid); font-size:14px; font-weight:600; cursor:pointer; text-align:center; padding:0 20px;
+}
+.food-photo-drop svg{ width:32px; height:32px; stroke:var(--text-light); }
+.food-photo-drop.has-image{ background-size:cover; background-position:center; color:#fff; text-shadow:0 1px 4px rgba(0,0,0,.5); }
+.food-photo-drop.has-image svg{ stroke:#fff; }
+
+.food-found-card{ border:1px solid var(--border); border-radius:14px; padding:18px; display:flex; flex-direction:column; gap:12px; background:var(--surface-chip); }
+.food-found-card[hidden]{ display:none; }
+.food-found-title{ font-weight:700; font-size:16px; color:var(--text-dark); margin:0; }
+.food-found-detail{ font-size:12px; color:var(--text-mid); margin:0; }
+.food-found-kcal{ font-weight:700; font-size:20px; color:var(--accent); margin:0; }
+.food-found-note{ font-size:11px; color:var(--text-light); font-style:italic; margin:0; }
+.food-analyzing{ display:flex; align-items:center; gap:10px; font-size:12px; color:var(--text-mid); font-style:italic; }
+.food-analyzing .dot-spin{ width:14px; height:14px; border-radius:50%; border:2px solid var(--border); border-top-color:var(--accent); animation:spin .8s linear infinite; }
+@keyframes spin{ to{ transform:rotate(360deg); } }
+
+/* ============================================================
+   Circle "Message" chat modal (peer 1:1 conversation)
+   ============================================================ */
+.chat-modal-backdrop{
+  position:fixed; inset:0; background:rgba(60,47,47,.32); z-index:89;
+  opacity:0; visibility:hidden; transition:opacity .25s var(--ease-out), visibility .25s;
+}
+.chat-modal-backdrop.open{ opacity:1; visibility:visible; }
+.chat-modal{
+  position:fixed; left:50%; top:50%; z-index:90;
+  width:400px; max-width:calc(100vw - 32px); height:min(78vh, 620px);
+  background:var(--surface); border-radius:20px; box-shadow:0 30px 60px rgba(60,47,47,.28);
+  display:flex; flex-direction:column; overflow:hidden;
+  transform:translate(-50%,-50%) scale(.94); opacity:0; visibility:hidden;
+  transition:transform .25s var(--ease-spring), opacity .2s var(--ease-out), visibility .25s;
+}
+.chat-modal.open{ transform:translate(-50%,-50%) scale(1); opacity:1; visibility:visible; }
+.chat-modal-header{ display:flex; align-items:center; gap:12px; padding:16px; border-bottom:1px solid var(--border); flex:none; }
+.chat-modal-avatar{ width:40px; height:40px; border-radius:20px; display:flex; align-items:center; justify-content:center; color:#fff; font-weight:700; font-size:14px; flex:none; }
+.chat-modal-who{ flex:1; min-width:0; display:flex; align-items:center; gap:12px; }
+.chat-modal-who p{ margin:0; }
+.chat-modal-name{ font-weight:700; font-size:14px; color:var(--circle-text); }
+.chat-modal-sub{ font-size:11px; color:var(--circle-text-mid); }
+.chat-modal-close{ width:32px; height:32px; border-radius:50%; border:1px solid var(--border); background:var(--surface); display:flex; align-items:center; justify-content:center; flex:none; }
+.chat-modal-close svg{ width:14px; height:14px; stroke:var(--text-dark); transform:rotate(45deg); }
+.chat-goal-banner{ display:flex; align-items:center; gap:8px; padding:8px 16px; background:#ffedd5; flex:none; }
+.chat-goal-banner svg{ width:14px; height:14px; stroke:var(--circle-accent); flex:none; }
+.chat-goal-banner b{ font-size:12px; color:var(--circle-accent); font-weight:600; white-space:nowrap; }
+.chat-goal-banner span{ flex:1; min-width:0; text-align:right; font-size:11px; color:var(--circle-text-mid); }
+.chat-modal-messages{ flex:1; overflow-y:auto; padding:16px; display:flex; flex-direction:column; gap:10px; }
+.chat-bubble{ max-width:78%; padding:10px 14px; border-radius:14px; font-size:13px; line-height:1.5; animation:reveal-in .25s var(--ease-out); }
+.chat-bubble.them{ background:#fff; border:1px solid var(--circle-border); color:var(--circle-text); align-self:flex-start; border-bottom-left-radius:4px; }
+.chat-bubble.me{ background:var(--circle-accent); color:#fff; align-self:flex-end; border-bottom-right-radius:4px; }
+.chat-modal-composer{ display:flex; align-items:center; gap:8px; padding:12px 16px; border-top:1px solid var(--border); flex:none; }
+.chat-composer-icon{ width:32px; height:32px; border-radius:50%; border:none; background:transparent; display:flex; align-items:center; justify-content:center; flex:none; }
+.chat-composer-icon svg{ width:16px; height:16px; stroke:var(--text-mid); }
+.chat-modal-composer input{ flex:1; min-width:0; border:1px solid var(--border); border-radius:999px; padding:10px 16px; font-size:13px; font-family:inherit; background:var(--bg); color:var(--text-dark); }
+.chat-modal-composer input:focus{ outline:2px solid var(--circle-accent); outline-offset:1px; }
+.chat-composer-send{ width:36px; height:36px; border-radius:50%; border:none; background:var(--circle-accent); display:flex; align-items:center; justify-content:center; flex:none; }
+.chat-composer-send svg{ width:15px; height:15px; stroke:#fff; }
+.peer-card, .suggest-card{ cursor:pointer; }
 
 /* ============================================================
    Footer — 4-column grid (brand / explore / company / newsletter),
@@ -747,6 +990,7 @@ body.nav-open{ overflow:hidden; }
   .bento-grid{ flex-direction:column; }
   .bento-right{ width:100%; }
   .metrics-split{ flex-direction:column; }
+  .trio-row{ flex-direction:column; }
   .food-grid{ flex-direction:column; }
   .food-right{ width:100%; }
   .routine-canvas{ flex-direction:column; }
@@ -796,4 +1040,8 @@ body.nav-open{ overflow:hidden; }
   .ai-panel{ width:calc(100vw - 32px); height:min(72vh, 480px); }
   .pre-word{ font-size:22px; }
   .donut-wrap{ width:150px; height:150px; }
+  .mini-ring-row{ flex-direction:column; }
+  .trend-header-row{ flex-direction:column; align-items:flex-start; gap:4px; }
+  .trend-value{ text-align:left; }
+  .mf-body{ flex-direction:column; align-items:flex-start; }
 }
