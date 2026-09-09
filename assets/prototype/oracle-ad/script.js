@@ -308,6 +308,17 @@ function goTo(idx){
   outEl.style.zIndex = '1';
   inEl.style.zIndex = '2';
 
+  // Safety net against stale/ghost slides: iOS Safari can throttle or drop
+  // setTimeout callbacks when the tab is backgrounded, screen-locked, or the
+  // app is switched away from mid-transition. If that happens, the setTimeout
+  // below that removes 'active' from a previous outEl never fires, and that
+  // old slide is left sitting at opacity:1 underneath everything — which is
+  // what shows up as ghosted/double-exposed content behind the current slide.
+  // Forcing every non-current, non-incoming slide back to inactive here
+  // guarantees at most two slides are ever visible, regardless of any missed
+  // timers from earlier transitions.
+  slideEls.forEach(el=>{ if(el !== outEl && el !== inEl) el.classList.remove('active'); });
+
   const outLayers = getLayers(outEl);
   const inLayers = getLayers(inEl);
   const leaveT = `transform ${LEAVE_MS}ms cubic-bezier(.4,0,.2,1), opacity ${Math.round(LEAVE_MS*0.85)}ms ease`;
@@ -512,6 +523,20 @@ let tpx = 0, tpy = 0;      // smoothed
 let idleT = 0;
 let navImpulse = 0;        // brief camera/floater pan kicked by goTo(), decays each frame
 
+// True on phones/tablets — no real pointer to react to, only the subtle idle
+// drift. On these devices we still want the ambient motion of the floaters,
+// but the per-icon .graphic-tilt element is a 3D-transformed parent that
+// contains a filter:blur() + mix-blend-mode:screen glow child. Rewriting a
+// 3D parent's transform every animation frame forces iOS Safari to
+// re-rasterize that blurred/blended child on every frame instead of just
+// repositioning a cached layer — that constant re-rasterization is what
+// shows up as strobing/flicker on the icon graphics on real phones (this
+// doesn't reproduce on desktop/simulator because desktop GPUs composite it
+// more cheaply). Since a touch device has no pointer to tilt toward anyway,
+// we skip the per-frame rewrite there entirely and let the glow's own CSS
+// keyframe animation (glowPulse) provide all of its motion instead.
+const isCoarsePointer = window.matchMedia('(pointer: coarse)').matches;
+
 window.addEventListener('mousemove', e=>{
   px = (e.clientX / window.innerWidth) * 2 - 1;
   py = (e.clientY / window.innerHeight) * 2 - 1;
@@ -540,9 +565,11 @@ function tickParallax(){
     node.style.transform = `translate3d(${mx}px, ${my}px, ${tz.toFixed(1)}px) rotateY(${rotY.toFixed(2)}deg) rotateX(${rotX.toFixed(2)}deg)`;
   });
 
-  const activeGraphic = stage.querySelector('.slide.active [data-tilt]');
-  if(activeGraphic){
-    activeGraphic.style.transform = `rotateX(${(-tpy*10).toFixed(2)}deg) rotateY(${(tpx*14 - navImpulse*10).toFixed(2)}deg) translateZ(20px)`;
+  if(!isCoarsePointer){
+    const activeGraphic = stage.querySelector('.slide.active [data-tilt]');
+    if(activeGraphic){
+      activeGraphic.style.transform = `rotateX(${(-tpy*10).toFixed(2)}deg) rotateY(${(tpx*14 - navImpulse*10).toFixed(2)}deg) translateZ(20px)`;
+    }
   }
   stage.style.transform = `rotateX(${(-tpy*1.6).toFixed(2)}deg) rotateY(${(tpx*2.2 - navImpulse*2.8).toFixed(2)}deg)`;
 

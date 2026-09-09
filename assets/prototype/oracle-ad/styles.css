@@ -245,6 +245,14 @@
     pointer-events:none;
     z-index:0;
     animation:glowPulse 4.5s ease-in-out infinite;
+    /* Force this blurred/blended circle onto its own stable GPU layer so the
+       browser can just move the cached layer instead of re-rasterizing the
+       blur+blend every frame its 3D-transformed parent (.graphic-tilt) moves.
+       Without this, iOS Safari in particular strobes/flickers this glow on
+       real devices. */
+    will-change:transform,opacity;
+    -webkit-backface-visibility:hidden;
+    backface-visibility:hidden;
   }
   @keyframes glowPulse{0%,100%{opacity:0.5;transform:translate(-50%,-50%) translateZ(-40px) scale(0.96);}50%{opacity:0.72;transform:translate(-50%,-50%) translateZ(-40px) scale(1.05);}}
   .tag-pill{
@@ -480,4 +488,11 @@
        the canvas down on mobile keeps it as ambient texture instead of a
        second, wrongly-placed "glow" competing with the real one. */
     canvas#neuro{opacity:0.42;}
+    /* mix-blend-mode + filter:blur() on a 3D-transformed layer is expensive
+       to recomposite and is the other half of the icon-glow flicker on real
+       phones (see the .graphic-tilt/isCoarsePointer note in script.js).
+       Dropping the blend mode on mobile and compensating with slightly
+       higher opacity keeps the same visual glow at a fraction of the
+       compositing cost. */
+    .graphic-glow{mix-blend-mode:normal;opacity:0.4;}
   }
