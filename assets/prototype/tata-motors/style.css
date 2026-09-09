@@ -200,6 +200,14 @@ p{ margin:0; }
   display:flex; flex-direction:column; align-items:center;
   padding:48px 64px;
   background:linear-gradient(135deg, #eaf1fb 0%, #f5f2fa 30%, #fbfaff 50%, #f7f1f8 70%, #f4eef4 100%);
+  animation:content-fade-up .5s ease-out .15s both;
+}
+@keyframes content-fade-up{
+  from{ opacity:0; transform:translateY(16px); }
+  to{ opacity:1; transform:translateY(0); }
+}
+@media (prefers-reduced-motion: reduce){
+  .content{ animation:none; }
 }
 .content-narrow{ padding-top:32px; }
 .width-wrap{ width:100%; max-width:var(--content-max); display:flex; flex-direction:column; gap:36px; }
