@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tata Motors | Profile</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="preloader">
+  <img class="preloader-logo" src="https://www.figma.com/api/mcp/asset/9f339aca-f201-42a9-834d-b065c3e06549.svg" alt="Tata Motors">
+  <div class="preloader-line"></div>
+</div>
+<script>
+  // Anti-flash: if this load came from clicking a link inside the app,
+  // hide the full splash instantly (before first paint) so only the thin
+  // top progress bar is used — the fast, app-like transition.
+  try {
+    if (sessionStorage.getItem('smNavInProgress')) {
+      document.write('<style>#preloader{display:none !important;}</style>');
+    }
+  } catch (e) {}
+</script>
+<div id="page-progress"></div>
+
+<div class="app-shell">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-top">
+      <div class="sidebar-logo-row">
+        <span class="side-icon-slot"><img class="sidebar-logo" src="https://www.figma.com/api/mcp/asset/554afee4-63a5-497b-b261-50b01e3a4125.svg" alt="Tata Motors mark"></span>
+        <span class="brand-word">Oracle AI</span>
+        <button class="sidebar-close-btn" id="sidebarClose" aria-label="Close menu">
+          <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span>
+        </button>
+      </div>
+      <nav class="sidebar-nav">
+        <a class="sidebar-tab" href="index.html"><span class="side-icon-slot"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg></span></span><span class="label">Home</span></a>
+        <a class="sidebar-tab" href="search-results.html"><span class="side-icon-slot"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></span></span><span class="label">Search</span></a>
+        <a class="sidebar-tab" href="analytics.html"><span class="side-icon-slot"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></span></span><span class="label">Analytics</span></a>
+        <a class="sidebar-tab" href="projects.html"><span class="side-icon-slot"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg></span></span><span class="label">Projects</span></a>
+        <a class="sidebar-tab" href="library.html"><span class="side-icon-slot"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></span></span><span class="label">Library</span></a>
+        <a class="sidebar-tab" href="upload-asset.html"><span class="side-icon-slot"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="3" x2="6" y2="15"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M18 9a9 9 0 0 1-9 9"/></svg></span></span><span class="label">Workflows</span></a>
+        <a class="sidebar-tab" href="settings.html"><span class="side-icon-slot"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span></span><span class="label">Settings</span></a>
+      </nav>
+    </div>
+    <div class="sidebar-bottom">
+      <a class="sidebar-bell" href="#">
+        <span class="side-icon-slot">
+          <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></span>
+          <span class="dot"></span>
+        </span>
+        <span class="label">Notifications</span>
+      </a>
+      <a class="sidebar-avatar-wrap" href="profile.html">
+        <span class="side-icon-slot"><span class="sidebar-avatar">RS<span class="online-dot"></span></span></span>
+        <span class="who"><span class="name">Rajiv Sharma</span><br><span class="role">AI Engineer</span></span>
+      </a>
+    </div>
+  </aside>
+
+  <!-- Tap-out area behind the mobile drawer -->
+  <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+  <nav class="bottom-nav">
+    <a href="index.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg></span>Home</a>
+    <a href="search-results.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></span>Search</a>
+    <a class="upload" href="upload-asset.html"><span class="icon-circle"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span></span>Upload</a>
+    <a href="library.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></span>Library</a>
+    <a class="active" href="profile.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>Profile</a>
+  </nav>
+
+  <div class="main-area">
+    <header class="topheader">
+      <div class="breadcrumb">
+        <button class="menu-toggle-btn" id="sidebarToggle" aria-label="Open menu" aria-expanded="false" aria-controls="sidebar">
+          <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></span>
+        </button>
+        <img class="brand-logo" src="https://www.figma.com/api/mcp/asset/9f339aca-f201-42a9-834d-b065c3e06549.svg" alt="Tata Motors">
+        <span class="sep">|</span>
+        <span class="section-name">Profile</span>
+      </div>
+      <div class="mobile-logo"><img src="https://www.figma.com/api/mcp/asset/9f339aca-f201-42a9-834d-b065c3e06549.svg" alt="Tata Motors"></div>
+      <div class="search-pill">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></span>
+        <input type="text" placeholder="Global Search...">
+        <span class="kbd">⌘K</span>
+      </div>
+      <div class="header-right-mobile">
+        <button class="mobile-bell" type="button" aria-label="Notifications">
+          <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></span>
+          <span class="dot"></span>
+        </button>
+        <a class="mobile-avatar-link" href="profile.html" aria-label="Profile">
+          <span class="mobile-avatar">RS</span>
+        </a>
+      </div>
+    </header>
+
+    <main class="content">
+      <div class="width-wrap gap-24">
+
+        <div class="card bordered pad-20" style="width:100%;">
+          <div class="profile-hero">
+            <div class="big-avatar">RS</div>
+            <div>
+              <h1>Rajiv Sharma</h1>
+              <p class="role">AI Engineer · Advanced Engineering, Pune</p>
+              <div class="profile-meta-row">
+                <span>rajiv.sharma@tatamotors.com</span>
+                <span>Joined March 2023</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-card"><span class="stat-lbl">Assets Uploaded</span><span class="stat-val">11</span></div>
+          <div class="stat-card"><span class="stat-lbl">Deployments Owned</span><span class="stat-val">6</span></div>
+          <div class="stat-card"><span class="stat-lbl">Reviews Completed</span><span class="stat-val">23</span></div>
+          <div class="stat-card"><span class="stat-lbl">Avg. Model Accuracy</span><span class="stat-val">93.1%</span></div>
+        </div>
+
+        <div>
+          <p class="section-title" style="margin-bottom:16px;">Recent Activity</p>
+          <div style="display:flex;flex-direction:column;gap:12px;">
+            <a class="conv-card" href="asset-detail.html">
+              <div class="conv-left"><p class="conv-title">Uploaded Battery Degradation Predictor</p><p class="conv-desc">Submitted for review · 94.7% validation accuracy</p></div>
+              <div class="conv-right"><span class="badge warning">In Review</span><span class="icon chev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span></div>
+            </a>
+            <a class="conv-card" href="asset-detail.html">
+              <div class="conv-left"><p class="conv-title">Deployed Tata Customer Feedback Classifier</p><p class="conv-desc">Rolled out to 3 logistics hubs</p></div>
+              <div class="conv-right"><span class="badge success">Completed</span><span class="icon chev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span></div>
+            </a>
+            <a class="conv-card" href="library.html">
+              <div class="conv-left"><p class="conv-title">Reviewed Fleet Route Optimizer</p><p class="conv-desc">Left feedback on routing accuracy edge cases</p></div>
+              <div class="conv-right"><span class="badge neutral">Feedback</span><span class="icon chev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span></div>
+            </a>
+          </div>
+        </div>
+
+        <a class="btn btn-secondary" href="settings.html" style="align-self:flex-start;">Edit Profile &amp; Settings</a>
+
+      </div>
+    </main>
+
+    <footer class="sitefooter">
+      <div class="sitefooter-inner">
+        <span>© 2025 Tata Motors | Oracle Legal Notice | Terms of Use | Privacy Policy</span>
+        <span><b>Last updated</b>: January 11, 2025</span>
+      </div>
+    </footer>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

@@ -1375,6 +1375,13 @@ const GE_IMG = {
   report:'assets/images/ge/report.jpg',
   mobile:'assets/images/ge/mobile.jpg',
 };
+const TATA_IMG = {
+  home:'assets/images/tata-motors/home.jpg',
+  search:'assets/images/tata-motors/search.jpg',
+  detail:'assets/images/tata-motors/detail.jpg',
+  library:'assets/images/tata-motors/library.jpg',
+  mobile:'assets/images/tata-motors/mobile.jpg',
+};
 const AVATAR_IMG = 'assets/images/avatar.jpg';
 
 /* set the small preview window's thumbnail from the embedded screenshot */
@@ -1522,6 +1529,17 @@ const projects = {
     gallery:'grab',
     detail:"The Grab employee portal features a clean, modern, and user-friendly interface that prioritizes accessibility and efficiency. Its card-based layout organizes personalized tasks, announcements, company news, and workplace resources into clear, easy-to-navigate sections. Combined with Grab's signature green branding and intuitive navigation, the design creates a seamless experience that helps employees stay informed, productive, and connected."
   },
+  'tata-motors':{
+    name:'Tata Motors', pageTitle:'Tata Motors AI Workspace', slug:'tata-motors', category:'Web App · Enterprise AI Model Discovery Platform',
+    accent:'#1a56db', icon:'🚛', folderBg:'linear-gradient(150deg,#4f7df0,#173fa8)',
+    lead:'An AI-powered workspace for discovering, evaluating, and deploying machine learning models across Tata Motors\' engineering teams.',
+    role:'Lead Product Designer', timeline:'Shipped — 2026',
+    tools:['AI Workspace','Design System','Prototypes'],
+    metaLabels:{role:'Role', timeline:'Status', tools:'Deliverables'},
+    prototypeUrl:'https://robertazucena.com/assets/prototype/tata-motors/index.html',
+    gallery:'tata-motors',
+    detail:"This enterprise web app gives Tata Motors' engineering and data teams a single AI-powered workspace to search, evaluate, and deploy machine learning models across the organization. A conversational home screen lets users ask natural-language questions to search assets, analyze data, or generate reports, while an AI-assisted search experience surfaces production-ready models alongside a synthesized recommendation. Each asset's detail page consolidates a generated summary, performance metrics, and related assets, and a dedicated library view lets teams browse and manage their full catalog of AI assets by category and status."
+  },
   'customer-moments':{
     name:'Customer Moments', slug:'customer-moments', category:'Systems Design · Customer Engagement',
     accent:'#ff6b4a', icon:'💌', folderBg:'linear-gradient(150deg,#ff8a5c,#c1391f)',
@@ -1548,7 +1566,8 @@ const PROJECT_ORDER = [
   'oracle-egen',
   'mufg',
   'customer-moments',
-  'changi'
+  'changi',
+  'tata-motors'
 ];
 function getPrevNextProjects(slug){
   const idx = PROJECT_ORDER.indexOf(slug);
@@ -1626,6 +1645,23 @@ function galleryHTML(p){
     </div>
     <div class="gallery g1" style="margin-top:16px;">
       <div class="shot-tile wide"><img src="${CUSTOMER_MOMENTS_IMG.mobile}" alt="Customer Moments mobile flow — browse moments, delivery funnel analytics, report templates, and team leaderboard" loading="lazy"></div>
+    </div>`;
+  }
+  if(p.gallery==='tata-motors'){
+    return `<div class="gallery g1">
+      <div class="shot-tile wide"><img src="${TATA_IMG.home}" alt="Tata Motors AI Workspace home — conversational assistant, quick commands, and recent conversations" loading="lazy"></div>
+    </div>
+    <div class="gallery g1" style="margin-top:16px;">
+      <div class="shot-tile wide"><img src="${TATA_IMG.search}" alt="Tata Motors AI Workspace search results — AI synthesis and recommendation across matching models" loading="lazy"></div>
+    </div>
+    <div class="gallery g1" style="margin-top:16px;">
+      <div class="shot-tile wide"><img src="${TATA_IMG.detail}" alt="Tata Motors AI Workspace asset detail — generated summary, related assets, and performance metrics" loading="lazy"></div>
+    </div>
+    <div class="gallery g1" style="margin-top:16px;">
+      <div class="shot-tile wide"><img src="${TATA_IMG.library}" alt="Tata Motors AI Workspace asset library — full catalog filtered by content category and status" loading="lazy"></div>
+    </div>
+    <div class="gallery g1" style="margin-top:16px;">
+      <div class="shot-tile wide"><img src="${TATA_IMG.mobile}" alt="Tata Motors AI Workspace mobile flow — home, model details, search, and asset library screens" loading="lazy"></div>
     </div>`;
   }
   if(p.gallery==='phones'){
@@ -1938,7 +1974,23 @@ function openProject(slug, direction){
         <div class="meta-col"><h6>Typography</h6><div>IBM Plex Sans — Bold headlines, Regular body, tabular numerals for claim figures</div></div>
         <div class="meta-col"><h6>Components</h6><div class="meta-tags">${['Status pills','Claims submission queue','AI insight cards','Priority badges','Data-dense tables','Mobile claims tracker'].map(t=>`<span class="tag">${t}</span>`).join('')}</div></div>
       </div>
-    </div>` : ''))))))));
+    </div>` : (p.gallery==='tata-motors' ? `
+    <div class="section">
+      <h5>Design System</h5>
+      <p style="color:var(--text-mid); font-size:13.5px; line-height:1.8; margin:0 0 18px;">The workspace runs on a clean white canvas with a confident Tata blue anchoring every AI-driven action, so conversational search and model recommendations always read as the primary path. A consistent status-pill language — green for production, amber for review — lets engineering teams scan asset health across dense search results and library tables at a glance.</p>
+      <div class="swatch-row" style="margin-bottom:18px;">
+        <div class="swatch" style="background:#ffffff;" title="Base White — page & card background"></div>
+        <div class="swatch" style="background:#1a56db;" title="Tata Blue — primary actions & AI accent"></div>
+        <div class="swatch" style="background:#173fa8;" title="Deep Blue — hover & emphasis states"></div>
+        <div class="swatch" style="background:#f4f6fb;" title="Cool Grey — section & page background"></div>
+        <div class="swatch" style="background:#0f9d58;" title="Production Green — deployed/completed status"></div>
+        <div class="swatch" style="background:#e2a03f;" title="Review Amber — in-progress/pending status"></div>
+      </div>
+      <div class="meta-row" style="margin-bottom:0; padding-bottom:0; border-bottom:none;">
+        <div class="meta-col"><h6>Typography</h6><div>Inter — Bold headlines, Regular body, tabular numerals for match scores and metrics</div></div>
+        <div class="meta-col"><h6>Components</h6><div class="meta-tags">${['Conversational AI input','Quick command chips','AI synthesis cards','Status pills','Data table library view','Mobile assistant flow'].map(t=>`<span class="tag">${t}</span>`).join('')}</div></div>
+      </div>
+    </div>` : '')))))))));
   const statRow = p.stats ? `
     <div class="stat-row">
       ${p.stats.map(s=>`<div class="stat-card"><b style="color:${p.accent};">${s[0]}</b><span>${s[1]}</span></div>`).join('')}

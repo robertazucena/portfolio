@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tata Motors | Natural Language Processing (NLP)</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="preloader">
+  <img class="preloader-logo" src="https://www.figma.com/api/mcp/asset/9f339aca-f201-42a9-834d-b065c3e06549.svg" alt="Tata Motors">
+  <div class="preloader-line"></div>
+</div>
+<script>
+  // Anti-flash: if this load came from clicking a link inside the app,
+  // hide the full splash instantly (before first paint) so only the thin
+  // top progress bar is used — the fast, app-like transition.
+  try {
+    if (sessionStorage.getItem('smNavInProgress')) {
+      document.write('<style>#preloader{display:none !important;}</style>');
+    }
+  } catch (e) {}
+</script>
+<div id="page-progress"></div>
+
+<div class="app-shell">
+
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-top">
+      <div class="sidebar-logo-row">
+        <span class="side-icon-slot"><img class="sidebar-logo" src="https://www.figma.com/api/mcp/asset/554afee4-63a5-497b-b261-50b01e3a4125.svg" alt="Tata Motors mark"></span>
+        <span class="brand-word">Oracle AI</span>
+        <button class="sidebar-close-btn" id="sidebarClose" aria-label="Close menu">
+          <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span>
+        </button>
+      </div>
+      <nav class="sidebar-nav">
+        <a class="sidebar-tab" href="index.html"><span class="side-icon-slot"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg></span></span><span class="label">Home</span></a>
+        <a class="sidebar-tab active" href="search-results.html"><span class="side-icon-slot"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></span></span><span class="label">Search</span></a>
+        <a class="sidebar-tab" href="analytics.html"><span class="side-icon-slot"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></span></span><span class="label">Analytics</span></a>
+        <a class="sidebar-tab" href="projects.html"><span class="side-icon-slot"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg></span></span><span class="label">Projects</span></a>
+        <a class="sidebar-tab" href="library.html"><span class="side-icon-slot"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></span></span><span class="label">Library</span></a>
+        <a class="sidebar-tab" href="upload-asset.html"><span class="side-icon-slot"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="3" x2="6" y2="15"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M18 9a9 9 0 0 1-9 9"/></svg></span></span><span class="label">Workflows</span></a>
+        <a class="sidebar-tab" href="settings.html"><span class="side-icon-slot"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span></span><span class="label">Settings</span></a>
+      </nav>
+    </div>
+    <div class="sidebar-bottom">
+      <a class="sidebar-bell" href="#">
+        <span class="side-icon-slot">
+          <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></span>
+          <span class="dot"></span>
+        </span>
+        <span class="label">Notifications</span>
+      </a>
+      <a class="sidebar-avatar-wrap" href="profile.html">
+        <span class="side-icon-slot"><span class="sidebar-avatar">RS<span class="online-dot"></span></span></span>
+        <span class="who"><span class="name">Rajiv Sharma</span><br><span class="role">AI Engineer</span></span>
+      </a>
+    </div>
+  </aside>
+
+  <!-- Tap-out area behind the mobile drawer -->
+  <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+  <nav class="bottom-nav">
+    <a href="index.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg></span>Home</a>
+    <a class="active" href="search-results.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></span>Search</a>
+    <a class="upload" href="upload-asset.html"><span class="icon-circle"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span></span>Upload</a>
+    <a href="library.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></span>Library</a>
+    <a href="profile.html"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>Profile</a>
+  </nav>
+
+  <div class="main-area">
+    <header class="topheader">
+      <div class="breadcrumb">
+        <button class="menu-toggle-btn" id="sidebarToggle" aria-label="Open menu" aria-expanded="false" aria-controls="sidebar">
+          <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></span>
+        </button>
+        <img class="brand-logo" src="https://www.figma.com/api/mcp/asset/9f339aca-f201-42a9-834d-b065c3e06549.svg" alt="Tata Motors">
+        <span class="sep">|</span>
+        <span class="section-name">Model Discovery &amp; Search</span>
+      </div>
+      <div class="mobile-logo"><img src="https://www.figma.com/api/mcp/asset/9f339aca-f201-42a9-834d-b065c3e06549.svg" alt="Tata Motors"></div>
+      <div class="search-pill">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></span>
+        <input type="text" placeholder="Global Search...">
+        <span class="kbd">⌘K</span>
+      </div>
+      <div class="header-right-mobile">
+        <button class="mobile-bell" type="button" aria-label="Notifications">
+          <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></span>
+          <span class="dot"></span>
+        </button>
+        <a class="mobile-avatar-link" href="profile.html" aria-label="Profile">
+          <span class="mobile-avatar">RS</span>
+        </a>
+      </div>
+    </header>
+
+    <main class="content content-narrow">
+      <div class="width-wrap gap-24">
+
+        <div class="width-wrap" style="gap:16px;">
+          <div class="asset-title-row">
+            <div>
+              <div class="asset-crumb"><a class="muted" href="search-results.html">Search result listing</a><span class="muted">/</span><span class="current">Natural Language Processing (NLP)</span></div>
+              <h1>Natural Language Processing (NLP)</h1>
+            </div>
+            <span class="badge success">Deployed</span>
+          </div>
+          <p class="asset-desc">This model uses real-time telemetry from 12,000+ commercial vehicles to predict battery health degradation and recommend proactive maintenance windows. It is currently deployed across 3 logistics hubs and supports automated alerting for critical battery anomalies.</p>
+        </div>
+
+        <div class="tabs">
+          <span class="tab-pill active">Overview</span>
+          <span class="tab-pill">Performance</span>
+          <span class="tab-pill">Datasets</span>
+          <span class="tab-pill">API</span>
+          <span class="tab-pill">Logs</span>
+        </div>
+        <hr class="divider">
+
+        <div class="detail-layout">
+          <div class="detail-left">
+
+            <div>
+              <div class="summary-header" style="margin-bottom:16px;">
+                <p class="section-title">References</p>
+                <a class="expand-link" style="color:var(--blue)" href="library.html">View All</a>
+              </div>
+              <div class="refs-row">
+                <div class="ref-card">
+                  <div class="ref-thumb" style="background-image:url('https://picsum.photos/seed/tata-analytics/400/300')"></div>
+                  <div class="ref-meta"><p>Predictive Analytics Suite</p><p>Last Revision</p></div>
+                </div>
+                <div class="ref-card">
+                  <div class="ref-thumb" style="background-image:url('https://picsum.photos/seed/tata-mlmodel/400/300')"></div>
+                  <div class="ref-meta"><p>Machine Learning Model</p><p>Portfolio Roadmap</p></div>
+                </div>
+                <div class="ref-card">
+                  <div class="ref-thumb" style="background-image:url('https://picsum.photos/seed/tata-finance/400/300')"></div>
+                  <div class="ref-meta"><p>Refinancing with AI</p><p>Scalable Players</p></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="card bordered pad-20">
+              <div class="summary-header">
+                <p class="section-title">Generated Summary</p>
+                <span class="copy-link"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></span>Copy</span>
+              </div>
+              <div class="summary-text" style="margin-top:16px;">
+                <p>Natural Language Processing (NLP) is a foundational capability for extracting insights from unstructured text. In the food industry, NLP can be applied to supplier reviews, customer feedback, and regulatory compliance documents to identify risk signals, sentiment shifts, and quality control anomalies.</p>
+                <p>This asset uses transformer-based architectures to classify intent, detect entities, and summarize long-form documents. It is optimized for low-latency inference and supports automated alerting for critical thresholds, making it suitable for real-time monitoring and decision support workflows.</p>
+                <p>Key applications include supplier risk scoring, complaint routing, and compliance monitoring. By integrating NLP with existing data pipelines, teams can reduce manual review time, improve accuracy, and respond faster to emerging trends and operational issues.</p>
+              </div>
+            </div>
+
+            <div class="card bordered pad-20">
+              <p class="section-title" style="margin-bottom:16px;">Related Assets</p>
+              <div class="related-grid">
+                <div class="related-item"><span class="tag" style="flex-shrink:0">Machine Learning</span><div class="meta"><p>Query reuse in experts and enrichment methods</p><p>Analyzes expert queries to improve knowledge graph enrichment.</p></div></div>
+                <div class="related-item"><span class="tag" style="flex-shrink:0">Health &amp; care</span><div class="meta"><p>Diagnostic lab cell records - summarize cell messages</p><p>Summarizes lab notes and flags critical diagnostic findings.</p></div></div>
+                <div class="related-item"><span class="tag" style="flex-shrink:0">Operations</span><div class="meta"><p>Supply chain risk assessment - anomaly detection</p><p>Identifies supplier risk signals from news and regulatory filings.</p></div></div>
+              </div>
+            </div>
+
+            <div class="card bordered pad-20">
+              <p class="section-title" style="margin-bottom:12px;">Asset Details</p>
+              <div class="details-grid">
+                <div class="details-row"><div class="details-col"><span class="k">Industry</span><span class="v">Food</span></div><div class="details-col"><span class="k">Properties</span><span class="v">NLP / Text</span></div></div>
+                <hr class="divider">
+                <div class="details-row"><div class="details-col"><span class="k">Type / Pillar</span><span class="v">Business Usecase</span></div><div class="details-col"><span class="k">Programming Languages</span><span class="v">Web</span></div></div>
+                <hr class="divider">
+                <div class="details-row"><div class="details-col"><span class="k">Contrib</span><span class="v">William Alfonsus III</span></div><div class="details-col"><span class="k">Initial Release Date</span><span class="v">06/12/2024</span></div></div>
+                <hr class="divider">
+                <div class="details-row"><div class="details-col"><span class="k">Make</span><span class="v">Tata Motors</span></div><div class="details-col"><span class="k">Language</span><span class="v">English</span></div></div>
+                <hr class="divider">
+                <div class="details-row">
+                  <div class="details-col"><span class="k">OCI Services Used</span><span class="v" style="display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end"><span class="tag">ADAS</span><span class="tag">Predictive</span><span class="tag">Production</span></span></div>
+                  <div class="details-col"><span class="k">AI Alert Rating</span><span class="v">High</span></div>
+                </div>
+                <hr class="divider">
+                <div class="details-row"><div class="details-col"><span class="k">Runtime</span><span class="v">Python 3.x</span></div><div class="details-col"><span class="k">Asset Maturity</span><span class="v">Production</span></div></div>
+                <hr class="divider">
+              </div>
+              <span class="expand-link show-all"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span>Show all ↓</span>
+            </div>
+
+          </div>
+
+          <div class="detail-right">
+            <div class="card bordered pad-20">
+              <p class="section-title" style="margin-bottom:16px;">Sales distribution</p>
+              <div class="donut-wrap">
+                <div class="donut"><div class="donut-center"><span class="lbl">Distribution</span><span class="val">50%</span></div></div>
+                <div class="legend">
+                  <div class="legend-row"><span class="dotname"><span class="legend-dot" style="background:#2563eb"></span>North</span><span class="amt">50%</span></div>
+                  <div class="legend-row"><span class="dotname"><span class="legend-dot" style="background:#3b82f6"></span>South</span><span class="amt">25%</span></div>
+                  <div class="legend-row"><span class="dotname"><span class="legend-dot" style="background:#8b5cf6"></span>East</span><span class="amt">25%</span></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="card bordered pad-20">
+              <p class="section-title" style="margin-bottom:16px;">Top Item scores</p>
+              <div style="display:flex;flex-direction:column;gap:12px;">
+                <div class="bar-row"><span class="lbl">BKR</span><div class="bar-track"><div class="bar-fill" style="width:100%;background:#2563eb"></div></div><span class="amt">100</span></div>
+                <div class="bar-row"><span class="lbl">SRU</span><div class="bar-track"><div class="bar-fill" style="width:85%;background:#3b82f6"></div></div><span class="amt">85</span></div>
+                <div class="bar-row"><span class="lbl">IRT</span><div class="bar-track"><div class="bar-fill" style="width:70%;background:#8b5cf6"></div></div><span class="amt">70</span></div>
+                <div class="bar-row"><span class="lbl">MNE</span><div class="bar-track"><div class="bar-fill" style="width:65%;background:#2563eb"></div></div><span class="amt">65</span></div>
+                <div class="bar-row"><span class="lbl">PRQ</span><div class="bar-track"><div class="bar-fill" style="width:55%;background:#3b82f6"></div></div><span class="amt">55</span></div>
+              </div>
+            </div>
+
+            <div class="card bordered pad-20">
+              <p class="section-title" style="margin-bottom:12px;">Related keywords</p>
+              <div class="tags-row"><span class="tag">NLP</span><span class="tag">Text</span><span class="tag">Sentiment</span><span class="tag">Summarization</span><span class="tag">Entity</span><span class="tag">Classification</span></div>
+            </div>
+
+            <div class="card bordered pad-20">
+              <div class="feedback-row">
+                <button class="btn btn-success">Feedback</button>
+                <a class="expand-link" href="library.html">Edit</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+
+    <footer class="sitefooter">
+      <div class="sitefooter-inner">
+        <span>© 2025 Oracle Legal Notice Terms of Use and Privacy</span>
+        <span><b>Last updated</b>: January 11, 2025</span>
+      </div>
+    </footer>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
