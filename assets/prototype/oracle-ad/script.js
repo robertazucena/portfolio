@@ -544,7 +544,22 @@ window.addEventListener('mousemove', e=>{
 window.addEventListener('mouseleave', ()=>{ px = 0; py = 0; });
 
 function tickParallax(){
-  // idle auto-drift when pointer is centered/inactive (nice on touch devices too)
+  // On touch devices there's no real pointer driving any of this — it's all
+  // idle sine/cosine drift for ambient motion. That's not worth what it
+  // costs: every frame here was rewriting inline `transform` on 14 floaters
+  // (each with a CSS `transition:transform 0.15s linear`, so the 16ms-later
+  // JS write interrupts that transition before it finishes — stacking
+  // dozens of overlapping, never-completing transitions), plus #stage and
+  // #gridFloor, several of which sit under filter:drop-shadow/blur layers.
+  // That combination of constant transform writes + interrupted transitions
+  // + expensive filters is what was still flickering on real phones even
+  // after gating the icon-glow tilt alone. Freezing all of it on touch
+  // devices and leaning on the existing CSS keyframe animations (bob,
+  // twinkle, glowPulse) for ambient motion removes that load entirely while
+  // keeping the scene from looking static.
+  if(isCoarsePointer) return;
+
+  // idle auto-drift when pointer is centered/inactive (desktop only now)
   idleT += 0.006;
   const idleX = Math.sin(idleT) * 0.15;
   const idleY = Math.cos(idleT*0.8) * 0.1;
@@ -565,11 +580,9 @@ function tickParallax(){
     node.style.transform = `translate3d(${mx}px, ${my}px, ${tz.toFixed(1)}px) rotateY(${rotY.toFixed(2)}deg) rotateX(${rotX.toFixed(2)}deg)`;
   });
 
-  if(!isCoarsePointer){
-    const activeGraphic = stage.querySelector('.slide.active [data-tilt]');
-    if(activeGraphic){
-      activeGraphic.style.transform = `rotateX(${(-tpy*10).toFixed(2)}deg) rotateY(${(tpx*14 - navImpulse*10).toFixed(2)}deg) translateZ(20px)`;
-    }
+  const activeGraphic = stage.querySelector('.slide.active [data-tilt]');
+  if(activeGraphic){
+    activeGraphic.style.transform = `rotateX(${(-tpy*10).toFixed(2)}deg) rotateY(${(tpx*14 - navImpulse*10).toFixed(2)}deg) translateZ(20px)`;
   }
   stage.style.transform = `rotateX(${(-tpy*1.6).toFixed(2)}deg) rotateY(${(tpx*2.2 - navImpulse*2.8).toFixed(2)}deg)`;
 
