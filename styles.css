@@ -92,8 +92,8 @@ body{background:var(--bg-0);}
 body::before{
   content:''; position:fixed; inset:0; z-index:0; pointer-events:none;
   background:
-    radial-gradient(1200px 700px at 78% 8%, var(--glow-1), transparent 60%),
-    radial-gradient(900px 600px at 15% 85%, var(--glow-2), transparent 55%);
+    radial-gradient(1400px 850px at 78% 8%, rgba(180,110,255,0.32), transparent 62%),
+    radial-gradient(1100px 750px at 15% 85%, rgba(240,130,196,0.24), transparent 58%);
 }
 
 #bg3d{
