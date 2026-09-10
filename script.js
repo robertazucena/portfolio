@@ -56,7 +56,7 @@
         (a[2] + (b[2] - a[2]) * f) / 255
       ];
     }
-    var RADIUS = 43;
+    var RADIUS = 36.55; /* 15% smaller than the original 43 */
     var shapeDefs = [
       function(){ return new THREE.TetrahedronGeometry(RADIUS, 0); },
       function(){ return new THREE.OctahedronGeometry(RADIUS, 0); },
@@ -238,8 +238,7 @@ updateClock(); setInterval(updateClock,15000);
   if(!win || !body || !hiddenInput) return;
 
   function focusInput(e){
-    if(isMobile()) return;
-    if(e) e.preventDefault();
+    if(e && e.pointerType !== 'touch') e.preventDefault();
     hiddenInput.focus();
   }
   win.addEventListener('pointerdown', focusInput);
@@ -684,6 +683,26 @@ function positionMailNearDock(){
   w.style.left = Math.round(left) + 'px';
   w.style.bottom = '130px';
   w.style.top = 'auto';
+}
+
+/* opens the Email Me window the same way the dock icon does — reused by the
+   dock click handler and by the "Email Rob" button inside the AI chat, so
+   escalating from chat keeps visitors on-site instead of bouncing them out
+   to their own mail client */
+function openMailWindow(){
+  const w = document.getElementById('win-mail');
+  const backdrop = document.getElementById('mail-backdrop');
+  if(!w) return;
+  positionMailNearDock();
+  if(backdrop) backdrop.classList.add('show');
+  if(minimizedThumbs[w.id]) restoreWin(w);
+  else openWin(w);
+  requestAnimationFrame(()=>{
+    requestAnimationFrame(()=>{ if(window.syncMailWindowHeight) window.syncMailWindowHeight(); });
+  });
+  if(isMobile()){
+    requestAnimationFrame(()=> w.scrollIntoView({behavior:'smooth', block:'start'}));
+  }
 }
 
 function makeDraggable(win){
@@ -1179,13 +1198,24 @@ if(dockResetBtn){
     const el = document.createElement('div');
     el.className = 'chat-msg assistant';
     el.innerHTML = `<p>It looks like I might not be getting you the answers you need — want to talk to Rob directly instead?</p>
-      <a class="whatsapp-btn" href="${WHATSAPP_LINK}" target="_blank" rel="noopener">
-        <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor"><path d="M16.004 3C9.107 3 3.51 8.597 3.51 15.494c0 2.727.883 5.253 2.383 7.312L4 29l6.36-1.858a12.44 12.44 0 0 0 5.644 1.352h.005c6.897 0 12.494-5.597 12.494-12.494C28.503 8.597 22.906 3 16.004 3zm0 22.85a10.32 10.32 0 0 1-5.263-1.44l-.378-.224-3.775 1.103 1.12-3.68-.246-.378a10.31 10.31 0 0 1-1.588-5.517c0-5.713 4.65-10.36 10.363-10.36 5.712 0 10.36 4.647 10.36 10.36 0 5.713-4.648 10.136-10.593 10.136zm5.727-7.73c-.314-.157-1.86-.918-2.148-1.022-.288-.105-.498-.157-.708.157-.21.314-.812 1.022-.996 1.232-.183.21-.367.236-.681.079-.314-.157-1.325-.488-2.523-1.556-.933-.832-1.563-1.86-1.746-2.174-.183-.314-.02-.484.138-.64.142-.14.314-.367.472-.55.157-.183.21-.314.314-.524.105-.21.052-.393-.026-.55-.079-.157-.708-1.706-.97-2.336-.256-.615-.516-.532-.708-.542l-.603-.011a1.16 1.16 0 0 0-.838.393c-.288.314-1.1 1.075-1.1 2.622s1.126 3.043 1.283 3.253c.157.21 2.217 3.386 5.373 4.75.75.324 1.335.518 1.79.663.752.24 1.436.206 1.978.125.603-.09 1.86-.76 2.122-1.494.262-.734.262-1.363.183-1.494-.078-.13-.288-.21-.602-.367z"/></svg>
-        Chat on WhatsApp
-      </a>`;
+      <div class="escalation-actions">
+        <a class="whatsapp-btn" href="${WHATSAPP_LINK}" target="_blank" rel="noopener">
+          <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor"><path d="M16.004 3C9.107 3 3.51 8.597 3.51 15.494c0 2.727.883 5.253 2.383 7.312L4 29l6.36-1.858a12.44 12.44 0 0 0 5.644 1.352h.005c6.897 0 12.494-5.597 12.494-12.494C28.503 8.597 22.906 3 16.004 3zm0 22.85a10.32 10.32 0 0 1-5.263-1.44l-.378-.224-3.775 1.103 1.12-3.68-.246-.378a10.31 10.31 0 0 1-1.588-5.517c0-5.713 4.65-10.36 10.363-10.36 5.712 0 10.36 4.647 10.36 10.36 0 5.713-4.648 10.136-10.593 10.136zm5.727-7.73c-.314-.157-1.86-.918-2.148-1.022-.288-.105-.498-.157-.708.157-.21.314-.812 1.022-.996 1.232-.183.21-.367.236-.681.079-.314-.157-1.325-.488-2.523-1.556-.933-.832-1.563-1.86-1.746-2.174-.183-.314-.02-.484.138-.64.142-.14.314-.367.472-.55.157-.183.21-.314.314-.524.105-.21.052-.393-.026-.55-.079-.157-.708-1.706-.97-2.336-.256-.615-.516-.532-.708-.542l-.603-.011a1.16 1.16 0 0 0-.838.393c-.288.314-1.1 1.075-1.1 2.622s1.126 3.043 1.283 3.253c.157.21 2.217 3.386 5.373 4.75.75.324 1.335.518 1.79.663.752.24 1.436.206 1.978.125.603-.09 1.86-.76 2.122-1.494.262-.734.262-1.363.183-1.494-.078-.13-.288-.21-.602-.367z"/></svg>
+          Chat on WhatsApp
+        </a>
+        <button type="button" class="email-rob-btn" id="escalation-email-btn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 6l9 7 9-7"/></svg>
+          Email Rob
+        </button>
+      </div>`;
     row.appendChild(avatar);
     row.appendChild(el);
     chatMessages.appendChild(row);
+    const emailBtn = el.querySelector('#escalation-email-btn');
+    if(emailBtn) emailBtn.addEventListener('click', ()=>{
+      closeChat();
+      openMailWindow();
+    });
     chatMessages.parentElement.scrollTop = chatMessages.parentElement.scrollHeight;
   }
 
@@ -2149,16 +2179,7 @@ document.querySelectorAll('.dockitem').forEach(d=>{
       const w=document.getElementById('win-about'); openWin(w); renderFinderPane('documents');
       anchorToWindow(w);
     } else if(action==='mail'){
-      const w=document.getElementById('win-mail');
-      const backdrop=document.getElementById('mail-backdrop');
-      positionMailNearDock();
-      if(backdrop) backdrop.classList.add('show');
-      if(minimizedThumbs[w.id]) restoreWin(w);
-      else openWin(w);
-      requestAnimationFrame(()=>{
-        requestAnimationFrame(()=>{ if(window.syncMailWindowHeight) window.syncMailWindowHeight(); });
-      });
-      if(isMobile()) anchorToWindow(w);
+      openMailWindow();
     } else if(action==='linkedin'){
       window.open('https://www.linkedin.com/in/robertazucena/','_blank');
     }

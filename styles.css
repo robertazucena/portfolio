@@ -498,6 +498,17 @@ body.no-webgl #desktop{
 }
 .whatsapp-btn:hover{opacity:.9; transform:translateY(-1px);}
 .whatsapp-btn:active{transform:translateY(0);}
+.escalation-actions{display:flex; flex-wrap:wrap; gap:8px; margin-top:8px;}
+.escalation-actions .whatsapp-btn{margin-top:0;}
+.email-rob-btn{
+  display:inline-flex; align-items:center; gap:8px;
+  background:var(--purple); color:#fff; border:none; border-radius:22px;
+  padding:7px 10px; font-size:12px; font-weight:600; font-family:inherit;
+  cursor:pointer; box-shadow:0 6px 16px -6px rgba(155,126,240,0.5);
+  transition:opacity .15s ease, transform .15s ease;
+}
+.email-rob-btn:hover{opacity:.9; transform:translateY(-1px);}
+.email-rob-btn:active{transform:translateY(0);}
 #connect-chat-messages{display:flex; flex-direction:column; gap:12px;}
 .chat-row{display:flex; align-items:flex-end; gap:9px; align-self:flex-start; max-width:90%;}
 .chat-avatar{width:34px; height:34px; border-radius:50%; object-fit:cover; flex:0 0 auto; box-shadow:0 2px 6px -2px rgba(0,0,0,.35);}
@@ -666,9 +677,20 @@ body.no-webgl #desktop{
 }
 .dockitem{
   width:46px; height:46px; border-radius:12px; display:flex; align-items:center; justify-content:center;
-  background:rgba(var(--on-surface),0.05); cursor:pointer; position:relative; transition:transform .15s ease, background .15s ease;
+  background:rgba(var(--on-surface),0.05); cursor:pointer; position:relative; transition:background .15s ease;
 }
-.dockitem:hover{transform:translateY(-8px); background:rgba(var(--on-surface),0.09);}
+@keyframes dock-card-spin{
+  0%{ transform:translateY(0) perspective(1200px) rotateY(0deg); }
+  30%{ transform:translateY(-8px) perspective(1200px) rotateY(0deg); }
+  100%{ transform:translateY(-8px) perspective(1200px) rotateY(360deg); }
+}
+.dockitem:hover{
+  animation:dock-card-spin .5s ease-out forwards;
+  background:linear-gradient(135deg, rgba(155,126,240,.22), rgba(240,130,196,.16));
+}
+@media (prefers-reduced-motion: reduce){
+  .dockitem:hover{ animation:none; transform:translateY(-8px); }
+}
 .dockitem::after{
   content:''; position:absolute; bottom:-8px; width:4px; height:4px; border-radius:50%;
   background:var(--text-low); opacity:0;
