@@ -243,6 +243,16 @@ updateClock(); setInterval(updateClock,15000);
   }
   win.addEventListener('pointerdown', focusInput);
 
+  /* mobile: a tap fires pointerdown (focuses fine) but is then followed by a
+     synthetic "click" once the finger lifts, which some mobile browsers use
+     to blur any off-screen input — closing the keyboard right after it opens.
+     Suppressing that trailing click (not the pointerdown/scroll itself) stops
+     the auto-close without needing a long-press to work around it. */
+  win.addEventListener('touchend', e=>{
+    e.preventDefault();
+    hiddenInput.focus();
+  }, {passive:false});
+
   function escapeHtml(str){
     return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
   }
