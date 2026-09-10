@@ -329,6 +329,22 @@ header.nav.scrolled{padding:1.15rem 6vw;background:rgba(255,255,255,.86);backdro
 .chapter-card .cbody{display:flex;flex-direction:column;}
 .chapter-card .cmark{width:100%;margin:1rem 0;opacity:.85;}
 .chapter-card .cmark svg{display:block;width:100%;height:auto;}
+.chapter-card .cheader{display:flex;align-items:flex-start;justify-content:space-between;gap:.6rem;}
+.cowned-badge{
+  display:inline-flex;align-items:center;gap:.4rem;
+  font-family:var(--mono);font-size:.56rem;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--ink-soft);border:1px solid var(--line-strong);border-radius:100px;
+  padding:.25rem .6rem .25rem .5rem;flex:none;background:var(--paper-2);
+}
+.cowned-badge .dot{width:6px;height:6px;border-radius:50%;flex:none;border:1px solid var(--line-strong);}
+.cowned-badge[data-owned-color="black"] .dot{background:#18150f;}
+.cowned-badge[data-owned-color="white"] .dot{background:#ffffff;}
+.chapter-card .cthumb{
+  width:100%;margin:.6rem 0;opacity:0;transform:translateY(6px);
+  transition:opacity .6s var(--ease),transform .6s var(--ease);
+}
+.chapter-card .cthumb.show{opacity:1;transform:translateY(0);}
+.chapter-card .cthumb img{display:block;width:100%;height:auto;max-height:150px;object-fit:contain;}
 
 /* ============ HOW IT WORKS ============ */
 .howitworks{padding:14vh 0;}
@@ -1002,6 +1018,19 @@ footer{border-top:1px solid var(--line);padding:8vh 0 4vh;}
        3. Move the placeholder 'sealed' entry for that number, or add
           a new one at the end for the next sealed chapter.
      ------------------------------------------------------------ */
+  /* ---------- OWNERSHIP (persisted per-browser, drives archive thumbnails) ---------- */
+  var OWNED_KEY = 'after_owned_chapters';
+  function loadOwnedChapters(){
+    var raw = localStorage.getItem(OWNED_KEY);
+    if(!raw) return {};
+    try { return JSON.parse(raw); } catch(e){ return {}; }
+  }
+  function markChapterOwned(chapterNumber, colorKey){
+    var owned = loadOwnedChapters();
+    owned[chapterNumber] = colorKey;
+    localStorage.setItem(OWNED_KEY, JSON.stringify(owned));
+  }
+
   var chapterData = [
     {
       number:'01', keyword:'The After.', teaser:'What remains once the noise is gone.', status:'available', mark:chapterMarkSVG,
@@ -1015,27 +1044,44 @@ footer{border-top:1px solid var(--line);padding:8vh 0 4vh;}
   ];
 
   var archiveGrid = document.getElementById('archiveGrid');
-  chapterData.forEach(function(ch){
-    var card = document.createElement('div');
-    card.className = 'chapter-card reveal ' + (ch.status==='available' ? 'available' : 'locked');
-    card.innerHTML =
-      '<div class="cnum">Chapter ' + ch.number + '</div>' +
-      '<div class="cbody">' +
-        (ch.mark ? '<div class="cmark">' + ch.mark + '</div>' : '') +
-        '<div class="ctext">' +
-          '<div class="ckeyword"' + (ch.status!=='available' ? ' aria-label="Chapter sealed"' : '') + '>' + ch.keyword + '</div>' +
-          '<div class="cteaser">' + ch.teaser + '</div>' +
-          '<div class="cstatus" style="margin-top:.6rem;">' + (ch.status==='available' ? 'Read the chapter →' : 'Sealed') + '</div>' +
-        '</div>' +
-      '</div>';
-    if(ch.status==='available' && ch.href){
-      card.addEventListener('click', function(){
-        window.location.href = ch.href;
-      });
-    }
-    archiveGrid.appendChild(card);
-    io.observe(card);
-  });
+  function renderArchiveGrid(){
+    var owned = loadOwnedChapters();
+    archiveGrid.innerHTML = '';
+    chapterData.forEach(function(ch){
+      var card = document.createElement('div');
+      card.className = 'chapter-card reveal ' + (ch.status==='available' ? 'available' : 'locked');
+
+      var ownedColor = owned[ch.number];
+      var ownedBadge = '';
+      var thumbHtml = '';
+      if(ownedColor){
+        var colorName = ownedColor === 'black' ? 'Black' : 'White';
+        ownedBadge = '<span class="cowned-badge" data-owned-color="' + ownedColor + '"><span class="dot"></span>Owned — ' + colorName + '</span>';
+        if(ch.number === '01' && typeof teePhotos !== 'undefined' && teePhotos[ownedColor]){
+          thumbHtml = '<div class="cthumb show"><img src="' + teePhotos[ownedColor].front + '" alt="Your ' + colorName.toLowerCase() + ' The After. — Chapter 01 tee"></div>';
+        }
+      }
+
+      card.innerHTML =
+        '<div class="cheader"><div class="cnum">Chapter ' + ch.number + '</div>' + ownedBadge + '</div>' +
+        '<div class="cbody">' +
+          (thumbHtml || (ch.mark ? '<div class="cmark">' + ch.mark + '</div>' : '')) +
+          '<div class="ctext">' +
+            '<div class="ckeyword"' + (ch.status!=='available' ? ' aria-label="Chapter sealed"' : '') + '>' + ch.keyword + '</div>' +
+            '<div class="cteaser">' + ch.teaser + '</div>' +
+            '<div class="cstatus" style="margin-top:.6rem;">' + (ch.status==='available' ? 'Read the chapter →' : 'Sealed') + '</div>' +
+          '</div>' +
+        '</div>';
+      if(ch.status==='available' && ch.href){
+        card.addEventListener('click', function(){
+          window.location.href = ch.href;
+        });
+      }
+      archiveGrid.appendChild(card);
+      io.observe(card);
+    });
+  }
+  renderArchiveGrid();
 
   /* ---------- COLOR SELECTOR ---------- */
   var colorGrid = document.getElementById('colorGrid');
@@ -1129,7 +1175,7 @@ footer{border-top:1px solid var(--line);padding:8vh 0 4vh;}
 
   ownBtn.addEventListener('click', function(){
     if(!currentSize || currentSize.remain<=0 || !currentColor) return;
-    cart.push({chapter:'01', size:currentSize.s, color:currentColor.label, price: chapter01.price});
+    cart.push({chapter:'01', size:currentSize.s, color:currentColor.label, colorKey:currentColor.key, price: chapter01.price});
     currentSize.remain -= 1;
     var pct = Math.round((currentSize.remain/chapter01.total)*100);
     inventoryLine.innerHTML = currentSize.remain + ' / ' + chapter01.total + ' remaining' +
@@ -1221,6 +1267,11 @@ footer{border-top:1px solid var(--line);padding:8vh 0 4vh;}
     };
     orders.push(newOrder);
     localStorage.setItem(ORDERS_KEY, JSON.stringify(orders));
+
+    cart.forEach(function(item){
+      markChapterOwned(item.chapter, item.colorKey);
+    });
+    renderArchiveGrid();
 
     cartItemsEl.innerHTML =
       '<div class="cart-confirm">' +
