@@ -90,7 +90,7 @@ body{background:var(--bg-0);}
    the preloader fades out there's zero visual jump: this layer was already here
    underneath the whole time and just keeps going after #preloader is removed */
 body::before{
-  content:''; position:fixed; inset:0; z-index:-1; pointer-events:none;
+  content:''; position:fixed; inset:0; z-index:0; pointer-events:none;
   background:
     radial-gradient(1200px 700px at 78% 8%, var(--glow-1), transparent 60%),
     radial-gradient(900px 600px at 15% 85%, var(--glow-2), transparent 55%);
