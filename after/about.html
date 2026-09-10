@@ -363,39 +363,58 @@ header.nav.scrolled{padding:1.15rem 6vw;background:rgba(255,255,255,.86);backdro
 .about-lines p.thin{color:var(--ink-faint);font-family:var(--sans);font-size:.95rem;line-height:1.75;max-width:58ch;}
 
 /* ---- About: process strip ---- */
-.about-process{
-  position:relative;z-index:1;margin-top:1.4rem;
+.about-process-row{
+  display:grid;grid-template-columns:1fr 1fr;gap:5vw;align-items:stretch;
+  margin-top:3.2rem;
 }
+.about-process{position:relative;z-index:1;}
 .about-process .proc-label{
   font-family:var(--mono);font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;
-  color:var(--ink-faint);margin-bottom:2.2rem;
+  color:var(--ink-faint);margin-bottom:3rem;
 }
-.proc-steps{display:flex;gap:0;}
-.proc-step{flex:1;position:relative;padding-right:1.8rem;}
-.proc-step:not(:last-child)::after{
-  content:'';position:absolute;top:23px;left:44px;right:0;height:1px;background:var(--line-strong);
-}
+.proc-steps{display:flex;flex-direction:column;gap:2rem;}
+.proc-step{display:flex;gap:1.3rem;align-items:flex-start;}
 .proc-icon{
   width:46px;height:46px;border:1px solid var(--line-strong);border-radius:50%;
   display:flex;align-items:center;justify-content:center;background:var(--paper);
-  position:relative;z-index:1;margin-bottom:1.1rem;transition:border-color .3s,transform .3s var(--ease);
+  position:relative;z-index:1;flex:none;transition:border-color .3s,transform .3s var(--ease);
 }
 .proc-step:hover .proc-icon{border-color:var(--ink);transform:translateY(-3px);}
 .proc-icon svg{width:19px;height:19px;stroke:var(--ink);}
+.proc-text{padding-top:.2rem;}
 .proc-step .proc-num{
   font-family:var(--mono);font-size:.62rem;color:var(--ink-faint);letter-spacing:.05em;
-  position:absolute;top:0;right:1.8rem;
+  display:block;margin-bottom:3px;
 }
-.proc-step h4{font-family:var(--serif);font-size:1.2rem;font-weight:500;margin-bottom:.4rem;}
-.proc-step p{font-size:.8rem;color:var(--ink-faint);line-height:1.65;max-width:24ch;}
+.proc-step h4{font-family:var(--serif);font-size:1.2rem;font-weight:500;margin:0px;}
+.proc-step p{font-size:.8rem;color:var(--ink-faint);line-height:1.65;max-width:34ch;}
 @media (max-width:800px){
-  .proc-steps{flex-direction:column;gap:2.2rem;}
-  .proc-step:not(:last-child)::after{display:none;}
-  .proc-step{padding-right:0;}
-  .proc-step .proc-num{right:auto;left:60px;top:14px;}
+  .about-process-row{grid-template-columns:1fr;gap:2.4rem;}
 }
 
 /* ---- About: brand stats ---- */
+.about-plate{
+  position:relative;z-index:1;margin:0;
+  width:100%;height:100%;min-height:360px;
+  display:flex;flex-direction:column;
+  border:1px solid var(--line-strong);overflow:hidden;
+}
+.about-plate img{
+  display:block;width:100%;height:100%;flex:1;min-height:0;object-fit:cover;object-position:center 18%;
+  transform:scale(1.12);transition:transform 1.6s var(--ease-soft) .1s;
+}
+.about-plate.in img{transform:scale(1);}
+.about-plate-curtain{
+  position:absolute;inset:0 0 44px 0;z-index:2;background:var(--paper-2);
+  transform-origin:left center;transition:transform 1.2s var(--ease-soft) .1s;
+}
+.about-plate.in .about-plate-curtain{transform:scaleX(0);}
+.about-plate figcaption{
+  flex:none;padding:.9rem 1.2rem;background:var(--paper-2);
+  font-family:var(--mono);font-size:.64rem;letter-spacing:.05em;color:var(--ink-faint);
+  text-align:left;
+}
+
 .about-stats{
   position:relative;z-index:1;display:grid;grid-template-columns:repeat(4,1fr);
   gap:1px;background:var(--line-strong);border:1px solid var(--line-strong);
@@ -531,10 +550,10 @@ footer{border-top:1px solid var(--line);padding:8vh 0 4vh;}
 
 <!-- ============ NAV ============ -->
 <header class="nav" id="siteNav">
-  <a href="after.html" class="nav-mark">After</a>
+  <a href="index.html" class="nav-mark">After</a>
   <nav class="nav-links">
-    <a href="after.html#chapters">Chapters</a>
-    <a href="after.html#story-start">Read</a>
+    <a href="index.html#chapters">Chapters</a>
+    <a href="chapter-01.html">Read</a>
     <a href="about.html" aria-current="page">About</a>
   </nav>
   <div class="nav-cart">
@@ -583,42 +602,58 @@ footer{border-top:1px solid var(--line);padding:8vh 0 4vh;}
   </div>
 
   <div class="wrap">
-    <div class="about-process">
-      <div class="proc-label reveal">How a chapter becomes a shirt</div>
-      <div class="proc-steps">
-        <div class="proc-step reveal">
-          <span class="proc-num">01</span>
-          <div class="proc-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5V5.6c0-.9.7-1.6 1.6-1.6h9.8c.4 0 .8.2 1.1.5l2.4 2.4c.3.3.5.7.5 1.1v11.5c0 .9-.7 1.6-1.6 1.6H5.6c-.9 0-1.6-.7-1.6-1.6z"/><path d="M9 8h6M9 12h6M9 16h3.5"/></svg>
+    <div class="about-process-row">
+      <div class="about-process">
+        <div class="proc-label reveal">How a chapter becomes a shirt</div>
+        <div class="proc-steps">
+          <div class="proc-step reveal">
+            <div class="proc-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5V5.6c0-.9.7-1.6 1.6-1.6h9.8c.4 0 .8.2 1.1.5l2.4 2.4c.3.3.5.7.5 1.1v11.5c0 .9-.7 1.6-1.6 1.6H5.6c-.9 0-1.6-.7-1.6-1.6z"/><path d="M9 8h6M9 12h6M9 16h3.5"/></svg>
+            </div>
+            <div class="proc-text">
+              <span class="proc-num">01</span>
+              <h4>Write</h4>
+              <p>A short chapter is written first — the story always comes before the shirt.</p>
+            </div>
           </div>
-          <h4>Write</h4>
-          <p>A short chapter is written first — the story always comes before the shirt.</p>
-        </div>
-        <div class="proc-step reveal d1">
-          <span class="proc-num">02</span>
-          <div class="proc-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3.2"/><circle cx="12" cy="12" r="7.3" opacity=".55"/><circle cx="12" cy="12" r="10.6" opacity=".3"/></svg>
+          <div class="proc-step reveal d1">
+            <div class="proc-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3.2"/><circle cx="12" cy="12" r="7.3" opacity=".55"/><circle cx="12" cy="12" r="10.6" opacity=".3"/></svg>
+            </div>
+            <div class="proc-text">
+              <span class="proc-num">02</span>
+              <h4>Distill</h4>
+              <p>One image from the story is chosen — a single mark that carries the whole chapter.</p>
+            </div>
           </div>
-          <h4>Distill</h4>
-          <p>One image from the story is chosen — a single mark that carries the whole chapter.</p>
-        </div>
-        <div class="proc-step reveal d2">
-          <span class="proc-num">03</span>
-          <div class="proc-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 4l-4 3.2 2.4 2.4L8 8v12h8V8l1.6 1.6L20 7.2 16 4l-2 1.6h-4L8 4z"/></svg>
+          <div class="proc-step reveal d2">
+            <div class="proc-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 4l-4 3.2 2.4 2.4L8 8v12h8V8l1.6 1.6L20 7.2 16 4l-2 1.6h-4L8 4z"/></svg>
+            </div>
+            <div class="proc-text">
+              <span class="proc-num">03</span>
+              <h4>Print</h4>
+              <p>The mark is screen-printed once per garment — fifty shirts, per size, no more.</p>
+            </div>
           </div>
-          <h4>Print</h4>
-          <p>The mark is screen-printed once per garment — fifty shirts, per size, no more.</p>
-        </div>
-        <div class="proc-step reveal d3">
-          <span class="proc-num">04</span>
-          <div class="proc-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8.5l8-4 8 4-8 4-8-4z"/><path d="M4 8.5v7l8 4 8-4v-7"/><path d="M12 12.5v7"/></svg>
+          <div class="proc-step reveal d3">
+            <div class="proc-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8.5l8-4 8 4-8 4-8-4z"/><path d="M4 8.5v7l8 4 8-4v-7"/><path d="M12 12.5v7"/></svg>
+            </div>
+            <div class="proc-text">
+              <span class="proc-num">04</span>
+              <h4>Release</h4>
+              <p>Chapter and garment go live together. When it sells out, it closes for good.</p>
+            </div>
           </div>
-          <h4>Release</h4>
-          <p>Chapter and garment go live together. When it sells out, it closes for good.</p>
         </div>
       </div>
+
+      <figure class="about-plate reveal">
+        <img src="assets/images/the-after-lifestyle-drafting.png" alt="Someone at a drafting table wearing The After. — Chapter I, working with the same care that goes into every release.">
+        <div class="about-plate-curtain" aria-hidden="true"></div>
+        <figcaption>Every chapter is worked over slowly, by hand, before it's ever printed.</figcaption>
+      </figure>
     </div>
 
     <div class="about-stats">

@@ -217,10 +217,30 @@ header.nav.scrolled{padding:1.15rem 6vw;background:rgba(255,255,255,.86);backdro
 .remain-copy p{color:var(--ink-soft);font-size:.94rem;line-height:1.85;max-width:42ch;}
 .remain-copy .def{font-family:var(--mono);font-size:.72rem;color:var(--accent);margin-top:1.4rem;letter-spacing:.02em;border-left:2px solid var(--accent-line);padding-left:.9rem;}
 
-.pg-artifact-trans{justify-content:center;text-align:center;}
-.artifact-trans-mark{font-family:var(--serif);font-weight:600;font-size:clamp(2.6rem,9vw,6rem);color:var(--ink);}
+.pg-artifact-trans{justify-content:center;}
+.artifact-trans-grid{display:grid;grid-template-columns:1fr 1fr;gap:5vw;align-items:center;width:100%;}
+.artifact-trans-text{text-align:left;}
+.artifact-trans-mark{font-family:var(--serif);font-weight:600;font-size:clamp(2.6rem,6.4vw,5rem);color:var(--ink);}
 .artifact-trans-sub{font-family:var(--sans);font-size:.95rem;color:var(--ink-soft);margin-top:1rem;line-height:1.7;}
 .artifact-trans-sub b{color:var(--ink);font-weight:600;}
+.artifact-trans-frame{
+  position:relative;overflow:hidden;padding-top:125%;
+}
+.artifact-trans-frame img{
+  position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 25%;
+  transform:scale(1.12);transition:transform 1.6s var(--ease-soft) .1s;
+}
+.artifact-trans-frame.in img{transform:scale(1);}
+.artifact-trans-curtain{
+  position:absolute;inset:0;z-index:2;background:var(--paper);
+  transform-origin:right center;transition:transform 1.2s var(--ease-soft) .1s;
+}
+.artifact-trans-frame.in .artifact-trans-curtain{transform:scaleX(0);}
+@media (max-width:800px){
+  .artifact-trans-grid{grid-template-columns:1fr;gap:2.2rem;}
+  .artifact-trans-text{text-align:center;}
+  .artifact-trans-frame{order:-1;padding-top:80%;}
+}
 
 /* ============ ARTIFACT / PRODUCT ============ */
 .pg-product{align-items:flex-start;padding-top:9vh;padding-left:0;padding-right:0;}
@@ -566,9 +586,9 @@ footer{border-top:1px solid var(--line);padding:8vh 0 4vh;}
 
 <!-- ============ NAV ============ -->
 <header class="nav" id="siteNav">
-  <a href="after.html" class="nav-mark">After</a>
+  <a href="index.html" class="nav-mark">After</a>
   <nav class="nav-links">
-    <a href="after.html#chapters">Chapters</a>
+    <a href="index.html#chapters">Chapters</a>
     <a href="chapter-01.html" aria-current="page">Read</a>
     <a href="about.html">About</a>
   </nav>
@@ -729,9 +749,15 @@ footer{border-top:1px solid var(--line);padding:8vh 0 4vh;}
 
   <!-- PAGE 07 -->
   <section class="pg pg-artifact-trans story-pg">
-    <div class="pg-inner">
-      <h2 class="artifact-trans-mark reveal">The Artifact</h2>
-      <p class="artifact-trans-sub reveal d1">Every chapter leaves something behind.<br><b>This is Chapter 01's.</b></p>
+    <div class="pg-inner artifact-trans-grid">
+      <div class="artifact-trans-text">
+        <h2 class="artifact-trans-mark reveal">The Artifact</h2>
+        <p class="artifact-trans-sub reveal d1">Every chapter leaves something behind.<br><b>This is Chapter 01's.</b></p>
+      </div>
+      <div class="artifact-trans-frame reveal d2">
+        <img src="assets/images/the-after-artifact-closeup.png" alt="Close-up of The After. — Chapter I print on the garment.">
+        <div class="artifact-trans-curtain" aria-hidden="true"></div>
+      </div>
     </div>
   </section>
 
