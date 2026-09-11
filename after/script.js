@@ -243,9 +243,10 @@
   function renderArchiveGrid(){
     var owned = loadOwnedChapters();
     archiveGrid.innerHTML = '';
-    chapterData.forEach(function(ch){
+    chapterData.forEach(function(ch, idx){
       var card = document.createElement('div');
-      card.className = 'chapter-card reveal ' + (ch.status==='available' ? 'available' : 'locked');
+      var delayClass = idx > 0 ? ' d' + Math.min(idx, 6) : '';
+      card.className = 'chapter-card reveal' + delayClass + ' ' + (ch.status==='available' ? 'available' : 'locked');
 
       var ownedColor = owned[ch.number];
       var ownedBadge = '';
@@ -307,6 +308,8 @@
   var selectedSizeLabel = document.getElementById('selectedSizeLabel');
   var inventoryLine = document.getElementById('inventoryLine');
   var ownBtn = document.getElementById('ownBtn');
+  var ownBtnLabel = ownBtn.querySelector('.btn-label');
+  var ownBtnDefaultLabel = ownBtnLabel.textContent;
   var currentSize = null;
 
   function updateOwnBtnState(){
@@ -338,6 +341,16 @@
   var cartFootEl = document.getElementById('cartFoot');
   var cartItemCountEl = document.getElementById('cartItemCount');
   var addedNote = document.getElementById('addedNote');
+  var cartOpenBtn = document.getElementById('cartOpenBtn');
+
+  /* retriggerable CSS animation — removes the class, forces a reflow,
+     then re-adds it, so the effect replays even on rapid repeat clicks */
+  function retrigger(el, cls, duration){
+    el.classList.remove(cls);
+    void el.offsetWidth;
+    el.classList.add(cls);
+    setTimeout(function(){ el.classList.remove(cls); }, duration);
+  }
 
   function renderCart(){
     cartCountEl.textContent = cart.length;
@@ -385,8 +398,20 @@
     }
     updateOwnBtnState();
     renderCart();
+
+    /* ---- "added to cart" feedback ---- */
+    ownBtnLabel.textContent = 'Added ✓';
+    retrigger(ownBtn, 'is-added', 550);
+    retrigger(cartOpenBtn, 'just-added', 550);
     addedNote.classList.add('show');
-    setTimeout(function(){ addedNote.classList.remove('show'); }, 2200);
+    clearTimeout(addedNote._hideTimer);
+    addedNote._hideTimer = setTimeout(function(){ addedNote.classList.remove('show'); }, 2200);
+    setTimeout(function(){ ownBtnLabel.textContent = ownBtnDefaultLabel; }, 1400);
+
+    /* ---- shop icon -> green check icon, reverts after 5s ---- */
+    ownBtn.classList.add('icon-success');
+    clearTimeout(ownBtn._iconTimer);
+    ownBtn._iconTimer = setTimeout(function(){ ownBtn.classList.remove('icon-success'); }, 5000);
   });
 
   /* ---------- CART DRAWER OPEN/CLOSE ---------- */
