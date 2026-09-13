@@ -199,7 +199,11 @@
           <h2>Filters</h2>
           <p class="sub">Browse by vibe or activity</p>
         </div>
-        <div class="filter-list">
+        <button type="button" class="filter-toggle" aria-expanded="false" aria-controls="filter-list">
+          <span class="filter-toggle-label">Filter: <span id="filter-toggle-value">All</span></span>
+          <svg class="filter-toggle-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="filter-list" id="filter-list">
           <button class="filter-pill is-active" data-filter="all"><span class="dot"></span>All</button>
           <button class="filter-pill" data-filter="gaming"><span class="dot"></span>Gaming</button>
           <button class="filter-pill" data-filter="e-sports"><span class="dot"></span>E-Sports</button>

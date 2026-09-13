@@ -162,7 +162,14 @@
   }
 
   document.addEventListener('keydown', function(e){
-    if(e.key === 'Escape') closeProfileModal();
+    if(e.key === 'Escape'){
+      closeProfileModal();
+      document.querySelectorAll('.filter-sidebar.is-open').forEach(function(s){
+        s.classList.remove('is-open');
+        var btn = s.querySelector('.filter-toggle');
+        if(btn) btn.setAttribute('aria-expanded', 'false');
+      });
+    }
   });
 
   /* ---------------------------------------------------------
@@ -194,6 +201,33 @@
       filter.classList.add('is-active');
       currentPage = 1;
       renderGrid();
+
+      // Mobile dropdown: reflect the choice on the toggle button, then close.
+      var sidebar = filter.closest('.filter-sidebar');
+      if(sidebar){
+        var valueEl = document.getElementById('filter-toggle-value');
+        if(valueEl) valueEl.textContent = filter.textContent.trim();
+        sidebar.classList.remove('is-open');
+        var toggleBtn = sidebar.querySelector('.filter-toggle');
+        if(toggleBtn) toggleBtn.setAttribute('aria-expanded', 'false');
+      }
+    }
+
+    var filterToggle = e.target.closest('.filter-toggle');
+    if(filterToggle){
+      var toggleSidebar = filterToggle.closest('.filter-sidebar');
+      if(toggleSidebar){
+        var willOpen = !toggleSidebar.classList.contains('is-open');
+        toggleSidebar.classList.toggle('is-open', willOpen);
+        filterToggle.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
+      }
+    } else if(!e.target.closest('.filter-sidebar')){
+      // Clicked outside the filter dropdown: close it if open.
+      document.querySelectorAll('.filter-sidebar.is-open').forEach(function(s){
+        s.classList.remove('is-open');
+        var btn = s.querySelector('.filter-toggle');
+        if(btn) btn.setAttribute('aria-expanded', 'false');
+      });
     }
 
     var pageNum = e.target.closest('.page-number');

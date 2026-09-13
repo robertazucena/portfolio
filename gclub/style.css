@@ -475,6 +475,7 @@ body.modal-open{ overflow: hidden; }
 .filter-sidebar h2{ margin: 0 0 6px; font-size: 20px; font-weight: 400; }
 .filter-sidebar .sub{ margin:0; font-size: 14px; color: var(--muted); }
 .filter-list{ display: flex; flex-direction: column; gap: 8px; }
+.filter-toggle{ display: none; }
 .filter-pill{
   display: flex; align-items: center; gap: 10px;
   background: var(--white);
@@ -716,10 +717,52 @@ hr.divider{ border: none; border-top: 1px solid var(--line); margin: 0; }
   .identity-row .name-row h1{ font-size: 30px; }
   .profile-grid{ grid-template-columns: 1fr 1fr; gap: 14px; }
   .days{ grid-template-columns: repeat(3, 1fr); }
+
+  /* Friendlier mobile filters: a "Filter" button that reveals a
+     dropdown of chips, instead of the filters always sitting on
+     the page. */
+  .filter-sidebar{
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    padding: 0;
+    border-radius: 0;
+    border-width: 0 0 1px;
+    position: sticky;
+    top: var(--nav-h);
+    z-index: 5;
+    overflow: hidden;
+  }
+  .filter-sidebar .sidebar-head{ display: none; }
+  .filter-toggle{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    background: var(--white);
+    border: none;
+    padding: 14px 16px;
+    font-size: 14px;
+    color: var(--ink);
+  }
+  .filter-toggle-label{ font-weight: 600; }
+  .filter-toggle-label #filter-toggle-value{ font-weight: 400; color: var(--muted); }
+  .filter-toggle-chevron{ transition: transform .2s var(--ease); flex-shrink: 0; }
+  .filter-sidebar.is-open .filter-toggle-chevron{ transform: rotate(180deg); }
+  .filter-sidebar.is-open .filter-toggle{ border-bottom: 1px solid var(--line); }
+  .filter-list{
+    display: none;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 14px 16px;
+  }
+  .filter-sidebar.is-open .filter-list{ display: flex; }
+  .filter-pill{ width: auto; padding: 8px 14px; }
+  .results-header{ margin-bottom: 16px; }
 }
 
 @media (max-width: 480px){
-  .profile-grid{ grid-template-columns: 1fr; }
   .join-hero h1{ font-size: 34px; }
 }
 
