@@ -956,6 +956,21 @@ hr.divider{ border: none; border-top: 1px solid var(--line); margin: 0; }
   max-width: 200px;
   opacity: 1;
 }
+@media (min-width: 1101px){
+  /* Full "web app" width: room to spare, so show every step's
+     title, not just the current one. */
+  .progress-step .label-text{
+    max-width: 200px;
+    opacity: 1;
+  }
+}
+
+.eyebrow-step-title{ display: none; }
+@media (max-width: 1100px){
+  /* Sidebar is compact (or hidden entirely on phones) below this
+     width, so the heading eyebrow carries the step title instead. */
+  .eyebrow-step-title{ display: inline; }
+}
 
 .form-column{ flex: 1; max-width: 760px; display: flex; flex-direction: column; gap: 32px; min-width: 0; }
 .form-heading .eyebrow{ color: var(--gold-deep); font-size: 13px; text-transform: uppercase; margin: 0 0 12px; }
@@ -1098,4 +1113,120 @@ hr.divider{ border: none; border-top: 1px solid var(--line); margin: 0; }
   .form-card{ padding: 24px; }
   .step-explain{ padding: 24px; }
   .app-progress{ display: none; }
+}
+
+/* =========================================================
+   Video verification step
+   ========================================================= */
+.question-list{
+  display: flex; flex-direction: column; gap: 12px;
+  margin: 0; padding: 0; list-style: none; counter-reset: qnum;
+}
+.question-list li{
+  display: flex; gap: 12px; align-items: flex-start;
+  font-size: 14px; color: var(--ink); line-height: 1.55;
+  counter-increment: qnum;
+}
+.question-list li::before{
+  content: counter(qnum);
+  flex-shrink: 0;
+  width: 22px; height: 22px; border-radius: 50%;
+  background: var(--tag-bg); color: var(--muted);
+  font-size: 12px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  margin-top: 1px;
+}
+
+.video-recorder{ display: flex; flex-direction: column; gap: 16px; }
+.video-frame{
+  background: var(--ink-strong);
+  border-radius: 16px;
+  aspect-ratio: 16/9;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 10px;
+  color: var(--gold-tint);
+  transition: background-color .2s var(--ease);
+}
+.video-frame .video-icon{ opacity: .7; }
+.video-frame p{ margin: 0; font-size: 13px; color: rgba(246,239,217,.7); }
+.video-recorder.is-recorded .video-frame{ background: #2a2620; }
+.video-recorder.is-recorded .video-frame p{ color: var(--gold-tint); }
+
+.video-controls{ display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.video-status{ font-size: 13px; color: var(--muted); display: flex; align-items: center; gap: 8px; }
+.video-status .dot{ width: 8px; height: 8px; border-radius: 50%; background: var(--line); flex-shrink: 0; }
+.video-recorder.is-recorded .video-status .dot{ background: var(--green); }
+.video-recorder.is-recorded .video-status{ color: var(--ink); font-weight: 500; }
+
+.btn.is-disabled{
+  opacity: .4;
+  pointer-events: none;
+}
+
+/* =========================================================
+   Gentlemen sign-up — plan selection & payment
+   ========================================================= */
+.plan-grid{ display: flex; gap: 16px; width: 100%; }
+.plan-card{
+  flex: 1; background: var(--white); border: 1px solid var(--line);
+  border-radius: 24px; padding: 28px; display: flex; flex-direction: column; gap: 18px;
+}
+.plan-card.is-featured{ background: var(--gold-tint); border-color: var(--gold-deep); }
+.plan-heading{ display: flex; align-items: flex-start; justify-content: space-between; }
+.plan-title-group{ display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.plan-title{ font-family: var(--font-serif); font-size: 28px; margin: 0; }
+.plan-badge{
+  background: var(--gold-deep); color: var(--white); border-radius: 999px;
+  padding: 6px 10px; font-size: 11px; font-weight: 600; text-transform: uppercase;
+}
+.plan-radio{ width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--line); flex-shrink: 0; position: relative; }
+.plan-card.is-featured .plan-radio{ border-color: var(--gold-deep); }
+.plan-radio.is-checked{ border-color: var(--gold-deep); }
+.plan-radio.is-checked::after{ content: ''; position: absolute; inset: 4px; border-radius: 50%; background: var(--gold-deep); }
+.plan-price{ display: flex; flex-direction: column; gap: 8px; }
+.plan-price .amount{ font-family: var(--font-serif); font-size: 40px; margin: 0; }
+.plan-price .period{ font-size: 14px; color: var(--muted); margin: 0; }
+.plan-desc{ font-size: 15px; color: var(--muted); line-height: 1.55; margin: 0; }
+.plan-perks{ display: flex; flex-direction: column; gap: 10px; margin: 0; padding: 0; list-style: none; }
+.plan-perk{ display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); }
+.plan-perk .dot{ width: 6px; height: 6px; border-radius: 50%; background: var(--gold-deep); flex-shrink: 0; }
+
+.order-summary{ background: var(--gold-tint); border-radius: 16px; padding: 18px; display: flex; align-items: center; justify-content: space-between; width: 100%; gap: 16px; flex-wrap: wrap; }
+.order-summary .ord-label{ color: var(--gold-deep); font-size: 12px; font-weight: 600; text-transform: uppercase; margin: 0 0 6px; }
+.order-summary .plan-line{ font-family: var(--font-serif); font-size: 22px; margin: 0; }
+.order-summary .change-link{ color: var(--gold-deep); font-size: 13px; text-decoration: underline; flex-shrink: 0; }
+
+.payment-methods{ display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.payment-methods .pm-label{ color: var(--muted); font-size: 12px; }
+.payment-badge{
+  background: #f5f2ed; border: 1px solid var(--line); border-radius: 6px;
+  padding: 7px 10px; font-size: 11px; font-weight: 600; color: var(--ink);
+  transition: border-color .15s, background-color .15s, color .15s;
+}
+.payment-badge.is-active{ background: var(--gold-tint); border: 2px solid var(--gold-deep); color: var(--gold-deep); padding: 6px 9px; }
+.billing-note{ background: #f5f2ed; border-radius: 16px; padding: 18px; font-size: 13px; color: var(--muted); line-height: 1.5; width: 100%; }
+
+.authorize-state{ display: flex; flex-direction: column; align-items: center; gap: 18px; padding: 28px 0; width: 100%; text-align: center; }
+.authorize-spinner{ width: 64px; height: 64px; border-radius: 50%; border: 3px solid var(--gold-tint); border-top-color: var(--gold-deep); animation: gspin 1s linear infinite; }
+@keyframes gspin{ to{ transform: rotate(360deg); } }
+.authorize-state h2{ font-family: var(--font-serif); font-size: 30px; font-weight: 400; margin: 0; }
+.authorize-amount{ font-family: var(--font-serif); font-size: 38px; color: var(--gold-deep); margin: 0; }
+.authorize-desc{ color: var(--muted); font-size: 16px; line-height: 1.5; max-width: 500px; margin: 0; }
+.authorize-actions{ display: flex; align-items: center; gap: 23px; }
+.authorize-cancel{ color: var(--muted); font-size: 14px; text-decoration: underline; }
+.authorize-waiting{ background: var(--gold-tint); color: var(--gold-deep); border-radius: 999px; padding: 12px 18px; font-size: 13px; }
+
+.payment-success{ display: flex; flex-direction: column; align-items: center; gap: 24px; padding: 16px 0; width: 100%; text-align: center; }
+.success-check-icon{ width: 78px; height: 78px; border-radius: 50%; background: #eaf2ec; display: flex; align-items: center; justify-content: center; color: #2f9b67; }
+.payment-success h2{ font-family: var(--font-serif); font-size: 32px; font-weight: 400; margin: 0; }
+.payment-success .sub{ color: var(--muted); font-size: 15px; margin: 0; }
+.transaction-details{ background: #f5f2ed; border-radius: 16px; padding: 22px; display: flex; gap: 16px; width: 100%; text-align: left; flex-wrap: wrap; }
+.transaction-detail{ display: flex; flex-direction: column; gap: 8px; flex: 1; min-width: 140px; }
+.transaction-detail .lbl{ color: var(--muted); font-size: 14px; }
+.transaction-detail .val{ color: var(--ink); font-size: 14px; font-weight: 600; }
+
+@media (max-width: 720px){
+  .plan-grid{ flex-direction: column; }
+  .order-summary{ flex-direction: column; align-items: flex-start; }
+  .transaction-details{ flex-direction: column; }
 }

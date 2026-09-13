@@ -271,7 +271,172 @@
     if(submitBtn){
       submitApplication();
     }
+
+    var recordBtn = e.target.closest('#record-toggle');
+    if(recordBtn){
+      toggleRecording();
+    }
+
+    var payMethodBtn = e.target.closest('.payment-badge');
+    if(payMethodBtn){
+      selectPaymentMethod(payMethodBtn);
+    }
+
+    var payContinueBtn = e.target.closest('#pay-continue-btn');
+    if(payContinueBtn){
+      startPaymentFlow();
+    }
+
+    var gentSubmitBtn = e.target.closest('#gent-submit-application');
+    if(gentSubmitBtn){
+      submitGentApplication();
+    }
   });
+
+  /* ---------------------------------------------------------
+     Gentleman payment step: switch between card and G-Cash
+     fields, then simulate the authorize -> success sequence.
+  --------------------------------------------------------- */
+  function selectPaymentMethod(btn){
+    var all = document.querySelectorAll('.payment-badge');
+    all.forEach(function(b){ b.classList.remove('is-active'); });
+    btn.classList.add('is-active');
+
+    var isGcash = btn.getAttribute('data-method') === 'gcash';
+    var cardFields = document.getElementById('pay-fields-card');
+    var gcashFields = document.getElementById('pay-fields-gcash');
+    var billingNote = document.getElementById('pay-billing-note');
+    if(cardFields) cardFields.style.display = isGcash ? 'none' : 'block';
+    if(gcashFields) gcashFields.style.display = isGcash ? 'block' : 'none';
+    if(billingNote){
+      billingNote.textContent = isGcash
+        ? 'We\u2019ll send a secure authorization request to this G-Cash account.'
+        : 'Your billing details are never shared with companions or shown on your profile.';
+    }
+  }
+
+  function formatToday(){
+    var d = new Date();
+    var months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    return months[d.getMonth()] + ' ' + d.getDate() + ', ' + d.getFullYear();
+  }
+
+  function randomRef(prefix){
+    var n = function(){ return Math.floor(1000 + Math.random() * 9000); };
+    return prefix + '-' + n() + '-' + n() + '-' + n();
+  }
+
+  function startPaymentFlow(){
+    var isGcash = document.querySelector('.payment-badge.is-active[data-method="gcash"]');
+    var methodSection = document.getElementById('pay-method-section');
+    var authorizeSection = document.getElementById('pay-authorize-section');
+    var successSection = document.getElementById('pay-success-section');
+    var title = document.getElementById('pay-title');
+    var desc = document.getElementById('pay-desc');
+
+    if(isGcash){
+      methodSection.style.display = 'none';
+      authorizeSection.style.display = 'block';
+      if(title) title.textContent = 'Authorize your payment';
+      if(desc) desc.textContent = 'One final confirmation in your G-Cash app.';
+
+      setTimeout(function(){
+        authorizeSection.style.display = 'none';
+        successSection.style.display = 'block';
+        finishPaymentSuccess(true, title, desc);
+      }, 2200);
+    } else {
+      methodSection.style.display = 'none';
+      successSection.style.display = 'block';
+      finishPaymentSuccess(false, title, desc);
+    }
+  }
+
+  function finishPaymentSuccess(isGcash, title, desc){
+    if(title) title.textContent = 'Payment successful';
+    if(desc) desc.textContent = 'Your membership payment has been securely received.';
+    var sub = document.getElementById('pay-success-sub');
+    var refLabel = document.getElementById('pay-ref-label');
+    var refValue = document.getElementById('pay-ref-value');
+    var dateValue = document.getElementById('pay-date-value');
+    if(sub) sub.textContent = isGcash ? 'Your G-Cash payment was successful.' : 'Your card payment was successful.';
+    if(refLabel) refLabel.textContent = isGcash ? 'G-Cash reference number' : 'Card reference number';
+    if(refValue) refValue.textContent = isGcash ? randomRef('GC') : randomRef('CH');
+    if(dateValue) dateValue.textContent = formatToday();
+  }
+
+  /* ---------------------------------------------------------
+     Gentleman application: final submit, same in-place swap
+     pattern as the G Girl flow.
+  --------------------------------------------------------- */
+  function submitGentApplication(){
+    var card = document.getElementById('gent-review-form-card');
+    var heading = document.getElementById('gent-review-heading');
+    var progress = document.getElementById('gent-wizard-progress');
+    var explain = document.getElementById('gent-wizard-explain');
+    if(!card) return;
+
+    if(heading) heading.style.display = 'none';
+    if(progress) progress.style.display = 'none';
+    if(explain) explain.style.display = 'none';
+
+    var appContent = card.closest('.app-content');
+    var formColumn = card.closest('.form-column');
+    if(appContent) appContent.classList.add('is-centered');
+    if(formColumn) formColumn.classList.add('is-centered');
+
+    card.innerHTML =
+      '<div class="success-panel">' +
+        '<div class="success-icon">' +
+          '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg>' +
+        '</div>' +
+        '<h2>Your account is under review</h2>' +
+        '<p>Thanks for applying to G Club. Our team typically completes a discreet review within 24 hours. We\u2019ll email you as soon as you\u2019re approved.</p>' +
+        '<a href="index.html" class="btn btn-dark btn-lg" data-transition style="margin-top:8px;">Back to G Club</a>' +
+      '</div>';
+
+    var veil = document.getElementById('page-veil');
+    var freshLink = card.querySelector('a[data-transition]');
+    if(veil && freshLink){
+      freshLink.addEventListener('click', function(e){
+        var href = freshLink.getAttribute('href');
+        e.preventDefault();
+        sessionStorage.setItem('gclubTransition', '1');
+        veil.classList.add('is-active');
+        setTimeout(function(){ window.location.href = href; }, 460);
+      });
+    }
+  }
+
+  /* ---------------------------------------------------------
+     Video verification step: a mock record/re-record toggle.
+     No real capture here \u2014 this is a static prototype \u2014 but
+     Continue stays disabled until a "recording" exists, so it's
+     clear this step is a required part of the process.
+  --------------------------------------------------------- */
+  function toggleRecording(){
+    var recorder = document.getElementById('video-recorder');
+    var status = document.getElementById('video-status');
+    var btn = document.getElementById('record-toggle');
+    var frameText = recorder ? recorder.querySelector('.video-frame p') : null;
+    var continueBtn = document.getElementById('video-continue');
+    if(!recorder) return;
+
+    var isRecorded = recorder.classList.toggle('is-recorded');
+    if(isRecorded){
+      if(status) status.innerHTML = '<span class="dot"></span> Recorded \u00b7 2:14';
+      if(btn) btn.innerHTML = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg> Re-record';
+      if(btn) btn.classList.replace('btn-dark', 'btn-ghost');
+      if(frameText) frameText.textContent = 'Recording saved';
+      if(continueBtn) continueBtn.classList.remove('is-disabled');
+    } else {
+      if(status) status.innerHTML = '<span class="dot"></span> Not recorded yet';
+      if(btn) btn.innerHTML = '<svg width="10" height="10" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="currentColor"/></svg> Start recording';
+      if(btn) btn.classList.replace('btn-ghost', 'btn-dark');
+      if(frameText) frameText.textContent = 'Your camera preview will appear here';
+      if(continueBtn) continueBtn.classList.add('is-disabled');
+    }
+  }
 
   /* ---------------------------------------------------------
      G Girl application: final submit swaps the preview card
