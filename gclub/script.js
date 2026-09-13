@@ -164,6 +164,11 @@
   document.addEventListener('keydown', function(e){
     if(e.key === 'Escape'){
       closeProfileModal();
+      var videoBackdrop = document.getElementById('video-review-backdrop');
+      if(videoBackdrop && videoBackdrop.classList.contains('is-active')){
+        videoBackdrop.classList.remove('is-active');
+        document.body.classList.remove('modal-open');
+      }
       document.querySelectorAll('.filter-sidebar.is-open').forEach(function(s){
         s.classList.remove('is-open');
         var btn = s.querySelector('.filter-toggle');
@@ -291,7 +296,54 @@
     if(gentSubmitBtn){
       submitGentApplication();
     }
+
+    var openVideoBtn = e.target.closest('[data-open-video]');
+    if(openVideoBtn){
+      openVideoReview(openVideoBtn);
+    }
+    if(e.target.closest('[data-modal-close-video]')){
+      closeVideoReview();
+    }
+    if(e.target.id === 'video-review-backdrop'){
+      closeVideoReview();
+    }
+    var videoAction = e.target.closest('[data-video-action]');
+    if(videoAction){
+      var backdrop = document.getElementById('video-review-backdrop');
+      var openRow = backdrop ? backdrop._sourceRow : null;
+      if(openRow){
+        var statusCell = openRow.querySelector('.admin-badge');
+        var approved = videoAction.getAttribute('data-video-action') === 'approve';
+        if(statusCell){
+          statusCell.className = 'admin-badge ' + (approved ? 'green' : 'red');
+          statusCell.innerHTML = '<span class="dot"></span>' + (approved ? 'Approved' : 'Rejected');
+        }
+      }
+      closeVideoReview();
+    }
   });
+
+  /* ---------------------------------------------------------
+     Admin: review a G Girl's submitted Q&A verification video.
+  --------------------------------------------------------- */
+  function openVideoReview(trigger){
+    var backdrop = document.getElementById('video-review-backdrop');
+    if(!backdrop) return;
+    var setText = function(id, val){ var el = document.getElementById(id); if(el) el.textContent = val; };
+    setText('video-review-name', trigger.getAttribute('data-name'));
+    setText('video-review-initial', trigger.getAttribute('data-initial'));
+    setText('video-review-duration', trigger.getAttribute('data-duration'));
+    setText('video-review-submitted', trigger.getAttribute('data-submitted'));
+    backdrop._sourceRow = trigger.closest('tr');
+    backdrop.classList.add('is-active');
+    document.body.classList.add('modal-open');
+  }
+  function closeVideoReview(){
+    var backdrop = document.getElementById('video-review-backdrop');
+    if(!backdrop) return;
+    backdrop.classList.remove('is-active');
+    document.body.classList.remove('modal-open');
+  }
 
   /* ---------------------------------------------------------
      Gentleman payment step: switch between card and G-Cash
