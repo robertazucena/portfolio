@@ -261,6 +261,63 @@
       time.parentElement.querySelectorAll('.time-pill').forEach(function(t){ t.classList.remove('is-active'); });
       time.classList.add('is-active');
     }
+
+    var pill = e.target.closest('.choice-pill');
+    if(pill){
+      pill.classList.toggle('is-selected');
+    }
+
+    var submitBtn = e.target.closest('#submit-application');
+    if(submitBtn){
+      submitApplication();
+    }
   });
+
+  /* ---------------------------------------------------------
+     G Girl application: final submit swaps the preview card
+     for a confirmation, right in place.
+  --------------------------------------------------------- */
+  function submitApplication(){
+    var card = document.getElementById('preview-form-card');
+    var heading = document.getElementById('preview-heading');
+    var progress = document.getElementById('wizard-progress');
+    var explain = document.getElementById('wizard-explain');
+    if(!card) return;
+
+    if(heading) heading.style.display = 'none';
+    if(progress) progress.style.display = 'none';
+    if(explain) explain.style.display = 'none';
+
+    // With the sidebar and step-explanation gone, center what's left
+    // on the page instead of leaving it stranded on the left.
+    var appContent = document.getElementById('preview-app-content');
+    var formColumn = document.getElementById('preview-form-column');
+    if(appContent) appContent.classList.add('is-centered');
+    if(formColumn) formColumn.classList.add('is-centered');
+
+    card.innerHTML =
+      '<div class="success-panel">' +
+        '<div class="success-icon">' +
+          '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg>' +
+        '</div>' +
+        '<h2>Your profile is under review</h2>' +
+        '<p>Thanks for applying to G Club. Our team typically reviews new profiles within 24\u201348 hours. We\u2019ll email you as soon as you\u2019re approved.</p>' +
+        '<a href="index.html" class="btn btn-dark btn-lg" data-transition style="margin-top:8px;">Back to G Club</a>' +
+      '</div>';
+
+    // Re-bind the transition link we just injected, since it was
+    // added after the page's initial [data-transition] wiring ran.
+    var veil = document.getElementById('page-veil');
+    var freshLink = card.querySelector('a[data-transition]');
+    if(veil && freshLink){
+      freshLink.addEventListener('click', function(e){
+        var href = freshLink.getAttribute('href');
+        e.preventDefault();
+        sessionStorage.setItem('gclubTransition', '1');
+        veil.classList.add('is-active');
+        setTimeout(function(){ window.location.href = href; }, 460);
+      });
+    }
+  }
 
 })();
