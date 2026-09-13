@@ -125,6 +125,7 @@
      populated from the clicked card's data attributes.
   --------------------------------------------------------- */
   var lastTrigger = null;
+  var pendingTopupReturn = false;
 
   function openProfileModal(trigger){
     var backdrop = document.getElementById('profile-modal-backdrop');
@@ -161,12 +162,38 @@
     if(lastTrigger){ lastTrigger.focus(); lastTrigger = null; }
   }
 
+  document.addEventListener('input', function(e){
+    if(e.target.id === 'custom-amount-input'){
+      updateTopupSummary();
+    }
+  });
+
   document.addEventListener('keydown', function(e){
     if(e.key === 'Escape'){
       closeProfileModal();
       var videoBackdrop = document.getElementById('video-review-backdrop');
       if(videoBackdrop && videoBackdrop.classList.contains('is-active')){
         videoBackdrop.classList.remove('is-active');
+        document.body.classList.remove('modal-open');
+      }
+      var transferBackdrop = document.getElementById('transfer-modal-backdrop');
+      if(transferBackdrop && transferBackdrop.classList.contains('is-active')){
+        transferBackdrop.classList.remove('is-active');
+        document.body.classList.remove('modal-open');
+      }
+      var bankBackdrop = document.getElementById('bank-modal-backdrop');
+      if(bankBackdrop && bankBackdrop.classList.contains('is-active')){
+        bankBackdrop.classList.remove('is-active');
+        document.body.classList.remove('modal-open');
+      }
+      var gentBankBackdrop = document.getElementById('gent-bank-modal-backdrop');
+      if(gentBankBackdrop && gentBankBackdrop.classList.contains('is-active')){
+        gentBankBackdrop.classList.remove('is-active');
+        document.body.classList.remove('modal-open');
+      }
+      var topupBackdropEsc = document.getElementById('topup-modal-backdrop');
+      if(topupBackdropEsc && topupBackdropEsc.classList.contains('is-active')){
+        topupBackdropEsc.classList.remove('is-active');
         document.body.classList.remove('modal-open');
       }
       document.querySelectorAll('.filter-sidebar.is-open').forEach(function(s){
@@ -321,7 +348,346 @@
       }
       closeVideoReview();
     }
+
+    var profileTab = e.target.closest('.profile-nav-tab');
+    if(profileTab){
+      var navContainer = profileTab.parentElement;
+      navContainer.querySelectorAll('.profile-nav-tab').forEach(function(t){ t.classList.remove('is-active'); });
+      profileTab.classList.add('is-active');
+      document.querySelectorAll('.profile-tab-panel').forEach(function(p){ p.classList.remove('is-active'); });
+      var targetPanel = document.getElementById(profileTab.getAttribute('data-tab'));
+      if(targetPanel) targetPanel.classList.add('is-active');
+    }
+
+    if(e.target.closest('#open-transfer-btn')){
+      var transferBackdrop = document.getElementById('transfer-modal-backdrop');
+      if(transferBackdrop){
+        transferBackdrop.classList.add('is-active');
+        document.body.classList.add('modal-open');
+      }
+    }
+    if(e.target.closest('#manage-wallet-bank-link')){
+      e.preventDefault();
+      var bankBackdropOpen = document.getElementById('bank-modal-backdrop');
+      if(bankBackdropOpen){
+        bankBackdropOpen.classList.add('is-active');
+        document.body.classList.add('modal-open');
+      }
+    }
+    if(e.target.closest('[data-modal-close-bank]')){
+      closeBankModal();
+    }
+    if(e.target.id === 'bank-modal-backdrop'){
+      closeBankModal();
+    }
+    if(e.target.closest('#save-bank-btn')){
+      saveBankAccount();
+    }
+
+    if(e.target.closest('#manage-bank-link')){
+      e.preventDefault();
+      openGentBankModal();
+    }
+    if(e.target.closest('[data-modal-close-gentbank]')){
+      closeGentBankModal();
+    }
+    if(e.target.id === 'gent-bank-modal-backdrop'){
+      closeGentBankModal();
+    }
+    if(e.target.closest('#gent-save-bank-btn')){
+      saveGentBankAccount();
+    }
+
+    if(e.target.closest('#open-topup-btn')){
+      var topupBackdrop = document.getElementById('topup-modal-backdrop');
+      if(topupBackdrop){
+        topupBackdrop.classList.add('is-active');
+        document.body.classList.add('modal-open');
+      }
+    }
+    if(e.target.closest('[data-modal-close-topup]')){
+      closeTopupModal();
+    }
+    if(e.target.id === 'topup-modal-backdrop'){
+      closeTopupModal();
+    }
+
+    var amountPill = e.target.closest('#topup-modal-content .choice-pill');
+    if(amountPill){
+      var pillRow = amountPill.parentElement;
+      pillRow.querySelectorAll('.choice-pill').forEach(function(p){ p.classList.remove('is-selected'); });
+      amountPill.classList.add('is-selected');
+      var customField = document.getElementById('custom-amount-field');
+      var isCustom = amountPill.getAttribute('data-amount') === 'custom';
+      if(customField) customField.style.display = isCustom ? 'block' : 'none';
+      if(isCustom){
+        var customInput = document.getElementById('custom-amount-input');
+        if(customInput) customInput.focus();
+      }
+      updateTopupSummary();
+    }
+
+    var topupMethod = e.target.closest('#topup-modal-content .payment-badge');
+    if(topupMethod){
+      if(topupMethod.id === 'topup-bank-option' && topupMethod.getAttribute('data-registered') !== 'true'){
+        pendingTopupReturn = true;
+        closeTopupModal();
+        openGentBankModal();
+      } else {
+        var methodRow = topupMethod.parentElement;
+        methodRow.querySelectorAll('.payment-badge').forEach(function(b){ b.classList.remove('is-active'); });
+        topupMethod.classList.add('is-active');
+      }
+    }
+
+    if(e.target.closest('#confirm-topup-btn')){
+      confirmTopup();
+    }
+
+    if(e.target.closest('[data-modal-close-transfer]')){
+      closeTransferModal();
+    }
+    if(e.target.id === 'transfer-modal-backdrop'){
+      closeTransferModal();
+    }
+    if(e.target.closest('#confirm-transfer-btn')){
+      confirmTransfer();
+    }
   });
+
+  function updateTopupSummary(){
+    var selectedPill = document.querySelector('#topup-modal-content .choice-pill.is-selected');
+    var amount = 0;
+    if(selectedPill){
+      var val = selectedPill.getAttribute('data-amount');
+      if(val === 'custom'){
+        var customInput = document.getElementById('custom-amount-input');
+        amount = customInput ? (parseInt(customInput.value, 10) || 0) : 0;
+      } else {
+        amount = parseInt(val, 10) || 0;
+      }
+    }
+    var payEl = document.getElementById('topup-pay-amount');
+    var receiveEl = document.getElementById('topup-receive-amount');
+    if(payEl) payEl.textContent = '\u20b1' + amount.toLocaleString();
+    if(receiveEl) receiveEl.textContent = amount.toLocaleString() + ' G Coin';
+  }
+
+  function closeTopupModal(){
+    var backdrop = document.getElementById('topup-modal-backdrop');
+    if(!backdrop) return;
+    backdrop.classList.remove('is-active');
+    document.body.classList.remove('modal-open');
+  }
+
+  function openGentBankModal(){
+    var backdrop = document.getElementById('gent-bank-modal-backdrop');
+    if(!backdrop) return;
+    backdrop.classList.add('is-active');
+    document.body.classList.add('modal-open');
+  }
+  function closeGentBankModal(){
+    var backdrop = document.getElementById('gent-bank-modal-backdrop');
+    if(!backdrop) return;
+    backdrop.classList.remove('is-active');
+    document.body.classList.remove('modal-open');
+  }
+
+  function saveGentBankAccount(){
+    var bankSelect = document.getElementById('gent-bank-name-input');
+    var acctNumber = document.getElementById('gent-bank-account-number-input');
+    var acctName = document.getElementById('gent-bank-account-name-input');
+
+    var bankName = bankSelect ? bankSelect.value : '';
+    var number = acctNumber ? acctNumber.value.trim() : '';
+    var name = acctName ? acctName.value.trim() : '';
+
+    if(!bankName || !number || !name){
+      var content = document.getElementById('gent-bank-modal-content');
+      var existingWarning = document.getElementById('gent-bank-form-warning');
+      if(!existingWarning && content){
+        var warning = document.createElement('p');
+        warning.id = 'gent-bank-form-warning';
+        warning.style.cssText = 'color:#b8564f; font-size:13px; margin:-8px 0 16px;';
+        warning.textContent = 'Please fill in all fields before saving.';
+        var saveBtn = document.getElementById('gent-save-bank-btn');
+        if(saveBtn) content.insertBefore(warning, saveBtn);
+      }
+      return;
+    }
+
+    var last4 = number.replace(/\s/g, '').slice(-4);
+    var maskedLabel = bankName + ' \u2022\u2022\u2022\u2022 ' + last4;
+
+    var nameLabel = document.getElementById('gent-bank-name-value');
+    var manageLink = document.getElementById('manage-bank-link');
+    if(nameLabel){
+      nameLabel.textContent = maskedLabel;
+      nameLabel.style.color = '';
+      nameLabel.style.fontWeight = '';
+    }
+    if(manageLink) manageLink.textContent = 'Change bank account';
+
+    var bankTopupOption = document.getElementById('topup-bank-option');
+    if(bankTopupOption){
+      bankTopupOption.textContent = maskedLabel;
+      bankTopupOption.setAttribute('data-registered', 'true');
+    }
+
+    closeGentBankModal();
+
+    if(pendingTopupReturn){
+      pendingTopupReturn = false;
+      var topupBackdropReturn = document.getElementById('topup-modal-backdrop');
+      if(topupBackdropReturn){
+        topupBackdropReturn.classList.add('is-active');
+        document.body.classList.add('modal-open');
+      }
+      if(bankTopupOption){
+        document.querySelectorAll('#topup-modal-content .payment-badge').forEach(function(b){ b.classList.remove('is-active'); });
+        bankTopupOption.classList.add('is-active');
+      }
+    }
+  }
+
+  function confirmTopup(){
+    var selectedPill = document.querySelector('#topup-modal-content .choice-pill.is-selected');
+    var amount = 0;
+    if(selectedPill){
+      var val = selectedPill.getAttribute('data-amount');
+      if(val === 'custom'){
+        var customInput = document.getElementById('custom-amount-input');
+        amount = customInput ? (parseInt(customInput.value, 10) || 0) : 0;
+      } else {
+        amount = parseInt(val, 10) || 0;
+      }
+    }
+    if(amount <= 0){
+      var customInput2 = document.getElementById('custom-amount-input');
+      if(customInput2) customInput2.style.borderColor = '#b8564f';
+      return;
+    }
+
+    var selectedMethod = document.querySelector('#topup-modal-content .payment-badge.is-active');
+    var methodLabel = selectedMethod ? selectedMethod.textContent.trim() : 'Visa \u2022\u2022\u2022\u2022 4821';
+
+    var balanceEl = document.getElementById('gcoin-balance-amount');
+    var currentBalance = balanceEl ? parseInt(balanceEl.textContent.replace(/[^0-9]/g, ''), 10) || 0 : 0;
+    var newBalance = currentBalance + amount;
+
+    var content = document.getElementById('topup-modal-content');
+    if(content){
+      content.innerHTML =
+        '<div style="display:flex; flex-direction:column; align-items:center; text-align:center; gap:16px; padding:8px 0;">' +
+          '<div class="success-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg></div>' +
+          '<h2 style="font-family:var(--font-serif); font-size:22px; font-weight:400; margin:0;">Top-up successful</h2>' +
+          '<p style="color:var(--muted); font-size:14px; margin:0;">' + amount.toLocaleString() + ' G Coin has been added to your balance.</p>' +
+          '<button type="button" class="btn btn-dark" data-modal-close-topup style="margin-top:4px;">Done</button>' +
+        '</div>';
+    }
+
+    if(balanceEl) balanceEl.innerHTML = newBalance.toLocaleString() + ' <span style="font-size:16px; color:var(--muted); font-weight:400;">G Coin</span>';
+    var noteEl = document.querySelector('.wallet-balance .note');
+    if(noteEl) noteEl.innerHTML = '\u2248 \u20b1' + newBalance.toLocaleString() + ' value \u00b7 1 G Coin = \u20b11';
+
+    var tbody = document.getElementById('gent-transactions-body');
+    if(tbody){
+      var today = formatToday();
+      var row = document.createElement('tr');
+      row.innerHTML = '<td>' + today + '</td><td>G Coin top-up</td><td>' + methodLabel + '</td>' +
+        '<td><span class="admin-badge green"><span class="dot"></span>Paid</span></td>' +
+        '<td style="font-weight:600;">\u20b1' + amount.toLocaleString() + '</td>';
+      tbody.insertBefore(row, tbody.firstChild);
+    }
+  }
+
+  function closeTransferModal(){
+    var backdrop = document.getElementById('transfer-modal-backdrop');
+    if(!backdrop) return;
+    backdrop.classList.remove('is-active');
+    document.body.classList.remove('modal-open');
+  }
+
+  function closeBankModal(){
+    var backdrop = document.getElementById('bank-modal-backdrop');
+    if(!backdrop) return;
+    backdrop.classList.remove('is-active');
+    document.body.classList.remove('modal-open');
+  }
+
+  function saveBankAccount(){
+    var bankSelect = document.getElementById('bank-name-input');
+    var acctNumber = document.getElementById('bank-account-number-input');
+    var acctName = document.getElementById('bank-account-name-input');
+
+    var bankName = bankSelect ? bankSelect.value : '';
+    var number = acctNumber ? acctNumber.value.trim() : '';
+    var name = acctName ? acctName.value.trim() : '';
+
+    if(!bankName || !number || !name){
+      var content = document.getElementById('bank-modal-content');
+      var existingWarning = document.getElementById('bank-form-warning');
+      if(!existingWarning && content){
+        var warning = document.createElement('p');
+        warning.id = 'bank-form-warning';
+        warning.style.cssText = 'color:#b8564f; font-size:13px; margin:-8px 0 16px;';
+        warning.textContent = 'Please fill in all fields before saving.';
+        var saveBtn = document.getElementById('save-bank-btn');
+        if(saveBtn) content.insertBefore(warning, saveBtn);
+      }
+      return;
+    }
+
+    var last4 = number.replace(/\s/g, '').slice(-4);
+    var nameLabel = document.getElementById('wallet-bank-name-value');
+    var manageLink = document.getElementById('manage-wallet-bank-link');
+    var transferTrigger = document.getElementById('open-transfer-btn');
+
+    if(nameLabel){
+      nameLabel.textContent = bankName + ' \u2022\u2022\u2022\u2022 ' + last4;
+      nameLabel.style.color = '';
+      nameLabel.style.fontWeight = '';
+    }
+    if(manageLink) manageLink.textContent = 'Change bank account';
+    if(transferTrigger){
+      transferTrigger.setAttribute('data-bank-registered', 'true');
+      transferTrigger.classList.remove('is-disabled');
+    }
+
+    closeBankModal();
+  }
+
+  function confirmTransfer(){
+    var content = document.getElementById('transfer-modal-content');
+    if(!content) return;
+    content.innerHTML =
+      '<div style="display:flex; flex-direction:column; align-items:center; text-align:center; gap:16px; padding:8px 0;">' +
+        '<div class="success-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg></div>' +
+        '<h2 style="font-family:var(--font-serif); font-size:22px; font-weight:400; margin:0;">Transfer requested</h2>' +
+        '<p style="color:var(--muted); font-size:14px; margin:0;">Your transfer to BDO Unibank &bull;&bull;&bull;&bull; 4821 is on its way. It typically completes within 1&ndash;2 business days.</p>' +
+        '<button type="button" class="btn btn-dark" data-modal-close-transfer style="margin-top:4px;">Done</button>' +
+      '</div>';
+
+    var balanceEl = document.getElementById('wallet-balance-amount');
+    var noteEl = document.getElementById('wallet-balance-note');
+    var openBtn = document.getElementById('open-transfer-btn');
+    if(balanceEl) balanceEl.textContent = '\u20b10';
+    if(noteEl) noteEl.textContent = 'No balance available right now';
+    if(openBtn){ openBtn.disabled = true; openBtn.classList.add('is-disabled'); }
+
+    var sourceRow = document.getElementById('wallet-source-row');
+    if(sourceRow){
+      var badge = sourceRow.querySelector('.admin-badge');
+      if(badge){
+        badge.className = 'admin-badge amber';
+        badge.innerHTML = '<span class="dot"></span>Processing';
+      }
+      var desc = sourceRow.children[1];
+      if(desc) desc.textContent = 'Bank transfer to BDO \u2022\u2022\u2022\u2022 4821';
+      var method = sourceRow.children[2];
+      if(method) method.textContent = 'Bank transfer';
+    }
+  }
 
   /* ---------------------------------------------------------
      Admin: review a G Girl's submitted Q&A verification video.
