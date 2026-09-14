@@ -61,34 +61,26 @@
             <span class="marker">1</span>
             <span class="label-text" aria-hidden="true">Welcome</span>
           </div>
-          <div class="progress-step is-filled" aria-label="Step 2: Choose your plan">
+          <div class="progress-step is-filled" aria-label="Step 2: Your details">
             <span class="marker">2</span>
-            <span class="label-text" aria-hidden="true">Choose your plan</span>
+            <span class="label-text" aria-hidden="true">Your details</span>
           </div>
-          <div class="progress-step is-filled" aria-label="Step 3: Payment">
+          <div class="progress-step is-filled" aria-label="Step 3: Preferences">
             <span class="marker">3</span>
-            <span class="label-text" aria-hidden="true">Payment</span>
+            <span class="label-text" aria-hidden="true">Preferences</span>
           </div>
-          <div class="progress-step is-filled" aria-label="Step 4: Basic info">
+          <div class="progress-step is-filled" aria-label="Step 4: Verification">
             <span class="marker">4</span>
-            <span class="label-text" aria-hidden="true">Basic info</span>
-          </div>
-          <div class="progress-step is-filled" aria-label="Step 5: Your preferences">
-            <span class="marker">5</span>
-            <span class="label-text" aria-hidden="true">Your preferences</span>
-          </div>
-          <div class="progress-step is-filled" aria-label="Step 6: Verification">
-            <span class="marker">6</span>
             <span class="label-text" aria-hidden="true">Verification</span>
           </div>
-          <div class="progress-step is-filled is-current" aria-label="Step 7: Review & submit (current)">
-            <span class="marker">7</span>
+          <div class="progress-step is-filled is-current" aria-label="Step 5: Review & submit (current)">
+            <span class="marker">5</span>
             <span class="label-text" aria-hidden="true">Review & submit</span>
           </div>
         </div>
         <div class="form-column">
           <div class="form-heading" id="gent-review-heading">
-            <p class="eyebrow">Step 7 of 7</p>
+            <p class="eyebrow">Step 5 of 5</p>
             <h1>Review &amp; submit</h1>
             <p>Review your private account details before sending your application to the G Club team.</p>
           </div>
@@ -97,7 +89,7 @@
               <div class="summary-row" style="padding:14px 0; border-bottom:1px solid var(--line);"><span class="lbl">Display name</span><span style="font-weight:600;">Alex</span></div>
               <div class="summary-row" style="padding:14px 0; border-bottom:1px solid var(--line);"><span class="lbl">Age</span><span style="font-weight:600;">34</span></div>
               <div class="summary-row" style="padding:14px 0; border-bottom:1px solid var(--line);"><span class="lbl">Location</span><span style="font-weight:600;">Makati, Philippines</span></div>
-              <div class="summary-row" style="padding:14px 0; border-bottom:1px solid var(--line);"><span class="lbl">Selected plan</span><span style="font-weight:600;">Monthly &mdash; &#8369;800/mo</span></div>
+              <div class="summary-row" style="padding:14px 0; border-bottom:1px solid var(--line);"><span class="lbl">Membership plan</span><span id="gent-membership-value" style="font-weight:600; color:var(--muted);">Free browsing &mdash; no plan yet</span></div>
               <div style="padding:16px 0; display:flex; flex-direction:column; gap:12px;">
                 <span style="color:var(--muted); font-size:14px;">Interests &amp; preferences</span>
                 <div class="choice-row">
@@ -114,6 +106,16 @@
             </div>
             <p style="font-size:14px; color:var(--ink); line-height:1.55; margin:0;">Your profile is private by default. Companions only see your details after you initiate a booking.</p>
             <div class="review-note"><span class="dot"></span><span>Most accounts are approved within 24 hours</span></div>
+
+            <div class="order-summary" id="gent-upsell-card" style="align-items:center;">
+              <div>
+                <p class="ord-label">Optional</p>
+                <p class="plan-line" style="font-size:18px;">Want priority booking &amp; more?</p>
+                <p style="color:var(--muted); font-size:13px; margin:4px 0 0;">Choose a membership plan now, or skip it &mdash; you can always add one later from your profile.</p>
+              </div>
+              <a href="gent-plan.html" class="change-link" data-transition style="white-space:nowrap;">Choose a plan &rarr;</a>
+            </div>
+
             <hr class="divider">
             <div class="form-actions">
               <a href="gent-verify.html" class="btn btn-ghost" data-transition><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg> Back</a>
@@ -122,7 +124,7 @@
           </div>
         </div>
         <div class="step-explain" id="gent-wizard-explain">
-          <p class="label">Step 7 of 7</p>
+          <p class="label">Step 5 of 5</p>
           <h2>Almost there</h2>
           <p>Take a moment to review your details. Your account remains private while the G Club team completes a discreet review, usually within 24 hours.</p>
         </div>

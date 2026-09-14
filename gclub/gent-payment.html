@@ -56,39 +56,19 @@
   <div class="container">
     <div class="app-content">
         <div class="app-progress">
-          <p class="eyebrow">Gentleman application</p>
-          <div class="progress-step is-filled" aria-label="Step 1: Welcome">
+          <p class="eyebrow">Optional upgrade</p>
+          <div class="progress-step is-filled" aria-label="Step 1: Choose your plan">
             <span class="marker">1</span>
-            <span class="label-text" aria-hidden="true">Welcome</span>
-          </div>
-          <div class="progress-step is-filled" aria-label="Step 2: Choose your plan">
-            <span class="marker">2</span>
             <span class="label-text" aria-hidden="true">Choose your plan</span>
           </div>
-          <div class="progress-step is-filled is-current" aria-label="Step 3: Payment (current)">
-            <span class="marker">3</span>
+          <div class="progress-step is-filled is-current" aria-label="Step 2: Payment (current)">
+            <span class="marker">2</span>
             <span class="label-text" aria-hidden="true">Payment</span>
-          </div>
-          <div class="progress-step" aria-label="Step 4: Basic info">
-            <span class="marker">4</span>
-            <span class="label-text" aria-hidden="true">Basic info</span>
-          </div>
-          <div class="progress-step" aria-label="Step 5: Your preferences">
-            <span class="marker">5</span>
-            <span class="label-text" aria-hidden="true">Your preferences</span>
-          </div>
-          <div class="progress-step" aria-label="Step 6: Verification">
-            <span class="marker">6</span>
-            <span class="label-text" aria-hidden="true">Verification</span>
-          </div>
-          <div class="progress-step" aria-label="Step 7: Review & submit">
-            <span class="marker">7</span>
-            <span class="label-text" aria-hidden="true">Review & submit</span>
           </div>
         </div>
         <div class="form-column">
           <div class="form-heading" id="pay-heading">
-            <p class="eyebrow">Step 3 of 7</p>
+            <p class="eyebrow">Optional &middot; Step 2 of 2</p>
             <h1 id="pay-title">Complete your payment</h1>
             <p id="pay-desc">Your payment is secure and encrypted. You can cancel anytime.</p>
           </div>
@@ -96,7 +76,7 @@
             <div class="order-summary" id="pay-order-summary">
               <div>
                 <p class="ord-label">Order summary</p>
-                <p class="plan-line">Monthly plan - &#8369;800/month</p>
+                <p class="plan-line" id="pay-plan-line">Monthly plan - &#8369;800/month</p>
               </div>
               <a href="gent-plan.html" class="change-link" data-transition>Change plan</a>
             </div>
@@ -154,7 +134,7 @@
               <div class="authorize-state">
                 <div class="authorize-spinner"></div>
                 <h2>Authorizing with G-Cash</h2>
-                <p class="authorize-amount">&#8369;800</p>
+                <p class="authorize-amount" id="authorize-amount-value">&#8369;800</p>
                 <p class="authorize-desc">Please confirm the payment in your G-Cash app. Keep this page open while we wait for authorization.</p>
                 <div class="authorize-actions">
                   <a href="gent-plan.html" class="authorize-cancel" data-transition>Cancel</a>
@@ -175,7 +155,7 @@
                 <div class="transaction-details">
                   <div class="transaction-detail">
                     <span class="lbl">Amount</span>
-                    <span class="val">&#8369;800</span>
+                    <span class="val" id="pay-amount-value">&#8369;800</span>
                   </div>
                   <div class="transaction-detail">
                     <span class="lbl" id="pay-ref-label">G-Cash reference number</span>
@@ -186,13 +166,13 @@
                     <span class="val" id="pay-date-value">September 13, 2026</span>
                   </div>
                 </div>
-                <a href="gent-basics.html" class="btn btn-dark" data-transition>Continue to next step <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
+                <a href="gent-review.html" class="btn btn-dark" data-transition>Back to review <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
               </div>
             </div>
           </div>
         </div>
         <div class="step-explain">
-          <p class="label">Step 3 of 7</p>
+          <p class="label">Optional &middot; Step 2 of 2</p>
           <h2>Secure payment</h2>
           <p>Payments are encrypted and processed securely. Cancel anytime, with no hidden fees. Billing is discreet and never visible to companions or on your profile.</p>
         </div>

@@ -56,45 +56,25 @@
   <div class="container">
     <div class="app-content">
         <div class="app-progress">
-          <p class="eyebrow">Gentleman application</p>
-          <div class="progress-step is-filled" aria-label="Step 1: Welcome">
+          <p class="eyebrow">Optional upgrade</p>
+          <div class="progress-step is-filled is-current" aria-label="Step 1: Choose your plan (current)">
             <span class="marker">1</span>
-            <span class="label-text" aria-hidden="true">Welcome</span>
-          </div>
-          <div class="progress-step is-filled is-current" aria-label="Step 2: Choose your plan (current)">
-            <span class="marker">2</span>
             <span class="label-text" aria-hidden="true">Choose your plan</span>
           </div>
-          <div class="progress-step" aria-label="Step 3: Payment">
-            <span class="marker">3</span>
+          <div class="progress-step" aria-label="Step 2: Payment">
+            <span class="marker">2</span>
             <span class="label-text" aria-hidden="true">Payment</span>
-          </div>
-          <div class="progress-step" aria-label="Step 4: Basic info">
-            <span class="marker">4</span>
-            <span class="label-text" aria-hidden="true">Basic info</span>
-          </div>
-          <div class="progress-step" aria-label="Step 5: Your preferences">
-            <span class="marker">5</span>
-            <span class="label-text" aria-hidden="true">Your preferences</span>
-          </div>
-          <div class="progress-step" aria-label="Step 6: Verification">
-            <span class="marker">6</span>
-            <span class="label-text" aria-hidden="true">Verification</span>
-          </div>
-          <div class="progress-step" aria-label="Step 7: Review & submit">
-            <span class="marker">7</span>
-            <span class="label-text" aria-hidden="true">Review & submit</span>
           </div>
         </div>
         <div class="form-column">
           <div class="form-heading">
-            <p class="eyebrow">Step 2 of 7</p>
+            <p class="eyebrow">Optional &middot; Step 1 of 2</p>
             <h1>Choose your plan</h1>
             <p>Select the access that suits you. Your membership and booking activity remain private.</p>
           </div>
           <div class="form-card">
             <div class="plan-grid">
-              <div class="plan-card">
+              <div class="plan-card" data-plan-name="Starter" data-plan-price="300" data-plan-period="/ 2 weeks">
                 <div class="plan-heading">
                   <div class="plan-title-group"><p class="plan-title">Starter</p></div>
                   <span class="plan-radio"></span>
@@ -111,7 +91,7 @@
                   <li class="plan-perk"><span class="dot"></span>Basic search filters</li>
                 </ul>
               </div>
-              <div class="plan-card is-featured">
+              <div class="plan-card is-featured" data-plan-name="Monthly" data-plan-price="800" data-plan-period="/ month">
                 <div class="plan-heading">
                   <div class="plan-title-group">
                     <p class="plan-title">Monthly</p>
@@ -136,13 +116,13 @@
             </div>
             <hr class="divider">
 <div class="form-actions">
-              <a href="gent-welcome.html" class="btn btn-ghost" data-transition><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg> Back</a>
-              <a href="gent-payment.html" class="btn btn-dark" data-transition>Continue <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
+              <a href="gent-review.html" class="btn btn-ghost" data-transition><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg> Back to review</a>
+              <a href="gent-payment.html" class="btn btn-dark" data-transition id="gent-plan-continue">Continue <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
             </div>
           </div>
         </div>
         <div class="step-explain">
-          <p class="label">Step 2 of 7</p>
+          <p class="label">Optional &middot; Step 1 of 2</p>
           <h2>Your membership</h2>
           <p>Choose the pace that feels right. Both plans include verified profiles, secure payments, and discreet account activity. Your membership is never shown publicly.</p>
         </div>

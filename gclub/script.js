@@ -118,6 +118,43 @@
 
   document.addEventListener('DOMContentLoaded', function(){
     if(document.querySelector('.profile-grid')) renderGrid();
+
+    // Gentleman payment page: reflect whichever plan was actually chosen
+    var planLine = document.getElementById('pay-plan-line');
+    if(planLine){
+      var storedName = sessionStorage.getItem('gclubPlanName');
+      var storedPrice = sessionStorage.getItem('gclubPlanPrice');
+      var storedPeriod = sessionStorage.getItem('gclubPlanPeriod');
+      if(storedName && storedPrice){
+        planLine.textContent = storedName + ' plan - \u20b1' + Number(storedPrice).toLocaleString() + ' ' + storedPeriod;
+        var amt = document.getElementById('pay-amount-value');
+        var authAmt = document.getElementById('authorize-amount-value');
+        if(amt) amt.textContent = '\u20b1' + Number(storedPrice).toLocaleString();
+        if(authAmt) authAmt.textContent = '\u20b1' + Number(storedPrice).toLocaleString();
+      }
+    }
+
+    // Gentleman review page: only show an active membership if payment
+    // was actually completed \u2014 the fee is what makes it real.
+    var membershipRow = document.getElementById('gent-membership-value');
+    if(membershipRow){
+      var isActive = sessionStorage.getItem('gclubMembershipActive') === 'true';
+      if(isActive){
+        var name = sessionStorage.getItem('gclubPlanName') || 'Monthly';
+        var price = sessionStorage.getItem('gclubPlanPrice') || '800';
+        var period = sessionStorage.getItem('gclubPlanPeriod') || '/ month';
+        membershipRow.textContent = name + ' \u2014 \u20b1' + Number(price).toLocaleString() + ' ' + period;
+        membershipRow.style.color = '#2f9b67';
+        var upsell = document.getElementById('gent-upsell-card');
+        if(upsell){
+          upsell.innerHTML = '<div>' +
+            '<p class="ord-label">Membership active</p>' +
+            '<p class="plan-line" style="font-size:18px;">You&rsquo;re a ' + name + ' member</p>' +
+            '<p style="color:var(--muted); font-size:13px; margin:4px 0 0;">Your fee has been received. Manage or change your plan anytime from your profile.</p>' +
+          '</div>';
+        }
+      }
+    }
   });
 
   /* ---------------------------------------------------------
@@ -166,6 +203,21 @@
     if(e.target.id === 'custom-amount-input'){
       updateTopupSummary();
     }
+    if(e.target.classList.contains('otp-box')){
+      e.target.classList.remove('is-error');
+      var val = e.target.value.replace(/[^0-9]/g, '');
+      e.target.value = val.slice(0, 1);
+      if(val && e.target.nextElementSibling && e.target.nextElementSibling.classList.contains('otp-box')){
+        e.target.nextElementSibling.focus();
+      }
+    }
+  });
+
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Backspace' && e.target.classList && e.target.classList.contains('otp-box') && !e.target.value){
+      var prev = e.target.previousElementSibling;
+      if(prev && prev.classList.contains('otp-box')) prev.focus();
+    }
   });
 
   document.addEventListener('keydown', function(e){
@@ -208,6 +260,31 @@
      Small interactive flourishes shared across pages
   --------------------------------------------------------- */
   document.addEventListener('click', function(e){
+    if(e.target.closest('#resend-otp-link')){
+      e.preventDefault();
+      var note = document.getElementById('otp-resend-note');
+      if(note){
+        note.innerHTML = '<span class="is-sent">A new code has been sent.</span>';
+        setTimeout(function(){
+          note.innerHTML = 'Didn\u2019t get a code? <a href="#" id="resend-otp-link">Resend code</a>';
+        }, 2500);
+      }
+    }
+
+    if(e.target.closest('#verify-signup-otp-btn')){
+      var verifyBtn = document.getElementById('verify-signup-otp-btn');
+      var errorMsg = document.getElementById('otp-error');
+      if(errorMsg) errorMsg.style.display = 'none';
+
+      var veil = document.getElementById('page-veil');
+      var nextHref = verifyBtn.getAttribute('data-next-href');
+      if(veil && nextHref){
+        sessionStorage.setItem('gclubTransition', '1');
+        veil.classList.add('is-active');
+        setTimeout(function(){ window.location.href = nextHref; }, 460);
+      }
+    }
+
     var opener = e.target.closest('[data-open-profile]');
     if(opener){
       e.preventDefault();
@@ -309,6 +386,23 @@
       toggleRecording();
     }
 
+    var planCardClicked = e.target.closest('.plan-card');
+    if(planCardClicked){
+      document.querySelectorAll('.plan-radio').forEach(function(r){ r.classList.remove('is-checked'); });
+      var radio = planCardClicked.querySelector('.plan-radio');
+      if(radio) radio.classList.add('is-checked');
+    }
+
+    if(e.target.closest('#gent-plan-continue')){
+      var checkedRadio = document.querySelector('.plan-radio.is-checked');
+      var chosenCard = checkedRadio ? checkedRadio.closest('.plan-card') : null;
+      if(chosenCard){
+        sessionStorage.setItem('gclubPlanName', chosenCard.getAttribute('data-plan-name'));
+        sessionStorage.setItem('gclubPlanPrice', chosenCard.getAttribute('data-plan-price'));
+        sessionStorage.setItem('gclubPlanPeriod', chosenCard.getAttribute('data-plan-period'));
+      }
+    }
+
     var payMethodBtn = e.target.closest('.payment-badge');
     if(payMethodBtn){
       selectPaymentMethod(payMethodBtn);
@@ -357,6 +451,35 @@
       document.querySelectorAll('.profile-tab-panel').forEach(function(p){ p.classList.remove('is-active'); });
       var targetPanel = document.getElementById(profileTab.getAttribute('data-tab'));
       if(targetPanel) targetPanel.classList.add('is-active');
+
+      // Mobile dropdown: reflect the choice, close it, and bring the
+      // newly-revealed section into view under the sticky toggle.
+      var sidePanel = profileTab.closest('.profile-side-panel');
+      var toggleValue = document.getElementById('profile-nav-toggle-value');
+      var toggleBtn = document.getElementById('profile-nav-toggle');
+      if(toggleValue) toggleValue.textContent = profileTab.textContent.trim();
+      if(sidePanel) sidePanel.classList.remove('is-open');
+      if(toggleBtn) toggleBtn.setAttribute('aria-expanded', 'false');
+      if(targetPanel && window.matchMedia('(max-width: 1100px)').matches){
+        setTimeout(function(){
+          var stickyPanel = document.querySelector('.profile-side-panel');
+          var stickyHeight = stickyPanel ? stickyPanel.getBoundingClientRect().height : 0;
+          var navH = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--nav-h'), 10) || 72;
+          var targetTop = targetPanel.getBoundingClientRect().top + window.scrollY;
+          var offset = navH + stickyHeight + 16;
+          window.scrollTo({ top: Math.max(0, targetTop - offset), behavior: 'smooth' });
+        }, 60);
+      }
+    }
+
+    var navToggle = e.target.closest('#profile-nav-toggle');
+    if(navToggle){
+      var panel = navToggle.closest('.profile-side-panel');
+      if(panel){
+        var willOpen = !panel.classList.contains('is-open');
+        panel.classList.toggle('is-open', willOpen);
+        navToggle.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
+      }
     }
 
     if(e.target.closest('#open-transfer-btn')){
@@ -781,6 +904,7 @@
     if(refLabel) refLabel.textContent = isGcash ? 'G-Cash reference number' : 'Card reference number';
     if(refValue) refValue.textContent = isGcash ? randomRef('GC') : randomRef('CH');
     if(dateValue) dateValue.textContent = formatToday();
+    sessionStorage.setItem('gclubMembershipActive', 'true');
   }
 
   /* ---------------------------------------------------------
@@ -810,12 +934,15 @@
         '</div>' +
         '<h2>Your account is under review</h2>' +
         '<p>Thanks for applying to G Club. Our team typically completes a discreet review within 24 hours. We\u2019ll email you as soon as you\u2019re approved.</p>' +
-        '<a href="index.html" class="btn btn-dark btn-lg" data-transition style="margin-top:8px;">Back to G Club</a>' +
+        '<div style="display:flex; gap:10px; margin-top:8px; flex-wrap:wrap; justify-content:center;">' +
+          '<a href="gent-profile.html" class="btn btn-dark btn-lg" data-transition>View Profile</a>' +
+          '<a href="index.html" class="btn btn-ghost btn-lg" data-transition>Back to G Club</a>' +
+        '</div>' +
       '</div>';
 
     var veil = document.getElementById('page-veil');
-    var freshLink = card.querySelector('a[data-transition]');
-    if(veil && freshLink){
+    var freshLinks = card.querySelectorAll('a[data-transition]');
+    freshLinks.forEach(function(freshLink){
       freshLink.addEventListener('click', function(e){
         var href = freshLink.getAttribute('href');
         e.preventDefault();
@@ -823,7 +950,7 @@
         veil.classList.add('is-active');
         setTimeout(function(){ window.location.href = href; }, 460);
       });
-    }
+    });
   }
 
   /* ---------------------------------------------------------
@@ -885,14 +1012,17 @@
         '</div>' +
         '<h2>Your profile is under review</h2>' +
         '<p>Thanks for applying to G Club. Our team typically reviews new profiles within 24\u201348 hours. We\u2019ll email you as soon as you\u2019re approved.</p>' +
-        '<a href="index.html" class="btn btn-dark btn-lg" data-transition style="margin-top:8px;">Back to G Club</a>' +
+        '<div style="display:flex; gap:10px; margin-top:8px; flex-wrap:wrap; justify-content:center;">' +
+          '<a href="girl-profile.html" class="btn btn-dark btn-lg" data-transition>View Profile</a>' +
+          '<a href="index.html" class="btn btn-ghost btn-lg" data-transition>Back to G Club</a>' +
+        '</div>' +
       '</div>';
 
-    // Re-bind the transition link we just injected, since it was
+    // Re-bind the transition links we just injected, since they were
     // added after the page's initial [data-transition] wiring ran.
     var veil = document.getElementById('page-veil');
-    var freshLink = card.querySelector('a[data-transition]');
-    if(veil && freshLink){
+    var freshLinks = card.querySelectorAll('a[data-transition]');
+    freshLinks.forEach(function(freshLink){
       freshLink.addEventListener('click', function(e){
         var href = freshLink.getAttribute('href');
         e.preventDefault();
@@ -900,7 +1030,7 @@
         veil.classList.add('is-active');
         setTimeout(function(){ window.location.href = href; }, 460);
       });
-    }
+    });
   }
 
 })();

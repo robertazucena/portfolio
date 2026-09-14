@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Verify your identity — Gentleman application</title>
-<meta name="description" content="A quick private check helps keep every G Club connection genuine, respectful, and safe.">
+<title>Tell us about yourself — G Girl application</title>
+<meta name="description" content="These details help us create a genuine profile and keep your account secure.">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -56,60 +56,112 @@
   <div class="container">
     <div class="app-content">
         <div class="app-progress">
-          <p class="eyebrow">Gentleman application</p>
+          <p class="eyebrow">G Girl application</p>
           <div class="progress-step is-filled" aria-label="Step 1: Welcome">
             <span class="marker">1</span>
             <span class="label-text" aria-hidden="true">Welcome</span>
           </div>
-          <div class="progress-step is-filled" aria-label="Step 2: Your details">
+          <div class="progress-step is-filled is-current" aria-label="Step 2: Your details (current)">
             <span class="marker">2</span>
             <span class="label-text" aria-hidden="true">Your details</span>
           </div>
-          <div class="progress-step is-filled" aria-label="Step 3: Preferences">
+          <div class="progress-step" aria-label="Step 3: Your profile">
             <span class="marker">3</span>
-            <span class="label-text" aria-hidden="true">Preferences</span>
+            <span class="label-text" aria-hidden="true">Your profile</span>
           </div>
-          <div class="progress-step is-filled is-current" aria-label="Step 4: Verification (current)">
+          <div class="progress-step" aria-label="Step 4: Verification">
             <span class="marker">4</span>
             <span class="label-text" aria-hidden="true">Verification</span>
           </div>
-          <div class="progress-step" aria-label="Step 5: Review & submit">
+          <div class="progress-step" aria-label="Step 5: Preview & submit">
             <span class="marker">5</span>
-            <span class="label-text" aria-hidden="true">Review & submit</span>
+            <span class="label-text" aria-hidden="true">Preview & submit</span>
           </div>
         </div>
         <div class="form-column">
           <div class="form-heading">
-            <p class="eyebrow">Step 4 of 5</p>
-            <h1>Verify your identity</h1>
-            <p>A quick private check helps keep every G Club connection genuine, respectful, and safe.</p>
+            <p class="eyebrow">Step 2 of 5<span class="eyebrow-step-title"> &mdash; Your details</span></p>
+            <h1>Tell us about yourself</h1>
+            <p>These details help us create a genuine profile and keep your account secure.</p>
           </div>
           <div class="form-card">
-            <div class="photo-requirement" style="background:var(--gold-tint);">
-              <h3>Your identity stays private</h3>
-              <p>Your documents are encrypted and never shared with companions.</p>
+            <div class="form-row">
+              <div class="form-field">
+                <label>First name</label>
+                <input type="text" value="Maya">
+              </div>
+              <div class="form-field">
+                <label>Last name</label>
+                <input type="text" value="Santos">
+              </div>
             </div>
+            <div class="form-row">
+              <div class="form-field">
+                <label>Age</label>
+                <input type="number" value="25">
+              </div>
+              <div class="form-field">
+                <label>Location</label>
+                <input type="text" value="Philippines">
+              </div>
+            </div>
+            <div class="form-field">
+              <label>Mobile number</label>
+              <input type="tel" value="+63 917 123 4567" id="girl-phone-input">
+            </div>
+
+            <div class="photo-requirement" style="background:var(--gold-tint); gap:14px;">
+              <div style="display:flex; align-items:center; gap:10px;">
+                <span style="color:var(--gold-deep); flex-shrink:0;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.362 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.338 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg></span>
+                <h3 style="margin:0;">Verify this number</h3>
+              </div>
+              <p style="margin:0;">We sent a 6-digit code to <b style="color:var(--ink);">+63 917 123 4567</b>. Enter it below &mdash; you can update your number above and resend if needed.</p>
+              <div class="otp-row" style="justify-content:flex-start; margin:4px 0 0;">
+                <input type="text" inputmode="numeric" maxlength="1" class="otp-box" data-otp-index="0">
+                <input type="text" inputmode="numeric" maxlength="1" class="otp-box" data-otp-index="1">
+                <input type="text" inputmode="numeric" maxlength="1" class="otp-box" data-otp-index="2">
+                <input type="text" inputmode="numeric" maxlength="1" class="otp-box" data-otp-index="3">
+                <input type="text" inputmode="numeric" maxlength="1" class="otp-box" data-otp-index="4">
+                <input type="text" inputmode="numeric" maxlength="1" class="otp-box" data-otp-index="5">
+              </div>
+              <p class="otp-error" id="otp-error" style="text-align:left; margin:0;">That code doesn&rsquo;t look right. Please try again.</p>
+              <p class="otp-resend" id="otp-resend-note" style="text-align:left; margin:0;">Didn&rsquo;t get a code? <a href="#" id="resend-otp-link">Resend code</a></p>
+            </div>
+
             <div class="upload-box" tabindex="0">
               <span class="upload-icon">&#8593;</span>
-              <p class="upload-title">Upload a government-issued ID</p>
-              <p class="upload-sub">Passport, driver&rsquo;s license, or national ID</p>
+              <p class="upload-title">Upload your photo</p>
+              <p class="upload-sub">A clear, recent portrait &middot; JPG or PNG (you can select multiple images)</p>
             </div>
-            <div class="upload-box" tabindex="0">
-              <span class="upload-icon">&#8593;</span>
-              <p class="upload-title">Take a verification selfie</p>
-              <p class="upload-sub">Make sure your face is clearly visible</p>
+            <div class="photo-requirement">
+              <div>
+                <h3>Upload at least 3 to 5 photos</h3>
+                <p>Add a few photos so people can get a better sense of who you are. This helps build trust and makes your profile feel more complete.</p>
+              </div>
+              <div>
+                <p class="label">Uploaded photos</p>
+                <div class="thumb-row">
+                  <div class="thumb"><div class="photo-tile"><span class="initial">M</span></div>
+                    <span class="thumb-badge"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/></svg>Profile</span>
+                  </div>
+                  <div class="thumb"><div class="photo-tile"><span class="initial">M</span></div></div>
+                  <div class="thumb thumb-empty" tabindex="0"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="1.5"/><path d="m21 15-5-5L5 21"/></svg></div>
+                  <div class="thumb thumb-empty" tabindex="0"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="1.5"/><path d="m21 15-5-5L5 21"/></svg></div>
+                  <div class="thumb thumb-empty" tabindex="0"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="1.5"/><path d="m21 15-5-5L5 21"/></svg></div>
+                </div>
+              </div>
             </div>
             <hr class="divider">
-<div class="form-actions">
-              <a href="gent-preferences.html" class="btn btn-ghost" data-transition><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg> Back</a>
-              <a href="gent-review.html" class="btn btn-dark" data-transition>Continue <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
+            <div class="form-actions">
+              <a href="girl-welcome.html" class="btn btn-ghost" data-transition><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg> Back</a>
+              <button type="button" class="btn btn-dark" id="verify-signup-otp-btn" data-next-href="girl-about.html">Verify &amp; continue <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></button>
             </div>
           </div>
         </div>
         <div class="step-explain">
-          <p class="label">Step 4 of 5</p>
-          <h2>Safety and trust</h2>
-          <p>Verification protects both members and companions. We use it only to confirm identity, build trust, and keep G Club safe. Your documents are handled securely and never shared publicly.</p>
+          <p class="label">Step 1 of 4</p>
+          <h2>The basics</h2>
+          <p>We just need a few details and a quick phone check to get your profile started. Your name and photo help people feel comfortable reaching out, and verifying your number keeps your account secure.</p>
         </div>
     </div>
   </div>

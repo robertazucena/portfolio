@@ -109,10 +109,10 @@
       <input type="text" placeholder="Search by name, vibe, or activity" aria-label="Search">
     </div>
     <div class="nav-actions">
-      <div class="nav-profile-chip">
+      <a href="girl-profile.html" class="nav-profile-chip" data-transition>
         <div class="photo-tile"><span class="initial">M</span></div>
         <span>Maya</span>
-      </div>
+      </a>
     </div>
   </div>
 </header>
@@ -123,10 +123,18 @@
     <aside class="profile-side-panel">
       <div class="profile-side-header">
         <div class="photo-tile"><span class="initial">M</span></div>
-        <h3>Maya Santos <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--gold-deep)" stroke-width="2"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg></h3>
-        <p>GC-684</p>
-        <span class="profile-hero-tier">Verified</span>
+        <div class="profile-side-header-info">
+          <h3>Maya Santos <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--gold-deep)" stroke-width="2"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg></h3>
+          <div class="id-row">
+            <p>GC-684</p>
+            <span class="profile-hero-tier">Verified</span>
+          </div>
+        </div>
       </div>
+      <button type="button" class="profile-nav-toggle" id="profile-nav-toggle" aria-expanded="false">
+        <span>Section: <span id="profile-nav-toggle-value">Bookings</span></span>
+        <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
       <nav class="member-nav">
         <button type="button" class="member-nav-item profile-nav-tab is-active" data-tab="tab-bookings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg><span>Bookings</span></button>
         <button type="button" class="member-nav-item profile-nav-tab" data-tab="tab-transactions"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg><span>Transactions</span></button>

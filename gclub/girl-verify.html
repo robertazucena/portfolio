@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Verify your identity — G Girl application</title>
-<meta name="description" content="Verification helps keep every G Club connection genuine, respectful, and safe.">
+<meta name="description" content="An ID check and a short video help keep every G Club connection genuine and safe.">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -61,36 +61,28 @@
             <span class="marker">1</span>
             <span class="label-text" aria-hidden="true">Welcome</span>
           </div>
-          <div class="progress-step is-filled" aria-label="Step 2: Basic info">
+          <div class="progress-step is-filled" aria-label="Step 2: Your details">
             <span class="marker">2</span>
-            <span class="label-text" aria-hidden="true">Basic info</span>
+            <span class="label-text" aria-hidden="true">Your details</span>
           </div>
-          <div class="progress-step is-filled" aria-label="Step 3: About you">
+          <div class="progress-step is-filled" aria-label="Step 3: Your profile">
             <span class="marker">3</span>
-            <span class="label-text" aria-hidden="true">About you</span>
+            <span class="label-text" aria-hidden="true">Your profile</span>
           </div>
-          <div class="progress-step is-filled" aria-label="Step 4: Set your rates">
+          <div class="progress-step is-filled is-current" aria-label="Step 4: Verification (current)">
             <span class="marker">4</span>
-            <span class="label-text" aria-hidden="true">Set your rates</span>
-          </div>
-          <div class="progress-step is-filled is-current" aria-label="Step 5: Verification (current)">
-            <span class="marker">5</span>
             <span class="label-text" aria-hidden="true">Verification</span>
           </div>
-          <div class="progress-step" aria-label="Step 6: Video verification">
-            <span class="marker">6</span>
-            <span class="label-text" aria-hidden="true">Video verification</span>
-          </div>
-          <div class="progress-step" aria-label="Step 7: Preview & submit">
-            <span class="marker">7</span>
+          <div class="progress-step" aria-label="Step 5: Preview & submit">
+            <span class="marker">5</span>
             <span class="label-text" aria-hidden="true">Preview & submit</span>
           </div>
         </div>
         <div class="form-column">
           <div class="form-heading">
-            <p class="eyebrow">Step 5 of 7<span class="eyebrow-step-title"> &mdash; Verification</span></p>
+            <p class="eyebrow">Step 4 of 5<span class="eyebrow-step-title"> &mdash; Verification</span></p>
             <h1>Verify your identity</h1>
-            <p>Verification helps keep every G Club connection genuine, respectful, and safe.</p>
+            <p>An ID check and a short video help keep every G Club connection genuine and safe.</p>
           </div>
           <div class="form-card">
             <div class="photo-requirement" style="background:var(--gold-tint);">
@@ -108,16 +100,45 @@
               <p class="upload-sub">Make sure your face is clearly visible</p>
             </div>
             <hr class="divider">
-<div class="form-actions">
-              <a href="girl-rates.html" class="btn btn-ghost" data-transition><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg> Back</a>
-              <a href="girl-video.html" class="btn btn-dark" data-transition>Continue <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
+
+            <p class="field-label-standalone">Now, answer these questions on camera</p>
+            <ol class="question-list">
+              <li>Please say your first name and the city you're based in.</li>
+              <li>Hold your ID next to your face so both are clearly visible.</li>
+              <li>What made you want to join G Club as a G Girl?</li>
+              <li>How would a close friend describe your personality in three words?</li>
+              <li>What's one activity you love sharing with the people you meet?</li>
+              <li>Describe your idea of a great first meetup.</li>
+              <li>What's a boundary that's important to you when meeting someone new?</li>
+              <li>Share a hobby or interest you could talk about for hours.</li>
+              <li>What does “good company” mean to you?</li>
+              <li>How do you usually like to spend a quiet Sunday afternoon?</li>
+              <li>If a member wanted to plan a fun evening, what would you suggest?</li>
+              <li>Is there anything else you'd like members to know about you?</li>
+            </ol>
+
+            <div class="video-recorder" id="video-recorder">
+              <div class="video-frame">
+                <svg class="video-icon" width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="2" y="6" width="14" height="12" rx="2"/><path d="m16 10 6-3.5v11L16 14"/></svg>
+                <p>Your camera preview will appear here</p>
+              </div>
+              <div class="video-controls">
+                <button type="button" class="btn btn-dark" id="record-toggle"><svg width="10" height="10" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="currentColor"/></svg> Start recording</button>
+                <span class="video-status" id="video-status"><span class="dot"></span> Not recorded yet</span>
+              </div>
+            </div>
+
+            <hr class="divider">
+            <div class="form-actions">
+              <a href="girl-about.html" class="btn btn-ghost" data-transition><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg> Back</a>
+              <a href="girl-preview.html" class="btn btn-dark is-disabled" id="video-continue" data-transition>Continue <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
             </div>
           </div>
         </div>
         <div class="step-explain">
-          <p class="label">Step 4 of 6</p>
+          <p class="label">Step 3 of 4</p>
           <h2>Verification</h2>
-          <p>Safety is at the heart of G Club. A quick identity check helps build trust with everyone on the platform. Your documents are handled securely and never shared publicly.</p>
+          <p>Safety is at the heart of G Club. A quick ID check plus a short video answer are the strongest ways we confirm a profile is genuine. Everything here is handled securely and never shown publicly &mdash; our verification team is the only one who sees it.</p>
         </div>
     </div>
   </div>
