@@ -48,26 +48,34 @@
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
     </button>
     <div class="modal-scroll">
-      <div class="hero-gallery">
-        <div class="cover">
-          <div class="photo-tile" id="modal-cover"><span class="initial" id="modal-cover-initial">M</span></div>
-        </div>
-        <div class="gallery-stack">
-          <div class="gallery-row">
-            <div class="photo-tile"></div>
-            <div class="photo-tile"></div>
-          </div>
-          <div class="gallery-row">
-            <div class="photo-tile"></div>
-            <div class="photo-tile"></div>
-          </div>
-        </div>
-      </div>
 
       <div class="profile-body">
         <div class="main-details">
+          <div class="hero-gallery">
+            <div class="gallery-main">
+              <div class="photo-tile" id="modal-cover" data-variant="0"><span class="initial" id="modal-cover-initial">M</span></div>
+              <span class="gallery-counter"><span id="gallery-counter-current">1</span> / 5</span>
+            </div>
+            <div class="gallery-thumbs" id="gallery-thumbs">
+              <button type="button" class="gallery-thumb" data-gallery-thumb data-variant="1" aria-label="View photo 1">
+                <div class="photo-tile" data-variant="1"></div>
+              </button>
+              <button type="button" class="gallery-thumb" data-gallery-thumb data-variant="2" aria-label="View photo 2">
+                <div class="photo-tile" data-variant="2"></div>
+              </button>
+              <button type="button" class="gallery-thumb" data-gallery-thumb data-variant="3" aria-label="View photo 3">
+                <div class="photo-tile" data-variant="3"></div>
+              </button>
+              <button type="button" class="gallery-thumb" data-gallery-thumb data-variant="4" aria-label="View photo 4">
+                <div class="photo-tile" data-variant="4"></div>
+              </button>
+              <button type="button" class="gallery-thumb" data-gallery-thumb data-variant="5" aria-label="View photo 5">
+                <div class="photo-tile" data-variant="5"></div>
+              </button>
+            </div>
+          </div>
           <div class="identity-row">
-            <div class="avatar photo-tile" id="modal-avatar"><span class="initial" id="modal-avatar-initial">M</span></div>
+            <!--<div class="avatar photo-tile" id="modal-avatar"><span class="initial" id="modal-avatar-initial">M</span></div>-->
             <div>
               <div class="name-row">
                 <h1 id="modal-name">Maya, 25</h1>
@@ -143,11 +151,17 @@
             <button class="time-pill is-active">4:30 PM</button>
             <button class="time-pill">7:00 PM</button>
           </div>
+          <p class="hours-label">Number of hours</p>
+          <div class="hours-stepper">
+            <button type="button" class="hours-btn" id="hours-minus" aria-label="Decrease hours">&minus;</button>
+            <span class="hours-value"><span id="hours-count">3</span> hours<small>3-hour minimum</small></span>
+            <button type="button" class="hours-btn" id="hours-plus" aria-label="Increase hours">+</button>
+          </div>
           <div class="booking-summary">
-            <div class="summary-row"><span class="lbl">1.5 hours</span><span>$63</span></div>
-            <div class="summary-row"><span class="lbl">Service fee</span><span>$6</span></div>
+            <div class="summary-row"><span class="lbl" id="summary-hours-label">3 hours &times; $42</span><span id="summary-subtotal">$126</span></div>
+            <div class="summary-row"><span class="lbl">Service fee</span><span id="summary-fee">$13</span></div>
             <hr class="divider">
-            <div class="summary-row total"><span class="lbl">Total</span><span>$69</span></div>
+            <div class="summary-row total"><span class="lbl">Total</span><span id="summary-total">$139</span></div>
           </div>
           <button class="btn btn-dark btn-block btn-lg" type="button">Request to book</button>
           <div class="booking-safety">
@@ -155,6 +169,7 @@
             <span>You won't be charged until <span id="modal-name2">Maya</span> accepts.</span>
           </div>
         </aside>
+
       </div>
     </div>
   </div>

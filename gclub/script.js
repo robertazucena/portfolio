@@ -189,6 +189,74 @@
     if(panel) panel.scrollTop = 0;
     var closeBtn = backdrop.querySelector('.modal-close');
     if(closeBtn) closeBtn.focus();
+
+    // Reset the hour selection to the 3-hour minimum for each new profile
+    var hoursCount = document.getElementById('hours-count');
+    if(hoursCount) hoursCount.textContent = '3';
+    updateBookingSummary();
+    resetGallery();
+  }
+
+  /* ---------------------------------------------------------
+     Profile modal gallery: one large main photo plus a
+     thumbnail strip. Clicking a thumbnail swaps it into the
+     main view (and puts the previous main photo back in that
+     thumbnail's spot), the way a real photo gallery would.
+  --------------------------------------------------------- */
+  function resetGallery(){
+    var main = document.getElementById('modal-cover');
+    if(main) main.setAttribute('data-variant', '0');
+    var counter = document.getElementById('gallery-counter-current');
+    if(counter) counter.textContent = '1';
+    document.querySelectorAll('#gallery-thumbs .gallery-thumb').forEach(function(thumb){
+      thumb.classList.remove('is-active');
+      var tile = thumb.querySelector('.photo-tile');
+      var original = thumb.getAttribute('data-variant');
+      if(tile && original) tile.setAttribute('data-variant', original);
+    });
+  }
+
+  function swapGalleryPhoto(thumb){
+    var main = document.getElementById('modal-cover');
+    var tile = thumb.querySelector('.photo-tile');
+    var counter = document.getElementById('gallery-counter-current');
+    if(!main || !tile) return;
+
+    var mainVariant = main.getAttribute('data-variant');
+    var thumbVariant = tile.getAttribute('data-variant');
+
+    main.setAttribute('data-variant', thumbVariant);
+    tile.setAttribute('data-variant', mainVariant);
+
+    document.querySelectorAll('#gallery-thumbs .gallery-thumb').forEach(function(t){
+      t.classList.remove('is-active');
+    });
+    thumb.classList.add('is-active');
+
+    if(counter){
+      var slot = thumb.getAttribute('data-variant');
+      counter.textContent = slot ? (parseInt(slot, 10) + 1) : '1';
+    }
+  }
+
+  function updateBookingSummary(){
+    var hoursEl = document.getElementById('hours-count');
+    var rateEl = document.getElementById('modal-rate');
+    if(!hoursEl || !rateEl) return;
+    var hours = parseInt(hoursEl.textContent, 10) || 3;
+    var rate = parseFloat(rateEl.textContent) || 0;
+    var subtotal = hours * rate;
+    var fee = Math.round(subtotal * 0.1);
+    var total = subtotal + fee;
+
+    var minusBtn = document.getElementById('hours-minus');
+    if(minusBtn) minusBtn.disabled = hours <= 3;
+
+    var setText = function(id, val){ var el = document.getElementById(id); if(el) el.textContent = val; };
+    setText('summary-hours-label', hours + ' hours \u00d7 $' + rate);
+    setText('summary-subtotal', '$' + subtotal);
+    setText('summary-fee', '$' + fee);
+    setText('summary-total', '$' + total);
   }
 
   function closeProfileModal(){
@@ -285,10 +353,30 @@
       }
     }
 
+    if(e.target.closest('#hours-plus')){
+      var hoursEl = document.getElementById('hours-count');
+      if(hoursEl){
+        var current = parseInt(hoursEl.textContent, 10) || 3;
+        if(current < 12){ hoursEl.textContent = current + 1; updateBookingSummary(); }
+      }
+    }
+    if(e.target.closest('#hours-minus')){
+      var hoursEl2 = document.getElementById('hours-count');
+      if(hoursEl2){
+        var current2 = parseInt(hoursEl2.textContent, 10) || 3;
+        if(current2 > 3){ hoursEl2.textContent = current2 - 1; updateBookingSummary(); }
+      }
+    }
+
     var opener = e.target.closest('[data-open-profile]');
     if(opener){
       e.preventDefault();
       openProfileModal(opener);
+    }
+
+    var galleryThumb = e.target.closest('[data-gallery-thumb]');
+    if(galleryThumb){
+      swapGalleryPhoto(galleryThumb);
     }
 
     if(e.target.closest('[data-modal-close]')){

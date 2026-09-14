@@ -559,20 +559,41 @@ body.modal-open{ overflow: hidden; }
 .back-link:hover{ color: var(--ink); transform: translateX(-2px); }
 
 .hero-gallery{
-  display: grid;
-  grid-template-columns: 1.35fr 1fr;
+  display: flex;
+  flex-direction: column;
   gap: 12px;
-  padding: 24px 0 0;
-  height: 340px;
+  padding: 0;
 }
-.hero-gallery .cover{ height: 100%; border-radius: 24px 10px 10px 24px; overflow: hidden; }
-.hero-gallery .cover img{ display: block; width: 100%; height: 100%; object-fit: cover; }
-.gallery-stack{ display: flex; flex-direction: column; gap: 12px; height: 100%; }
-.gallery-row{ display: grid; grid-template-columns: 1fr 1fr; gap: 12px; flex: 1; min-height: 0; }
-.gallery-row img{ display: block; width: 100%; height: 100%; object-fit: cover; border-radius: 10px; }
-.gallery-row:first-child img:last-child{ border-radius: 10px 24px 10px 10px; }
+.gallery-main{ position: relative; height: 380px; border-radius: 24px; overflow: hidden; }
+.gallery-main img{ display: block; width: 100%; height: 100%; object-fit: cover; }
+.gallery-main .photo-tile{ border-radius: 24px; transition: opacity .18s var(--ease, ease); }
+.gallery-counter{
+  position: absolute; right: 14px; bottom: 14px; z-index: 2;
+  background: rgba(23,22,19,.62); color: var(--white);
+  font-size: 12px; font-weight: 600; letter-spacing: .01em;
+  padding: 6px 11px; border-radius: var(--radius-pill, 999px);
+  pointer-events: none;
+}
+.gallery-thumbs{ display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
+.gallery-thumb{
+  display: block; padding: 0; border: 2px solid transparent; border-radius: 12px;
+  overflow: hidden; height: 84px; background: none; cursor: pointer;
+  transition: border-color .15s, transform .15s;
+}
+.gallery-thumb .photo-tile{ border-radius: 9px; }
+.gallery-thumb img{ display: block; width: 100%; height: 100%; object-fit: cover; }
+.gallery-thumb:hover{ transform: translateY(-1px); }
+.gallery-thumb:focus-visible{ outline: 2px solid var(--gold-deep); outline-offset: 2px; }
+.gallery-thumb.is-active{ border-color: var(--gold-deep); }
+.gallery-thumb.is-active .photo-tile{ opacity: .55; }
 
-.profile-body{ display: flex; gap: 40px; align-items: flex-start; padding: 40px 0 80px; }
+/* Placeholder photo variety so gallery/main tiles read as distinct photos */
+.photo-tile[data-variant="1"]{ background: linear-gradient(135deg, var(--blush) 0%, var(--gold-tint) 55%, #f2e9dc 100%); }
+.photo-tile[data-variant="2"]{ background: linear-gradient(145deg, #efe4d6 0%, var(--gold-tint) 50%, var(--blush) 100%); }
+.photo-tile[data-variant="3"]{ background: linear-gradient(120deg, var(--gold-tint) 10%, #efe4d6 60%, var(--blush) 100%); }
+.photo-tile[data-variant="4"]{ background: linear-gradient(160deg, var(--blush) 0%, #efe4d6 55%, var(--gold-tint) 100%); }
+
+.profile-body{ display: flex; gap: 40px; align-items: flex-start; padding: 20px 0 80px; }
 .main-details{ flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 20px; }
 .identity-row{ display: flex; align-items: center; gap: 18px; }
 .identity-row .avatar{ width: 82px; height: 82px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
@@ -607,7 +628,7 @@ hr.divider{ border: none; border-top: 1px solid var(--line); margin: 0; }
   background: var(--white); border: 1px solid var(--line); border-radius: var(--radius-lg);
   box-shadow: var(--shadow-card);
   padding: 24px; display: flex; flex-direction: column; gap: 20px;
-  position: sticky; top: calc(var(--nav-h) + 24px);
+  position: sticky; top: calc(var(--nav-h) + -76px);
 }
 .booking-price{ display: flex; align-items: center; justify-content: space-between; }
 .booking-price .rate{ font-size: 24px; }
@@ -624,6 +645,16 @@ hr.divider{ border: none; border-top: 1px solid var(--line); margin: 0; }
 .day-pill:hover:not(.is-active){ background: var(--line); }
 .times-label{ font-size: 16px; margin: 0; }
 .times{ display: flex; flex-wrap: wrap; gap: 8px; }
+.hours-label{ font-size: 14px; font-weight: 600; color: var(--ink); margin: 0; }
+.hours-stepper{ display: flex; align-items: center; justify-content: space-between; background: var(--tag-bg); border-radius: var(--radius-md); padding: 10px 14px; margin-bottom: 16px; }
+.hours-stepper .hours-btn{
+  width: 32px; height: 32px; border-radius: 50%; background: var(--white); border: 1px solid var(--line);
+  display: flex; align-items: center; justify-content: center; color: var(--ink); font-size: 16px; font-weight: 600; flex-shrink: 0;
+}
+.hours-stepper .hours-btn:disabled{ opacity: .35; }
+.hours-stepper .hours-value{ font-size: 15px; font-weight: 600; color: var(--ink); text-align: center; }
+.hours-stepper .hours-value small{ display: block; color: var(--muted); font-weight: 400; font-size: 11px; margin-top: 1px; }
+.hours-note{ color: var(--muted); font-size: 11px; margin: -10px 0 16px; }
 .time-pill{
   border: 1px solid var(--line); background: var(--white); border-radius: var(--radius-sm);
   padding: 10px 15px; font-size: 14px; color: var(--ink); transition: border-color .15s, background-color .15s;
@@ -692,11 +723,7 @@ hr.divider{ border: none; border-top: 1px solid var(--line); margin: 0; }
   .profile-grid{ grid-template-columns: repeat(3, 1fr); }
   .profile-body{ flex-direction: column; }
   .booking-card{ width: 100%; position: static; }
-  .hero-gallery{ grid-template-columns: 1fr; height: auto; }
-  .hero-gallery .cover{ height: auto; aspect-ratio: 16/10; }
-  .gallery-stack{ height: auto; }
-  .gallery-row{ flex: none; }
-  .gallery-row img{ height: auto; aspect-ratio: 1/1; }
+  .gallery-main{ height: auto; aspect-ratio: 16/10; }
   .join-paths{ grid-template-columns: 1fr; }
   .trust{ flex-direction: column; align-items: stretch; gap: 40px; }
 }
@@ -717,6 +744,7 @@ hr.divider{ border: none; border-top: 1px solid var(--line); margin: 0; }
   .identity-row .name-row h1{ font-size: 30px; }
   .profile-grid{ grid-template-columns: 1fr 1fr; gap: 14px; }
   .days{ grid-template-columns: repeat(3, 1fr); }
+  .gallery-thumb{ height:60px }
 
   /* Friendlier mobile filters: a "Filter" button that reveals a
      dropdown of chips, instead of the filters always sitting on
@@ -797,8 +825,7 @@ hr.divider{ border: none; border-top: 1px solid var(--line); margin: 0; }
   user-select: none;
 }
 .photo-area .photo-tile .initial{ font-size: 64px; }
-.cover .photo-tile .initial{ font-size: 96px; }
-.gallery-row .photo-tile .initial{ font-size: 36px; }
+.gallery-main .photo-tile .initial{ font-size: 96px; }
 .avatar.photo-tile{ border-radius: 50%; flex-shrink: 0; }
 .avatar.photo-tile .initial{ font-size: 28px; }
 .review-author .photo-tile{ width: 38px; height: 38px; border-radius: 50%; flex-shrink: 0; }
