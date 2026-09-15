@@ -129,44 +129,134 @@
         </div>
 
         <aside class="booking-card">
-          <div class="booking-price">
-            <span class="rate">$<span id="modal-rate">42</span> <small>/ hour</small></span>
-            <span class="rating">★ <span id="modal-rating2">4.9</span> <small style="color:var(--muted); font-size:12px;">(48)</small></span>
-          </div>
-          <hr class="divider">
-          <div class="avail">
-            <h3>Choose a day</h3>
-            <div class="days">
-              <button class="day-pill">Mon 14</button>
-              <button class="day-pill is-active">Tue 15</button>
-              <button class="day-pill">Wed 16</button>
-              <button class="day-pill">Thu 17</button>
-              <button class="day-pill">Fri 18</button>
+          <div id="booking-form-view">
+            <div class="booking-price">
+              <span class="rate">$<span id="modal-rate">42</span> <small>/ hour</small></span>
+              <span class="rating">★ <span id="modal-rating2">4.9</span> <small style="color:var(--muted); font-size:12px;">(48)</small></span>
+            </div>
+            <hr class="divider">
+            <div class="avail">
+              <h3>Choose a day</h3>
+              <div class="days">
+                <button class="day-pill">Mon 14</button>
+                <button class="day-pill is-active">Tue 15</button>
+                <button class="day-pill">Wed 16</button>
+                <button class="day-pill">Thu 17</button>
+                <button class="day-pill">Fri 18</button>
+              </div>
+            </div>
+            <p class="times-label">Available times</p>
+            <div class="times">
+              <button class="time-pill">11:00 AM</button>
+              <button class="time-pill">2:00 PM</button>
+              <button class="time-pill is-active">4:30 PM</button>
+              <button class="time-pill">7:00 PM</button>
+            </div>
+            <p class="hours-label">Number of hours</p>
+            <div class="hours-stepper">
+              <button type="button" class="hours-btn" id="hours-minus" aria-label="Decrease hours">&minus;</button>
+              <span class="hours-value"><span id="hours-count">3</span> hours<small>3-hour minimum</small></span>
+              <button type="button" class="hours-btn" id="hours-plus" aria-label="Increase hours">+</button>
+            </div>
+            <div class="booking-summary">
+              <div class="summary-row"><span class="lbl" id="summary-hours-label">3 hours &times; $42</span><span id="summary-subtotal">$126</span></div>
+              <div class="summary-row"><span class="lbl">Service fee</span><span id="summary-fee">$13</span></div>
+              <hr class="divider">
+              <div class="summary-row total"><span class="lbl">Total</span><span id="summary-total">$139</span></div>
+            </div>
+            <button class="btn btn-dark btn-block btn-lg" type="button" id="request-to-book-btn">Request to book</button>
+            <div class="booking-safety">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;margin-top:1px;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/></svg>
+              <span>You won't be charged until <span id="modal-name2">Maya</span> accepts.</span>
             </div>
           </div>
-          <p class="times-label">Available times</p>
-          <div class="times">
-            <button class="time-pill">11:00 AM</button>
-            <button class="time-pill">2:00 PM</button>
-            <button class="time-pill is-active">4:30 PM</button>
-            <button class="time-pill">7:00 PM</button>
-          </div>
-          <p class="hours-label">Number of hours</p>
-          <div class="hours-stepper">
-            <button type="button" class="hours-btn" id="hours-minus" aria-label="Decrease hours">&minus;</button>
-            <span class="hours-value"><span id="hours-count">3</span> hours<small>3-hour minimum</small></span>
-            <button type="button" class="hours-btn" id="hours-plus" aria-label="Increase hours">+</button>
-          </div>
-          <div class="booking-summary">
-            <div class="summary-row"><span class="lbl" id="summary-hours-label">3 hours &times; $42</span><span id="summary-subtotal">$126</span></div>
-            <div class="summary-row"><span class="lbl">Service fee</span><span id="summary-fee">$13</span></div>
-            <hr class="divider">
-            <div class="summary-row total"><span class="lbl">Total</span><span id="summary-total">$139</span></div>
-          </div>
-          <button class="btn btn-dark btn-block btn-lg" type="button">Request to book</button>
-          <div class="booking-safety">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;margin-top:1px;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/></svg>
-            <span>You won't be charged until <span id="modal-name2">Maya</span> accepts.</span>
+
+          <div id="booking-payment-view" style="display:none;">
+            <button type="button" class="change-link" id="booking-pay-back-btn" style="display:flex; align-items:center; gap:6px; margin-bottom:16px; background:none; border:none; padding:0; cursor:pointer;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg> Back</button>
+
+            <div id="booking-pay-method-section">
+              <h3 style="font-size:16px; font-weight:400; margin:0 0 4px;">Confirm your request</h3>
+              <p style="color:var(--muted); font-size:13px; margin:0 0 16px;">You won't be charged until <span id="booking-pay-name1">Maya</span> accepts.</p>
+
+              <div class="booking-summary">
+                <div class="summary-row"><span class="lbl">Date</span><span id="booking-pay-day" style="font-weight:600;">Tue 15</span></div>
+                <div class="summary-row"><span class="lbl">Time</span><span id="booking-pay-time" style="font-weight:600;">4:30 PM</span></div>
+                <div class="summary-row"><span class="lbl" id="booking-pay-hours-label">3 hours &times; $42</span><span id="booking-pay-subtotal">$126</span></div>
+                <div class="summary-row"><span class="lbl">Service fee</span><span id="booking-pay-fee">$13</span></div>
+                <hr class="divider">
+                <div class="summary-row total"><span class="lbl">Total</span><span id="booking-pay-total">$139</span></div>
+              </div>
+
+              <p class="field-label-standalone" style="margin:16px 0 10px;">Payment method</p>
+              <div class="payment-methods" style="margin-bottom:16px; flex-wrap:wrap;">
+                <button type="button" class="payment-badge is-active" data-method="visa">VISA</button>
+                <button type="button" class="payment-badge" data-method="mastercard">Mastercard</button>
+                <button type="button" class="payment-badge" data-method="amex">AMEX</button>
+                <button type="button" class="payment-badge" data-method="gcash">G-Cash</button>
+              </div>
+
+              <div id="booking-pay-fields-card">
+                <div class="form-field" style="margin-bottom:12px;">
+                  <label>Card number</label>
+                  <input type="text" placeholder="1234 5678 9012 3456">
+                </div>
+                <div class="form-row" style="margin-bottom:12px;">
+                  <div class="form-field">
+                    <label>Expiry</label>
+                    <input type="text" placeholder="MM / YY">
+                  </div>
+                  <div class="form-field">
+                    <label>CVV</label>
+                    <input type="text" placeholder="&bull;&bull;&bull;">
+                  </div>
+                </div>
+              </div>
+
+              <div id="booking-pay-fields-gcash" style="display:none;">
+                <div class="form-field" style="margin-bottom:12px;">
+                  <label>G-Cash mobile number</label>
+                  <input type="text" placeholder="09XX XXX XXXX">
+                </div>
+              </div>
+
+              <div class="billing-note" id="booking-pay-billing-note" style="margin-bottom:16px; font-size:12px;">
+                We'll place a hold for this amount. It's only charged once <span id="booking-pay-name2">Maya</span> accepts &mdash; released automatically if she doesn't.
+              </div>
+
+              <button class="btn btn-dark btn-block btn-lg" type="button" id="booking-pay-continue-btn">Authorize &amp; send request</button>
+            </div>
+
+            <div id="booking-pay-authorize-section" style="display:none;">
+              <div class="authorize-state" style="padding:12px 0;">
+                <div class="authorize-spinner" style="width:48px; height:48px;"></div>
+                <h2 style="font-size:20px;">Authorizing&hellip;</h2>
+                <p class="authorize-desc" style="font-size:13px;">Confirm the hold in your G-Cash app. Keep this open while we wait.</p>
+                <span class="authorize-waiting" style="font-size:12px;">Waiting for confirmation&hellip;</span>
+              </div>
+            </div>
+
+            <div id="booking-pay-success-section" style="display:none;">
+              <div class="payment-success" style="gap:14px; padding:8px 0;">
+                <div class="success-check-icon" style="width:56px; height:56px;">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20 6 9 17l-5-5"/></svg>
+                </div>
+                <div>
+                  <h2 style="font-size:22px;">Request sent</h2>
+                  <p class="sub" id="booking-pay-success-sub" style="font-size:13px;">You won't be charged until Maya accepts.</p>
+                </div>
+                <div class="transaction-details" style="padding:14px; gap:10px;">
+                  <div class="transaction-detail">
+                    <span class="lbl">Amount held</span>
+                    <span class="val" id="booking-pay-success-amount">$139</span>
+                  </div>
+                  <div class="transaction-detail">
+                    <span class="lbl" id="booking-pay-success-ref-label">Reference</span>
+                    <span class="val" id="booking-pay-success-ref-value">GC-8427-1935</span>
+                  </div>
+                </div>
+                <button class="btn btn-dark btn-block" type="button" id="booking-pay-done-btn">Done</button>
+              </div>
+            </div>
           </div>
         </aside>
 
@@ -557,5 +647,119 @@
 
 
 <script src="script.js"></script>
+<script>
+  (function(){
+    var requestBtn = document.getElementById('request-to-book-btn');
+    var formView = document.getElementById('booking-form-view');
+    var payView = document.getElementById('booking-payment-view');
+    var methodSection = document.getElementById('booking-pay-method-section');
+    var authorizeSection = document.getElementById('booking-pay-authorize-section');
+    var successSection = document.getElementById('booking-pay-success-section');
+    var backBtn = document.getElementById('booking-pay-back-btn');
+    var continueBtn = document.getElementById('booking-pay-continue-btn');
+    var doneBtn = document.getElementById('booking-pay-done-btn');
+    if(!requestBtn || !formView || !payView) return;
+
+    function resetPayView(){
+      methodSection.style.display = 'block';
+      authorizeSection.style.display = 'none';
+      successSection.style.display = 'none';
+    }
+
+    /* Switch from the day/time/hours form to the payment view,
+       carrying over whatever was selected \u2014 no navigation, so
+       nothing is lost if the gent backs out. */
+    requestBtn.addEventListener('click', function(){
+      var modal = requestBtn.closest('.modal-panel') || document;
+      var name = (document.getElementById('modal-name2') || {}).textContent.trim() || 'Maya';
+      var day = (modal.querySelector('.day-pill.is-active') || {}).textContent || '';
+      var time = (modal.querySelector('.time-pill.is-active') || {}).textContent || '';
+      var hoursLabel = (document.getElementById('summary-hours-label') || {}).textContent || '';
+      var subtotal = (document.getElementById('summary-subtotal') || {}).textContent || '';
+      var fee = (document.getElementById('summary-fee') || {}).textContent || '';
+      var total = (document.getElementById('summary-total') || {}).textContent || '';
+
+      document.querySelectorAll('#booking-pay-name1, #booking-pay-name2').forEach(function(el){ el.textContent = name; });
+      document.getElementById('booking-pay-day').textContent = day.trim();
+      document.getElementById('booking-pay-time').textContent = time.trim();
+      document.getElementById('booking-pay-hours-label').textContent = hoursLabel.trim();
+      document.getElementById('booking-pay-subtotal').textContent = subtotal.trim();
+      document.getElementById('booking-pay-fee').textContent = fee.trim();
+      document.getElementById('booking-pay-total').textContent = total.trim();
+
+      resetPayView();
+      formView.style.display = 'none';
+      payView.style.display = 'block';
+    });
+
+    /* Back just swaps the view \u2014 the form underneath was never
+       touched, so day/time/hours are exactly as left. */
+    if(backBtn){
+      backBtn.addEventListener('click', function(){
+        payView.style.display = 'none';
+        formView.style.display = 'block';
+      });
+    }
+
+    /* Payment method switching, scoped to this card. */
+    var cardFields = document.getElementById('booking-pay-fields-card');
+    var gcashFields = document.getElementById('booking-pay-fields-gcash');
+    var billingNote = document.getElementById('booking-pay-billing-note');
+    var badges = Array.prototype.slice.call(payView.querySelectorAll('.payment-badge'));
+    badges.forEach(function(badge){
+      badge.addEventListener('click', function(){
+        badges.forEach(function(b){ b.classList.remove('is-active'); });
+        badge.classList.add('is-active');
+        var isGcash = badge.getAttribute('data-method') === 'gcash';
+        cardFields.style.display = isGcash ? 'none' : 'block';
+        gcashFields.style.display = isGcash ? 'block' : 'none';
+        var name = document.getElementById('booking-pay-name2').textContent;
+        billingNote.innerHTML = isGcash
+          ? 'We\u2019ll send a secure authorization request to this G-Cash account \u2014 it\u2019s only charged once <span id="booking-pay-name2">' + name + '</span> accepts.'
+          : 'We\u2019ll place a hold for this amount. It\u2019s only charged once <span id="booking-pay-name2">' + name + '</span> accepts \u2014 released automatically if she doesn\u2019t.';
+      });
+    });
+
+    function randomRef(prefix){
+      var n = function(){ return Math.floor(1000 + Math.random() * 9000); };
+      return prefix + '-' + n() + '-' + n();
+    }
+    function showSuccess(isGcash){
+      var name = document.getElementById('booking-pay-name1').textContent;
+      document.getElementById('booking-pay-success-sub').textContent = 'You won\u2019t be charged until ' + name + ' accepts \u2014 we\u2019ll notify you as soon as she responds.';
+      document.getElementById('booking-pay-success-ref-label').textContent = isGcash ? 'G-Cash reference' : 'Reference';
+      document.getElementById('booking-pay-success-ref-value').textContent = randomRef(isGcash ? 'GC' : 'CH');
+      document.getElementById('booking-pay-success-amount').textContent = document.getElementById('booking-pay-total').textContent;
+      authorizeSection.style.display = 'none';
+      methodSection.style.display = 'none';
+      successSection.style.display = 'block';
+    }
+
+    if(continueBtn){
+      continueBtn.addEventListener('click', function(){
+        var isGcash = payView.querySelector('.payment-badge.is-active[data-method="gcash"]');
+        if(isGcash){
+          methodSection.style.display = 'none';
+          authorizeSection.style.display = 'block';
+          setTimeout(function(){ showSuccess(true); }, 2200);
+        } else {
+          showSuccess(false);
+        }
+      });
+    }
+
+    /* Done: reset back to the booking form for next time, then
+       close the modal via the real close control. */
+    if(doneBtn){
+      doneBtn.addEventListener('click', function(){
+        payView.style.display = 'none';
+        formView.style.display = 'block';
+        resetPayView();
+        var closeBtn = document.querySelector('[data-modal-close]');
+        if(closeBtn) closeBtn.click();
+      });
+    }
+  })();
+</script>
 </body>
 </html>

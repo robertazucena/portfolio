@@ -623,6 +623,30 @@ hr.divider{ border: none; border-top: 1px solid var(--line); margin: 0; }
 .review-card p.text{ margin: 0; color: var(--muted); font-size: 14px; line-height: 1.5; }
 .review-list{ display: flex; flex-direction: column; gap: 12px; }
 
+/* ---------- Gent feedback page (gent-feedback.html) ---------- */
+.feedback-session-card{
+  background: #f5f2ed; border-radius: 16px; padding: 20px;
+  display: flex; align-items: center; gap: 14px;
+}
+.feedback-session-card .photo-tile{ width: 56px; height: 56px; border-radius: 50%; flex-shrink: 0; }
+.feedback-session-card .photo-tile .initial{ font-size: 22px; }
+.feedback-session-meta p{ margin: 0; }
+.feedback-session-meta .who{ font-size: 15px; font-weight: 600; color: var(--ink); }
+.feedback-session-meta .when{ font-size: 13px; color: var(--muted); margin-top: 2px; }
+.star-rate{ display: flex; align-items: center; gap: 8px; }
+.star-rate button{
+  background: none; border: none; padding: 4px; cursor: pointer;
+  color: var(--line); transition: color .15s, transform .1s;
+}
+.star-rate button svg{ width: 34px; height: 34px; display: block; }
+.star-rate button:hover{ transform: scale(1.08); }
+.star-rate button.is-filled{ color: var(--gold-deep); }
+.star-rate-label{ font-size: 14px; color: var(--muted); margin-left: 6px; }
+.feedback-tags .choice-row{ margin-top: 2px; }
+.feedback-success{ display: flex; flex-direction: column; align-items: center; gap: 20px; padding: 16px 0; width: 100%; text-align: center; }
+.feedback-success h2{ font-family: var(--font-serif); font-size: 30px; font-weight: 400; margin: 0; }
+.feedback-success .sub{ color: var(--muted); font-size: 15px; margin: 0; max-width: 380px; }
+
 .booking-card{
   width: 390px; flex-shrink: 0;
   background: var(--white); border: 1px solid var(--line); border-radius: var(--radius-lg);
@@ -630,6 +654,7 @@ hr.divider{ border: none; border-top: 1px solid var(--line); margin: 0; }
   padding: 24px; display: flex; flex-direction: column; gap: 20px;
   position: sticky; top: calc(var(--nav-h) + -76px);
 }
+#booking-form-view{ display: flex; flex-direction: column; gap: 20px; }
 .booking-price{ display: flex; align-items: center; justify-content: space-between; }
 .booking-price .rate{ font-size: 24px; }
 .booking-price .rate small{ font-size: 14px; color: var(--muted); font-weight: 400; }
@@ -1009,6 +1034,7 @@ hr.divider{ border: none; border-top: 1px solid var(--line); margin: 0; }
   gap: 24px;
 }
 .form-row{ display: flex; gap: 16px; }
+#booking-payment-view .form-row{ flex-direction: column; gap: 12px; }
 .form-field{ display: flex; flex-direction: column; gap: 8px; flex: 1; }
 .form-field label{ font-size: 13px; font-weight: 600; color: var(--ink); }
 .form-field input, .form-field textarea{
@@ -1075,6 +1101,17 @@ hr.divider{ border: none; border-top: 1px solid var(--line); margin: 0; }
   display: flex; align-items: center; gap: 6px;
 }
 
+/* Featured layout: profile photo at ~50% width, the rest as a 2x2 grid
+   filling the other 50%. Used on girl-details.html's photo uploader. */
+.thumb-row.thumb-row-featured{ flex-wrap: nowrap; align-items: stretch; }
+.thumb-row-featured .thumb-main{ flex: 1; min-width: 0; }
+.thumb-row-featured .thumb-main .thumb{ width: 100%; height: auto; aspect-ratio: 1 / 1; }
+.thumb-row-featured .thumb-grid-4{
+  flex: 1; min-width: 0;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+}
+.thumb-row-featured .thumb-grid-4 .thumb{ width: 100%; height: auto; aspect-ratio: 1 / 1; }
+
 .form-actions{ display: flex; align-items: center; justify-content: space-between; }
 
 .step-explain{
@@ -1131,6 +1168,8 @@ hr.divider{ border: none; border-top: 1px solid var(--line); margin: 0; }
   .app-content{ padding: 40px 0 60px; gap: 32px; }
   .form-heading h1{ font-size: 34px; }
   .thumb{ width: 90px; height: 90px; }
+  .thumb-row.thumb-row-featured{ flex-direction: column; }
+  .thumb-row-featured .thumb-main .thumb{ aspect-ratio: 16 / 10; }
   .form-card{ padding: 24px; }
   .step-explain{ padding: 24px; }
   .app-progress{ display: none; }
@@ -1631,6 +1670,7 @@ button.member-nav-item{ background: none; border: none; width: 100%; text-align:
 .booking-tab.is-active{ color: var(--ink); border-color: var(--gold-deep); }
 
 .booking-item{ display: flex; align-items: center; gap: 16px; background: var(--white); border: 1px solid var(--line); border-radius: 16px; padding: 16px 20px; flex-wrap: wrap; }
+.booking-item.is-pending-request{ border: 1.5px solid var(--gold-deep); background: var(--gold-tint); }
 .booking-item .photo-tile{ width: 52px; height: 52px; border-radius: 50%; flex-shrink: 0; }
 .booking-item .photo-tile .initial{ font-size: 18px; }
 .booking-item .info{ flex: 1; min-width: 160px; }

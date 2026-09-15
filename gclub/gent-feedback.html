@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>My Profile — Maya Santos — G Club</title>
-<meta name="description" content="View your booking history, payouts, and feedback from members on G Club.">
+<title>Rate your session — G Club</title>
+<meta name="description" content="Let your companion know how your time together went.">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -41,101 +41,6 @@
     }
   })();
 </script>
-
-<div id="bank-modal-backdrop" class="modal-backdrop">
-  <div class="modal-panel" role="dialog" aria-modal="true" aria-label="Add bank account" style="max-width:460px;">
-    <button class="modal-close" type="button" aria-label="Close" data-modal-close-bank>
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-    </button>
-    <div class="modal-scroll" id="bank-modal-content">
-      <h2 style="font-family:var(--font-serif); font-size:24px; font-weight:400; margin:0 0 8px;">Add your bank account</h2>
-      <p style="color:var(--muted); font-size:14px; margin:0 0 20px;">You&rsquo;ll need a bank account on file before you can transfer your balance.</p>
-
-      <div class="form-field" style="margin-bottom:16px;">
-        <label>Bank name</label>
-        <select id="bank-name-input" style="border:1px solid var(--line); border-radius:10px; padding:14px 16px; font:inherit; font-size:14px; color:var(--ink); background:var(--white); min-height:50px;">
-          <option value="">Select your bank</option>
-          <option>BDO Unibank</option>
-          <option>BPI</option>
-          <option>Metrobank</option>
-          <option>UnionBank</option>
-          <option>Security Bank</option>
-        </select>
-      </div>
-      <div class="form-field" style="margin-bottom:16px;">
-        <label>Account number</label>
-        <input type="text" id="bank-account-number-input" placeholder="e.g. 0012 3456 7890">
-      </div>
-      <div class="form-field" style="margin-bottom:20px;">
-        <label>Account holder name</label>
-        <input type="text" id="bank-account-name-input" placeholder="Full name as it appears on the account">
-      </div>
-
-      <p style="color:var(--muted); font-size:12px; margin:0 0 20px;">Make sure these details match your valid ID. This is where your earnings will be sent.</p>
-      <button type="button" class="btn btn-dark btn-block btn-lg" id="save-bank-btn">Save bank account</button>
-    </div>
-  </div>
-</div>
-
-<div id="transfer-modal-backdrop" class="modal-backdrop">
-  <div class="modal-panel" role="dialog" aria-modal="true" aria-label="Transfer to bank account" style="max-width:460px;">
-    <button class="modal-close" type="button" aria-label="Close" data-modal-close-transfer>
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-    </button>
-    <div class="modal-scroll" id="transfer-modal-content">
-      <h2 style="font-family:var(--font-serif); font-size:24px; font-weight:400; margin:0 0 8px;">Transfer to bank account</h2>
-      <p style="color:var(--muted); font-size:14px; margin:0;">You're moving your available balance to your assigned bank account.</p>
-      <div class="transfer-summary">
-        <div class="row"><span>Amount</span><span id="transfer-amount">&#8369;16,650</span></div>
-        <div class="row"><span>Bank</span><span>BDO Unibank</span></div>
-        <div class="row"><span>Account number</span><span>&bull;&bull;&bull;&bull; &bull;&bull;&bull;&bull; &bull;&bull;&bull;&bull; 4821</span></div>
-        <div class="row"><span>Account name</span><span>Maya Santos</span></div>
-      </div>
-      <p style="color:var(--muted); font-size:12px; margin:0 0 20px;">Transfers are typically completed within 1&ndash;2 business days.</p>
-      <button type="button" class="btn btn-dark btn-block btn-lg" id="confirm-transfer-btn">Confirm transfer</button>
-    </div>
-  </div>
-</div>
-
-<div id="booking-request-modal-backdrop" class="modal-backdrop">
-  <div class="modal-panel" role="dialog" aria-modal="true" aria-label="Booking request" style="max-width:460px;">
-    <button class="modal-close" type="button" aria-label="Close" data-modal-close-booking>
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-    </button>
-    <div class="modal-scroll">
-      <div class="video-review-header" style="border-bottom:none; margin-bottom:8px; padding-bottom:0;">
-        <div class="photo-tile"><span class="initial" id="booking-request-modal-initial">M</span></div>
-        <div>
-          <h3 id="booking-request-modal-name">Marcus Tan</h3>
-          <p>Wants to book you</p>
-        </div>
-      </div>
-
-      <div class="booking-summary" style="margin-top:16px;">
-        <div class="summary-row"><span class="lbl">When</span><span id="booking-request-modal-when" style="font-weight:600;">Sep 15, 2026 &middot; 8:30 PM</span></div>
-        <div class="summary-row"><span class="lbl">Activity</span><span id="booking-request-modal-activity" style="font-weight:600;">Gaming session</span></div>
-        <div class="summary-row"><span class="lbl">Duration</span><span id="booking-request-modal-hours" style="font-weight:600;">4 hours</span></div>
-        <hr class="divider">
-        <div class="summary-row total"><span class="lbl">You'll earn</span><span id="booking-request-modal-amount">&#8369;19,600</span></div>
-      </div>
-
-      <p style="color:var(--muted); font-size:12px; margin:16px 0 0;">If you accept, the member is charged and this is confirmed on your calendar. If you decline, nothing is charged and the hold on his card is released.</p>
-
-      <div class="video-review-actions" id="booking-request-modal-actions">
-        <button type="button" class="admin-reject-btn" id="booking-request-decline-btn">Decline</button>
-        <button type="button" class="admin-approve-btn" id="booking-request-accept-btn">Accept booking</button>
-      </div>
-
-      <div id="booking-request-modal-done" style="display:none; text-align:center; padding:8px 0 4px;">
-        <div class="success-check-icon" style="width:48px; height:48px; margin:0 auto 12px;">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20 6 9 17l-5-5"/></svg>
-        </div>
-        <p id="booking-request-modal-done-text" style="font-size:14px; margin:0;">Booking confirmed.</p>
-      </div>
-    </div>
-  </div>
-</div>
-
 <div class="page-shell">
 <header class="nav">
   <div class="container nav-inner">
@@ -143,141 +48,78 @@
       <svg class="logo-svg" viewBox="0 0 1222 1287" role="img" aria-label="G Club"><use href="#g-crown-logo"></use></svg>
       <span>G Club</span>
     </a>
-    <div class="nav-search">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-      <input type="text" placeholder="Search by name, vibe, or activity" aria-label="Search">
-    </div>
-    <div class="nav-actions">
-      <div class="admin-bell" id="booking-notif-bell" style="cursor:pointer;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 8a6 6 0 0 1 12 0c0 5 2 6 2 6H4s2-1 2-6"/><path d="M10 20a2 2 0 0 0 4 0"/></svg><span class="unread" id="booking-notif-dot"></span></div>
-      <a href="girl-profile.html" class="nav-profile-chip" data-transition>
-        <div class="photo-tile"><span class="initial">M</span></div>
-        <span>Maya</span>
-      </a>
-    </div>
+    <p class="app-nav-help">Need help? <a href="#">Help Center</a></p>
   </div>
 </header>
 
 <main>
   <div class="container">
-  <div class="app-content">
-    <aside class="profile-side-panel">
-      <div class="profile-side-header">
-        <div class="photo-tile"><span class="initial">M</span></div>
-        <div class="profile-side-header-info">
-          <h3>Maya Santos <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--gold-deep)" stroke-width="2"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg></h3>
-          <div class="id-row">
-            <p>GC-684</p>
-            <span class="profile-hero-tier">Verified</span>
+    <div class="app-content is-centered">
+        <div class="form-column is-centered">
+          <div class="form-heading" id="feedback-heading">
+            <p class="eyebrow">After your session</p>
+            <h1>How was your time with <span id="feedback-companion-name">Maya</span>?</h1>
+            <p>Your feedback is shared with <span id="feedback-companion-name2">Maya</span> and helps other members know what to expect.</p>
+          </div>
+          <div class="form-card" id="feedback-form-card">
+            <div class="feedback-session-card">
+              <div class="photo-tile"><span class="initial">M</span></div>
+              <div class="feedback-session-meta">
+                <p class="who">Session with Maya</p>
+                <p class="when">Sun, Sep 14 &middot; 3 hours &middot; Makati, Philippines</p>
+              </div>
+            </div>
+
+            <div class="form-field">
+              <label>Your rating</label>
+              <div class="star-rate" id="feedback-star-rate">
+                <button type="button" data-star-value="1" aria-label="1 star"><svg viewBox="0 0 24 24" fill="currentColor"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14l-5-4.87 6.91-1.01Z"/></svg></button>
+                <button type="button" data-star-value="2" aria-label="2 stars"><svg viewBox="0 0 24 24" fill="currentColor"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14l-5-4.87 6.91-1.01Z"/></svg></button>
+                <button type="button" data-star-value="3" aria-label="3 stars"><svg viewBox="0 0 24 24" fill="currentColor"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14l-5-4.87 6.91-1.01Z"/></svg></button>
+                <button type="button" data-star-value="4" aria-label="4 stars"><svg viewBox="0 0 24 24" fill="currentColor"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14l-5-4.87 6.91-1.01Z"/></svg></button>
+                <button type="button" data-star-value="5" aria-label="5 stars"><svg viewBox="0 0 24 24" fill="currentColor"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14l-5-4.87 6.91-1.01Z"/></svg></button>
+                <span class="star-rate-label" id="feedback-star-label">Tap to rate</span>
+              </div>
+            </div>
+
+            <div class="feedback-tags">
+              <p class="field-label-standalone">What stood out? (optional)</p>
+              <div class="choice-row">
+                <button type="button" class="choice-pill">Great conversation</button>
+                <button type="button" class="choice-pill">Punctual</button>
+                <button type="button" class="choice-pill">Made me feel comfortable</button>
+                <button type="button" class="choice-pill">Would book again</button>
+              </div>
+            </div>
+
+            <div class="form-field">
+              <label>Add a comment (optional)</label>
+              <textarea rows="4" placeholder="Share a bit more about your session&hellip;"></textarea>
+            </div>
+
+            <p class="field-note">Your comment may be shown publicly on the companion's profile. We never share your personal or booking details.</p>
+
+            <hr class="divider">
+            <div class="form-actions">
+              <a href="index.html" class="btn btn-ghost" data-transition>Skip for now</a>
+              <button type="button" class="btn btn-dark" id="feedback-submit-btn" disabled>Submit feedback <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></button>
+            </div>
+          </div>
+
+          <div class="form-card" id="feedback-success-card" style="display:none;">
+            <div class="feedback-success">
+              <div class="success-check-icon">
+                <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20 6 9 17l-5-5"/></svg>
+              </div>
+              <div>
+                <h2>Thanks for your feedback</h2>
+                <p class="sub">Maya will really appreciate hearing this — and it helps other members know what to expect too.</p>
+              </div>
+              <a href="index.html" class="btn btn-dark" data-transition>Back to G Club</a>
+            </div>
           </div>
         </div>
-      </div>
-      <button type="button" class="profile-nav-toggle" id="profile-nav-toggle" aria-expanded="false">
-        <span>Section: <span id="profile-nav-toggle-value">Bookings</span></span>
-        <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
-      </button>
-      <nav class="member-nav">
-        <button type="button" class="member-nav-item profile-nav-tab is-active" data-tab="tab-bookings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg><span>Bookings</span><span class="member-nav-badge" id="bookings-pending-count">1</span></button>
-        <button type="button" class="member-nav-item profile-nav-tab" data-tab="tab-transactions"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg><span>Transactions</span></button>
-        <button type="button" class="member-nav-item profile-nav-tab" data-tab="tab-feedback"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14l-5-4.87 6.91-1.01L12 2z"/></svg><span>Feedback</span></button>
-      </nav>
-    </aside>
-    <div class="profile-main-col">
-      <div>
-        <h1 style="font-family:var(--font-serif); font-size:26px; font-weight:400; margin:0 0 4px;">Singapore</h1>
-        <p style="color:var(--muted); font-size:13px; margin:0;">Member since March 2025</p>
-      </div>
-
-    <div class="member-stats">
-      <div class="member-stat-card"><p class="label">Total bookings</p><p class="value">48</p></div>
-      <div class="member-stat-card"><p class="label">Total earnings</p><p class="value">&#8369;812,400</p></div>
-      <div class="member-stat-card"><p class="label">Average rating</p><p class="value">4.9</p></div>
-      <div class="member-stat-card"><p class="label">Feedback received</p><p class="value">42</p></div>
     </div>
-
-    <div class="wallet-card">
-      <div class="wallet-balance">
-        <p class="label">Available balance</p>
-        <p class="amount" id="wallet-balance-amount">&#8369;16,650</p>
-        <p class="note" id="wallet-balance-note">Cleared by G Club and ready to transfer</p>
-      </div>
-      <div class="wallet-bank" id="wallet-bank-block">
-        <p class="label" id="wallet-bank-label">Assigned bank account</p>
-        <p class="bank-name" id="wallet-bank-name-value" style="color:var(--muted); font-weight:400;">No bank account on file</p>
-        <a href="#" class="bank-link-btn" id="manage-wallet-bank-link">+ Add bank account</a>
-      </div>
-      <button type="button" class="btn btn-dark is-disabled" id="open-transfer-btn" data-bank-registered="false">Transfer to bank &rarr;</button>
-    </div>
-
-      <div class="profile-tab-panel is-active" id="tab-bookings" style="padding-top:20px;">
-            <div style="display:flex; flex-direction:column; gap:12px;">
-              <div class="booking-item">
-                <div class="photo-tile"><span class="initial">D</span></div>
-                <div class="info"><h4>Daniel Reyes</h4><p>Sep 20, 2026 &middot; 7:30 PM &middot; Dinner &amp; conversation</p></div>
-                <div class="meta"><span class="admin-badge green"><span class="dot"></span>Confirmed</span><span class="amount">&#8369;18,500</span></div>
-              </div>
-              <div class="booking-item is-pending-request" id="booking-request-marcus" data-booking-request data-name="Marcus Tan" data-initial="M" data-when="Sep 15, 2026 &middot; 8:30 PM" data-activity="Gaming session" data-hours="4 hours" data-amount="&#8369;19,600">
-                <div class="photo-tile"><span class="initial">M</span></div>
-                <div class="info"><h4>Marcus Tan</h4><p>Sep 15, 2026 &middot; 8:30 PM &middot; Gaming session &middot; 4 hours</p></div>
-                <div class="meta"><span class="admin-badge amber" id="booking-request-marcus-badge"><span class="dot"></span>Pending</span><span class="amount">&#8369;19,600</span></div>
-                <div class="actions" style="width:100%; justify-content:flex-end;">
-                  <button type="button" class="admin-reject-btn" data-decline-inline>Decline</button>
-                  <button type="button" class="admin-approve-btn" data-accept-inline>Accept booking</button>
-                </div>
-              </div>
-              <div class="booking-item">
-                <div class="photo-tile"><span class="initial">L</span></div>
-                <div class="info"><h4>Liam Chen</h4><p>Aug 30, 2026 &middot; 6:00 PM &middot; City exploring</p></div>
-                <div class="meta"><span class="admin-badge blue"><span class="dot"></span>Completed</span><span class="amount">&#8369;16,400</span></div>
-              </div>
-              <div class="booking-item">
-                <div class="photo-tile"><span class="initial">N</span></div>
-                <div class="info"><h4>Noah Garcia</h4><p>Aug 12, 2026 &middot; 7:00 PM &middot; Dining companion</p></div>
-                <div class="meta"><span class="admin-badge blue"><span class="dot"></span>Completed</span><span class="amount">&#8369;15,200</span></div>
-              </div>
-            </div>
-      </div>
-      <div class="profile-tab-panel" id="tab-transactions" style="padding-top:20px;">
-              <div class="table-scroll">
-              <table class="admin-table">
-                <thead><tr><th>Date</th><th>Description</th><th>Payout method</th><th>Status</th><th>Amount</th></tr></thead>
-                <tbody>
-                <tr id="wallet-source-row"><td>Sep 20, 2026</td><td>Booking payout &mdash; Daniel Reyes</td><td>Bank transfer</td><td><span class="admin-badge amber"><span class="dot"></span>In wallet</span></td><td style="font-weight:600;">&#8369;16,650</td></tr>
-                <tr><td>Aug 30, 2026</td><td>Booking payout &mdash; Liam Chen</td><td>GCash</td><td><span class="admin-badge green"><span class="dot"></span>Paid</span></td><td style="font-weight:600;">&#8369;14,760</td></tr>
-                <tr><td>Aug 12, 2026</td><td>Booking payout &mdash; Noah Garcia</td><td>Bank transfer</td><td><span class="admin-badge green"><span class="dot"></span>Paid</span></td><td style="font-weight:600;">&#8369;13,680</td></tr>
-                <tr><td>Aug 01, 2026</td><td>Platform service fee</td><td>Auto-deducted</td><td><span class="admin-badge blue"><span class="dot"></span>Deducted</span></td><td style="font-weight:600;">&#8369;1,850</td></tr>
-                <tr><td>Jul 22, 2026</td><td>Booking payout &mdash; Ethan Wong</td><td>GCash</td><td><span class="admin-badge green"><span class="dot"></span>Paid</span></td><td style="font-weight:600;">&#8369;11,520</td></tr>
-                </tbody>
-              </table>
-              </div>
-            </div>
-      <div class="profile-tab-panel" id="tab-feedback" style="padding-top:20px;">
-            <div style="display:flex; flex-direction:column; gap:16px;">
-              <p style="color:var(--muted); font-size:13px; margin:0;">Feedback from Gentlemen after completed bookings.</p>
-              <div class="review-card">
-                <div class="review-author">
-                  <div class="photo-tile" style="width:38px;height:38px;border-radius:50%;"><span class="initial" style="font-size:14px;">D</span></div>
-                  <div class="who"><span class="name">Daniel Reyes</span><span class="rating"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" style="color:var(--gold-deep);"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14l-5-4.87 6.91-1.01L12 2z"/></svg> 4.9</span></div>
-                </div>
-                <p class="text">Made the whole evening feel effortless. Thoughtful, funny, and exactly as described.</p>
-              </div>
-              <div class="review-card">
-                <div class="review-author">
-                  <div class="photo-tile" style="width:38px;height:38px;border-radius:50%;"><span class="initial" style="font-size:14px;">L</span></div>
-                  <div class="who"><span class="name">Liam Chen</span><span class="rating"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" style="color:var(--gold-deep);"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14l-5-4.87 6.91-1.01L12 2z"/></svg> 4.8</span></div>
-                </div>
-                <p class="text">Great conversation and easy to plan with. Would book again.</p>
-              </div>
-              <div class="review-card">
-                <div class="review-author">
-                  <div class="photo-tile" style="width:38px;height:38px;border-radius:50%;"><span class="initial" style="font-size:14px;">N</span></div>
-                  <div class="who"><span class="name">Noah Garcia</span><span class="rating"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" style="color:var(--gold-deep);"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14l-5-4.87 6.91-1.01L12 2z"/></svg> 5.0</span></div>
-                </div>
-                <p class="text">Lovely company, very punctual and easy to talk to all evening.</p>
-              </div>
-            </div>
-      </div>
-    </div>
-  </div>
   </div>
 </main>
 
@@ -326,118 +168,46 @@
 <script src="script.js"></script>
 <script>
   (function(){
-    var backdrop = document.getElementById('booking-request-modal-backdrop');
-    var bell = document.getElementById('booking-notif-bell');
-    var notifDot = document.getElementById('booking-notif-dot');
-    var actionsRow = document.getElementById('booking-request-modal-actions');
-    var doneRow = document.getElementById('booking-request-modal-done');
-    var doneText = document.getElementById('booking-request-modal-done-text');
-    var countBadge = document.getElementById('bookings-pending-count');
-    if(!backdrop) return;
+    var starRow = document.getElementById('feedback-star-rate');
+    var starLabel = document.getElementById('feedback-star-label');
+    var submitBtn = document.getElementById('feedback-submit-btn');
+    var formCard = document.getElementById('feedback-form-card');
+    var successCard = document.getElementById('feedback-success-card');
+    if(!starRow) return;
 
-    var activeRow = null;
+    var labels = ['Tap to rate', 'Not great', 'Okay', 'Good', 'Great', 'Excellent'];
+    var currentRating = 0;
+    var stars = Array.prototype.slice.call(starRow.querySelectorAll('[data-star-value]'));
 
-    function updatePendingCount(){
-      var count = document.querySelectorAll('[data-booking-request]').length;
-      if(countBadge){
-        countBadge.textContent = count;
-        countBadge.style.display = count > 0 ? 'inline-flex' : 'none';
-      }
-      if(notifDot) notifDot.style.display = count > 0 ? 'block' : 'none';
-    }
-    updatePendingCount();
-
-    /* Shared so both the modal buttons and the inline row buttons
-       do exactly the same thing. */
-    function acceptBooking(row){
-      var badge = document.getElementById(row.id + '-badge');
-      if(badge){
-        badge.classList.remove('amber');
-        badge.classList.add('green');
-        badge.innerHTML = '<span class="dot"></span>Confirmed';
-      }
-      var actions = row.querySelector('.actions');
-      if(actions) actions.remove();
-      row.classList.remove('is-pending-request');
-      updatePendingCount();
-    }
-    function declineBooking(row){
-      row.remove();
-      updatePendingCount();
-    }
-
-    function openModal(row){
-      activeRow = row;
-      document.getElementById('booking-request-modal-initial').textContent = row.getAttribute('data-initial');
-      document.getElementById('booking-request-modal-name').textContent = row.getAttribute('data-name');
-      document.getElementById('booking-request-modal-when').textContent = row.getAttribute('data-when');
-      document.getElementById('booking-request-modal-activity').textContent = row.getAttribute('data-activity');
-      document.getElementById('booking-request-modal-hours').textContent = row.getAttribute('data-hours');
-      document.getElementById('booking-request-modal-amount').textContent = row.getAttribute('data-amount');
-      actionsRow.style.display = 'flex';
-      doneRow.style.display = 'none';
-      backdrop.classList.add('is-active');
-      document.body.classList.add('modal-open');
-    }
-    function closeModal(){
-      backdrop.classList.remove('is-active');
-      document.body.classList.remove('modal-open');
-    }
-
-    /* Notification bell opens the full detail modal for whichever
-       request needs attention. */
-    if(bell){
-      bell.addEventListener('click', function(){
-        var pending = document.querySelector('[data-booking-request]');
-        if(pending) openModal(pending);
+    function paintStars(value){
+      stars.forEach(function(btn){
+        var v = parseInt(btn.getAttribute('data-star-value'), 10);
+        btn.classList.toggle('is-filled', v <= value);
       });
+      starLabel.textContent = labels[value] || labels[0];
     }
 
-    document.querySelectorAll('[data-modal-close-booking]').forEach(function(btn){
-      btn.addEventListener('click', closeModal);
-    });
-    backdrop.addEventListener('click', function(e){
-      if(e.target === backdrop) closeModal();
-    });
-
-    function finishInModal(message){
-      actionsRow.style.display = 'none';
-      doneText.textContent = message;
-      doneRow.style.display = 'block';
-      setTimeout(closeModal, 1400);
-    }
-
-    var acceptBtn = document.getElementById('booking-request-accept-btn');
-    var declineBtn = document.getElementById('booking-request-decline-btn');
-    if(acceptBtn){
-      acceptBtn.addEventListener('click', function(){
-        if(!activeRow) return;
-        acceptBooking(activeRow);
-        finishInModal('Booking confirmed \u2014 it\u2019s now on your calendar.');
+    stars.forEach(function(btn){
+      btn.addEventListener('mouseenter', function(){
+        paintStars(parseInt(btn.getAttribute('data-star-value'), 10));
       });
-    }
-    if(declineBtn){
-      declineBtn.addEventListener('click', function(){
-        if(!activeRow) return;
-        var row = activeRow;
-        finishInModal('Request declined.');
-        setTimeout(function(){ declineBooking(row); }, 1400);
-      });
-    }
-
-    /* Inline Accept / Decline buttons directly on the Bookings list. */
-    document.querySelectorAll('[data-accept-inline]').forEach(function(btn){
-      btn.addEventListener('click', function(e){
-        e.stopPropagation();
-        acceptBooking(btn.closest('[data-booking-request]'));
+      btn.addEventListener('click', function(){
+        currentRating = parseInt(btn.getAttribute('data-star-value'), 10);
+        paintStars(currentRating);
+        if(submitBtn) submitBtn.disabled = false;
       });
     });
-    document.querySelectorAll('[data-decline-inline]').forEach(function(btn){
-      btn.addEventListener('click', function(e){
-        e.stopPropagation();
-        declineBooking(btn.closest('[data-booking-request]'));
-      });
+    starRow.addEventListener('mouseleave', function(){
+      paintStars(currentRating);
     });
+
+    if(submitBtn){
+      submitBtn.addEventListener('click', function(){
+        if(submitBtn.disabled) return;
+        if(formCard) formCard.style.display = 'none';
+        if(successCard) successCard.style.display = 'flex';
+      });
+    }
   })();
 </script>
 </body>
