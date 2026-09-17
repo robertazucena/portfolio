@@ -74,8 +74,19 @@
     if(!grid) return [];
     var activePill = document.querySelector('.filter-pill.is-active');
     var key = activePill ? activePill.getAttribute('data-filter') : 'all';
+    var locationSelect = document.getElementById('location-filter');
+    var location = locationSelect ? locationSelect.value : 'all';
     var all = Array.prototype.slice.call(grid.querySelectorAll('.profile-card'));
-    return key === 'all' ? all : all.filter(function(c){ return c.getAttribute('data-category') === key; });
+    if(key !== 'all'){
+      all = all.filter(function(c){ return c.getAttribute('data-category') === key; });
+    }
+    if(location !== 'all'){
+      all = all.filter(function(c){
+        var locations = (c.getAttribute('data-location') || '').split(' ');
+        return locations.indexOf(location) !== -1;
+      });
+    }
+    return all;
   }
 
   function renderGrid(){
@@ -195,6 +206,27 @@
     if(hoursCount) hoursCount.textContent = '3';
     updateBookingSummary();
     resetGallery();
+    applyMembershipGate();
+  }
+
+  /* ---------------------------------------------------------
+     A Gentleman can have an account without being a member
+     (no plan chosen/paid). Reviews and booking are member
+     benefits, gated behind the same flag the plan/payment
+     flow sets once a fee is actually paid.
+  --------------------------------------------------------- */
+  function applyMembershipGate(){
+    var isMember = sessionStorage.getItem('gclubMembershipActive') === 'true';
+
+    var reviewsSection = document.getElementById('reviews-section');
+    var reviewsLocked = document.getElementById('reviews-locked-view');
+    if(reviewsSection) reviewsSection.style.display = isMember ? 'block' : 'none';
+    if(reviewsLocked) reviewsLocked.style.display = isMember ? 'none' : 'flex';
+
+    var bookingForm = document.getElementById('booking-form-view');
+    var bookingLocked = document.getElementById('booking-locked-view');
+    if(bookingForm) bookingForm.style.display = isMember ? 'block' : 'none';
+    if(bookingLocked) bookingLocked.style.display = isMember ? 'none' : 'flex';
   }
 
   /* ---------------------------------------------------------
@@ -279,6 +311,13 @@
         e.target.nextElementSibling.focus();
       }
     }
+    if(e.target.id === 'terms-agree-checkbox'){
+      var submitBtn = document.getElementById('submit-application') || document.getElementById('gent-submit-application');
+      if(submitBtn){
+        submitBtn.disabled = !e.target.checked;
+        submitBtn.classList.toggle('is-disabled', !e.target.checked);
+      }
+    }
   });
 
   document.addEventListener('keydown', function(e){
@@ -299,6 +338,11 @@
       var transferBackdrop = document.getElementById('transfer-modal-backdrop');
       if(transferBackdrop && transferBackdrop.classList.contains('is-active')){
         transferBackdrop.classList.remove('is-active');
+        document.body.classList.remove('modal-open');
+      }
+      var termsBackdropEsc = document.getElementById('terms-modal-backdrop');
+      if(termsBackdropEsc && termsBackdropEsc.classList.contains('is-active')){
+        termsBackdropEsc.classList.remove('is-active');
         document.body.classList.remove('modal-open');
       }
       var bankBackdrop = document.getElementById('bank-modal-backdrop');
@@ -328,6 +372,31 @@
      Small interactive flourishes shared across pages
   --------------------------------------------------------- */
   document.addEventListener('click', function(e){
+    if(e.target.closest('#login-send-code-btn')){
+      var phoneInput = document.getElementById('login-phone-input');
+      var phoneStep = document.getElementById('login-phone-step');
+      var otpStep = document.getElementById('login-otp-step');
+      var phoneDisplay = document.getElementById('login-phone-display');
+      if(phoneInput && phoneInput.value.trim()){
+        if(phoneDisplay) phoneDisplay.textContent = phoneInput.value.trim();
+        if(phoneStep) phoneStep.style.display = 'none';
+        if(otpStep){
+          otpStep.style.display = 'flex';
+          var firstBox = otpStep.querySelector('.otp-box');
+          if(firstBox) firstBox.focus();
+        }
+      } else if(phoneInput){
+        phoneInput.focus();
+      }
+    }
+    if(e.target.closest('#login-change-number-link')){
+      e.preventDefault();
+      var phoneStep2 = document.getElementById('login-phone-step');
+      var otpStep2 = document.getElementById('login-otp-step');
+      if(otpStep2) otpStep2.style.display = 'none';
+      if(phoneStep2) phoneStep2.style.display = 'flex';
+    }
+
     if(e.target.closest('#resend-otp-link')){
       e.preventDefault();
       var note = document.getElementById('otp-resend-note');
@@ -407,8 +476,7 @@
         sidebar.classList.remove('is-open');
         var toggleBtn = sidebar.querySelector('.filter-toggle');
         if(toggleBtn) toggleBtn.setAttribute('aria-expanded', 'false');
-      }
-    }
+      }    }
 
     var filterToggle = e.target.closest('.filter-toggle');
     if(filterToggle){
@@ -570,6 +638,26 @@
       }
     }
 
+    if(e.target.closest('#open-terms-link')){
+      e.preventDefault();
+      var termsBackdrop = document.getElementById('terms-modal-backdrop');
+      if(termsBackdrop){
+        termsBackdrop.classList.add('is-active');
+        document.body.classList.add('modal-open');
+      }
+    }
+    if(e.target.closest('[data-modal-close-terms]')){
+      var termsBackdropClose = document.getElementById('terms-modal-backdrop');
+      if(termsBackdropClose){
+        termsBackdropClose.classList.remove('is-active');
+        document.body.classList.remove('modal-open');
+      }
+    }
+    if(e.target.id === 'terms-modal-backdrop'){
+      e.target.classList.remove('is-active');
+      document.body.classList.remove('modal-open');
+    }
+
     if(e.target.closest('#open-transfer-btn')){
       var transferBackdrop = document.getElementById('transfer-modal-backdrop');
       if(transferBackdrop){
@@ -665,6 +753,14 @@
       confirmTransfer();
     }
   });
+
+  var locationFilterEl = document.getElementById('location-filter');
+  if(locationFilterEl){
+    locationFilterEl.addEventListener('change', function(){
+      currentPage = 1;
+      renderGrid();
+    });
+  }
 
   function updateTopupSummary(){
     var selectedPill = document.querySelector('#topup-modal-content .choice-pill.is-selected');

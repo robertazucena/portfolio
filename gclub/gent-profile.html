@@ -125,6 +125,13 @@
       <input type="text" placeholder="Search by name, vibe, or activity" aria-label="Search">
     </div>
     <div class="nav-actions">
+      <div class="notif-bell-wrap">
+        <div class="admin-bell" id="booking-notif-bell" style="cursor:pointer;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 8a6 6 0 0 1 12 0c0 5 2 6 2 6H4s2-1 2-6"/><path d="M10 20a2 2 0 0 0 4 0"/></svg><span class="unread" id="booking-notif-dot"></span></div>
+        <div class="notif-dropdown" id="notif-dropdown">
+          <div class="notif-dropdown-head">Notifications</div>
+          <div class="notif-list" id="notif-list"></div>
+        </div>
+      </div>
       <a href="gent-profile.html" class="nav-profile-chip" data-transition>
         <div class="photo-tile"><span class="initial">D</span></div>
         <span>Daniel</span>
@@ -153,6 +160,7 @@
       </button>
       <nav class="member-nav">
         <button type="button" class="member-nav-item profile-nav-tab is-active" data-tab="tab-bookings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg><span>Bookings</span></button>
+        <button type="button" class="member-nav-item profile-nav-tab" data-tab="tab-messages"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><span>Messages</span><span class="member-nav-badge" id="messages-unread-count">1</span></button>
         <button type="button" class="member-nav-item profile-nav-tab" data-tab="tab-transactions"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg><span>Transactions</span></button>
         <button type="button" class="member-nav-item profile-nav-tab" data-tab="tab-feedback"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14l-5-4.87 6.91-1.01L12 2z"/></svg><span>Feedback</span></button>
       </nav>
@@ -186,10 +194,13 @@
 
       <div class="profile-tab-panel is-active" id="tab-bookings" style="padding-top:20px;">
             <div style="display:flex; flex-direction:column; gap:12px;">
-              <div class="booking-item">
+              <div class="booking-item" id="booking-confirmed-maya">
                 <div class="photo-tile"><span class="initial">M</span></div>
                 <div class="info"><h4>Maya Santos</h4><p>Sep 20, 2026 &middot; 7:30 PM &middot; Dinner &amp; conversation</p></div>
-                <div class="meta"><span class="admin-badge green"><span class="dot"></span>Confirmed</span><span class="amount">&#8369;18,500</span></div>
+                <div class="meta"><span class="admin-badge green" id="booking-confirmed-maya-badge"><span class="dot"></span>Confirmed</span><span class="amount">&#8369;18,500</span></div>
+                <div class="actions" style="width:100%; justify-content:flex-end;">
+                  <button type="button" class="admin-approve-btn" data-mark-complete="maya">Mark as complete</button>
+                </div>
               </div>
               <div class="booking-item">
                 <div class="photo-tile"><span class="initial">S</span></div>
@@ -208,6 +219,59 @@
               </div>
             </div>
       </div>
+      <div class="profile-tab-panel" id="tab-messages" style="padding-top:20px;">
+        <div class="messages-layout">
+          <div class="conversation-list" id="conversation-list">
+            <div class="conversation-item is-active" data-conversation="maya" data-name="Maya Santos" data-initial="M">
+              <div class="photo-tile"><span class="initial">M</span></div>
+              <div class="convo-meta">
+                <h4>Maya Santos</h4>
+                <p>Perfect, see you at 7:30!</p>
+              </div>
+              <span class="convo-time">2h</span>
+            </div>
+          </div>
+
+          <div class="chat-thread">
+            <div class="chat-thread-header">
+              <div class="photo-tile"><span class="initial" id="chat-header-initial">M</span></div>
+              <div>
+                <h4 id="chat-header-name">Maya Santos</h4>
+                <p id="chat-header-context">Booking &middot; Sep 20, 2026 &middot; Dinner &amp; conversation</p>
+              </div>
+            </div>
+            <div class="chat-messages" id="chat-messages">
+              <div class="chat-bubble-row is-me">
+                <div class="chat-bubble">Hi Maya! Looking forward to Friday &#128578; Any restaurant preference?</div>
+                <span class="chat-bubble-time">Mon, 10:14 AM</span>
+              </div>
+              <div class="chat-bubble-row is-them">
+                <div class="chat-bubble">Hi Daniel! I was thinking somewhere in BGC, maybe Italian?</div>
+                <span class="chat-bubble-time">Mon, 10:20 AM</span>
+              </div>
+              <div class="chat-bubble-row is-me">
+                <div class="chat-bubble">That sounds great, I know a good spot near High Street.</div>
+                <span class="chat-bubble-time">Mon, 10:22 AM</span>
+              </div>
+              <div class="chat-bubble-row is-them">
+                <div class="chat-bubble">Perfect, see you at 7:30!</div>
+                <span class="chat-bubble-time">Mon, 10:23 AM</span>
+              </div>
+            </div>
+            <div class="chat-composer-warning" id="chat-composer-warning">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;"><circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="13"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              <span id="chat-composer-warning-text"></span>
+            </div>
+            <div class="chat-composer">
+              <input type="text" id="chat-input" placeholder="Write a message&hellip;">
+              <button type="button" class="chat-send-btn" id="chat-send-btn" aria-label="Send message">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div class="profile-tab-panel" id="tab-transactions" style="padding-top:20px;">
               <div class="table-scroll">
               <table class="admin-table">
@@ -265,7 +329,7 @@
         </div>
         <div class="footer-col">
           <h4>Legal</h4>
-          <a href="#">Terms</a>
+          <a href="terms.html" data-transition>Terms</a>
           <a href="#">Privacy</a>
           <a href="#">Cookie Policy</a>
         </div>
@@ -290,5 +354,212 @@
 
 
 <script src="script.js"></script>
+<script>
+  (function(){
+    var list = document.getElementById('conversation-list');
+    var messagesEl = document.getElementById('chat-messages');
+    var input = document.getElementById('chat-input');
+    var sendBtn = document.getElementById('chat-send-btn');
+    var headerName = document.getElementById('chat-header-name');
+    var headerInitial = document.getElementById('chat-header-initial');
+    var headerContext = document.getElementById('chat-header-context');
+    var unreadBadge = document.getElementById('messages-unread-count');
+    var messagesTab = document.querySelector('.profile-nav-tab[data-tab="tab-messages"]');
+    if(!list || !messagesEl) return;
+
+    var conversations = {
+      maya: {
+        name: 'Maya Santos', initial: 'M',
+        context: 'Booking &middot; Sep 20, 2026 &middot; Dinner &amp; conversation',
+        messages: [
+          {from:'system', text:'Maya accepted your booking'},
+          {from:'me', text:'Hi Maya! Looking forward to Friday \u{1F642} Any restaurant preference?', time:'Mon, 10:14 AM'},
+          {from:'them', text:'Hi Daniel! I was thinking somewhere in BGC, maybe Italian?', time:'Mon, 10:20 AM'},
+          {from:'me', text:'That sounds great, I know a good spot near High Street.', time:'Mon, 10:22 AM'},
+          {from:'them', text:'Perfect, see you at 7:30!', time:'Mon, 10:23 AM'}
+        ]
+      }
+    };
+    var activeId = 'maya';
+
+    function renderThread(id){
+      var c = conversations[id];
+      if(!c) return;
+      activeId = id;
+      headerName.textContent = c.name;
+      headerInitial.textContent = c.initial;
+      headerContext.innerHTML = c.context;
+      messagesEl.innerHTML = c.messages.map(function(m){
+        if(m.from === 'system'){
+          return '<div class="chat-system-note">' + m.text + '</div>';
+        }
+        return '<div class="chat-bubble-row is-' + m.from + '">' +
+          '<div class="chat-bubble">' + m.text + '</div>' +
+          '<span class="chat-bubble-time">' + m.time + '</span></div>';
+      }).join('');
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+      if(input){
+        input.disabled = !!c.closed;
+        input.placeholder = c.closed ? 'This conversation is closed' : 'Write a message\u2026';
+      }
+      if(sendBtn) sendBtn.disabled = !!c.closed;
+    }
+
+    /* Called once a booking is marked complete \u2014 the conversation
+       stays visible for reference but can no longer be replied to. */
+    window.closeConversation = function(id){
+      var c = conversations[id];
+      if(!c || c.closed) return;
+      c.closed = true;
+      c.messages.push({from:'system', text:'This conversation is now closed.'});
+      if(activeId === id) renderThread(id);
+    };
+
+    list.addEventListener('click', function(e){
+      var item = e.target.closest('.conversation-item');
+      if(!item) return;
+      list.querySelectorAll('.conversation-item').forEach(function(i){ i.classList.remove('is-active'); });
+      item.classList.add('is-active');
+      renderThread(item.getAttribute('data-conversation'));
+    });
+
+    var composerWarning = document.getElementById('chat-composer-warning');
+    var composerWarningText = document.getElementById('chat-composer-warning-text');
+
+    /* Broad net on purpose: any run of 10+ digits once spaces/dashes/dots/
+       parens are stripped catches 09XX-XXX-XXXX, +63 9XX XXX XXXX, and
+       anything typed to dodge those two specific formats. */
+    function containsPhoneNumber(text){
+      var cleaned = text.replace(/[\s\-.()]/g, '');
+      return /\d{10,}/.test(cleaned);
+    }
+    var housingPhrases = [
+      'your house', 'your condo', 'your apartment', 'your unit', 'your place', 'your flat',
+      'my house', 'my condo', 'my apartment', 'my unit', 'my place', 'my flat',
+      'come over', 'pick you up at', 'meet at your', 'meet at my', 'meet you at my'
+    ];
+    function containsHousingMention(text){
+      var lower = text.toLowerCase();
+      return housingPhrases.some(function(p){ return lower.indexOf(p) !== -1; });
+    }
+    function showComposerWarning(message){
+      if(!composerWarning) return;
+      composerWarningText.textContent = message;
+      composerWarning.classList.add('is-visible');
+    }
+    function hideComposerWarning(){
+      if(composerWarning) composerWarning.classList.remove('is-visible');
+    }
+    if(input){
+      input.addEventListener('input', hideComposerWarning);
+    }
+
+    function sendMessage(){
+      var text = input.value.trim();
+      if(!text) return;
+      if(containsPhoneNumber(text)){
+        showComposerWarning('For everyone\u2019s safety, phone numbers can\u2019t be shared in chat.');
+        return;
+      }
+      if(containsHousingMention(text)){
+        showComposerWarning('For safety, meeting at a private home, condo, or apartment isn\u2019t allowed \u2014 please choose a public venue.');
+        return;
+      }
+      hideComposerWarning();
+      var now = new Date();
+      var time = now.toLocaleTimeString([], {hour:'numeric', minute:'2-digit'});
+      conversations[activeId].messages.push({from:'me', text: text, time: 'Today, ' + time});
+      renderThread(activeId);
+      var preview = list.querySelector('.conversation-item[data-conversation="' + activeId + '"] .convo-meta p');
+      if(preview) preview.textContent = text;
+      input.value = '';
+      input.focus();
+    }
+    if(sendBtn) sendBtn.addEventListener('click', sendMessage);
+    if(input){
+      input.addEventListener('keydown', function(e){
+        if(e.key === 'Enter'){ e.preventDefault(); sendMessage(); }
+      });
+    }
+
+    if(messagesTab && unreadBadge){
+      messagesTab.addEventListener('click', function(){
+        unreadBadge.style.display = 'none';
+      }, { once: true });
+    }
+
+    /* Notifications live in a small list so more than one can
+       stack up over time \u2014 for now, seeded with the one event. */
+    var bell = document.getElementById('booking-notif-bell');
+    var notifDot = document.getElementById('booking-notif-dot');
+    var notifDropdown = document.getElementById('notif-dropdown');
+    var notifList = document.getElementById('notif-list');
+    var notifications = [
+      { id: 'n1', initial: 'M', name: 'Maya Santos', text: 'Maya accepted your booking', time: 'Just now', conversation: 'maya' }
+    ];
+
+    function renderNotifDropdown(){
+      if(!notifList) return;
+      if(notifications.length === 0){
+        notifList.innerHTML = '<div class="notif-empty">You\u2019re all caught up.</div>';
+        if(notifDot) notifDot.style.display = 'none';
+        return;
+      }
+      notifList.innerHTML = notifications.map(function(n){
+        return '<div class="notif-item" data-notif-id="' + n.id + '">' +
+          '<div class="photo-tile"><span class="initial">' + n.initial + '</span></div>' +
+          '<p>' + n.text + '<span class="notif-time">' + n.time + '</span></p>' +
+          '</div>';
+      }).join('');
+      if(notifDot) notifDot.style.display = 'block';
+    }
+    renderNotifDropdown();
+
+    function closeNotifDropdown(){
+      if(notifDropdown) notifDropdown.classList.remove('is-open');
+    }
+
+    if(bell){
+      bell.addEventListener('click', function(e){
+        e.stopPropagation();
+        notifDropdown.classList.toggle('is-open');
+      });
+    }
+    if(notifList){
+      notifList.addEventListener('click', function(e){
+        var item = e.target.closest('[data-notif-id]');
+        if(!item) return;
+        var notif = notifications.filter(function(n){ return n.id === item.getAttribute('data-notif-id'); })[0];
+        notifications = notifications.filter(function(n){ return n.id !== item.getAttribute('data-notif-id'); });
+        closeNotifDropdown();
+        renderNotifDropdown();
+        if(messagesTab) messagesTab.click();
+        if(notif && renderThread) renderThread(notif.conversation);
+      });
+    }
+    document.addEventListener('click', function(e){
+      if(notifDropdown && notifDropdown.classList.contains('is-open') && !e.target.closest('.notif-bell-wrap')){
+        closeNotifDropdown();
+      }
+    });
+
+    /* Completing a booking swaps its badge and closes out the
+       matching conversation over in Messages. */
+    document.querySelectorAll('[data-mark-complete]').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        var row = btn.closest('.booking-item');
+        var badge = row.querySelector('.admin-badge');
+        if(badge){
+          badge.classList.remove('green');
+          badge.classList.add('blue');
+          badge.innerHTML = '<span class="dot"></span>Completed';
+        }
+        var actions = row.querySelector('.actions');
+        if(actions) actions.remove();
+        closeConversation(btn.getAttribute('data-mark-complete'));
+      });
+    });
+  })();
+</script>
 </body>
 </html>

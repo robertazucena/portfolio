@@ -70,23 +70,37 @@
           <p>Log in to manage your bookings and messages.</p>
         </div>
 
-        <form class="auth-form" onsubmit="return false;">
+        <form class="auth-form" onsubmit="return false;" id="login-phone-step">
           <label class="field">
-            <span class="field-label">Email</span>
-            <input type="email" placeholder="you@email.com" autocomplete="email" required>
+            <span class="field-label">Mobile number</span>
+            <input type="tel" placeholder="+63 917 123 4567" autocomplete="tel" id="login-phone-input" required>
           </label>
-          <label class="field">
-            <span class="field-label">Password</span>
-            <input type="password" placeholder="••••••••" autocomplete="current-password" required>
-          </label>
+          <p class="field-note" style="margin:-6px 0 4px;">We&rsquo;ll text you a 6-digit code &mdash; no password needed.</p>
+          <button type="button" class="btn btn-dark btn-block btn-lg" id="login-send-code-btn">Send code</button>
+        </form>
+
+        <form class="auth-form" onsubmit="return false;" id="login-otp-step" style="display:none;">
+          <div class="otp-intro" style="margin-bottom:8px;">
+            <p style="margin:0; font-size:14px; color:var(--muted); text-align:center;">Enter the 6-digit code sent to <b id="login-phone-display" style="color:var(--ink);">your number</b>.</p>
+          </div>
+          <div class="otp-row">
+            <input type="text" inputmode="numeric" maxlength="1" class="otp-box" data-otp-index="0">
+            <input type="text" inputmode="numeric" maxlength="1" class="otp-box" data-otp-index="1">
+            <input type="text" inputmode="numeric" maxlength="1" class="otp-box" data-otp-index="2">
+            <input type="text" inputmode="numeric" maxlength="1" class="otp-box" data-otp-index="3">
+            <input type="text" inputmode="numeric" maxlength="1" class="otp-box" data-otp-index="4">
+            <input type="text" inputmode="numeric" maxlength="1" class="otp-box" data-otp-index="5">
+          </div>
+          <p class="otp-error" id="otp-error">That code doesn&rsquo;t look right. Please try again.</p>
+          <p class="otp-resend" id="otp-resend-note">Didn&rsquo;t get a code? <a href="#" id="resend-otp-link">Resend code</a></p>
           <div class="auth-row">
             <label class="checkbox">
-              <input type="checkbox">
-              Remember me
+              <input type="checkbox" checked>
+              Remember me on this device
             </label>
-            <a href="#" class="auth-link">Forgot password?</a>
+            <a href="#" class="auth-link" id="login-change-number-link">Change number</a>
           </div>
-          <button type="submit" class="btn btn-dark btn-block btn-lg">Log in</button>
+          <button type="button" class="btn btn-dark btn-block btn-lg" id="verify-signup-otp-btn" data-next-href="index.html">Verify &amp; log in</button>
         </form>
 
         <div class="auth-divider"><span>or</span></div>

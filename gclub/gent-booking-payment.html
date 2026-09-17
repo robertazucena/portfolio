@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Tell us about yourself — G Girl application</title>
-<meta name="description" content="These details help us create a genuine profile and keep your account secure.">
+<title>Confirm your booking request — G Club</title>
+<meta name="description" content="Enter payment details to send your booking request. You won't be charged until she accepts.">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -54,117 +54,126 @@
 
 <main>
   <div class="container">
-    <div class="app-content">
-        <div class="app-progress">
-          <p class="eyebrow">G Girl application</p>
-          <div class="progress-step is-filled" aria-label="Step 1: Welcome">
-            <span class="marker">1</span>
-            <span class="label-text" aria-hidden="true">Welcome</span>
+    <div class="app-content is-centered">
+        <div class="form-column is-centered">
+          <div class="form-heading" id="booking-pay-heading">
+            <p class="eyebrow">Confirm your request</p>
+            <h1 id="booking-pay-title">Authorize your booking</h1>
+            <p id="booking-pay-desc">Enter your payment details to send your request. You won't be charged until <span id="booking-companion-name2">Maya</span> accepts.</p>
           </div>
-          <div class="progress-step is-filled is-current" aria-label="Step 2: Your details (current)">
-            <span class="marker">2</span>
-            <span class="label-text" aria-hidden="true">Your details</span>
-          </div>
-          <div class="progress-step" aria-label="Step 3: Your profile">
-            <span class="marker">3</span>
-            <span class="label-text" aria-hidden="true">Your profile</span>
-          </div>
-          <div class="progress-step" aria-label="Step 4: Verification">
-            <span class="marker">4</span>
-            <span class="label-text" aria-hidden="true">Verification</span>
-          </div>
-          <div class="progress-step" aria-label="Step 5: Preview & submit">
-            <span class="marker">5</span>
-            <span class="label-text" aria-hidden="true">Preview & submit</span>
-          </div>
-        </div>
-        <div class="form-column">
-          <div class="form-heading">
-            <p class="eyebrow">Step 2 of 5<span class="eyebrow-step-title"> &mdash; Your details</span></p>
-            <h1>Tell us about yourself</h1>
-            <p>These details help us create a genuine profile and keep your account secure.</p>
-          </div>
-          <div class="form-card">
-            <div class="form-row">
-              <div class="form-field">
-                <label>First name</label>
-                <input type="text" value="Maya">
-              </div>
-              <div class="form-field">
-                <label>Last name</label>
-                <input type="text" value="Santos">
-              </div>
-            </div>
-            <div class="form-field">
-              <label>Age</label>
-              <input type="number" value="25">
-            </div>
-            <div class="form-field">
-              <label>Mobile number</label>
-              <input type="tel" value="+63 917 123 4567" id="girl-phone-input">
-            </div>
-            <div class="form-field">
-              <label>Email address</label>
-              <input type="email" value="maya.santos@email.com" id="girl-email-input">
-            </div>
-            <p class="field-note">Used for booking receipts and account updates. Your phone number is how you&rsquo;ll log in &mdash; no password needed.</p>
 
-            <div class="photo-requirement" style="background:var(--gold-tint); gap:14px;">
-              <div style="display:flex; align-items:center; gap:10px;">
-                <span style="color:var(--gold-deep); flex-shrink:0;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.362 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.338 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg></span>
-                <h3 style="margin:0;">Verify this number</h3>
+          <div class="form-card" id="booking-pay-method-section">
+            <div class="order-summary" style="background:var(--tag-bg); align-items:flex-start;">
+              <div style="display:flex; align-items:center; gap:14px;">
+                <div class="photo-tile" style="width:52px; height:52px; border-radius:50%; flex-shrink:0;"><span class="initial" id="booking-companion-initial" style="font-size:20px;">M</span></div>
+                <div>
+                  <p class="ord-label" style="margin:0 0 4px;">Booking with</p>
+                  <p class="plan-line" id="booking-companion-name" style="font-size:19px;">Maya</p>
+                </div>
               </div>
-              <p style="margin:0;">We sent a 6-digit code to <b style="color:var(--ink);">+63 917 123 4567</b>. Enter it below &mdash; you can update your number above and resend if needed.</p>
-              <div class="otp-row" style="justify-content:flex-start; margin:4px 0 0;">
-                <input type="text" inputmode="numeric" maxlength="1" class="otp-box" data-otp-index="0">
-                <input type="text" inputmode="numeric" maxlength="1" class="otp-box" data-otp-index="1">
-                <input type="text" inputmode="numeric" maxlength="1" class="otp-box" data-otp-index="2">
-                <input type="text" inputmode="numeric" maxlength="1" class="otp-box" data-otp-index="3">
-                <input type="text" inputmode="numeric" maxlength="1" class="otp-box" data-otp-index="4">
-                <input type="text" inputmode="numeric" maxlength="1" class="otp-box" data-otp-index="5">
-              </div>
-              <p class="otp-error" id="otp-error" style="text-align:left; margin:0;">That code doesn&rsquo;t look right. Please try again.</p>
-              <p class="otp-resend" id="otp-resend-note" style="text-align:left; margin:0;">Didn&rsquo;t get a code? <a href="#" id="resend-otp-link">Resend code</a></p>
+              <a href="index.html" class="change-link" data-transition style="white-space:nowrap;">Change details</a>
             </div>
 
-            <div class="upload-box" tabindex="0">
-              <span class="upload-icon">&#8593;</span>
-              <p class="upload-title">Upload your photo</p>
-              <p class="upload-sub">A clear, recent portrait &middot; JPG or PNG (you can select multiple images)</p>
+            <div class="booking-summary">
+              <div class="summary-row"><span class="lbl">Date</span><span id="booking-summary-day" style="font-weight:600;">Tue 15</span></div>
+              <div class="summary-row"><span class="lbl">Time</span><span id="booking-summary-time" style="font-weight:600;">4:30 PM</span></div>
+              <div class="summary-row"><span class="lbl" id="booking-summary-hours-label">3 hours &times; $42</span><span id="booking-summary-subtotal">$126</span></div>
+              <div class="summary-row"><span class="lbl">Service fee</span><span id="booking-summary-fee">$13</span></div>
+              <hr class="divider">
+              <div class="summary-row total"><span class="lbl">Total</span><span id="booking-summary-total">$139</span></div>
             </div>
-            <div class="photo-requirement">
-              <div>
-                <h3>Upload at least 3 to 5 photos</h3>
-                <p>Add a few photos so people can get a better sense of who you are. This helps build trust and makes your profile feel more complete.</p>
+
+            <div>
+              <p class="field-label-standalone" style="margin-bottom:12px;">Payment method</p>
+              <div class="payment-methods" style="margin-bottom:24px;">
+                <span class="pm-label">Accepted payments</span>
+                <button type="button" class="payment-badge is-active" data-method="visa">VISA</button>
+                <button type="button" class="payment-badge" data-method="mastercard">Mastercard</button>
+                <button type="button" class="payment-badge" data-method="amex">AMEX</button>
+                <button type="button" class="payment-badge" data-method="gcash">G-Cash</button>
               </div>
-              <div>
-                <p class="label">Uploaded photos</p>
-                <div class="thumb-row thumb-row-featured">
-                  <div class="thumb-main">
-                    <div class="thumb"><div class="photo-tile"><span class="initial">M</span></div>
-                      <span class="thumb-badge"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/></svg>Profile</span>
-                    </div>
+
+              <div id="booking-pay-fields-card">
+                <div class="form-field" style="margin-bottom:16px;">
+                  <label>Card number</label>
+                  <input type="text" placeholder="1234 5678 9012 3456">
+                </div>
+                <div class="form-row" style="margin-bottom:16px;">
+                  <div class="form-field">
+                    <label>Expiry date</label>
+                    <input type="text" placeholder="MM / YY">
                   </div>
-                  <div class="thumb-grid-4">
-                    <div class="thumb"><div class="photo-tile"><span class="initial">M</span></div></div>
-                    <div class="thumb thumb-empty" tabindex="0"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="1.5"/><path d="m21 15-5-5L5 21"/></svg></div>
-                    <div class="thumb thumb-empty" tabindex="0"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="1.5"/><path d="m21 15-5-5L5 21"/></svg></div>
-                    <div class="thumb thumb-empty" tabindex="0"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="1.5"/><path d="m21 15-5-5L5 21"/></svg></div>
+                  <div class="form-field">
+                    <label>CVV</label>
+                    <input type="text" placeholder="&bull;&bull;&bull;">
                   </div>
+                </div>
+                <div class="form-field" style="margin-bottom:16px;">
+                  <label>Cardholder name</label>
+                  <input type="text" placeholder="Name as it appears on card">
+                </div>
+              </div>
+
+              <div id="booking-pay-fields-gcash" style="display:none;">
+                <div class="form-field" style="margin-bottom:16px;">
+                  <label>G-Cash mobile number</label>
+                  <input type="text" placeholder="09XX XXX XXXX">
+                </div>
+              </div>
+
+              <div class="billing-note" id="booking-pay-billing-note" style="margin-bottom:24px;">
+                We'll place a hold for this amount. It's only charged once <span id="booking-companion-name3">Maya</span> accepts your request — released automatically if she doesn't.
+              </div>
+
+              <hr class="divider" style="margin-bottom:24px;">
+              <div class="form-actions">
+                <a href="index.html" class="btn btn-ghost" data-transition><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg> Back</a>
+                <button type="button" class="btn btn-dark" id="booking-pay-continue-btn">Authorize &amp; send request <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></button>
+              </div>
+            </div>
+          </div>
+
+          <div id="booking-pay-authorize-section" style="display:none; width:100%;">
+            <div class="form-card">
+              <div class="authorize-state">
+                <div class="authorize-spinner"></div>
+                <h2>Authorizing with G-Cash</h2>
+                <p class="authorize-amount" id="booking-authorize-amount">$139</p>
+                <p class="authorize-desc">Please confirm the hold in your G-Cash app. Keep this page open while we wait for authorization.</p>
+                <div class="authorize-actions">
+                  <a href="index.html" class="authorize-cancel" data-transition>Cancel</a>
+                  <span class="authorize-waiting">Waiting for confirmation&hellip;</span>
                 </div>
               </div>
             </div>
-            <hr class="divider">
-            <div class="form-actions">
-              <a href="girl-welcome.html" class="btn btn-ghost" data-transition><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg> Back</a>
-              <button type="button" class="btn btn-dark" id="verify-signup-otp-btn" data-next-href="girl-about.html">Verify &amp; continue <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></button>
+          </div>
+
+          <div class="form-card" id="booking-pay-success-section" style="display:none;">
+            <div class="payment-success">
+              <div class="success-check-icon">
+                <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20 6 9 17l-5-5"/></svg>
+              </div>
+              <div>
+                <h2>Request sent</h2>
+                <p class="sub" id="booking-success-sub">You won't be charged until Maya accepts &mdash; we'll notify you as soon as she responds, usually within a few hours.</p>
+              </div>
+              <div class="transaction-details">
+                <div class="transaction-detail">
+                  <span class="lbl">Amount held</span>
+                  <span class="val" id="booking-success-amount">$139</span>
+                </div>
+                <div class="transaction-detail">
+                  <span class="lbl" id="booking-success-ref-label">Reference number</span>
+                  <span class="val" id="booking-success-ref-value">GC-8427-1935-6201</span>
+                </div>
+                <div class="transaction-detail">
+                  <span class="lbl">Date requested</span>
+                  <span class="val" id="booking-success-date">September 15, 2026</span>
+                </div>
+              </div>
+              <a href="index.html" class="btn btn-dark" data-transition>Back to G Club</a>
             </div>
           </div>
-        </div>
-        <div class="step-explain">
-          <p class="label">Step 1 of 4</p>
-          <h2>The basics</h2>
-          <p>We just need a few details and a quick phone check to get your profile started. Your name and photo help people feel comfortable reaching out, and verifying your number keeps your account secure.</p>
         </div>
     </div>
   </div>
@@ -213,5 +222,103 @@
 
 
 <script src="script.js"></script>
+<script>
+  (function(){
+    var methodSection = document.getElementById('booking-pay-method-section');
+    if(!methodSection) return;
+
+    /* ---- Populate from what was selected on the profile card ---- */
+    var data = {
+      name: sessionStorage.getItem('gclubBookingCompanion') || 'Maya',
+      initial: sessionStorage.getItem('gclubBookingInitial') || 'M',
+      day: sessionStorage.getItem('gclubBookingDay') || 'Tue 15',
+      time: sessionStorage.getItem('gclubBookingTime') || '4:30 PM',
+      hoursLabel: sessionStorage.getItem('gclubBookingHoursLabel') || '3 hours \u00d7 $42',
+      subtotal: sessionStorage.getItem('gclubBookingSubtotal') || '$126',
+      fee: sessionStorage.getItem('gclubBookingFee') || '$13',
+      total: sessionStorage.getItem('gclubBookingTotal') || '$139'
+    };
+
+    document.querySelectorAll('#booking-companion-name2, #booking-companion-name3').forEach(function(el){ el.textContent = data.name; });
+    var nameEl = document.getElementById('booking-companion-name');
+    if(nameEl) nameEl.textContent = data.name;
+    var initialEl = document.getElementById('booking-companion-initial');
+    if(initialEl) initialEl.textContent = data.initial;
+    var dayEl = document.getElementById('booking-summary-day');
+    if(dayEl) dayEl.textContent = data.day;
+    var timeEl = document.getElementById('booking-summary-time');
+    if(timeEl) timeEl.textContent = data.time;
+    var hoursLabelEl = document.getElementById('booking-summary-hours-label');
+    if(hoursLabelEl) hoursLabelEl.textContent = data.hoursLabel;
+    var subtotalEl = document.getElementById('booking-summary-subtotal');
+    if(subtotalEl) subtotalEl.textContent = data.subtotal;
+    var feeEl = document.getElementById('booking-summary-fee');
+    if(feeEl) feeEl.textContent = data.fee;
+    document.querySelectorAll('#booking-summary-total, #booking-authorize-amount, #booking-success-amount').forEach(function(el){ el.textContent = data.total; });
+
+    /* ---- Payment method switching (scoped to this page's own field IDs) ---- */
+    var cardFields = document.getElementById('booking-pay-fields-card');
+    var gcashFields = document.getElementById('booking-pay-fields-gcash');
+    var billingNote = document.getElementById('booking-pay-billing-note');
+    var badges = Array.prototype.slice.call(methodSection.querySelectorAll('.payment-badge'));
+
+    badges.forEach(function(badge){
+      badge.addEventListener('click', function(){
+        badges.forEach(function(b){ b.classList.remove('is-active'); });
+        badge.classList.add('is-active');
+        var isGcash = badge.getAttribute('data-method') === 'gcash';
+        if(cardFields) cardFields.style.display = isGcash ? 'none' : 'block';
+        if(gcashFields) gcashFields.style.display = isGcash ? 'block' : 'none';
+        if(billingNote){
+          billingNote.innerHTML = isGcash
+            ? 'We\u2019ll send a secure authorization request to this G-Cash account \u2014 it\u2019s only charged once <span id="booking-companion-name3">' + data.name + '</span> accepts.'
+            : 'We\u2019ll place a hold for this amount. It\u2019s only charged once <span id="booking-companion-name3">' + data.name + '</span> accepts your request \u2014 released automatically if she doesn\u2019t.';
+        }
+      });
+    });
+
+    /* ---- Submit: simulate authorize (G-Cash) then show the request-sent state ---- */
+    var continueBtn = document.getElementById('booking-pay-continue-btn');
+    var authorizeSection = document.getElementById('booking-pay-authorize-section');
+    var successSection = document.getElementById('booking-pay-success-section');
+
+    function randomRef(prefix){
+      var n = function(){ return Math.floor(1000 + Math.random() * 9000); };
+      return prefix + '-' + n() + '-' + n() + '-' + n();
+    }
+    function formatToday(){
+      var d = new Date();
+      var months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+      return months[d.getMonth()] + ' ' + d.getDate() + ', ' + d.getFullYear();
+    }
+    function showSuccess(isGcash){
+      var sub = document.getElementById('booking-success-sub');
+      var refLabel = document.getElementById('booking-success-ref-label');
+      var refValue = document.getElementById('booking-success-ref-value');
+      var dateEl = document.getElementById('booking-success-date');
+      if(sub) sub.textContent = 'You won\u2019t be charged until ' + data.name + ' accepts \u2014 we\u2019ll notify you as soon as she responds, usually within a few hours.';
+      if(refLabel) refLabel.textContent = isGcash ? 'G-Cash reference number' : 'Reference number';
+      if(refValue) refValue.textContent = randomRef(isGcash ? 'GC' : 'CH');
+      if(dateEl) dateEl.textContent = formatToday();
+      if(authorizeSection) authorizeSection.style.display = 'none';
+      if(methodSection) methodSection.style.display = 'none';
+      if(successSection) successSection.style.display = 'flex';
+      sessionStorage.setItem('gclubBookingRequested', 'true');
+    }
+
+    if(continueBtn){
+      continueBtn.addEventListener('click', function(){
+        var isGcash = methodSection.querySelector('.payment-badge.is-active[data-method="gcash"]');
+        if(isGcash){
+          methodSection.style.display = 'none';
+          if(authorizeSection) authorizeSection.style.display = 'block';
+          setTimeout(function(){ showSuccess(true); }, 2200);
+        } else {
+          showSuccess(false);
+        }
+      });
+    }
+  })();
+</script>
 </body>
 </html>

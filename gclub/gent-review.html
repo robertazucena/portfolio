@@ -41,6 +41,87 @@
     }
   })();
 </script>
+<div id="terms-modal-backdrop" class="modal-backdrop">
+  <div class="modal-panel" role="dialog" aria-modal="true" aria-label="Terms and Conditions" style="max-width:720px;">
+    <button class="modal-close" type="button" aria-label="Close" data-modal-close-terms>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <div class="modal-scroll">
+      <p class="eyebrow" style="margin-bottom:4px;">Legal</p>
+      <h2 style="font-family:var(--font-serif); font-size:26px; font-weight:400; margin:0 0 6px;">Terms &amp; Conditions</h2>
+      <p style="color:var(--muted); font-size:13px; margin:0 0 20px;">Last updated: September 17, 2026</p>
+      <div class="legal-doc" style="max-height:50vh; overflow-y:auto; padding-right:8px; margin-bottom:20px;">
+            <div class="legal-section">
+            <p>These Terms &amp; Conditions ("Terms") govern your access to and use of G Club (the "Platform"), operated for members located in the Philippines. By creating an account, browsing profiles, or making a booking, you agree to these Terms. If you do not agree, please do not use the Platform.</p>
+            </div>
+
+
+            <div class="legal-section">
+            <h2>1. Eligibility &amp; Accounts</h2>
+            <p>You must be at least 18 years old to create an account. You are responsible for keeping your login details and account information accurate, current, and confidential. G Club may request identity verification (government ID and a live selfie or video) before approving an account, and may decline or remove any account that fails this review.</p>
+            </div>
+
+
+            <div class="legal-section">
+            <h2>2. Bookings &amp; Payments</h2>
+            <p>Bookings are requested through the Platform and are not confirmed until accepted by the companion. Payment is authorized (placed on hold) at the time a request is sent and only captured once the companion accepts; if a request is declined or expires, the hold is released and nothing is charged.</p>
+            <p>Rates, available hours, and service areas are set by each companion and may change at any time. G Club charges a service fee on top of the companion's rate, disclosed before you confirm a booking.</p>
+            </div>
+
+
+            <div class="legal-section">
+            <h2>3. Verification</h2>
+            <p>G Club takes reasonable steps to verify companion identities before a profile is approved, including document and video review. Verification reduces risk but does not guarantee the conduct, character, or safety of any member. Members are responsible for exercising their own judgment when meeting anyone arranged through the Platform.</p>
+            </div>
+
+
+            <div class="legal-section">
+            <h2>4. Conduct &amp; Community Guidelines</h2>
+            <p>Members agree to treat each other with respect, to honor confirmed bookings, and to communicate through the Platform's messaging system for anything related to a booking. Harassment, threats, discrimination, and attempts to solicit services outside the scope of a booking are prohibited and may result in suspension or termination of your account.</p>
+            </div>
+
+
+            <div class="legal-callout">
+              <h3>5. Off-Platform Arrangements &amp; Limitation of Liability</h3>
+              <p>For everyone's safety, all bookings, payments, and communication between members are intended to take place through G Club. Sharing personal contact details (including phone numbers) and arranging to meet at a private residence, condominium, apartment, or similar private housing are not permitted through the Platform's messaging system.</p>
+              <p><strong>If members choose to communicate, arrange a meeting, exchange payment, or interact in any way outside of the Platform — including but not limited to sharing personal contact information, meeting at a private residence, or agreeing to terms not facilitated through G Club — they do so entirely at their own risk.</strong> G Club has no visibility into, control over, or responsibility for any arrangement made outside the Platform, and is not liable for any loss, injury, harm, dispute, financial loss, or other damage arising from such off-platform conduct, however caused.</p>
+              <p>This limitation applies regardless of whether the parties involved met, were introduced through, or were originally verified by G Club. Using the Platform to initially connect does not extend G Club's responsibility to anything that subsequently happens outside of it.</p>
+            </div>
+
+            <div class="legal-section">
+            <h2>6. Prohibited Content in Messaging</h2>
+            <p>To help keep interactions on the Platform, messages that contain phone numbers or that reference meeting at a private home, condo, apartment, or similar private housing are automatically blocked before sending. These filters are provided as a safety measure and best effort only — they do not catch every possible attempt to share such information, and members remain responsible for their own conduct regardless of whether a message is blocked.</p>
+            </div>
+
+
+            <div class="legal-section">
+            <h2>7. Cancellations</h2>
+            <p>Either party may decline a booking request before it is accepted at no cost. Cancellation of a confirmed booking may be subject to a fee, disclosed at the time of booking, to compensate the other party for reserved time.</p>
+            </div>
+
+
+            <div class="legal-section">
+            <h2>8. Account Suspension &amp; Termination</h2>
+            <p>G Club may suspend or terminate any account that violates these Terms, provides false verification information, or engages in conduct that puts other members at risk, with or without prior notice.</p>
+            </div>
+
+
+            <div class="legal-section">
+            <h2>9. Changes to These Terms</h2>
+            <p>G Club may update these Terms from time to time. Continued use of the Platform after changes are posted constitutes acceptance of the updated Terms.</p>
+            </div>
+
+
+            <div class="legal-section">
+            <h2>10. Contact</h2>
+            <p>Questions about these Terms can be sent through the Support link in your account, or to the contact details listed in the footer of this page.</p>
+            </div>
+      </div>
+      <button type="button" class="btn btn-dark btn-block btn-lg" data-modal-close-terms>Close</button>
+    </div>
+  </div>
+</div>
+
 <div class="page-shell">
 <header class="nav">
   <div class="container nav-inner">
@@ -117,9 +198,14 @@
             </div>
 
             <hr class="divider">
+            <label class="checkbox" style="margin-bottom:20px;">
+              <input type="checkbox" id="terms-agree-checkbox">
+              <span>I agree to the <a href="#" id="open-terms-link" style="color:var(--gold-deep); font-weight:600;">Terms &amp; Conditions</a></span>
+            </label>
+            <hr class="divider">
             <div class="form-actions">
               <a href="gent-verify.html" class="btn btn-ghost" data-transition><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg> Back</a>
-              <button type="button" class="btn btn-dark" id="gent-submit-application">Submit for review <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></button>
+              <button type="button" class="btn btn-dark is-disabled" id="gent-submit-application" disabled>Submit for review <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></button>
             </div>
           </div>
         </div>
@@ -150,7 +236,7 @@
         </div>
         <div class="footer-col">
           <h4>Legal</h4>
-          <a href="#">Terms</a>
+          <a href="terms.html" data-transition>Terms</a>
           <a href="#">Privacy</a>
           <a href="#">Cookie Policy</a>
         </div>

@@ -98,7 +98,7 @@
 
           <hr class="divider">
 
-          <div class="reviews">
+          <div class="reviews" id="reviews-section">
             <div class="reviews-head">
               <h2>What people say</h2>
               <a href="#">See all 48 reviews</a>
@@ -125,6 +125,12 @@
                 <p class="text">A lovely session — patient, upbeat, and very easy to talk to.</p>
               </div>
             </div>
+          </div>
+          <div class="member-lock" id="reviews-locked-view" style="display:none;">
+            <div class="lock-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></div>
+            <h3>Reviews are for members</h3>
+            <p>Become a G Club member to read what others say before you book.</p>
+            <a href="gent-plan.html" class="btn btn-dark" data-transition>Become a member &rarr;</a>
           </div>
         </div>
 
@@ -258,6 +264,12 @@
               </div>
             </div>
           </div>
+          <div class="member-lock" id="booking-locked-view" style="display:none;">
+            <div class="lock-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></div>
+            <h3>Booking is for members</h3>
+            <p>You have a G Club account, but booking is a member benefit. Choose a plan to unlock requests, rates, and availability.</p>
+            <a href="gent-plan.html" class="btn btn-dark btn-block" data-transition>Become a member &rarr;</a>
+          </div>
         </aside>
 
       </div>
@@ -318,6 +330,21 @@
           <button class="filter-pill" data-filter="wellness"><span class="dot"></span>Wellness</button>
           <button class="filter-pill" data-filter="local-guides"><span class="dot"></span>Local guides</button>
         </div>
+
+        <p class="filter-section-label" style="margin-top:4px;">Location</p>
+        <select class="filter-select" id="location-filter">
+          <option value="all">All locations</option>
+          <option value="all-manila">All over Manila</option>
+          <option value="makati">Makati</option>
+          <option value="mandaluyong">Mandaluyong</option>
+          <option value="quezon-city">Quezon City</option>
+          <option value="taguig">Taguig</option>
+          <option value="pasig">Pasig</option>
+          <option value="pampanga">Pampanga</option>
+          <option value="cavite">Cavite</option>
+          <option value="laguna">Laguna</option>
+          <option value="las-pinas">Las Pi&ntilde;as</option>
+        </select>
       </aside>
 
       <section class="results-column">
@@ -330,7 +357,7 @@
 
         <div class="profile-grid">
 
-          <article class="profile-card" data-category="gaming">
+          <article class="profile-card" data-category="gaming" data-location="makati all-manila">
             <a class="card-link" href="#" data-open-profile data-name="Maya" data-age="25" data-tag="Gaming" data-rate="38" data-rating="4.9">
               <div class="photo-area">
                 <div class="photo-tile"><span class="initial">M</span></div>
@@ -348,7 +375,7 @@
             </button>
           </article>
 
-          <article class="profile-card" data-category="local-guides">
+          <article class="profile-card" data-category="local-guides" data-location="quezon-city all-manila">
             <a class="card-link" href="#" data-open-profile data-name="Sofia" data-age="27" data-tag="Museums" data-rate="42" data-rating="4.9">
               <div class="photo-area">
                 <div class="photo-tile"><span class="initial">S</span></div>
@@ -364,7 +391,7 @@
             </button>
           </article>
 
-          <article class="profile-card" data-category="e-sports">
+          <article class="profile-card" data-category="e-sports" data-location="taguig makati">
             <a class="card-link" href="#" data-open-profile data-name="Amelia" data-age="24" data-tag="E-Sports" data-rate="46" data-rating="4.9">
               <div class="photo-area">
                 <div class="photo-tile"><span class="initial">A</span></div>
@@ -380,7 +407,7 @@
             </button>
           </article>
 
-          <article class="profile-card" data-category="dining">
+          <article class="profile-card" data-category="dining" data-location="makati mandaluyong">
             <a class="card-link" href="#" data-open-profile data-name="Hana" data-age="26" data-tag="Dining" data-rate="50" data-rating="4.9">
               <div class="photo-area">
                 <div class="photo-tile"><span class="initial">H</span></div>
@@ -396,7 +423,7 @@
             </button>
           </article>
 
-          <article class="profile-card" data-category="rent-a-friend">
+          <article class="profile-card" data-category="rent-a-friend" data-location="pasig all-manila">
             <a class="card-link" href="#" data-open-profile data-name="Elise" data-age="28" data-tag="Rent a Friend" data-rate="54" data-rating="4.9">
               <div class="photo-area">
                 <div class="photo-tile"><span class="initial">E</span></div>
@@ -412,7 +439,7 @@
             </button>
           </article>
 
-          <article class="profile-card" data-category="dating">
+          <article class="profile-card" data-category="dating" data-location="makati taguig">
             <a class="card-link" href="#" data-open-profile data-name="Nadia" data-age="25" data-tag="Nightlife" data-rate="58" data-rating="4.9">
               <div class="photo-area">
                 <div class="photo-tile"><span class="initial">N</span></div>
@@ -428,7 +455,7 @@
             </button>
           </article>
 
-          <article class="profile-card" data-category="gaming">
+          <article class="profile-card" data-category="gaming" data-location="mandaluyong all-manila">
             <a class="card-link" href="#" data-open-profile data-name="Chloe" data-age="23" data-tag="Gaming" data-rate="62" data-rating="4.9">
               <div class="photo-area">
                 <div class="photo-tile"><span class="initial">C</span></div>
@@ -444,7 +471,7 @@
             </button>
           </article>
 
-          <article class="profile-card" data-category="local-guides">
+          <article class="profile-card" data-category="local-guides" data-location="quezon-city">
             <a class="card-link" href="#" data-open-profile data-name="Ari" data-age="29" data-tag="Book club" data-rate="66" data-rating="4.9">
               <div class="photo-area">
                 <div class="photo-tile"><span class="initial">A</span></div>
@@ -460,7 +487,7 @@
             </button>
           </article>
 
-          <article class="profile-card" data-category="wellness">
+          <article class="profile-card" data-category="wellness" data-location="pampanga">
             <a class="card-link" href="#" data-open-profile data-name="Luna" data-age="22" data-tag="Yoga" data-rate="35" data-rating="4.8">
               <div class="photo-area">
                 <div class="photo-tile"><span class="initial">L</span></div>
@@ -476,7 +503,7 @@
             </button>
           </article>
 
-          <article class="profile-card" data-category="local-guides">
+          <article class="profile-card" data-category="local-guides" data-location="cavite laguna">
             <a class="card-link" href="#" data-open-profile data-name="Jade" data-age="26" data-tag="Hiking" data-rate="40" data-rating="5.0">
               <div class="photo-area">
                 <div class="photo-tile"><span class="initial">J</span></div>
@@ -492,7 +519,7 @@
             </button>
           </article>
 
-          <article class="profile-card" data-category="local-guides">
+          <article class="profile-card" data-category="local-guides" data-location="makati">
             <a class="card-link" href="#" data-open-profile data-name="Zara" data-age="24" data-tag="Art Tours" data-rate="44" data-rating="4.7">
               <div class="photo-area">
                 <div class="photo-tile"><span class="initial">Z</span></div>
@@ -508,7 +535,7 @@
             </button>
           </article>
 
-          <article class="profile-card" data-category="local-guides">
+          <article class="profile-card" data-category="local-guides" data-location="pasig quezon-city">
             <a class="card-link" href="#" data-open-profile data-name="Iris" data-age="27" data-tag="Coffee Tasting" data-rate="48" data-rating="4.9">
               <div class="photo-area">
                 <div class="photo-tile"><span class="initial">I</span></div>
@@ -524,7 +551,7 @@
             </button>
           </article>
 
-          <article class="profile-card" data-category="local-guides">
+          <article class="profile-card" data-category="local-guides" data-location="taguig">
             <a class="card-link" href="#" data-open-profile data-name="Mila" data-age="23" data-tag="Photography" data-rate="52" data-rating="4.8">
               <div class="photo-area">
                 <div class="photo-tile"><span class="initial">M</span></div>
@@ -540,7 +567,7 @@
             </button>
           </article>
 
-          <article class="profile-card" data-category="local-guides">
+          <article class="profile-card" data-category="local-guides" data-location="cavite">
             <a class="card-link" href="#" data-open-profile data-name="Nina" data-age="25" data-tag="Cooking" data-rate="56" data-rating="5.0">
               <div class="photo-area">
                 <div class="photo-tile"><span class="initial">N</span></div>
@@ -556,7 +583,7 @@
             </button>
           </article>
 
-          <article class="profile-card" data-category="local-guides">
+          <article class="profile-card" data-category="local-guides" data-location="laguna pampanga">
             <a class="card-link" href="#" data-open-profile data-name="Lena" data-age="28" data-tag="Travel Buddy" data-rate="60" data-rating="4.9">
               <div class="photo-area">
                 <div class="photo-tile"><span class="initial">L</span></div>
@@ -572,7 +599,7 @@
             </button>
           </article>
 
-          <article class="profile-card" data-category="wellness">
+          <article class="profile-card" data-category="wellness" data-location="las-pinas mandaluyong">
             <a class="card-link" href="#" data-open-profile data-name="Kai" data-age="24" data-tag="Fitness" data-rate="45" data-rating="4.7">
               <div class="photo-area">
                 <div class="photo-tile"><span class="initial">K</span></div>
@@ -622,7 +649,7 @@
         </div>
         <div class="footer-col">
           <h4>Legal</h4>
-          <a href="#">Terms</a>
+          <a href="terms.html" data-transition>Terms</a>
           <a href="#">Privacy</a>
           <a href="#">Cookie Policy</a>
         </div>
