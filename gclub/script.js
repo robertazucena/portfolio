@@ -223,10 +223,16 @@
     if(reviewsSection) reviewsSection.style.display = isMember ? 'block' : 'none';
     if(reviewsLocked) reviewsLocked.style.display = isMember ? 'none' : 'flex';
 
-    var bookingForm = document.getElementById('booking-form-view');
-    var bookingLocked = document.getElementById('booking-locked-view');
-    if(bookingForm) bookingForm.style.display = isMember ? 'block' : 'none';
-    if(bookingLocked) bookingLocked.style.display = isMember ? 'none' : 'flex';
+    // Non-members can still browse the booking form freely (pick a
+    // day, time, and hours) \u2014 the gate only kicks in when they
+    // actually try to submit the request. See requestBtn handler below.
+
+    var galleryThumbs = document.getElementById('gallery-thumbs');
+    var galleryCounter = document.querySelector('.gallery-counter');
+    var galleryLockedNote = document.getElementById('gallery-locked-note');
+    if(galleryThumbs) galleryThumbs.style.display = isMember ? 'grid' : 'none';
+    if(galleryCounter) galleryCounter.style.display = isMember ? '' : 'none';
+    if(galleryLockedNote) galleryLockedNote.style.display = isMember ? 'none' : 'block';
   }
 
   /* ---------------------------------------------------------
@@ -235,30 +241,56 @@
      main view (and puts the previous main photo back in that
      thumbnail's spot), the way a real photo gallery would.
   --------------------------------------------------------- */
-  function resetGallery(){
+  function initGalleryOriginals(){
     var main = document.getElementById('modal-cover');
-    if(main) main.setAttribute('data-variant', '0');
-    var counter = document.getElementById('gallery-counter-current');
-    if(counter) counter.textContent = '1';
+    if(main && !main.hasAttribute('data-original-src')){
+      var mainImg = main.querySelector('img');
+      if(mainImg) main.setAttribute('data-original-src', mainImg.getAttribute('src'));
+    }
     document.querySelectorAll('#gallery-thumbs .gallery-thumb').forEach(function(thumb){
-      thumb.classList.remove('is-active');
-      var tile = thumb.querySelector('.photo-tile');
-      var original = thumb.getAttribute('data-variant');
-      if(tile && original) tile.setAttribute('data-variant', original);
+      if(!thumb.hasAttribute('data-original-src')){
+        var tileImg = thumb.querySelector('.photo-tile img');
+        if(tileImg) thumb.setAttribute('data-original-src', tileImg.getAttribute('src'));
+      }
     });
   }
+  initGalleryOriginals();
 
-  function swapGalleryPhoto(thumb){
+  function resetGallery(){
+    var main = document.getElementById('modal-cover');
+    var counter = document.getElementById('gallery-counter-current');
+    if(counter) counter.textContent = '1';
+    if(main){
+      main.setAttribute('data-variant', '0');
+      var mainImg = main.querySelector('img');
+      var mainOriginal = main.getAttribute('data-original-src');
+      if(mainImg && mainOriginal) mainImg.setAttribute('src', mainOriginal);
+    }
+    var thumbs = document.querySelectorAll('#gallery-thumbs .gallery-thumb');
+    thumbs.forEach(function(thumb){
+      thumb.classList.remove('is-active');
+    });
+    // The first thumbnail mirrors the main photo shown by default,
+    // so it starts out marked as the active one.
+    if(thumbs[0]) thumbs[0].classList.add('is-active');
+  }
+
+  function selectGalleryPhoto(thumb){
     var main = document.getElementById('modal-cover');
     var tile = thumb.querySelector('.photo-tile');
     var counter = document.getElementById('gallery-counter-current');
     if(!main || !tile) return;
 
-    var mainVariant = main.getAttribute('data-variant');
-    var thumbVariant = tile.getAttribute('data-variant');
+    // Thumbnails always represent the same fixed photo \u2014 clicking one
+    // just brings that photo into the main viewer and marks it active.
+    // The thumbnail itself never changes.
+    main.setAttribute('data-variant', tile.getAttribute('data-variant'));
 
-    main.setAttribute('data-variant', thumbVariant);
-    tile.setAttribute('data-variant', mainVariant);
+    var mainImg = main.querySelector('img');
+    var tileImg = tile.querySelector('img');
+    if(mainImg && tileImg){
+      mainImg.setAttribute('src', tileImg.getAttribute('src'));
+    }
 
     document.querySelectorAll('#gallery-thumbs .gallery-thumb').forEach(function(t){
       t.classList.remove('is-active');
@@ -385,6 +417,21 @@
           var firstBox = otpStep.querySelector('.otp-box');
           if(firstBox) firstBox.focus();
         }
+
+        // Two known accounts for this prototype: route each to
+        // their own profile once verified. Anything else falls
+        // back to the marketplace, same as before.
+        var verifyBtn = document.getElementById('verify-signup-otp-btn');
+        if(verifyBtn){
+          var entered = phoneInput.value.trim().toLowerCase();
+          if(entered === 'robertazucena@gmail.com'){
+            verifyBtn.setAttribute('data-next-href', 'gent-profile.html');
+          } else if(entered === 'tobyazucena@gmail.com'){
+            verifyBtn.setAttribute('data-next-href', 'girl-profile.html');
+          } else {
+            verifyBtn.setAttribute('data-next-href', 'index.html');
+          }
+        }
       } else if(phoneInput){
         phoneInput.focus();
       }
@@ -445,7 +492,7 @@
 
     var galleryThumb = e.target.closest('[data-gallery-thumb]');
     if(galleryThumb){
-      swapGalleryPhoto(galleryThumb);
+      selectGalleryPhoto(galleryThumb);
     }
 
     if(e.target.closest('[data-modal-close]')){

@@ -859,7 +859,7 @@ body.no-webgl #desktop{
 @media (prefers-reduced-motion: reduce){
   .shot-tile::after{ animation-duration:1.6s; }
 }
-.stat-row{display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-bottom:34px;}
+.stat-row{display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:16px; margin-bottom:34px;}
 .stat-card{background:rgba(var(--on-surface),0.03); border:1px solid var(--border-soft); border-radius:12px; padding:18px;}
 .stat-card b{display:block; font-size:24px; margin-bottom:4px;}
 .stat-card span{font-size:12px; color:var(--text-low);}
