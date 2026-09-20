@@ -16,12 +16,13 @@
       var count = pl.querySelector('.pl-count b');
       var bar = pl.querySelector('.pl-bar i');
       var n = 0;
+      var fontsReady = (window.document && document.fonts && document.fonts.ready) ? document.fonts.ready : Promise.resolve();
       var t = setInterval(function(){
-        n += Math.random()*20; /* fast, natural preloader speed */
+        n += Math.random()*7.4; /* ~2.8-3.2s minimum on-screen duration */
         if(n >= 100){
           n = 100;
           clearInterval(t);
-          setTimeout(finishPreload, 260);
+          fontsReady.then(function(){ setTimeout(finishPreload, 260); }).catch(function(){ setTimeout(finishPreload, 260); });
         }
         if(count) count.textContent = Math.floor(n) + '%';
         if(bar) bar.style.width = n + '%';
@@ -175,8 +176,25 @@
     xlist.addEventListener('mousemove', function(e){ peek.style.left = e.clientX + 'px'; peek.style.top = e.clientY + 'px'; });
   }
 
-  /* ---------- ASA video gallery: click a technique, swap the video ---------- */
-  var vgList = document.getElementById('vgList');
+  /* ---------- case study chip filter ---------- */
+  var caseGrid = document.querySelector('.case-grid');
+  if(caseGrid){
+    var caseChips = document.querySelectorAll('.chip-filter .cf');
+    var caseCards = caseGrid.querySelectorAll('.case-card');
+    caseChips.forEach(function(chip){
+      chip.addEventListener('click', function(){
+        caseChips.forEach(function(c){ c.classList.remove('active'); });
+        chip.classList.add('active');
+        var key = chip.getAttribute('data-filter') || 'all';
+        caseCards.forEach(function(card){
+          var show = key === 'all' || card.getAttribute('data-cat') === key;
+          card.classList.toggle('hide', !show);
+        });
+      });
+    });
+  }
+
+  /* ---------- ASA video gallery: click a technique, swap the video ---------- */  var vgList = document.getElementById('vgList');
   if(vgList){
     var vgVideo = document.getElementById('vgVideo');
     var vgSource = document.getElementById('vgSource');
