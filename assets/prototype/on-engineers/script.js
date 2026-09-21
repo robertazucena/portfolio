@@ -16,13 +16,12 @@
       var count = pl.querySelector('.pl-count b');
       var bar = pl.querySelector('.pl-bar i');
       var n = 0;
-      var fontsReady = (window.document && document.fonts && document.fonts.ready) ? document.fonts.ready : Promise.resolve();
       var t = setInterval(function(){
-        n += Math.random()*7.4; /* ~2.8-3.2s minimum on-screen duration */
+        n += Math.random()*20; /* fast, natural preloader speed */
         if(n >= 100){
           n = 100;
           clearInterval(t);
-          fontsReady.then(function(){ setTimeout(finishPreload, 260); }).catch(function(){ setTimeout(finishPreload, 260); });
+          setTimeout(finishPreload, 260);
         }
         if(count) count.textContent = Math.floor(n) + '%';
         if(bar) bar.style.width = n + '%';
@@ -194,7 +193,8 @@
     });
   }
 
-  /* ---------- ASA video gallery: click a technique, swap the video ---------- */  var vgList = document.getElementById('vgList');
+  /* ---------- ASA video gallery: click a technique, swap the video ---------- */
+  var vgList = document.getElementById('vgList');
   if(vgList){
     var vgVideo = document.getElementById('vgVideo');
     var vgSource = document.getElementById('vgSource');
