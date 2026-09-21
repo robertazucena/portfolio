@@ -1422,6 +1422,12 @@ const TATA_IMG = {
   library:'assets/images/tata-motors/library.jpg',
   mobile:'assets/images/tata-motors/mobile.jpg',
 };
+const ON_ENGINEERS_IMG = {
+  home:'assets/images/on-engineers/home.jpg',
+  about:'assets/images/on-engineers/about.jpg',
+  asaServices:'assets/images/on-engineers/asa-services.jpg',
+  mobile:'assets/images/on-engineers/mobile.jpg',
+};
 const AVATAR_IMG = 'assets/images/avatar.jpg';
 
 /* set the small preview window's thumbnail from the embedded screenshot */
@@ -1580,6 +1586,17 @@ const projects = {
     gallery:'tata-motors',
     detail:"This enterprise web app gives Tata Motors' engineering and data teams a single AI-powered workspace to search, evaluate, and deploy machine learning models across the organization. A conversational home screen lets users ask natural-language questions to search assets, analyze data, or generate reports, while an AI-assisted search experience surfaces production-ready models alongside a synthesized recommendation. Each asset's detail page consolidates a generated summary, performance metrics, and related assets, and a dedicated library view lets teams browse and manage their full catalog of AI assets by category and status."
   },
+  'on-engineers':{
+    name:'ON Engineers', pageTitle:'ON Engineers — Power Engineers into ASA', slug:'on-engineers', category:'Website · Electrical Asset Sensing &amp; Analytics',
+    accent:'#f5821f', icon:'⚡', folderBg:'linear-gradient(150deg,#ff9a4d,#c25a0f)',
+    lead:'A corporate and field-assessment platform for ON Engineers — non-intrusive condition monitoring for switchgear, transformers, cables, motors & generators.',
+    role:'Lead Product Designer', timeline:'Shipped — 2026',
+    tools:['Web Design','Design System','Prototypes'],
+    metaLabels:{role:'Role', timeline:'Status', tools:'Deliverables'},
+    prototypeUrl:'https://robertazucena.com/assets/prototype/on-engineers/index.html',
+    gallery:'on-engineers',
+    detail:"ON Engineers is a Singapore electrical consultancy — formed from the merger of J.M. Pang & Seah and Quality Power Management, now part of the SWTS Asia group — specializing in ASA (Asset Sensing &amp; Analytics), non-intrusive condition monitoring that reads partial discharge, thermal, acoustic, and dissolved-gas signals from live electrical assets without requiring a shutdown. The homepage frames the site around four pillars — ASA Services, Other Services, Case Studies, and Technical Papers — backed by a stat band (111 licensed engineers, 25+ OEM sensor platforms, zero shutdowns required) and a rotating library of real field assessments.<br><br>The About page tells the merger story through a timeline from 1976 to the 2022 SWTS Asia acquisition, introduces the four-person leadership team with their licensing credentials, and visualizes staff strength across every switching-voltage tier. The ASA Services page breaks down the diagnostic techniques themselves — PRPD plotting, UHFCT, acoustic imaging, and on-site dissolved gas analysis — alongside a filterable archive of field assessments tagged by finding severity, and closes with a wall of the facilities and clients the practice has served."
+  },
   'customer-moments':{
     name:'Customer Moments', slug:'customer-moments', category:'Systems Design · Customer Engagement',
     accent:'#ff6b4a', icon:'💌', folderBg:'linear-gradient(150deg,#ff8a5c,#c1391f)',
@@ -1607,7 +1624,8 @@ const PROJECT_ORDER = [
   'mufg',
   'customer-moments',
   'changi',
-  'tata-motors'
+  'tata-motors',
+  'on-engineers'
 ];
 function getPrevNextProjects(slug){
   const idx = PROJECT_ORDER.indexOf(slug);
@@ -1702,6 +1720,20 @@ function galleryHTML(p){
     </div>
     <div class="gallery g1" style="margin-top:16px;">
       <div class="shot-tile wide"><img src="${TATA_IMG.mobile}" alt="Tata Motors AI Workspace mobile flow — home, model details, search, and asset library screens" loading="lazy"></div>
+    </div>`;
+  }
+  if(p.gallery==='on-engineers'){
+    return `<div class="gallery g1">
+      <div class="shot-tile wide"><img src="${ON_ENGINEERS_IMG.home}" alt="ON Engineers homepage — four pillars, why non-intrusive monitoring, recent field assessments, and leadership marquee" loading="lazy"></div>
+    </div>
+    <div class="gallery g1" style="margin-top:16px;">
+      <div class="shot-tile wide"><img src="${ON_ENGINEERS_IMG.about}" alt="ON Engineers About page — merger history timeline, leadership team, and staff strength across switching-voltage tiers" loading="lazy"></div>
+    </div>
+    <div class="gallery g1" style="margin-top:16px;">
+      <div class="shot-tile wide"><img src="${ON_ENGINEERS_IMG.asaServices}" alt="ON Engineers ASA Services page — diagnostic techniques and a filterable archive of field assessments" loading="lazy"></div>
+    </div>
+    <div class="gallery g1" style="margin-top:16px;">
+      <div class="shot-tile wide"><img src="${ON_ENGINEERS_IMG.mobile}" alt="ON Engineers mobile flow — home, pillars, case studies, and leadership marquee screens" loading="lazy"></div>
     </div>`;
   }
   if(p.gallery==='phones'){
@@ -2030,7 +2062,23 @@ function openProject(slug, direction){
         <div class="meta-col"><h6>Typography</h6><div>Inter — Bold headlines, Regular body, tabular numerals for match scores and metrics</div></div>
         <div class="meta-col"><h6>Components</h6><div class="meta-tags">${['Conversational AI input','Quick command chips','AI synthesis cards','Status pills','Data table library view','Mobile assistant flow'].map(t=>`<span class="tag">${t}</span>`).join('')}</div></div>
       </div>
-    </div>` : '')))))))));
+    </div>` : (p.gallery==='on-engineers' ? `
+    <div class="section">
+      <h5>Design System</h5>
+      <p style="color:var(--text-mid); font-size:13.5px; line-height:1.8; margin:0 0 18px;">The site pairs a warm, off-white canvas with deep navy sections and a live-wire orange accent, so it reads as a working field practice rather than a polished tech brand. Numbered pillar rows, a licensed-engineer bar chart, and severity-tagged case cards keep dense technical content — voltage tiers, diagnostic methods, field findings — scannable at a glance.</p>
+      <div class="swatch-row" style="margin-bottom:18px;">
+        <div class="swatch" style="background:#f7f5ef;" title="Warm Ivory — page background"></div>
+        <div class="swatch" style="background:#f5821f;" title="ON Orange — primary accent & CTAs"></div>
+        <div class="swatch" style="background:#c25a0f;" title="Burnt Orange — hover & emphasis states"></div>
+        <div class="swatch" style="background:#0a1628;" title="Deep Navy — dark section background"></div>
+        <div class="swatch" style="background:#1a1a1a;" title="Ink — primary text on light"></div>
+        <div class="swatch" style="background:#2fae66;" title="Normal-Range Green — field-assessment status tag"></div>
+      </div>
+      <div class="meta-row" style="margin-bottom:0; padding-bottom:0; border-bottom:none;">
+        <div class="meta-col"><h6>Typography</h6><div>Inter — Bold display headlines, Regular body, monospace-style ticker and report IDs</div></div>
+        <div class="meta-col"><h6>Components</h6><div class="meta-tags">${['Scrolling news ticker','Numbered pillar rows','Licensing bar chart','Leadership bio cards','Severity-tagged case cards','Dark CTA band'].map(t=>`<span class="tag">${t}</span>`).join('')}</div></div>
+      </div>
+    </div>` : ''))))))))));
   const statRow = p.stats ? `
     <div class="stat-row">
       ${p.stats.map(s=>`<div class="stat-card"><b style="color:${p.accent};">${s[0]}</b><span>${s[1]}</span></div>`).join('')}
