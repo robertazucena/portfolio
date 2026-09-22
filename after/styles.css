@@ -141,11 +141,19 @@ header.nav.scrolled{padding:1.15rem 6vw;background:rgba(255,255,255,.86);backdro
 .mark-in{position:relative;opacity:0;transform:scale(.92) translateY(14px);transition:opacity 1.1s var(--ease-soft),transform 1.1s var(--ease-soft);transition-delay:.1s;}
 .mark-in.reveal.in{opacity:1;transform:scale(1) translateY(0);}
 /* same crop box as .artifact-trans-frame — same aspect ratio, same
-   object-fit/position — so the two photo treatments read as a pair */
+   object-fit/position, same curtain-wipe reveal — so every photo in the
+   chapter reads as one consistent treatment */
 .pg-open-visual{position:relative;overflow:hidden;padding-top:95%;width:80%;margin:0 auto;}
 .pg-open-visual img{
   position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center top;
+  transform:scale(1.12);transition:transform 1.6s var(--ease-soft) .1s;
 }
+.mark-in.in .pg-open-visual img{transform:scale(1);}
+.pg-open-curtain{
+  position:absolute;inset:0;z-index:2;background:var(--paper);
+  transform-origin:right center;transition:transform 1.2s var(--ease-soft) .1s;
+}
+.mark-in.in .pg-open-curtain{transform:scaleX(0);}
 @keyframes markBreathe{0%,100%{transform:scale(1);}50%{transform:scale(1.03);}}
 @media (max-width:700px){.pg-open-row{flex-direction:column;align-items:flex-start;gap:2rem;}.pg-open-mark-wrap{width:60%;}}
 .pg-label{font-family:var(--mono);font-size:.66rem;letter-spacing:.19em;color:var(--ink-faint);text-transform:uppercase;margin-bottom:1.3rem;}

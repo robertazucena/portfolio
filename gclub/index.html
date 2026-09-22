@@ -305,8 +305,12 @@
       <input type="text" placeholder="Search by name, vibe, or activity" aria-label="Search">
     </div>
     <div class="nav-actions">
-      <a href="join.html" class="btn btn-dark" data-transition>Become a <b>G</b></a>
-      <a href="login.html" class="btn btn-ghost" data-transition>Log in</a>
+      <a href="join.html" class="btn btn-dark" data-transition id="nav-become-g-btn">Become a <b>G</b></a>
+      <a href="login.html" class="btn btn-ghost" data-transition id="nav-login-btn">Log in</a>
+      <a href="#" class="nav-profile-chip" id="nav-logged-in-chip" data-transition style="display:none;">
+        <div class="photo-tile"><span class="initial" id="nav-logged-in-initial">D</span></div>
+        <span id="nav-logged-in-name">Daniel</span>
+      </a>
     </div>
   </div>
 </header>

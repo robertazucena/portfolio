@@ -442,6 +442,19 @@
       var lower = text.toLowerCase();
       return housingPhrases.some(function(p){ return lower.indexOf(p) !== -1; });
     }
+    var socialPlatforms = [
+      'facebook', 'fb', 'instagram', 'insta', 'ig', 'twitter', 'messenger',
+      'snapchat', 'threads', 'tiktok', 'whatsapp', 'telegram', 'discord',
+      'wechat', 'viber', 'kik'
+    ];
+    function containsSocialMention(text){
+      var lower = text.toLowerCase();
+      var hasKeyword = socialPlatforms.some(function(p){
+        return new RegExp('\\b' + p + '\\b', 'i').test(lower);
+      });
+      var hasHandle = /(^|\s)@\w{2,}/.test(text);
+      return hasKeyword || hasHandle;
+    }
     function showComposerWarning(message){
       if(!composerWarning) return;
       composerWarningText.textContent = message;
@@ -463,6 +476,10 @@
       }
       if(containsHousingMention(text)){
         showComposerWarning('For safety, meeting at a private home, condo, or apartment isn\u2019t allowed \u2014 please choose a public venue.');
+        return;
+      }
+      if(containsSocialMention(text)){
+        showComposerWarning('Social media accounts and handles can\u2019t be shared in chat \u2014 please keep communication on G Club.');
         return;
       }
       hideComposerWarning();

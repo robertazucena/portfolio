@@ -256,6 +256,34 @@
   }
   initGalleryOriginals();
 
+  /* Marketplace nav: reflect a logged-in session (set at login) by
+     swapping Become a G / Log in for a profile chip, same idea as
+     the chip already shown on the account pages themselves. */
+  function applyLoggedInNav(){
+    var chip = document.getElementById('nav-logged-in-chip');
+    if(!chip) return;
+    var name = sessionStorage.getItem('gclubLoggedInName');
+    var becomeBtn = document.getElementById('nav-become-g-btn');
+    var loginBtn = document.getElementById('nav-login-btn');
+    if(name){
+      var initial = sessionStorage.getItem('gclubLoggedInInitial') || name[0];
+      var profileHref = sessionStorage.getItem('gclubLoggedInProfile') || 'index.html';
+      var nameEl = document.getElementById('nav-logged-in-name');
+      var initialEl = document.getElementById('nav-logged-in-initial');
+      if(nameEl) nameEl.textContent = name;
+      if(initialEl) initialEl.textContent = initial;
+      chip.setAttribute('href', profileHref);
+      chip.style.display = 'flex';
+      if(becomeBtn) becomeBtn.style.display = 'none';
+      if(loginBtn) loginBtn.style.display = 'none';
+    } else {
+      chip.style.display = 'none';
+      if(becomeBtn) becomeBtn.style.display = '';
+      if(loginBtn) loginBtn.style.display = '';
+    }
+  }
+  applyLoggedInNav();
+
   function resetGallery(){
     var main = document.getElementById('modal-cover');
     var counter = document.getElementById('gallery-counter-current');
@@ -426,8 +454,21 @@
           var entered = phoneInput.value.trim().toLowerCase();
           if(entered === 'robertazucena@gmail.com'){
             verifyBtn.setAttribute('data-next-href', 'gent-profile.html');
+            sessionStorage.setItem('gclubLoggedInName', 'Daniel');
+            sessionStorage.setItem('gclubLoggedInInitial', 'D');
+            sessionStorage.setItem('gclubLoggedInProfile', 'gent-profile.html');
+            // This is the seeded demo account for previewing the full
+            // gent experience, so it logs in as an active member \u2014
+            // no need to walk through the plan/payment flow each time.
+            sessionStorage.setItem('gclubMembershipActive', 'true');
+            sessionStorage.setItem('gclubPlanName', 'Monthly');
+            sessionStorage.setItem('gclubPlanPrice', '800');
+            sessionStorage.setItem('gclubPlanPeriod', '/ month');
           } else if(entered === 'tobyazucena@gmail.com'){
             verifyBtn.setAttribute('data-next-href', 'girl-profile.html');
+            sessionStorage.setItem('gclubLoggedInName', 'Maya');
+            sessionStorage.setItem('gclubLoggedInInitial', 'M');
+            sessionStorage.setItem('gclubLoggedInProfile', 'girl-profile.html');
           } else {
             verifyBtn.setAttribute('data-next-href', 'index.html');
           }
