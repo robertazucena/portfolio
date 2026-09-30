@@ -1284,7 +1284,7 @@ function placeNotes(f){
     h.classList.toggle("al",x<35);h.classList.toggle("ar",x>65);h.classList.toggle("bl",y<30);
   }
 }
-function fitShots(){$$(".fit").forEach(function(f){var s=f.clientWidth/parseFloat(f.getAttribute("data-w"));var u=f.firstElementChild;if(u)u.style.transform="scale("+s+")";placeNotes(f)})}
+function fitShots(){$$(".fit").forEach(function(f){if(!f.clientWidth)return;var s=f.clientWidth/parseFloat(f.getAttribute("data-w"));var u=f.firstElementChild;if(u)u.style.transform="scale("+s+")";placeNotes(f)})}
 addEventListener("resize",fitShots);
 
 
@@ -1587,7 +1587,7 @@ function route(first){
     swap(function(){
       cpEl.hidden=true;cpEl.innerHTML="";homeEl.hidden=false;document.title=baseTitle;curScene=null;
       if(tgt){jump(tgt.getBoundingClientRect().top+scrollY-70)}else if(!first)jump(0);
-      measureChars();onScroll();
+      measureChars();onScroll();fitShots();requestAnimationFrame(fitShots);
     },!first);
   }
 }
