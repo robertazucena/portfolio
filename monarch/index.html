@@ -1,0 +1,492 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Monarch® — The Philippines’ next-generation agency for AI, creative, and digital growth</title>
+<meta name="description" content="Monarch Studio is a multidisciplinary design agency in Manila, Philippines. Strategy, design, engineering and AI: AI solutions, semantic SEO, and web and mobile products.">
+<meta name="geo.region" content="PH-00"><meta name="geo.placename" content="Manila, Philippines"><meta name="geo.position" content="14.5995;120.9842">
+<meta property="og:title" content="Monarch® — Multidisciplinary design agency, Manila, Philippines"><meta property="og:locale" content="en_PH">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"ProfessionalService","name":"Monarch Studio","alternateName":"Monarch®","description":"Multidisciplinary design agency in Manila, Philippines: AI solutions, semantic SEO, and web and mobile products.","email":"hello@monarch.studio","address":{"@type":"PostalAddress","addressLocality":"Manila","addressRegion":"Metro Manila","addressCountry":"PH"},"geo":{"@type":"GeoCoordinates","latitude":14.5995,"longitude":120.9842},"areaServed":["PH","Worldwide"],"knowsAbout":["Design strategy","AI product design","Semantic SEO","Web design","Mobile app design","Product engineering"]}</script>
+<link rel="icon" href="assets/images/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body class="loading">
+<div class="pre" id="pre" role="status" aria-label="Loading Monarch">
+  <div class="pre-cut" aria-hidden="true"><div class="half l"></div><div class="half r"></div><span class="knife"></span></div>
+  <div class="pre-ui" aria-hidden="true">
+    <div class="pre-top">
+      <p class="mono m11 b">Monarch®</p>
+      
+    </div>
+    <div class="pre-mid">
+      <canvas id="preDots"></canvas>
+      <svg viewBox="0 0 440 440">
+        <circle class="pre-arc" cx="220" cy="220" r="205"/>
+        <circle class="pre-arc p" id="preArc" cx="220" cy="220" r="205" stroke-dasharray="1288.05" stroke-dashoffset="1288.05"/>
+        <line class="pre-slash" id="preSlash" x1="118" y1="350.5" x2="322" y2="89.5" stroke-dasharray="332" stroke-dashoffset="332"/>
+      </svg>
+      <p class="pre-status mono m10" hidden><span id="preStatus"></span></p>
+    </div>
+    <div class="pre-bot">
+      <p class="pre-count"><span id="preCount">000</span><sup>%</sup></p>
+      <div class="pre-right"><p class="pre-skip">Click to skip</p></div>
+    </div>
+  </div>
+</div>
+
+<canvas id="gl" aria-hidden="true"></canvas>
+
+
+<header class="nav" id="nav">
+  <div class="wrap">
+    <a class="brand" href="#top" aria-label="Monarch, back to top">
+      <svg class="logo" viewBox="0 0 30 30" fill="none" aria-hidden="true"><circle class="ring" cx="15" cy="15" r="13.25" stroke="#F2F0E8" stroke-width="1.5"/><line class="slash" x1="5.15" y1="27.6" x2="24.85" y2="2.4" stroke="#D7FF3F" stroke-width="2.2"/></svg>
+      MONARCH®
+    </a>
+    <nav class="navlinks" aria-label="Primary">
+      <a href="#work" data-nav="work"><span>01</span>Work</a>
+      <a href="#studio" data-nav="studio"><span>02</span>Studio</a>
+      <a href="#capabilities" data-nav="capabilities"><span>03</span>Capabilities</a>
+      <a href="#contact" data-nav="contact"><span>04</span>Contact</a>
+    </nav>
+    <a class="tlink" href="#contact" data-cursor="Let's talk">Start a project
+      <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M11.3328 11.3326V4.66699H4.66718M11.3328 4.66699L4.66718 11.3326" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+    </a>
+  </div>
+</header>
+
+<main id="home">
+<!-- HERO -->
+<section class="hero" id="top" data-scene="hero">
+  <div class="wrap">
+    <div class="rule" style="opacity:.6"></div>
+    <svg class="glfb" viewBox="0 0 300 300" aria-hidden="true"><circle cx="150" cy="150" r="118" fill="none" stroke="#F2F0E8" stroke-width="3" stroke-linecap="round" stroke-dasharray="0.1 7"/><line x1="62" y1="262" x2="238" y2="38" stroke="#D7FF3F" stroke-width="5" stroke-linecap="round" stroke-dasharray="0.1 8"/></svg>
+    <div class="hero-top">
+      <div class="hero-meta">
+        <p class="mono m11 md mute">Multidisciplinary design agency / Manila, Philippines</p>
+        <p class="avail mono m11"><span class="pulse" aria-hidden="true"></span>Accepting Q1 projects</p>
+      </div>
+      <h1 class="h1" id="h1" aria-label="Intelligence, made useful.">
+        <span class="line" data-text="Intelligence,"></span>
+        <span class="line" data-text="made useful."></span>
+      </h1>
+      <div class="hero-anno">
+        <div class="intro">
+          <p class="lede">Monarch Studio turns complex intelligence into useful, memorable digital experiences.</p>
+          <p class="mono m11 mute">AI solutions / Semantic SEO / Web + mobile products</p>
+        </div>
+        <svg class="signal" viewBox="0 0 318 122" role="img" aria-label="Signal diagram: six nodes growing toward a single highlighted decision">
+          <line class="base" x1="0" y1="60.5" x2="318" y2="60.5"/>
+          <line class="travel" x1="0" y1="60.5" x2="318" y2="60.5"/>
+          <g>
+            <circle class="n" cx="12" cy="60" r="11.4"/>
+            <circle class="n" cx="71.5" cy="48.5" r="12.9"/>
+            <circle class="n" cx="131" cy="37" r="14.4"/>
+            <circle class="n" cx="190.5" cy="64.5" r="15.9"/>
+            <circle class="n" cx="250" cy="53" r="17.4"/>
+            <circle cx="297.5" cy="41.5" r="18.9" fill="#D7FF3F" stroke="#10110F" stroke-width="1.2"/>
+          </g>
+          <path transform="translate(276 82)" d="M5.41577 13.0002H20.5842M13 20.5844L20.5842 13.0002L13 5.41602" stroke="#F2F0E8" stroke-opacity=".7" stroke-width="1.4" stroke-linecap="round" fill="none"/>
+          <text x="0" y="9" fill="#8E9188" font-family="Roboto Mono, monospace" font-weight="700" font-size="9">SIGNAL / NOT NOISE</text>
+          <text x="0" y="101" fill="#8E9188" font-family="Roboto Mono, monospace" font-weight="700" font-size="9">EVIDENCE → DECISION</text>
+        </svg>
+      </div>
+    </div>
+    <div class="hero-foot mono m11 mute">
+      <p>Strategy → systems → shipped experience</p>
+      <p>Manila, PH / Portfolio 2026</p>
+    </div>
+  </div>
+</section>
+
+<!-- STUDIO SIGNAL -->
+<section class="studio" id="studio">
+  <div class="wrap">
+    <div class="pov" data-scene="pov">
+      <div class="side">
+        <span class="tag"><span class="ix lime">00</span><span class="lbl">Point of view</span></span>
+        <p class="mono m11 md mute">Technology becomes valuable only when people can understand, trust and use it.</p>
+      </div>
+      <p class="say">We don’t decorate complexity. We <em>edit it</em> into a clear advantage.</p>
+    </div>
+    <div class="proof" data-scene="bars">
+      <div class="metric">
+        <p class="big" data-count="04×">04×</p>
+        <div class="note"><b>Faster discovery</b><p class="mono m10 dimc">With human-guided AI research</p></div>
+      </div>
+      <div class="metric">
+        <p class="big" data-count="+186%">+186%</p>
+        <div class="note"><b>Qualified visibility</b><p class="mono m10 dimc">Across semantic search surfaces</p></div>
+      </div>
+      <div class="metric">
+        <p class="big" data-count="8.7/10">8.7/10</p>
+        <div class="note"><b>Product usefulness</b><p class="mono m10 dimc">Average post-launch user score</p></div>
+      </div>
+      <div class="bars-cell">
+        <p class="mono m10" style="color:var(--lime)">Signal / not noise</p>
+        <div class="bars" id="bars" aria-hidden="true">
+          <i style="--h:38px"></i><i style="--h:64px"></i><i style="--h:47px"></i><i style="--h:92px"></i><i style="--h:68px"></i><i class="on" style="--h:112px"></i><i style="--h:78px"></i><i style="--h:54px"></i><i style="--h:96px"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOME BASE: PHILIPPINES -->
+<section class="homebase" id="philippines" data-scene="ph" aria-labelledby="hb-title">
+  <div class="wrap">
+    <div class="hb-copy">
+      <span class="tag"><span class="ix lime">PH</span><span class="lbl">Home base / Manila</span></span>
+      <h2 id="hb-title">The Philippines’ <span style="white-space:nowrap">next-generation</span> agency for AI, creative, and digital growth.</h2>
+      <p class="hb-lede">A multidisciplinary team of strategists, creatives, engineers, and AI specialists in Manila—turning bold ideas into brands, experiences, and digital growth.</p>
+      <dl class="hb-facts">
+        <div><dt class="mono m9 b mute">Headquarters</dt><dd>Manila, Philippines</dd></div>
+        <div><dt class="mono m9 b mute">Disciplines</dt><dd>Strategy, design, engineering and AI</dd></div>
+        <div><dt class="mono m9 b mute">Working hours</dt><dd>PHT / UTC +8, with overlap for Europe and the Americas</dd></div>
+        <div><dt class="mono m9 b mute">Clients</dt><dd>From Metro Manila to global teams</dd></div>
+      </dl>
+    </div>
+    <div class="phstage" aria-hidden="true">
+      <p class="mono m9 b mute tl">Philippines / 7,641 islands</p>
+      <span class="pin"><i></i><span class="mono m9 b">Manila<br><span class="mute">14.5995° N, 120.9842° E</span></span></span>
+      <p class="mono m9 b mute bl">Home base → worldwide</p>
+    </div>
+  </div>
+</section>
+
+<!-- SELECTED WORK -->
+<section class="work" id="work">
+  <div class="wrap work-intro" data-scene="dust">
+    <div class="headrow">
+      <div class="side">
+        <span class="tag"><span class="ix">01—03</span><span class="lbl">Selected work</span></span>
+        <p class="mono m11 md mute">Three systems. One standard: measurable usefulness.</p>
+      </div>
+      <h2>Proof over performance theatre.</h2>
+    </div>
+    <div class="rule"></div>
+  </div>
+
+  <!-- SPOTLIGHT: featured project -->
+  <article class="spot on-light" id="spotlight" data-scene="dust" aria-labelledby="spot-title">
+    <div class="wrap">
+      <div class="casehead">
+        <span class="tag"><span class="ix" style="background:#0a0a0a;color:#fff;box-shadow:none">Featured</span><span class="lbl" style="color:#0a0a0a">Brand + product + AI</span></span>
+        <p class="mono m11 sb">Hinga / Mental Wellbeing / 2026</p>
+      </div>
+      <div class="spot-head">
+        <h3 class="spot-title" id="spot-title"><a href="#/work/hinga" data-cursor="Read">A calmer front door to mental health care.</a></h3>
+        <div class="spot-intro">
+          <p>We named, designed and built Hinga—a bilingual app and website that helps Filipinos check in with how they feel, and reach a counselor when they’re ready.</p>
+          <a class="tlink" href="#/work/hinga" data-cursor="Read">Read the case study<svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M11.3328 11.3326V4.66699H4.66718M11.3328 4.66699L4.66718 11.3326" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></a>
+        </div>
+      </div>
+      <div class="spot-phones" id="spotPhones" aria-label="Hinga app screens"></div>
+      <div class="spot-foot">
+        <div><p class="big o" data-count="68%">68%</p><b>Come back in week two</b><p class="mono m10" style="color:#6b6b6b">Across 41,000 early users</p></div>
+        <div><p class="big" data-count="2.4×">2.4×</p><b>More counselor bookings</b><p class="mono m10" style="color:#6b6b6b">Versus the partner clinics’ old site</p></div>
+        <div><p class="big" data-count="4.8">4.8</p><b>App store rating</b><p class="mono m10" style="color:#6b6b6b">From 3,900 reviews</p></div>
+        <div><p class="mono m10" style="color:#6b6b6b">Capabilities</p><b>Naming and identity / Product design / AI journaling / Web + mobile engineering</b></div>
+      </div>
+    </div>
+  </article>
+
+  <!-- CASE 01 -->
+  <article class="case case-1" data-scene="lattice" aria-labelledby="c1">
+    <div class="wrap">
+      <div class="casehead">
+        <span class="tag"><span class="ix">01</span><span class="lbl">AI solutions</span></span>
+        <p class="mono m11 sb bone">Aster / Knowledge Operations</p>
+      </div>
+      <div class="feature">
+        <div class="title">
+          <h3 id="c1"><a href="#/work/aster" data-cursor="Read">An AI copilot people can verify.</a></h3>
+          <a class="tlink" href="#/work/aster" data-cursor="Read">Read case study
+            <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M11.3328 11.3326V4.66699H4.66718M11.3328 4.66699L4.66718 11.3326" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></a>
+        </div>
+        <div class="diagram" data-cursor="Trace">
+          <svg class="imap" id="imap" viewBox="0 0 540 320" role="img" aria-label="Intelligence map: hover a source to trace its path to a verified answer">
+            <g class="paths"></g>
+            <g class="nodes"></g>
+            <g class="ans">
+              <rect x="204" y="124" width="174" height="72" fill="#D7FF3F"/>
+              <text x="291" y="164" text-anchor="middle" fill="#10110F" font-family="Roboto Mono, monospace" font-weight="700" font-size="11">ANSWER / TRACEABLE</text>
+            </g>
+            <text x="0" y="9" fill="#8E9188" font-family="Roboto Mono, monospace" font-weight="700" font-size="9">EVIDENCE → DECISION</text>
+            <text id="imapLabel" x="0" y="301" fill="#8E9188" font-family="Roboto Mono, monospace" font-weight="700" font-size="9">AI COPILOT / VERIFIED PATH</text>
+          </svg>
+        </div>
+      </div>
+      <div class="rule"></div>
+      <div class="story" id="aster-story">
+        <div class="pt"><p class="mono m9 b mute">Challenge</p><p>Critical knowledge was scattered across 18 tools, making every answer slow and difficult to trust.</p></div>
+        <div class="pt"><p class="mono m9 b mute">Insight</p><p>Confidence came from showing the path to an answer—not simply producing one faster.</p></div>
+        <div class="pt"><p class="mono m9 b mute">Solution</p><p>A citation-first AI workspace with role-aware retrieval, human review and transparent confidence states.</p></div>
+        <div class="out"><p class="big" data-count="−61%">−61%</p><p class="mono m9 mute">Time to a verified answer / first 90 days</p></div>
+      </div>
+      <div class="cap"><p class="mono m9 b mute">Capability demonstrated</p><b>AI product strategy / RAG systems / Experience design</b></div>
+    </div>
+  </article>
+
+  <!-- CASE 02 -->
+  <article class="case case-2" data-scene="orbits" aria-labelledby="c2">
+    <div class="wrap">
+      <div class="casehead">
+        <span class="tag"><span class="ix lime">02</span><span class="lbl">Semantic SEO</span></span>
+        <p class="mono m11 sb bone">Morrow / Climate Materials</p>
+      </div>
+      <div class="feature">
+        <div class="title">
+          <h3 id="c2"><a href="#/work/morrow" data-cursor="Read">Search organised around meaning.</a></h3>
+          <a class="tlink" href="#/work/morrow" data-cursor="Read">Read case study
+            <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M11.3328 11.3326V4.66699H4.66718M11.3328 4.66699L4.66718 11.3326" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></a>
+        </div>
+        <div class="diagram" data-cursor="Explore">
+          <svg class="sem" id="sem" viewBox="0 0 540 320" role="img" aria-label="Semantic field: need, entity, proof and context orbit a central intent">
+            <g class="links"></g>
+            <g class="layer" data-depth="0.02"><circle class="orb" cx="270" cy="160" r="133.5" stroke-opacity=".35"/></g>
+            <g class="layer" data-depth="0.045"><circle class="orb" cx="270" cy="160" r="104.5" stroke-opacity=".53"/></g>
+            <g class="layer" data-depth="0.075"><circle class="orb" cx="270" cy="160" r="73.5" stroke-opacity=".71"/></g>
+            <g class="layer" data-depth="0.01"><text x="270" y="168" text-anchor="middle" fill="#F2F0E8" font-family="Inter, sans-serif" font-weight="700" font-size="24">INTENT</text></g>
+            <g class="terms"></g>
+            <text x="0" y="9" fill="#8E9188" font-family="Roboto Mono, monospace" font-weight="700" font-size="9">MEANING → SEARCH</text>
+            <text id="semLabel" x="0" y="301" fill="#8E9188" font-family="Roboto Mono, monospace" font-weight="700" font-size="9">ENTITIES / INTENT / PROOF</text>
+          </svg>
+        </div>
+      </div>
+      <div class="rule"></div>
+      <div class="story" id="morrow-story">
+        <div class="pt"><p class="mono m9 b">Challenge</p><p>Deep technical expertise existed, but disconnected pages failed to answer how specifiers actually searched.</p></div>
+        <div class="pt"><p class="mono m9 b">Insight</p><p>The growth opportunity was a map of entities and decisions, not a longer keyword list.</p></div>
+        <div class="pt"><p class="mono m9 b">Solution</p><p>A semantic content system linking products, proof, applications and expert guidance into useful topic journeys.</p></div>
+        <div class="out"><p class="big" data-count="+186%">+186%</p><p class="mono m9 mute" style="color:var(--mute)">Non-brand qualified sessions / six months</p></div>
+      </div>
+      <div class="cap"><p class="mono m9 b">Capability demonstrated</p><b>Semantic SEO / Information architecture / Content systems</b></div>
+    </div>
+  </article>
+
+  <!-- CASE 03 -->
+  <article class="case case-3 on-lime" data-scene="planes" aria-labelledby="c3">
+    <div class="wrap">
+      <div class="casehead">
+        <span class="tag"><span class="ix" style="box-shadow:none">03</span><span class="lbl" style="color:var(--ink-2)">Web + mobile</span></span>
+        <p class="mono m11 sb">Common Ground / Civic Platform</p>
+      </div>
+      <div class="feature">
+        <div class="title">
+          <h3 id="c3"><a href="#/work/common-ground" data-cursor="Read">A mobile service built for real life.</a></h3>
+          <a class="tlink" href="#/work/common-ground" data-cursor="Read">Read case study
+            <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M11.3328 11.3326V4.66699H4.66718M11.3328 4.66699L4.66718 11.3326" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></a>
+        </div>
+        <div class="diagram" data-cursor="Step">
+          <svg class="pflow" id="pflow" viewBox="0 0 540 320" role="img" aria-label="Product flow: three app states; select one to bring it forward">
+            <g class="phones"></g>
+            <text x="0" y="9" fill="#10110F" fill-opacity=".55" font-family="Roboto Mono, monospace" font-weight="700" font-size="9">SERVICE → MOBILE</text>
+            <text id="pflowLabel" x="0" y="301" fill="#10110F" fill-opacity=".55" font-family="Roboto Mono, monospace" font-weight="700" font-size="9">SAVED STEPS / PLAIN GUIDANCE / UPDATES</text>
+          </svg>
+        </div>
+      </div>
+      <div class="rule"></div>
+      <div class="story" id="ground-story">
+        <div class="pt"><p class="mono m9 b mute">Challenge</p><p>Residents abandoned a fragmented service across forms, calls and desktop-only portals.</p></div>
+        <div class="pt"><p class="mono m9 b mute">Insight</p><p>Progress needed to feel visible and forgiving—even with one hand, weak signal and little time.</p></div>
+        <div class="pt"><p class="mono m9 b mute">Solution</p><p>One responsive product with saved steps, plain-language guidance and proactive case updates.</p></div>
+        <div class="out"><p class="big" data-count="3.4×">3.4×</p><p class="mono m9 mute">More completed service journeys / 12 weeks</p></div>
+      </div>
+      <div class="cap"><p class="mono m9 b mute">Capability demonstrated</p><b>Service design / Mobile UX / Product engineering</b></div>
+    </div>
+  </article>
+</section>
+
+<!-- MORE WORK: index of further case studies -->
+<section class="more" id="more-work" data-scene="dust" aria-labelledby="mw-title">
+  <div class="wrap">
+    <div class="headrow">
+      <div class="side">
+        <span class="tag"><span class="ix">+6</span><span class="lbl">More work</span></span>
+        <p class="mono m11 md mute">Six more projects across AI, search and product—from Manila to the world.</p>
+      </div>
+      <h2 id="mw-title">More proof, same standard.</h2>
+    </div>
+    <div class="mw-filters" role="group" aria-label="Filter projects by discipline" id="mwFilters"></div>
+    <div class="mw-list" id="mwList"></div>
+  </div>
+  <div class="mw-prev" id="mwPrev" aria-hidden="true"></div>
+</section>
+
+<!-- PRACTICE -->
+<section class="practice" id="capabilities">
+  <div class="wrap caps" data-scene="triad">
+    <div class="headrow">
+      <div class="side" style="width:264px">
+        <span class="tag"><span class="ix">04</span><span class="lbl">Capabilities</span></span>
+        <p class="mono m11 md mute">A senior, multidisciplinary team in Manila, configured around the problem.</p>
+      </div>
+      <h2>Strategy that survives contact with delivery.</h2>
+    </div>
+    <div class="matrix">
+      <div class="capcol">
+        <div class="capid">
+          <div class="icon"><svg viewBox="0 0 34 34" fill="none" aria-hidden="true"><path d="M28.3343 2.8348V8.50124M31.1679 5.66802H25.5007M15.6073 3.98854C15.668 3.66358 15.8405 3.37007 16.0948 3.15886C16.3492 2.94765 16.6694 2.83203 17 2.83203C17.3306 2.83203 17.6508 2.94765 17.9052 3.15886C18.1595 3.37007 18.332 3.66358 18.3927 3.98854L19.8817 11.8621C19.9875 12.4218 20.2596 12.9367 20.6624 13.3396C21.0653 13.7424 21.5802 14.0144 22.1401 14.1201L30.0145 15.609C30.3396 15.6697 30.6331 15.8421 30.8443 16.0965C31.0556 16.3508 31.1712 16.6709 31.1712 17.0015C31.1712 17.3321 31.0556 17.6523 30.8443 17.9066C30.6331 18.1609 30.3396 18.3334 30.0145 18.3941L22.1401 19.8829C21.5802 19.9887 21.0653 20.2607 20.6624 20.6635C20.2596 21.0663 19.9875 21.5812 19.8817 22.141L18.3927 30.0145C18.332 30.3395 18.1595 30.633 17.9052 30.8442C17.6508 31.0554 17.3306 31.171 17 31.171C16.6694 31.171 16.3492 31.0554 16.0948 30.8442C15.8405 30.633 15.668 30.3395 15.6073 30.0145L14.1183 22.141C14.0125 21.5812 13.7404 21.0663 13.3376 20.6635C12.9347 20.2607 12.4198 19.9887 11.8599 19.8829L3.98545 18.3941C3.66044 18.3334 3.3669 18.1609 3.15567 17.9066C2.94443 17.6523 2.8288 17.3321 2.8288 17.0015C2.8288 16.6709 2.94443 16.3508 3.15567 16.0965C3.3669 15.8421 3.66044 15.6697 3.98545 15.609L11.8599 14.1201C12.4198 14.0144 12.9347 13.7424 13.3376 13.3396C13.7404 12.9367 14.0125 12.4218 14.1183 11.8621L15.6073 3.98854ZM8.49938 28.3338C8.49938 29.8985 7.23075 31.167 5.66582 31.167C4.10088 31.167 2.83226 29.8985 2.83226 28.3338C2.83226 26.769 4.10088 25.5006 5.66582 25.5006C7.23075 25.5006 8.49938 26.769 8.49938 28.3338Z" stroke="#10110F" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+          <div class="t"><span>ARCHITECTURE</span><b>Strategy</b></div>
+        </div>
+        <div class="capdet">
+          <h3>AI solutions</h3>
+          <p>Useful AI products, copilots and internal systems designed around evidence, control and the real job to be done.</p>
+          <p class="mono m9">AI strategy / Retrieval systems / Prototyping / Governance UX</p>
+        </div>
+        <div class="capnote mono m9"><p class="b">Outcome</p><p>Faster discovery / verified answers</p></div>
+      </div>
+      <div class="capcol">
+        <div class="capid">
+          <div class="icon"><svg viewBox="0 0 34 34" fill="none" aria-hidden="true"><path d="M14.9968 7.66901L7.66917 14.9966M26.331 19.0032L19.0034 26.3308M8.49932 16.9998H25.5007M8.49932 16.9998C8.49932 18.5648 7.23069 19.8334 5.66576 19.8334C4.10083 19.8334 2.8322 18.5648 2.8322 16.9998C2.8322 15.4349 4.10083 14.1663 5.66576 14.1663C7.23069 14.1663 8.49932 15.4349 8.49932 16.9998ZM25.5007 16.9998C25.5007 18.5648 26.7693 19.8334 28.3342 19.8334C29.8992 19.8334 31.1678 18.5648 31.1678 16.9998C31.1678 15.4349 29.8992 14.1663 28.3342 14.1663C26.7693 14.1663 25.5007 15.4349 25.5007 16.9998ZM19.8336 28.3341C19.8336 29.899 18.5649 31.1676 17 31.1676C15.4351 31.1676 14.1664 29.899 14.1664 28.3341C14.1664 26.7691 15.4351 25.5005 17 25.5005C18.5649 25.5005 19.8336 26.7691 19.8336 28.3341ZM19.8336 5.66559C19.8336 7.23052 18.5649 8.49915 17 8.49915C15.4351 8.49915 14.1664 7.23052 14.1664 5.66559C14.1664 4.10066 15.4351 2.83203 17 2.83203C18.5649 2.83203 19.8336 4.10066 19.8336 5.66559Z" stroke="#10110F" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+          <div class="t"><span>SYSTEMS</span><b>Systems</b></div>
+        </div>
+        <div class="capdet">
+          <h3>Semantic SEO</h3>
+          <p>Search ecosystems organised around intent, entities and credible expertise—built for people and machine readers.</p>
+          <p class="mono m9">Research / Information architecture / Structured content / Measurement</p>
+        </div>
+        <div class="capnote mono m9"><p class="b">Outcome</p><p>Qualified visibility / topic journeys</p></div>
+      </div>
+      <div class="capcol">
+        <div class="capid">
+          <div class="icon"><svg viewBox="0 0 34 34" fill="none" aria-hidden="true"><path d="M4.25 12.75H29.75M12.75 29.75V12.75M7.08333 4.25H26.9167C28.4815 4.25 29.75 5.51853 29.75 7.08333V26.9167C29.75 28.4815 28.4815 29.75 26.9167 29.75H7.08333C5.51853 29.75 4.25 28.4815 4.25 26.9167V7.08333C4.25 5.51853 5.51853 4.25 7.08333 4.25Z" stroke="#10110F" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+          <div class="t"><span>WORKSHOP</span><b>Workshop</b></div>
+        </div>
+        <div class="capdet">
+          <h3>Web + mobile</h3>
+          <p>Distinctive digital services and products that make complex journeys feel legible, fast and human.</p>
+          <p class="mono m9">Product strategy / UX + UI / Design systems / Engineering</p>
+        </div>
+        <div class="capnote mono m9"><p class="b">Outcome</p><p>Useful journeys / shipped systems</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="process" data-scene="path">
+    <div class="wrap">
+      <div class="top">
+        <div class="l">
+          <span class="tag"><span class="ix">05</span><span class="lbl">Working method</span></span>
+          <h2>Four moves. No black box.</h2>
+        </div>
+        <p>We make progress visible, invite the right friction early, and leave teams with a system they can own.</p>
+      </div>
+      <div class="steps" id="steps">
+        <span class="bar" aria-hidden="true"></span>
+        <div class="step"><div class="meta"><b>01</b><span class="mono m9 mute">1—2 weeks</span></div><div><h3>Frame</h3><p>Define the consequential problem, users, evidence and a measurable definition of useful.</p></div><div class="mk"><i></i><s></s></div></div>
+        <div class="step"><div class="meta"><b>02</b><span class="mono m9 mute">2—3 weeks</span></div><div><h3>Find</h3><p>Research behaviour and systems; model the opportunity before polishing the answer.</p></div><div class="mk"><i></i><s></s></div></div>
+        <div class="step"><div class="meta"><b>03</b><span class="mono m9 mute">3—6 weeks</span></div><div><h3>Form</h3><p>Prototype content, interactions and technology together until the whole system clicks.</p></div><div class="mk"><i></i><s></s></div></div>
+        <div class="step"><div class="meta"><b>04</b><span class="mono m9 mute">4—12 weeks</span></div><div><h3>Field</h3><p>Ship in slices, instrument outcomes and improve with the people who use it.</p></div><div class="mk"><i></i><s></s><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M14.166 14.166V5.83398H5.83398M14.166 5.83398L5.83398 14.166" stroke="#F2F0E8" stroke-width="1.5" stroke-linecap="round"/></svg></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="engage" data-scene="dust">
+    <div class="wrap">
+      <div class="side">
+        <span class="tag"><span class="ix">06</span><span class="lbl">Built to transfer</span></span>
+        <p class="mono m10 mute">Small core team / embedded with yours / no junior hand-off</p>
+      </div>
+      <p class="say">We leave behind more than a launch: clear decisions, capable teams and a living system.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CLIENT PROOF -->
+<section class="clients" data-scene="dust2">
+  <div class="wrap">
+    <div class="testi" id="testi" role="region" aria-roledescription="carousel" aria-label="Client testimonials">
+      <div class="side">
+        <span class="tag"><span class="ix lime">07</span><span class="lbl">Client proof</span></span>
+        <div class="author" id="tAuthor"></div>
+        <div class="t-ctrl">
+          <button type="button" class="t-btn" id="tPrev" aria-label="Previous testimonial"><svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M12.667 8H3.333M8 3.333L3.333 8 8 12.667" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button>
+          <p class="mono m11 b" id="tCount" aria-live="off">01 / 05</p>
+          <button type="button" class="t-btn" id="tNext" aria-label="Next testimonial"><svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3.333 8h9.334M8 3.333L12.667 8 8 12.667" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button>
+        </div>
+        <div class="t-bar" aria-hidden="true"><i id="tBar"></i></div>
+      </div>
+      <figure class="quote" style="margin:0">
+        <span class="qm" aria-hidden="true">“</span>
+        <blockquote id="quote" aria-live="off"></blockquote>
+        <a class="tlink" id="tCase" href="#/work/aster">Read the case study</a>
+      </figure>
+      <img id="portraitSrc" hidden alt="" src="assets/images/amira-khan.jpg">
+    </div>
+    <div class="roster">
+      <div class="rule"></div>
+      <div class="row">
+        <p class="mono m11 md mute">Recent company</p>
+        <span class="c">Aster</span><span class="c">Morrow</span><span class="c">Fieldline</span><span class="c">Common Ground</span><span class="c">Orbit</span><span class="c">Public Works</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT + FOOTER -->
+<section class="contact on-lime" id="contact" data-scene="markInk">
+  <div class="wrap">
+    <div class="intro-row">
+      <span class="tag"><span class="ix" style="box-shadow:none">08</span><span class="lbl" style="color:var(--black)">Start a conversation</span></span>
+      <p class="mono m10 mute">New partnerships / Jan—Mar 2027</p>
+    </div>
+    <div class="cstate">
+      <div class="ccopy">
+        <h2>What should be more useful?</h2>
+        <div class="cact">
+          <a class="email" id="email" href="mailto:hello@monarch.studio" data-cursor="Write">hello@monarch.studio
+            <svg viewBox="0 0 22 22" fill="none" aria-hidden="true"><path d="M15.5826 15.5822V6.41699H6.41739M15.5826 6.41699L6.41739 15.5822" stroke="#D7FF3F" stroke-width="1.6" stroke-linecap="round"/></svg></a>
+          <p class="mono m9 mute">Tell us the problem, not the deliverables. We reply within two working days.</p>
+        </div>
+      </div>
+      <div class="mdiag" id="mdiag" aria-hidden="true">
+        <svg viewBox="0 0 308 308">
+          <circle cx="154" cy="154" r="149.4" stroke="#10110F" stroke-width="1.2" fill="none"/>
+          <circle cx="154" cy="154" r="95.4" stroke="#10110F" stroke-width="1.2" fill="none"/>
+          <g class="axis"><line x1="54.6" y1="281.2" x2="253.4" y2="26.8" stroke="#10110F" stroke-width="2"/></g>
+          <g class="core"><circle cx="154" cy="154" r="38" fill="#F2F0E8"/>
+          <text x="154" y="157" text-anchor="middle" fill="#10110F" font-family="Roboto Mono, monospace" font-weight="700" font-size="9">USEFUL</text></g>
+          <text x="0" y="9" fill="#10110F" fill-opacity=".55" font-family="Roboto Mono, monospace" font-weight="700" font-size="9">STRATEGY → SYSTEMS → SHIPPED EXPERIENCE</text>
+          <text x="0" y="296" fill="#10110F" fill-opacity=".55" font-family="Roboto Mono, monospace" font-weight="700" font-size="9">EVIDENCE → DECISION</text>
+        </svg>
+      </div>
+    </div>
+    <footer class="footer">
+      <div class="rule"></div>
+      <div class="frow">
+        <a class="brand" href="#top" aria-label="Monarch, back to top">
+          <svg class="logo" viewBox="0 0 30 30" fill="none" aria-hidden="true"><circle class="ring" cx="15" cy="15" r="13.25" stroke="#10110F" stroke-width="1.5"/><line class="slash" x1="5.15" y1="27.6" x2="24.85" y2="2.4" stroke="#10110F" stroke-width="2.2"/></svg>
+          MONARCH®
+        </a>
+        <div class="locs">
+          <div><p class="mono m9 b">Manila, Philippines</p><p class="v">14.5995° N, 120.9842° E</p></div>
+          <div><p class="mono m9 b">Working hours</p><p class="v">PHT / UTC +8</p></div>
+        </div>
+        <div class="flinks">
+          <a class="tlink" href="#" data-cursor="Open">LinkedIn<svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M11.3328 11.3336V4.66797H4.66721M11.3328 4.66797L4.66721 11.3336" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></a>
+          <a class="tlink" href="#" data-cursor="Open">Instagram<svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M11.3328 11.3336V4.66797H4.66721M11.3328 4.66797L4.66721 11.3336" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></a>
+          <a class="tlink" href="#" data-cursor="Open">Privacy<svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M11.3328 11.3336V4.66797H4.66721M11.3328 4.66797L4.66721 11.3336" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></a>
+        </div>
+        <div class="legal mono m9"><p>© Monarch Studio 2026</p><p>Edition 04 / Built to evolve</p></div>
+      </div>
+    </footer>
+  </div>
+</section>
+</main>
+<main id="casepage" hidden></main>
+<div class="wipe" aria-hidden="true"><svg class="logo" viewBox="0 0 30 30" fill="none" aria-hidden="true"><circle class="ring" cx="15" cy="15" r="13.25" stroke="#10110F" stroke-width="1.5"/><line class="slash" x1="5.15" y1="27.6" x2="24.85" y2="2.4" stroke="#10110F" stroke-width="2.2"/></svg></div>
+
+<div class="cur" id="cur" aria-hidden="true"><span class="tilt"><svg class="logo" viewBox="0 0 30 30" fill="none" aria-hidden="true"><circle class="ring" cx="15" cy="15" r="13.25" stroke="#F2F0E8" stroke-width="1.5"/><line class="slash" x1="5.15" y1="27.6" x2="24.85" y2="2.4" stroke="#D7FF3F" stroke-width="2.2"/></svg></span><span class="lab"></span></div>
+
+
+
+<script src="assets/vendor/three.min.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
