@@ -169,52 +169,56 @@ function onScrollUI(){
 
   pickScene();
 }
-// testimonial slider
+// testimonial tabs (auto-advancing; each tab shows its own active / inactive state)
 var qWords=[];
 try{(function(){
+  var port=$("#portraitSrc");
+  /* photo: set a path (e.g. "assets/images/testimonials/andrea-villanueva.jpg") when real, approved headshots exist */
   var T=[
-    {q:"Monarch made asking for help feel as simple as taking a breath. Our clinics are seeing people who would never have walked in before.",n:"Andrea Villanueva",r:"Co-founder / Hinga",av:"AV",id:"hinga",c:"Hinga"},
-    {q:"Monarch gave us the clarity to make a difficult product feel inevitable. They challenged the technology, the language and the operating model—not just the interface.",n:"Amira Khan",r:"Chief Product Officer / Aster",av:"portrait",id:"aster",c:"Aster"},
-    {q:"We stopped writing for keywords and started answering the questions our specifiers actually have. The results followed.",n:"Daniel Osei",r:"Head of Growth / Morrow",av:"DO",id:"morrow",c:"Morrow"},
-    {q:"Residents tell us it’s the first council service that feels like it was made for their life, not our process.",n:"Priya Nair",r:"Director of Digital Services / Common Ground",av:"PN",id:"common-ground",c:"Common Ground"},
-    {q:"They made saving feel simple for people who had never opened a bank account. Sign-ups doubled, and we didn’t add a single form field.",n:"Carmela Santos",r:"Head of Digital / Bayani Bank",av:"CS",id:"bayani",c:"Bayani Bank"}
+    {q:"Monarch made asking for help feel as simple as taking a breath. Our clinics are seeing people who would never have walked in before.",n:"Andrea Villanueva",r:"Co-founder / Hinga",av:"AV",id:"hinga",c:"Hinga",photo:null,c1:"#c2410c",c2:"#fb923c"},
+    {q:"Monarch gave us the clarity to make a difficult product feel inevitable. They challenged the technology, the language and the operating model—not just the interface.",n:"Amira Khan",r:"Chief Product Officer / Aster",av:"AK",id:"aster",c:"Aster",photo:port?port.src:null,c1:"#4c5fd5",c2:"#8b9cf7"},
+    {q:"We stopped writing for keywords and started answering the questions our specifiers actually have. The results followed.",n:"Daniel Osei",r:"Head of Growth / Morrow",av:"DO",id:"morrow",c:"Morrow",photo:null,c1:"#2f5d50",c2:"#7fb49f"},
+    {q:"Residents tell us it’s the first council service that feels like it was made for their life, not our process.",n:"Priya Nair",r:"Director of Digital Services / Common Ground",av:"PN",id:"common-ground",c:"Common Ground",photo:null,c1:"#0f766e",c2:"#5eead4"},
+    {q:"They made saving feel simple for people who had never opened a bank account. Sign-ups doubled, and we didn’t add a single form field.",n:"Carmela Santos",r:"Head of Digital / Bayani Bank",av:"CS",id:"bayani",c:"Bayani Bank",photo:null,c1:"#1864ab",c2:"#74c0fc"}
   ];
-  var box=$("#testi"),quote=$("#quote"),author=$("#tAuthor"),count=$("#tCount"),bar=$("#tBar"),link=$("#tCase"),port=$("#portraitSrc");
+  var box=$("#testi"),quote=$("#quote"),who=$("#tAuthor"),tabs=$("#tTabs"),link=$("#tCase");
   var AR='<svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M11.3328 11.3326V4.66699H4.66718M11.3328 4.66699L4.66718 11.3326" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>';
-  var i=0,el=0,DUR=9000,hover=false,focus=false,inView=false,last=performance.now(),swapT=0;
-  function pad(n){return (n<10?"0":"")+n}
+  function face(t){return '<span class="t-ph" style="--c1:'+t.c1+'">'+(t.photo?'<img src="'+t.photo+'" alt="Portrait of '+t.n+'" onerror="this.remove()">':t.av)+'</span>'}
+  tabs.innerHTML=T.map(function(t,k){return '<button type="button" class="t-name" role="tab" id="tt'+k+'" aria-controls="quotePanel" aria-selected="false" tabindex="-1">'+t.c+'<i aria-hidden="true"><b></b></i></button>'}).join("");
+  var btns=$$(".t-name",tabs);
+  var i=-1,el=0,DUR=9000,hover=false,focus=false,inView=false,last=performance.now(),swapT=0;
   function show(k,user){
-    i=(k+T.length)%T.length;var t=T[i];el=0;
+    k=(k+T.length)%T.length;if(k===i)return;i=k;var t=T[i];el=0;
+    btns.forEach(function(b,j){var on=j===i;b.setAttribute("aria-selected",on?"true":"false");b.tabIndex=on?0:-1;b.querySelector("i b").style.transform="scaleX(0)"});
+    $("#quotePanel").setAttribute("aria-labelledby","tt"+i);
     quote.setAttribute("aria-live",user?"polite":"off");
     $$(".w",quote).forEach(function(w){w.style.transitionDelay="0ms";w.classList.remove("in")});
-    author.classList.add("swap");
-    clearTimeout(swapT);
+    who.classList.add("swap");clearTimeout(swapT);
     swapT=setTimeout(function(){
       quote.textContent="";
       t.q.split(/\s+/).forEach(function(w,j){var sp=document.createElement("span");sp.className="w";sp.textContent=w;sp.style.transitionDelay=(REDUCED?0:j*22)+"ms";quote.appendChild(sp);quote.appendChild(document.createTextNode(" "))});
-      var av=t.av==="portrait"?'<img src="'+(port?port.src:"")+'" alt="Portrait of '+t.n+'" width="34" height="34">':'<span class="initials" aria-hidden="true">'+t.av+'</span>';
-      author.innerHTML=av+'<div><b>'+t.n+'</b><p class="mono m10 md mute">'+t.r+'</p></div>';
-      author.classList.remove("swap");
-      count.textContent=pad(i+1)+" / "+pad(T.length);
+      who.innerHTML=face(t)+'<div><b>'+t.n+'</b><p class="mono m10 md mute">'+t.r+'</p></div>';
+      who.classList.remove("swap");
       link.href="#/work/"+t.id;link.innerHTML="Read the "+t.c+" case study"+AR;
       requestAnimationFrame(function(){requestAnimationFrame(function(){$$(".w",quote).forEach(function(w){w.classList.add("in")})})});
     },quote.childNodes.length?280:0);
   }
-  $("#tPrev").addEventListener("click",function(){show(i-1,true)});
-  $("#tNext").addEventListener("click",function(){show(i+1,true)});
-  box.addEventListener("keydown",function(e){if(e.key==="ArrowLeft"){show(i-1,true);e.preventDefault()}else if(e.key==="ArrowRight"){show(i+1,true);e.preventDefault()}});
+  btns.forEach(function(b,k){b.addEventListener("click",function(){show(k,true)})});
+  tabs.addEventListener("keydown",function(e){
+    var k=null;if(e.key==="ArrowRight")k=i+1;else if(e.key==="ArrowLeft")k=i-1;else if(e.key==="Home")k=0;else if(e.key==="End")k=T.length-1;
+    if(k===null)return;e.preventDefault();show(k,true);btns[i].focus();
+  });
   box.addEventListener("pointerenter",function(){hover=true});box.addEventListener("pointerleave",function(){hover=false});
   box.addEventListener("focusin",function(){focus=true});box.addEventListener("focusout",function(){focus=false});
   var sx=null;
-  box.addEventListener("pointerdown",function(e){if(e.pointerType!=="mouse")sx=e.clientX});
-  box.addEventListener("pointerup",function(e){if(sx!==null){var dx=e.clientX-sx;if(Math.abs(dx)>50)show(i+(dx<0?1:-1),true);sx=null}});
-  new IntersectionObserver(function(es){inView=es[0].isIntersecting},{threshold:.35}).observe(box);
+  quote.parentNode.addEventListener("pointerdown",function(e){if(e.pointerType!=="mouse")sx=e.clientX});
+  quote.parentNode.addEventListener("pointerup",function(e){if(sx!==null){var dx=e.clientX-sx;if(Math.abs(dx)>50)show(i+(dx<0?1:-1),true);sx=null}});
+  new IntersectionObserver(function(es){inView=es[0].isIntersecting},{threshold:.3}).observe(box);
   (function tick(now){
     requestAnimationFrame(tick);
     var dt=Math.min(now-last,100);last=now;
-    var running=inView&&!hover&&!focus&&!REDUCED&&!document.hidden;
-    if(running){el+=dt;if(el>=DUR)show(i+1,false)}
-    bar.style.transform="scaleX("+(el/DUR).toFixed(4)+")";
+    if(inView&&!hover&&!focus&&!REDUCED&&!document.hidden){el+=dt;if(el>=DUR){show(i+1,false);return}}
+    if(btns[i])btns[i].querySelector("i b").style.transform="scaleX("+(el/DUR).toFixed(4)+")";
   })(last);
   show(0,false);
 })();}catch(e){console.error("[monarch] testimonial failed",e)}

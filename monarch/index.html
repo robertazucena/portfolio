@@ -401,29 +401,23 @@
 <!-- CLIENT PROOF -->
 <section class="clients" data-scene="dust2">
   <div class="wrap">
-    <div class="testi" id="testi" role="region" aria-roledescription="carousel" aria-label="Client testimonials">
+    <div class="testi" id="testi" aria-label="Client testimonials">
       <div class="side">
         <span class="tag"><span class="ix lime">07</span><span class="lbl">Client proof</span></span>
         <div class="author" id="tAuthor"></div>
-        <div class="t-ctrl">
-          <button type="button" class="t-btn" id="tPrev" aria-label="Previous testimonial"><svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M12.667 8H3.333M8 3.333L3.333 8 8 12.667" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button>
-          <p class="mono m11 b" id="tCount" aria-live="off">01 / 05</p>
-          <button type="button" class="t-btn" id="tNext" aria-label="Next testimonial"><svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3.333 8h9.334M8 3.333L12.667 8 8 12.667" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button>
-        </div>
-        <div class="t-bar" aria-hidden="true"><i id="tBar"></i></div>
       </div>
-      <figure class="quote" style="margin:0">
+      <figure class="quote" id="quotePanel" role="tabpanel" style="margin:0">
         <span class="qm" aria-hidden="true">“</span>
         <blockquote id="quote" aria-live="off"></blockquote>
-        <a class="tlink" id="tCase" href="#/work/aster">Read the case study</a>
+        <a class="tlink" id="tCase" href="#/work/hinga">Read the case study</a>
       </figure>
       <img id="portraitSrc" hidden alt="" src="assets/images/amira-khan.jpg">
     </div>
     <div class="roster">
       <div class="rule"></div>
       <div class="row">
-        <p class="mono m11 md mute">Recent company</p>
-        <span class="c">Aster</span><span class="c">Morrow</span><span class="c">Fieldline</span><span class="c">Common Ground</span><span class="c">Orbit</span><span class="c">Public Works</span>
+        <p class="mono m11 md mute">In their words</p>
+        <div class="t-names" role="tablist" aria-label="Choose a client" id="tTabs"></div>
       </div>
     </div>
   </div>
