@@ -597,12 +597,13 @@ body.no-gl .stage{display:none}
 
 /* annotation hotspots + legends */
 .hots{position:absolute;inset:0;z-index:5;pointer-events:none}
-.hot{position:absolute;pointer-events:auto;width:24px;height:24px;margin:-12px 0 0 -12px;border-radius:50%;background:var(--lime);color:var(--ink);font:700 11px/24px var(--mono);text-align:center;box-shadow:0 0 0 4px rgba(215,255,63,.28),0 6px 16px rgba(0,0,0,.35);cursor:help;transition:transform .3s var(--ease)}
+.hot{position:absolute;pointer-events:auto;width:24px;height:24px;margin:-12px 0 0 -12px;border-radius:50%;background:var(--lime);color:var(--ink);font:700 11px/24px var(--mono);text-align:center;box-shadow:0 0 0 4px rgba(215,255,63,.28),0 6px 16px rgba(0,0,0,.35);cursor:pointer;transition:transform .3s var(--ease)}
 .hot:hover,.hot:focus-visible,.hot.lit{transform:scale(1.18)}
 .hot .tip{position:absolute;left:50%;bottom:calc(100% + 10px);transform:translateX(-50%);width:max-content;max-width:230px;background:#10110f;color:var(--cream);font:500 12.5px/1.4 var(--sans);text-align:left;padding:10px 12px;border-radius:8px;opacity:0;pointer-events:none;transition:opacity .25s;box-shadow:0 12px 30px rgba(0,0,0,.4)}
 .hot.al .tip{left:-4px;transform:none}.hot.ar .tip{left:auto;right:-4px;transform:none}
 .hot.bl .tip{bottom:auto;top:calc(100% + 10px)}
-.hot:hover .tip,.hot:focus .tip{opacity:1}
+.hot:hover .tip,.hot:focus-visible .tip,.hot.open .tip{opacity:1}
+.hot.open{transform:scale(1.18);z-index:6}
 .hot:hover,.hot:focus{z-index:6}
 .notes{list-style:none;margin:6px 0 0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px 28px}
 .notes li{display:flex;gap:12px;align-items:flex-start;font:400 14px/1.45 var(--sans);color:var(--bone)}

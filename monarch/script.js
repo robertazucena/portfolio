@@ -1228,9 +1228,10 @@ var SHOTS={
 function escA(t){return String(t).replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;")}
 function hotLayer(notes,n0){
   if(!notes||!notes.length)return "";
-  return '<div class="hots">'+notes.map(function(nt,k){return '<button type="button" class="hot" data-sel="'+escA(nt[0])+'" aria-label="'+(n0+k)+'. '+escA(nt[1])+'">'+(n0+k)+'<span class="tip">'+nt[1]+'</span></button>'}).join("")+'</div>';
+  return '<div class="hots">'+notes.map(function(nt,k){return '<button type="button" class="hot" data-sel="'+escA(nt[0])+'" aria-label="'+(n0+k)+'. '+escA(nt[1])+'" aria-expanded="false">'+(n0+k)+'<span class="tip">'+nt[1]+'</span></button>'}).join("")+'</div>';
 }
 function legend(notes,n0){
+  return ""; /* notes text switched off; markers stay */
   if(!notes||!notes.length)return "";
   return '<ol class="notes">'+notes.map(function(nt,k){return '<li><b>'+(n0+k)+'</b><span>'+nt[1]+'</span></li>'}).join("")+'</ol>';
 }
@@ -1240,7 +1241,7 @@ function shotsHTML(id){
   var S=SHOTS[id];if(!S)return "";
   var X=NOTES[id]||{},n=1;
   var out='<section class="cp-shots" data-scene="dust2"><div class="wrap">'+
-    '<div class="cp-ov"><div style="display:flex;flex-direction:column;gap:14px"><p class="mono m11 sb">The product</p><p class="shot-note mono m9 mute"><i></i>Interface recreated for illustration / sample data</p><p class="mono m9 mute">Hover or tap the numbers to see how it works</p></div><h2 class="cp-h2">'+S.h+'</h2></div>';
+    '<div class="cp-ov"><div style="display:flex;flex-direction:column;gap:14px"><p class="mono m11 sb">The product</p><p class="shot-note mono m9 mute"><i></i>Interface recreated for illustration / sample data</p></div><h2 class="cp-h2">'+S.h+'</h2></div>';
   if(S.phones){
     var all=[];
     out+='<div class="phones" style="grid-template-columns:repeat('+S.phones.length+',1fr);max-width:'+(S.phones.length*347)+'px">'+S.phones.map(function(p,k){
@@ -1265,6 +1266,12 @@ function findTarget(ui,sel){
   }
   try{return ui.querySelector(sel)}catch(e){return null}
 }
+document.addEventListener("click",function(e){
+  var h=e.target.closest&&e.target.closest(".hot");
+  $$(".hot.open").forEach(function(o){if(o!==h){o.classList.remove("open");o.setAttribute("aria-expanded","false")}});
+  if(h){var on=!h.classList.contains("open");h.classList.toggle("open",on);h.setAttribute("aria-expanded",on?"true":"false")}
+});
+document.addEventListener("keydown",function(e){if(e.key==="Escape")$$(".hot.open").forEach(function(o){o.classList.remove("open");o.setAttribute("aria-expanded","false")})});
 function placeNotes(f){
   var hots=f.querySelectorAll(".hot");if(!hots.length)return;
   var ui=f.querySelector(".ui"),fr=f.getBoundingClientRect();if(!fr.width||!ui)return;
