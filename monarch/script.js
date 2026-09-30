@@ -150,7 +150,7 @@ function onScrollUI(){
   nav.classList.toggle("solid",y>40);
   // nav tone over lime sections
   var onLime=false,onLight=false;$$(".on-lime").forEach(function(s){var r=s.getBoundingClientRect();if(r.top<46&&r.bottom>46)onLime=true});
-  $$(".on-light").forEach(function(s){var r=s.getBoundingClientRect();if(r.top<46&&r.bottom>46)onLight=true});
+  $$(".on-light").forEach(function(s){var r=s.getBoundingClientRect();if(r.top<46&&r.bottom>46){onLight=true;var cs=getComputedStyle(s);nav.style.setProperty("--navbg",cs.getPropertyValue("--bg").trim()||"#e6e8ea");nav.style.setProperty("--navink",cs.getPropertyValue("--ink").trim()||"#10110f")}});
   nav.classList.toggle("lime",onLime&&y>40);nav.classList.toggle("light",onLight&&y>40);
   // active nav
   var mid=innerHeight*.35,act=-1;
@@ -1225,6 +1225,10 @@ var SHOTS={
   "common-ground":{h:"Built for one hand, weak signal and little time.",phones:[{ui:uiCG1,cap:"Saved steps / plain guidance"},{ui:uiCG2,cap:"Works offline"},{ui:uiCG3,cap:"Proactive case updates"}],
     main:{url:"staff.commonground.city/cases",ui:uiCGDesk,w:1200,h:720,cap:"Caseworker view / pick up where residents left off"}}
 };
+/* brand palettes: [band background, ink, accent] */
+var BRAND={"hinga":["#e6e8ea","#0b0b0b","#f0501e"],"aster":["#eef0fb","#131634","#4c5fd5"],"morrow":["#f1efe7","#1d2a25","#2f5d50"],"common-ground":["#e5f1ee","#0f1f1c","#0f766e"],
+  "tala":["#fbeef3","#2a0f1b","#c2255c"],"bayani":["#e9f1fa","#0b1f35","#1864ab"],"lakbay":["#fdf1e8","#2b1a0e","#e8590c"],"northwind":["#e8eef8","#0b2545","#1d4ed8"],
+  "sari":["#fcefe8","#2a1409","#d9480f"],"kalinaw":["#e9f4ec","#0f2a17","#2b8a3e"]};
 function escA(t){return String(t).replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;")}
 function hotLayer(notes,n0){
   if(!notes||!notes.length)return "";
@@ -1240,7 +1244,8 @@ var LOCK='<svg viewBox="0 0 12 12" fill="none"><rect x="2" y="5.5" width="8" hei
 function shotsHTML(id){
   var S=SHOTS[id];if(!S)return "";
   var X=NOTES[id]||{},n=1;
-  var out='<section class="cp-shots" data-scene="dust2"><div class="wrap">'+
+  var br=BRAND[id],bs=br?' style="--bg:'+br[0]+';--ink:'+br[1]+';--acc:'+br[2]+'"':'';
+  var out='<section class="cp-shots'+(br?' bband on-light':'')+'"'+bs+' data-scene="dust2"><div class="wrap">'+
     '<div class="cp-ov"><div style="display:flex;flex-direction:column;gap:14px"><p class="mono m11 sb">The product</p><p class="shot-note mono m9 mute"><i></i>Interface recreated for illustration / sample data</p></div><h2 class="cp-h2">'+S.h+'</h2></div>';
   if(S.phones){
     var all=[];
@@ -1536,7 +1541,7 @@ function caseHTML(id){
   var h=''+
   '<div class="cp-top" data-scene="'+c.scene+'"><div class="wrap">'+
     '<div class="cp-bar"><a class="back" href="'+back+'" data-cursor="Back">'+ARROW_R+'All work</a><p class="mono m11 mute">Case '+c.idx+' / '+CASE_TOTAL+'</p></div>'+
-    '<div class="casehead"><span class="tag"><span class="ix lime">'+c.idx+'</span><span class="lbl">'+c.cat+'</span></span><p class="mono m11 sb bone">'+c.name+'</p></div>'+
+    '<div class="casehead"><span class="tag"><span class="ix lime brandix" style="'+(BRAND[id]?'--acc:'+BRAND[id][2]:'')+'">'+c.idx+'</span><span class="lbl">'+c.cat+'</span></span><p class="mono m11 sb bone">'+c.name+'</p></div>'+
     '<h1 class="cp-title">'+c.title+'</h1>'+
     '<dl class="cp-meta">'+c.meta.map(function(m){return '<div><dt class="mono m9 b mute">'+m[0]+'</dt><dd>'+m[1]+'</dd></div>'}).join("")+'</dl>'+
     '<div class="stage" aria-hidden="true"><p class="mono m9 b mute tl">'+c.stage[0]+'</p><p class="mono m9 b mute bl">'+c.stage[1]+'</p><p class="mono m9 mute br">Move through the field</p></div>'+

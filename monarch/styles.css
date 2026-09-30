@@ -1014,6 +1014,44 @@ body.no-gl .glfb{display:block;position:absolute;right:var(--pad);top:50%;width:
 @media (max-width:1000px){.spot-head{grid-template-columns:1fr;gap:24px}.spot-foot{grid-template-columns:1fr 1fr}.spot-foot>div:nth-child(3){padding-left:0;border-left:0}}
 @media (max-width:760px){.spot-phones{grid-template-columns:repeat(3,72%);overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:12px}.spot-scr{scroll-snap-align:start}.spot-foot{grid-template-columns:1fr}.spot-foot>div+div{padding-left:0;border-left:0}}
 
+
+/* ---------- brand bands: each project presented in its own palette (like Hinga) ---------- */
+.bband{--mut:color-mix(in srgb,var(--ink) 58%,transparent);--hair:color-mix(in srgb,var(--ink) 18%,transparent)}
+.case.bband{background:var(--bg);color:var(--ink)}
+.case.bband h3,.case.bband .bone,.case.bband .tag .lbl{color:var(--ink)!important}
+.case.bband .mono.mute,.case.bband .mute{color:var(--mut)!important}
+.case.bband .tag .ix{background:var(--acc)!important;color:#fff!important;box-shadow:none!important}
+.case.bband .rule{background:var(--hair)!important}
+.case.bband .story .pt p:last-child{color:var(--ink)!important;opacity:.84}
+.case.bband .story .pt .mono,.case.bband .cap .mono{color:var(--acc)!important}
+.case.bband .out .big{color:var(--acc)}
+.case.bband .tlink::after{background:var(--acc)}
+.case.bband .feature h3 a{background-image:linear-gradient(var(--acc),var(--acc))}
+/* diagrams take the brand accent */
+.bband .imap .nd{stroke:color-mix(in srgb,var(--ink) 45%,transparent)}
+.bband .imap .nd.key,.bband .imap .nd.hit{fill:var(--acc);stroke:var(--acc)}
+.bband .imap .nd.via{stroke:var(--acc);fill:color-mix(in srgb,var(--acc) 18%,transparent)}
+.bband .imap .pth{stroke:var(--acc)}.bband .imap .paths circle{fill:var(--acc)}
+.bband .imap .ans rect{fill:var(--acc)}.bband .imap .ans text{fill:#fff}
+.bband .sem .orb{stroke:var(--ink)}.bband .sem .layer text{fill:var(--ink)}
+.bband .sem .term rect{fill:var(--acc)}.bband .sem .term text{fill:#fff}
+.bband .sem .term:hover rect,.bband .sem .term.on rect{fill:var(--ink)}
+.bband .sem .link{stroke:var(--acc)}
+.bband .pflow .ph .frame{stroke:var(--ink)}.bband .pflow .ph.on .frame{fill:#fff}
+.bband .pflow .ph .mod,.bband .pflow .ph .pf,.bband .pflow .ph.on .pf{fill:var(--acc)}
+/* case pages: the product section sits on the brand's own background */
+.cp-shots.bband{background:var(--bg);color:var(--ink);border-top:0}
+.cp-shots.bband .cp-h2{color:var(--ink)}
+.cp-shots.bband .mono.mute,.cp-shots.bband .mute,.cp-shots.bband figcaption{color:var(--mut)!important}
+.cp-shots.bband .mono.sb{color:var(--ink)}
+.cp-shots.bband .shot-note i{background:var(--acc)}
+.cp-shots.bband .browser,.cp-shots.bband .phone{box-shadow:0 50px 100px -44px color-mix(in srgb,var(--ink) 55%,transparent),0 0 0 1px color-mix(in srgb,var(--ink) 10%,transparent)}
+.cp-shots.bband .tile{box-shadow:0 0 0 1px var(--hair)}
+.cp-top .tag .ix.brandix{background:var(--acc);color:#fff}
+/* the menu picks up the tone of the band beneath it */
+.nav.light{background:color-mix(in srgb,var(--navbg,#e6e8ea) 90%,transparent)!important;color:var(--navink,#10110f)!important}
+.nav.light .brand .ring{stroke:var(--navink,#10110f)}
+
 /* ---------- responsive ---------- */
 @media (max-width:1180px){
   .feature{grid-template-columns:1fr;gap:40px}
