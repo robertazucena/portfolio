@@ -104,6 +104,9 @@ try{(function(){
     });
   });
 })();}catch(e){console.error("[monarch] module failed",e)}
+try{(function(){var h=document.getElementById("h1");if(!h)return;
+  if(!("IntersectionObserver" in window)){h.classList.remove("wait");return}
+  var io2=new IntersectionObserver(function(es){if(es[0].isIntersecting){h.classList.remove("wait");io2.disconnect();setTimeout(measureChars,2600)}},{threshold:.35});io2.observe(h);})();}catch(e){}
 function measureChars(){chars.forEach(function(c){var r=c.el.getBoundingClientRect();c.x=r.left+r.width/2;c.y=r.top+r.height/2+scrollY})}
 var headlineTick=function(){
   if(REDUCED||!FINE||!pointer.active)return;
@@ -142,6 +145,7 @@ function onScroll(){
   try{onScrollUI()}catch(e){console.error(e)}
 }
 function onScrollUI(){
+  try{updateToc()}catch(e){}
   var y=scrollY,max=document.documentElement.scrollHeight-innerHeight;
   if(progressEl)progressEl.style.transform="scaleX("+(max>0?y/max:0)+")";
   var dy=y-lastY;scrollVel+=dy;lastY=y;
@@ -625,7 +629,7 @@ function initGL(mode){
     blank=false;
     renderer.render(scene,camera);
   }
-  goto("hero",false,document.getElementById("top"));
+  goto("hero",false,document.getElementById("intro"));
   if(REDUCED){state.morph=1;uniforms.uMorph.value=1;renderer.render(scene,camera);}
   frame();
   return {mode:TWO?"2d":"gl",goto:goto,destroy:function(){
@@ -733,6 +737,45 @@ setInterval(function(){if(GL&&GL.mode==="2d"&&!force2D&&!parked&&!document.hidde
   tilt.style.transform="rotate("+tiltA.toFixed(1)+"deg)";
 })();
 
+
+/* ============ HOME BASE: live Manila time + "now in the studio" ============ */
+try{(function(){
+  var t=$("#phtime");
+  function tick(){try{t.textContent=new Intl.DateTimeFormat("en-PH",{timeZone:"Asia/Manila",hour:"numeric",minute:"2-digit"}).format(new Date())}catch(e){t.textContent=""}}
+  if(t){tick();setInterval(tick,20000)}
+  var NOW=["Prototyping a bilingual AI intake for a clinic network","Mapping 140 entities for a climate-materials search system","Shipping offline-first steps for a civic service app","Designing a four-minute savings account for first-time savers","Testing a weather-aware trip planner for typhoon season"];
+  var el=$("#hbNow"),k=0;
+  if(el&&!REDUCED)setInterval(function(){el.classList.add("swap");setTimeout(function(){k=(k+1)%NOW.length;el.textContent=NOW[k];el.classList.remove("swap")},400)},3600);
+})();}catch(e){console.error("[monarch] home base failed",e)}
+
+/* ============ TABLE OF CONTENTS ============ */
+var TOC=[["intro","01","Intro"],["philippines","02","Home base"],["studio","03","Point of view"],
+  ["work","04","Selected work",[["spotlight","Hinga","#f0501e"],["case-aster","Aster","#4c5fd5"],["case-morrow","Morrow","#2f5d50"],["case-common-ground","Common Ground","#0f766e"]]],
+  ["more-work","05","More work"],["capabilities","06","Capabilities"],["method","07","How we work"],["proof","08","Client proof"],["contact","09","Contact"]];
+var tocEl=$("#toc"),tocList=$("#tocList"),tocBtn=$("#tocBtn"),tocNow=$("#tocNow"),tocItems=[];
+try{
+  tocList.innerHTML=TOC.map(function(t){
+    var sub=t[3]?'<ul>'+t[3].map(function(u){return '<li data-id="'+u[0]+'"><a href="#'+u[0]+'"><span class="lb">'+u[1]+'</span><span class="dt" style="--c:'+u[2]+'"></span></a></li>'}).join("")+'</ul>':'';
+    return '<li data-id="'+t[0]+'"><a href="#'+t[0]+'"><span class="lb">'+t[2]+'</span><span class="nm">'+t[1]+'</span><span class="tk"></span></a>'+sub+'</li>'}).join("");
+  $$("li",tocList).forEach(function(li){var el=document.getElementById(li.getAttribute("data-id"));if(el)tocItems.push({li:li,el:el,sub:!!li.parentNode.closest("li"),name:li.querySelector(".lb").textContent})});
+  tocBtn.addEventListener("click",function(){var o=!tocEl.classList.contains("open");tocEl.classList.toggle("open",o);tocBtn.setAttribute("aria-expanded",o?"true":"false")});
+  tocList.addEventListener("click",function(e){if(e.target.closest("a")){tocEl.classList.remove("open");tocBtn.setAttribute("aria-expanded","false")}});
+  document.addEventListener("click",function(e){if(!e.target.closest("#toc")){tocEl.classList.remove("open");tocBtn.setAttribute("aria-expanded","false")}});
+}catch(e){console.error("[monarch] toc failed",e)}
+function updateToc(){
+  if(!tocEl)return;
+  var hidden=homeEl&&homeEl.hidden||document.body.classList.contains("loading");
+  tocEl.classList.toggle("off",!!hidden);if(hidden)return;
+  var mid=innerHeight*.42,act=null,actTop=null;
+  tocItems.forEach(function(it){var r=it.el.getBoundingClientRect();if(r.top<=mid&&r.bottom>0){if(!it.sub)actTop=it;act=it}});
+  if(act&&!act.sub)actTop=act;
+  tocItems.forEach(function(it){var on=it===act||it===actTop||(act&&act.sub&&it===actTop);it.li.classList.toggle("on",on);var a=it.li.querySelector("a");if(it===act)a.setAttribute("aria-current","location");else a.removeAttribute("aria-current")});
+  if(tocNow)tocNow.textContent=act?(act.sub&&actTop?actTop.name+" · "+act.name:act.name):"Contents";
+  // adapt to light bands under the index
+  var y=innerHeight/2,band=null;$$(".on-light,.on-lime").forEach(function(sct){var r=sct.getBoundingClientRect();if(r.top<=y&&r.bottom>=y)band=sct});
+  tocEl.classList.toggle("lt",!!band);
+  if(band){var cs=getComputedStyle(band);tocEl.style.setProperty("--tbg",cs.getPropertyValue("--bg").trim()||(band.classList.contains("on-lime")?"#d7ff3f":"#fff"));tocEl.style.setProperty("--tink",cs.getPropertyValue("--ink").trim()||"#10110f");tocEl.style.setProperty("--tacc",cs.getPropertyValue("--acc").trim()||cs.getPropertyValue("--ink").trim()||"#10110f")}
+}
 
 /* ============ CASE STUDIES: data + hash router ============ */
 var ARROW='<svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M11.3328 11.3326V4.66699H4.66718M11.3328 4.66699L4.66718 11.3326" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>';
@@ -1602,7 +1645,7 @@ addEventListener("scroll",onScroll,{passive:true});
 addEventListener("resize",function(){measureChars();onScroll()});
 if(document.fonts&&document.fonts.ready)document.fonts.ready.then(function(){setTimeout(measureChars,2700)});
 setTimeout(measureChars,2800);
-addEventListener("monarch:reveal",function(){setTimeout(measureChars,2600);onScroll()});
+addEventListener("monarch:reveal",function(){setTimeout(measureChars,2600);onScroll();setTimeout(onScroll,900)});
 setTimeout(function(){if(document.body.classList.contains("loading")){document.body.classList.remove("loading");var p=document.getElementById("pre");if(p)p.remove();onScroll();setTimeout(measureChars,2600)}},9000);
 if(/^#\/work\//.test(location.hash)){try{route(true)}catch(e){console.error(e)}}
 onScroll();
