@@ -1,0 +1,324 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Robert Azucena | UX and Digital Experience Leader</title>
+<meta name="description" content="Robert Azucena leads design teams and builds the prototypes himself. Singapore.">
+<meta name="theme-color" content="#E6ECF3">
+<style>
+@font-face{font-family:'Funnel';src:url('fonts/funnel.woff2') format('woff2');font-weight:300 800;font-display:swap;}
+@font-face{font-family:'Figtree';src:url('fonts/figtree.woff2') format('woff2');font-weight:300 900;font-display:swap;}
+:root{
+  --ink:#0E1C26; --slate:#55687A; --line:rgba(14,28,38,.12);
+  --page:#F7FAFD; --desk:#DDE5EE; --bar:#E9EEF4; --tool:#F6F8FB;
+  --display:'Funnel',system-ui,sans-serif; --body:'Figtree',system-ui,sans-serif;
+  --ease:cubic-bezier(.2,.9,.2,1);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{background:var(--desk);color:var(--ink);font:400 17px/1.55 var(--body);-webkit-font-smoothing:antialiased;overflow:hidden;display:grid;place-items:center;
+  background-image:radial-gradient(900px 600px at 15% 10%,#F2F6FB 0,transparent 60%),radial-gradient(800px 600px at 90% 95%,#CFDCEA 0,transparent 60%)}
+a{color:inherit}img{display:block;max-width:100%}button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:3px solid #2B6CFF;outline-offset:2px;border-radius:8px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* ---------- browser window ---------- */
+.win{width:min(1360px,calc(100vw - 44px));height:min(calc(100svh - 44px),900px);background:var(--tool);border-radius:14px;overflow:hidden;display:grid;grid-template-rows:auto auto minmax(0,1fr);
+  box-shadow:0 0 0 1px rgba(14,28,38,.16),0 2px 4px rgba(14,28,38,.06),0 30px 60px -18px rgba(14,28,38,.35),0 70px 120px -40px rgba(14,28,38,.35)}
+.top{background:var(--bar);display:flex;align-items:flex-end;gap:10px;padding:10px 12px 0 14px;min-height:42px}
+.dots{display:flex;gap:8px;align-self:center;padding:0 10px 10px 0}
+.dots i{width:12px;height:12px;border-radius:50%;background:#C9D1DA;box-shadow:inset 0 0 0 .5px rgba(0,0,0,.15)}
+.dots i:nth-child(1){background:#FF6B5F}.dots i:nth-child(2){background:#FFC03A}.dots i:nth-child(3){background:#2FCB4F}
+.tabs{display:flex;align-items:flex-end;gap:2px;min-width:0;flex:1;overflow:hidden}
+.tab{position:relative;display:flex;align-items:center;gap:8px;height:32px;min-width:0;width:200px;max-width:200px;flex:0 1 200px;padding:0 8px 0 12px;border:0;background:transparent;border-radius:9px 9px 0 0;font:600 12.5px var(--body);color:var(--slate);text-align:left;transition:background .2s}
+.tab:hover{background:rgba(255,255,255,.5)}
+.tab[aria-selected="true"]{background:var(--tool);color:var(--ink)}
+.tab .fv{width:14px;height:14px;border-radius:4px;flex:none;background:var(--c,#0E1C26);display:grid;place-items:center;color:#fff;font:700 9px var(--display)}
+.tab .tt{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tab .x{border:0;background:none;width:18px;height:18px;border-radius:50%;display:grid;place-items:center;font-size:14px;line-height:1;flex:none;opacity:.7}
+.tab .x:hover{background:rgba(14,28,38,.12);opacity:1}
+.tab.new{animation:tabin .35s var(--ease)}
+@keyframes tabin{from{flex-basis:0;width:0;opacity:0}to{}}
+.bar{display:flex;align-items:center;gap:6px;padding:7px 12px;background:var(--tool);box-shadow:0 1px 0 var(--line)}
+.nb{width:32px;height:32px;border:0;background:none;border-radius:8px;display:grid;place-items:center;color:var(--slate)}
+.nb:hover:not(:disabled){background:rgba(14,28,38,.08);color:var(--ink)}
+.nb:disabled{opacity:.35;cursor:default}
+.nb svg{width:17px;height:17px}
+.addr{flex:1;min-width:0;display:flex;align-items:center;gap:8px;height:32px;padding:0 14px;border-radius:99px;background:#E8EDF3;font:500 14px var(--body);color:var(--ink)}
+.addr svg{width:13px;height:13px;color:var(--slate);flex:none}
+.addr span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.addr .p{color:var(--slate)}
+.view{position:relative;min-height:0;background:var(--page);overflow:hidden}
+
+/* ---------- site (inside window) ---------- */
+.page{height:100%;overflow-y:auto;overflow-x:hidden;scroll-behavior:smooth;background:var(--page);scrollbar-width:thin;scrollbar-color:rgba(14,28,38,.25) transparent}
+.wrap{max-width:1100px;margin:0 auto;padding:0 clamp(18px,4vw,48px)}
+.hero{position:relative;height:100%;min-height:540px;overflow:hidden;background:linear-gradient(180deg,#DCEAFB,#F3F8FE)}
+.hero canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.hero::after{content:"";position:absolute;left:0;right:0;bottom:0;height:140px;background:linear-gradient(180deg,rgba(247,250,253,0),var(--page));pointer-events:none}
+.nav{position:absolute;z-index:3;top:0;left:0;right:0}
+.nav .wrap{display:flex;justify-content:space-between;align-items:center;padding-top:22px;padding-bottom:10px}
+.nav .me{font:700 18px var(--display);letter-spacing:-.01em;text-decoration:none}
+.nav ul{list-style:none;display:flex;gap:4px;align-items:center}
+.nav ul a{display:block;font:600 14.5px var(--body);text-decoration:none;padding:8px 13px;border-radius:99px;transition:background .2s}
+.nav ul a:hover{background:rgba(255,255,255,.6)}
+.nav ul a.cv{background:var(--ink);color:#fff}.nav ul a.cv:hover{background:#21394a}
+.hc{position:relative;z-index:2;height:100%;display:flex;flex-direction:column;justify-content:center;padding-bottom:70px}
+.role{font:600 15px var(--body);color:#35506A;margin-bottom:16px}
+h1{font:600 clamp(40px,6.4vw,92px)/.98 var(--display);letter-spacing:-.04em;max-width:11.2em}
+.lede{margin-top:22px;max-width:30em;font-size:clamp(17px,1.5vw,20px);color:#2F4558}
+.cta{margin-top:30px;display:flex;flex-wrap:wrap;gap:10px;align-items:flex-start}
+.btn{display:inline-flex;align-items:center;min-height:50px;padding:0 26px;border-radius:99px;font:700 16px var(--body);text-decoration:none;transition:transform .2s var(--ease),background .2s}
+.btn.pri{background:var(--ink);color:#fff}.btn.pri:hover{background:#21394a;transform:translateY(-2px)}
+.btn.sec{background:rgba(255,255,255,.7);box-shadow:inset 0 0 0 1.5px var(--ink)}.btn.sec:hover{background:#fff;transform:translateY(-2px)}
+
+.blk{padding:clamp(56px,8vw,104px) 0 8px}
+.blk h2{font:600 clamp(30px,4vw,52px)/1.02 var(--display);letter-spacing:-.03em}
+.blk .hint{margin-top:8px;color:var(--slate)}
+.grid{margin-top:30px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(26px,3.4vw,44px) clamp(18px,2.6vw,32px)}
+.pr{display:block;text-decoration:none;text-align:left;border:0;background:none;padding:0;width:100%}
+.pr .im{display:block;border-radius:16px;overflow:hidden;background:#fff;box-shadow:0 0 0 1px var(--line);transition:transform .45s var(--ease),box-shadow .45s}
+.pr:hover .im,.pr:focus-visible .im{transform:translateY(-6px);box-shadow:0 0 0 1px var(--line),0 28px 40px -26px rgba(14,28,38,.45)}
+.pr img{width:100%;aspect-ratio:1.6;object-fit:cover}
+.pr .n{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-top:12px;font:600 clamp(19px,1.8vw,24px)/1.15 var(--display);letter-spacing:-.015em}
+.pr .n em{font:500 13px var(--body);font-style:normal;color:var(--slate);white-space:nowrap}
+.pr .r{display:block;margin-top:2px;font-size:14.5px;color:var(--slate)}
+.jobs{margin-top:26px;border-top:1.5px solid var(--ink)}
+.job{display:grid;grid-template-columns:170px minmax(0,1fr);gap:20px;padding:22px 0;border-bottom:1px solid var(--line)}
+.job .w{font:600 16px var(--display);color:var(--slate)}
+.job h3{font:600 clamp(20px,2vw,26px)/1.15 var(--display);letter-spacing:-.015em}
+.job .c{font-weight:700;margin-top:3px}
+.job p+p{margin-top:6px;color:var(--slate);max-width:42em}
+.contact{margin-top:clamp(56px,8vw,100px);padding:clamp(40px,6vw,76px) 0 30px;background:linear-gradient(180deg,#E3EEFB,#F1F7FE)}
+.contact h2{font:600 clamp(32px,5.2vw,72px)/.98 var(--display);letter-spacing:-.035em;max-width:11em}
+.mail{display:inline-block;margin-top:22px;font:600 clamp(20px,3vw,40px)/1.1 var(--display);letter-spacing:-.02em;text-decoration-thickness:3px;text-underline-offset:7px;word-break:break-word}
+.contact .cta{margin-top:24px}
+.foot{margin-top:40px;font-size:13.5px;color:var(--slate);display:flex;flex-wrap:wrap;gap:6px 20px;justify-content:space-between}
+
+/* ---------- project tab ---------- */
+.proj{position:absolute;inset:0;background:#E7ECF1}
+.proj .th{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:blur(16px);transform:scale(1.1);opacity:.45}
+.proj .dev{position:absolute;left:0;top:0;transform-origin:0 0;background:#fff}
+.proj iframe{width:100%;height:100%;border:0;display:block;background:#fff}
+.proj .ld{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font:600 14px var(--body);color:var(--slate);background:#fff;padding:8px 16px;border-radius:99px;box-shadow:0 0 0 1px var(--line);pointer-events:none}
+.proj.ready .ld{display:none}
+[hidden]{display:none!important}
+
+@media (max-width:760px){
+  body{display:block}
+  .win{width:100vw;height:100svh;border-radius:0;box-shadow:none}
+  .top{display:none}
+  .grid{grid-template-columns:1fr}
+  .nav ul li:not(:last-child){display:none}
+  .job{grid-template-columns:1fr;gap:4px}
+}
+@media (prefers-reduced-motion:reduce){
+  .page{scroll-behavior:auto}*{transition:none!important;animation:none!important}
+}
+</style>
+</head>
+<body>
+
+<div class="win" id="win" role="application" aria-label="Browser window showing robertazucena.com">
+  <div class="top">
+    <div class="dots" aria-hidden="true"><i></i><i></i><i></i></div>
+    <div class="tabs" id="tabs" role="tablist" aria-label="Open tabs"></div>
+  </div>
+  <div class="bar">
+    <button class="nb" id="back" aria-label="Back to home" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button>
+    <button class="nb" id="fwd" aria-label="Forward" type="button" disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></button>
+    <button class="nb" id="reload" aria-label="Reload" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 1 1-2.4-5.7M20 4v5h-5"/></svg></button>
+    <div class="addr" aria-live="polite"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg><span id="url">robertazucena.com</span></div>
+  </div>
+  <div class="view" id="view">
+    <div class="page" id="page">
+      <header class="hero" id="top">
+        <canvas id="cv" aria-hidden="true"></canvas>
+        <div class="nav"><div class="wrap"><a class="me" href="#top" data-go="top">Robert Azucena</a>
+          <ul><li><a href="#work" data-go="work">Work</a></li><li><a href="#experience" data-go="experience">Experience</a></li><li><a href="#contact" data-go="contact">Contact</a></li><li><a class="cv" href="Robert_Azucena_CV.pdf" download>CV</a></li></ul></div></div>
+        <div class="wrap hc">
+          <p class="role">UX and Digital Experience Leader, Singapore</p>
+          <h1>I make complicated software feel easy.</h1>
+          <p class="lede">15 years designing enterprise and AI products. I lead the team and build the prototypes myself.</p>
+          <div class="cta"><a class="btn pri" href="#work" data-go="work">See the work</a><a class="btn sec" href="Robert_Azucena_CV.pdf" download>Download CV</a></div>
+        </div>
+      </header>
+
+      <section class="blk" id="work"><div class="wrap">
+        <h2>Selected work</h2>
+        <p class="hint">Each project opens in its own tab, as a working prototype.</p>
+        <div class="grid" id="grid"></div>
+      </div></section>
+
+      <section class="blk" id="experience"><div class="wrap">
+        <h2>Experience</h2>
+        <div class="jobs">
+          <div class="job"><div class="w">2016 to 2026</div><div><h3>UX and Digital Experience Leader</h3><p class="c">Oracle, Singapore. Senior Manager.</p><p>Led UX strategy, design delivery and people development across 3 business units and 5 countries, with a team of about 30 designers, developers and UX specialists.</p></div></div>
+          <div class="job"><div class="w">2015 to 2016</div><div><h3>Interactive and Digital Art Director</h3><p class="c">Ace:Daytons Communications</p></div></div>
+          <div class="job"><div class="w">2014 to 2015</div><div><h3>UI/UX Designer and Frontend Developer</h3><p class="c">Clubvivre, Singapore</p></div></div>
+          <div class="job"><div class="w">2010 to 2014</div><div><h3>Interactive Designer and Frontend Developer</h3><p class="c">Vocanic, Singapore</p></div></div>
+          <div class="job"><div class="w">2017 to 2020</div><div><h3>Judge</h3><p class="c">CSS Design Awards</p></div></div>
+        </div>
+      </div></section>
+
+      <footer class="contact" id="contact"><div class="wrap">
+        <h2>Let's make your next product feel easy.</h2>
+        <a class="mail" href="mailto:robertazucena@gmail.com">robertazucena@gmail.com</a>
+        <div class="cta"><a class="btn pri" href="Robert_Azucena_CV.pdf" download>Download CV</a><a class="btn sec" href="https://www.linkedin.com/in/robertazucena" rel="noopener">LinkedIn</a></div>
+        <div class="foot"><span>Available immediately in Singapore.</span><a href="../index.html">View the current portfolio</a></div>
+      </div></footer>
+    </div>
+    <div class="proj" id="proj" hidden>
+      <img class="th" id="th" alt="">
+      <div class="dev" id="dev"><iframe id="frame" title="Project prototype"></iframe></div>
+      <div class="ld">Loading prototype</div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var BASE='../assets/prototype/';
+  var P=[
+    {id:'great-eastern',tab:'Great Eastern',name:'Great Eastern claims portal',role:'Lead Designer',yr:'2026',img:'img/ge.jpg',c:'#D6252B'},
+    {id:'changi',tab:'Changi pricing tool',name:'Changi Airport Group on Oracle Cloud',role:'Lead Designer',yr:'2025',img:'img/changi.jpg',c:'#7A2E8E'},
+    {id:'oracle-ad',tab:'Autonomous Database',name:'Oracle Autonomous Database',role:'UX/UI Designer',yr:'2023',img:'img/adb.jpg',c:'#C74634'},
+    {id:'oracle-eg',tab:'AI Email Generator',name:'Oracle AI Email Generator',role:'Lead Product Designer',yr:'2024',img:'img/egen.jpg',c:'#C74634'},
+    {id:'tata-motors',tab:'Tata Motors AI',name:'Tata Motors AI Workspace',role:'Lead Designer',yr:'',img:'img/tata.jpg',c:'#1B2A8F'},
+    {id:'grab',tab:'Grab portal',name:'Grab Employee Portal',role:'Lead Designer',yr:'2024',img:'img/grab.jpg',c:'#00A862'},
+    {id:'oracle-cm',tab:'Customer Moments',name:'Oracle Customer Moments',role:'Lead Designer',yr:'',img:'img/cm.jpg',c:'#C74634'},
+    {id:'mufg',tab:'MUFG Asia Pacific',name:'MUFG Asia Pacific',role:'Lead Designer and frontend',yr:'2023',img:'img/mufg.jpg',c:'#D81E1E'},
+    {id:'courtly',tab:'Courtly',name:'Courtly',role:'Lead Product Designer',yr:'2025',img:'img/courtly.jpg',c:'#12A150'},
+    {id:'steady',tab:'Steady',name:'Steady',role:'Lead Product Designer',yr:'2026',img:'img/steady.jpg',c:'#E8A200'},
+    {id:'on-engineers',tab:'ON Engineers',name:'ON Engineers',role:'Website',yr:'',img:'img/on.jpg',c:'#0E5A8A'}
+  ];
+  var byId={};P.forEach(function(p){byId[p.id]=p;});
+  var $=function(i){return document.getElementById(i);};
+  var reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---------- grid ---------- */
+  var grid=$('grid');
+  P.forEach(function(p){
+    var a=document.createElement('a');a.className='pr';a.href=BASE+p.id+'/index.html';a.dataset.id=p.id;
+    a.innerHTML='<span class="im"><img alt="" loading="lazy"></span><span class="n"><span></span><em></em></span><span class="r"></span>';
+    a.querySelector('img').src=p.img;a.querySelector('.n span').textContent=p.name;a.querySelector('em').textContent=p.yr;a.querySelector('.r').textContent=p.role;
+    a.addEventListener('click',function(e){if(e.metaKey||e.ctrlKey||e.shiftKey)return;e.preventDefault();openTab(p.id);});
+    grid.appendChild(a);
+  });
+
+  /* ---------- tabs ---------- */
+  var tabsEl=$('tabs'),page=$('page'),proj=$('proj'),frame=$('frame'),dev=$('dev'),th=$('th'),urlEl=$('url'),back=$('back'),reloadB=$('reload'),view=$('view');
+  var tabs=[{id:'home'}],active='home',lastNonHome=null;
+  function renderTabs(){
+    tabsEl.innerHTML='';
+    tabs.forEach(function(t){
+      var home=t.id==='home',p=home?null:byId[t.id];
+      var b=document.createElement('div');b.className='tab'+(t.fresh?' new':'');b.setAttribute('role','tab');b.setAttribute('aria-selected',active===t.id);b.tabIndex=active===t.id?0:-1;
+      b.innerHTML='<span class="fv"></span><span class="tt"></span>'+(home?'':'<button class="x" type="button" aria-label="Close tab"></button>');
+      b.querySelector('.fv').textContent=home?'R':p.tab.charAt(0);b.querySelector('.fv').style.setProperty('--c',home?'#0E1C26':p.c);
+      b.querySelector('.tt').textContent=home?'Robert Azucena':p.tab;
+      b.addEventListener('click',function(e){if(e.target.classList.contains('x'))return;show(t.id);});
+      b.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();show(t.id);}});
+      if(!home)b.querySelector('.x').textContent='×',b.querySelector('.x').addEventListener('click',function(e){e.stopPropagation();closeTab(t.id);});
+      tabsEl.appendChild(b);t.fresh=false;
+    });
+  }
+  function fit(){
+    if(proj.hidden)return;
+    var w=view.clientWidth,h=view.clientHeight;
+    if(innerWidth<=760){dev.style.cssText='width:'+w+'px;height:'+h+'px;';return;}
+    var s=Math.min(1,w/1440);dev.style.cssText='width:1440px;height:'+Math.ceil(h/s)+'px;transform:scale('+s+');left:'+Math.max(0,(w-1440*s)/2)+'px;';
+  }
+  function show(id){
+    active=id;
+    if(id==='home'){page.hidden=false;proj.hidden=true;frame.src='about:blank';urlEl.textContent='robertazucena.com';back.disabled=true;document.title='Robert Azucena | UX and Digital Experience Leader';
+      try{history.replaceState(null,'',location.pathname+location.search);}catch(e){}
+      hero.on&&hero.on();}
+    else{
+      var p=byId[id];lastNonHome=id;page.hidden=true;proj.hidden=false;proj.classList.remove('ready');
+      th.src=p.img;frame.onload=function(){proj.classList.add('ready');};frame.src=BASE+id+'/index.html';
+      urlEl.innerHTML='robertazucena.com<span class="p">/work/'+id+'</span>';back.disabled=false;document.title=p.name+' | Robert Azucena';
+      try{history.replaceState(null,'','#'+id);}catch(e){}
+      hero.off&&hero.off();fit();
+    }
+    renderTabs();
+  }
+  function openTab(id){
+    if(!tabs.some(function(t){return t.id===id;}))tabs.push({id:id,fresh:true});
+    show(id);
+  }
+  function closeTab(id){
+    var i=tabs.findIndex(function(t){return t.id===id;});tabs.splice(i,1);
+    if(active===id)show(tabs[Math.max(0,i-1)].id);else renderTabs();
+  }
+  back.addEventListener('click',function(){show('home');});
+  reloadB.addEventListener('click',function(){if(active==='home')page.scrollTo({top:0});else{proj.classList.remove('ready');frame.src=frame.src;}});
+  addEventListener('resize',fit);if(window.ResizeObserver)new ResizeObserver(fit).observe(view);
+
+  /* in-window anchors */
+  document.addEventListener('click',function(e){
+    var a=e.target.closest&&e.target.closest('[data-go]');if(!a)return;e.preventDefault();
+    var id=a.dataset.go,t=id==='top'?0:$(id).offsetTop;page.scrollTo({top:t,behavior:reduce?'auto':'smooth'});
+  });
+
+  /* ---------- illuminated clouds (light) ---------- */
+  var hero={on:null,off:null};
+  (function(){
+    var cv=$('cv'),gl=cv.getContext('webgl',{antialias:false,alpha:false,powerPreference:'low-power'});
+    if(!gl)return;
+    var vs='attribute vec2 a;void main(){gl_Position=vec4(a,0.,1.);}';
+    var fs='precision highp float;uniform vec2 R;uniform float T;uniform vec2 L;'+
+    'float h(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}'+
+    'float n(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(h(i),h(i+vec2(1,0)),f.x),mix(h(i+vec2(0,1)),h(i+vec2(1,1)),f.x),f.y);}'+
+    'float fbm(vec2 p){float v=0.,a=.5;mat2 m=mat2(1.6,1.2,-1.2,1.6);for(int i=0;i<5;i++){v+=a*n(p);p=m*p;a*=.5;}return v;}'+
+    'float cloud(vec2 p){vec2 q=vec2(fbm(p*.7+vec2(T*.018,0.)),fbm(p*.7+vec2(5.2,1.3)-vec2(0.,T*.014)));return fbm(p+2.2*q+vec2(T*.02,-T*.012));}'+
+    'void main(){'+
+      'vec2 uv=gl_FragCoord.xy/R;float asp=R.x/R.y;vec2 p=(uv-.5)*vec2(asp,1.)*2.6;'+
+      'float d=cloud(p);'+
+      'vec2 ld=normalize(L-uv)*vec2(1.,1.);'+
+      'float d2=cloud(p+ld*.16);'+
+      'float dens=smoothstep(.30,.74,d);'+
+      'float lit=clamp(.58+(d-d2)*9.,0.,1.);'+
+      'vec3 sky=mix(vec3(.90,.95,1.),vec3(.66,.82,.98),uv.y);'+
+      'vec3 shade=vec3(.64,.75,.91);'+
+      'vec3 cl=mix(shade,vec3(1.),lit);'+
+      'float edge=smoothstep(.12,.45,dens)*(1.-smoothstep(.45,.95,dens));'+
+      'cl+=vec3(1.,.86,.66)*edge*lit*.55;'+
+      'vec3 col=mix(sky,cl,dens*.95);'+
+      'float g=exp(-length((uv-L)*vec2(asp,1.))*2.3);'+
+      'col+=vec3(1.,.93,.80)*g*.42;'+
+      'col+=(h(gl_FragCoord.xy+T)-.5)*.012;'+
+      'gl_FragColor=vec4(clamp(col,0.,1.),1.);}';
+    function sh(t,s){var o=gl.createShader(t);gl.shaderSource(o,s);gl.compileShader(o);if(!gl.getShaderParameter(o,gl.COMPILE_STATUS)){console.warn(gl.getShaderInfoLog(o));return null;}return o;}
+    var v=sh(gl.VERTEX_SHADER,vs),f=sh(gl.FRAGMENT_SHADER,fs);if(!v||!f)return;
+    var pr=gl.createProgram();gl.attachShader(pr,v);gl.attachShader(pr,f);gl.linkProgram(pr);if(!gl.getProgramParameter(pr,gl.LINK_STATUS))return;
+    gl.useProgram(pr);var b=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,b);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,3,-1,-1,3]),gl.STATIC_DRAW);
+    var loc=gl.getAttribLocation(pr,'a');gl.enableVertexAttribArray(loc);gl.vertexAttribPointer(loc,2,gl.FLOAT,false,0,0);
+    var uR=gl.getUniformLocation(pr,'R'),uT=gl.getUniformLocation(pr,'T'),uL=gl.getUniformLocation(pr,'L');
+    var scale=.55,lx=.78,ly=.78,tx=.78,ty=.78,run=false,vis=true,t0=performance.now()-9000;
+    function size(){var w=cv.clientWidth,h=cv.clientHeight;if(!w)return;cv.width=Math.max(2,Math.round(w*scale));cv.height=Math.max(2,Math.round(h*scale));gl.viewport(0,0,cv.width,cv.height);}
+    function frame(now){
+      if(!run)return;
+      lx+=(tx-lx)*.05;ly+=(ty-ly)*.05;
+      gl.uniform2f(uR,cv.width,cv.height);gl.uniform1f(uT,(now-t0)/1000);gl.uniform2f(uL,lx,ly);
+      gl.drawArrays(gl.TRIANGLES,0,3);
+      if(!reduce)requestAnimationFrame(frame);
+    }
+    function start(){if(run||!vis||document.hidden)return;run=true;size();requestAnimationFrame(frame);}
+    function stop(){run=false;}
+    hero.on=function(){vis=true;start();};hero.off=function(){stop();};
+    cv.parentNode.addEventListener('pointermove',function(e){var r=cv.getBoundingClientRect();tx=(e.clientX-r.left)/r.width;ty=1-(e.clientY-r.top)/r.height;if(reduce&&run===false){}});
+    if('IntersectionObserver' in window)new IntersectionObserver(function(es){vis=es[0].isIntersecting;vis?start():stop();},{root:page,threshold:0}).observe(cv.parentNode);
+    document.addEventListener('visibilitychange',function(){document.hidden?stop():start();});
+    addEventListener('resize',function(){size();if(reduce){run=true;frame(performance.now());run=false;}});
+    if(reduce){size();run=true;frame(performance.now());run=false;}else start();
+    cv.parentNode.style.background='none';
+  })();
+
+  var m=/^#(.+)$/.exec(location.hash);if(m&&byId[m[1]])openTab(m[1]);else renderTabs();
+  back.disabled=active==='home';
+})();
+</script>
+</body>
+</html>
