@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Robert Azucena — UX &amp; Digital Experience Leader</title>
+<meta name="description" content="UX & Digital Experience Leader. 15+ years across product design, frontend and people leadership. Ten years at Oracle leading ~30 designers and developers across 3 business units and 5 countries.">
+<meta name="theme-color" content="#F3F4F6">
+<link rel="preload" href="fonts/bricolage.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/instrument.woff2" as="font" type="font/woff2" crossorigin>
+<style>
+@font-face{font-family:'Bricolage';src:url('fonts/bricolage.woff2') format('woff2');font-weight:200 800;font-display:swap;}
+@font-face{font-family:'Instrument';src:url('fonts/instrument.woff2') format('woff2');font-weight:400 700;font-display:swap;}
+
+:root{
+  --paper:#F3F4F6; --white:#FFFFFF; --ink:#0E1726; --slate:#596273; --arrow:#2B3BF5; --mist:#E3E7FF; --track:#CBD0DC;
+  --display:'Bricolage',system-ui,sans-serif; --text:'Instrument',system-ui,sans-serif;
+  --rail:104px; --pad:clamp(20px,4vw,56px);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--paper);color:var(--ink);font-family:var(--text);font-size:17px;line-height:1.6;
+  -webkit-font-smoothing:antialiased;padding-left:var(--rail);overflow-x:hidden;}
+a{color:inherit;}
+img{display:block;max-width:100%;}
+:focus-visible{outline:2px solid var(--arrow);outline-offset:4px;}
+.skip{position:absolute;left:-999px;top:12px;background:var(--ink);color:var(--white);padding:10px 16px;z-index:100;}
+.skip:focus{left:12px;}
+.wrap{max-width:1280px;padding:0 var(--pad);}
+
+/* ---------- the line: navigation and progress in one ---------- */
+.rail{position:fixed;left:0;top:0;bottom:0;width:var(--rail);z-index:40;}
+.rail .track{position:absolute;left:71px;width:2px;background:var(--track);}
+.rail .fill{position:absolute;left:71px;width:2px;background:var(--arrow);}
+.rail .head{position:absolute;left:64px;top:0;width:16px;height:14px;margin-top:-14px;z-index:3;will-change:transform;}
+.rail .head svg{display:block;}
+.rail ol{list-style:none;position:absolute;top:124px;bottom:56px;left:0;width:100%;display:flex;flex-direction:column;justify-content:space-between;}
+.rail li{position:relative;}
+.rail a{display:flex;justify-content:flex-end;align-items:center;width:100%;padding:14px 46px 14px 0;text-decoration:none;
+  color:var(--slate);font-size:14px;font-weight:500;letter-spacing:.01em;}
+.rail a span{writing-mode:vertical-rl;transform:rotate(180deg);}
+.rail a::after{content:'';position:absolute;right:28px;top:50%;width:8px;height:8px;margin-top:-4px;background:var(--paper);border:2px solid var(--track);transition:border-color .2s,background .2s;}
+.rail a[aria-current="true"]{color:var(--ink);}
+.rail a[aria-current="true"]::after,.rail a.passed::after{border-color:var(--arrow);}
+.rail a:hover{color:var(--ink);}
+
+/* ---------- type ---------- */
+h1,h2,h3{font-family:var(--display);font-weight:800;letter-spacing:-.035em;line-height:.96;text-wrap:balance;}
+.link{color:var(--arrow);font-weight:600;text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:5px;}
+.link:hover{text-decoration-thickness:3px;}
+.btn{display:inline-block;background:var(--ink);color:var(--white);font-weight:600;text-decoration:none;padding:15px 26px;border-radius:2px;transition:background .15s;}
+.btn:hover{background:var(--arrow);}
+
+/* ---------- hero ---------- */
+.topbar{display:flex;justify-content:space-between;align-items:center;padding-top:30px;}
+.wordmark{font-family:var(--display);font-weight:800;font-size:22px;letter-spacing:-.03em;text-decoration:none;}
+.topbar nav{display:flex;gap:28px;font-size:15px;font-weight:500;}
+.topbar nav a{text-decoration:none;color:var(--slate);}
+.topbar nav a:hover{color:var(--ink);}
+.hero{padding-bottom:120px;}
+.hero .role{margin-top:clamp(64px,11vh,132px);font-weight:600;color:var(--arrow);font-size:19px;margin-bottom:22px;}
+.hero h1{font-size:clamp(40px,7.4vw,118px);max-width:12.5em;text-wrap:pretty;}
+.draw{position:relative;height:16px;margin:clamp(44px,7vh,84px) 0 clamp(40px,6vh,72px);}
+.draw i{position:absolute;left:0;right:12px;top:7px;height:3px;background:var(--arrow);transform-origin:left center;animation:stroke 1.15s cubic-bezier(.7,0,.2,1) .35s both;}
+.draw b{position:absolute;top:0;left:0;width:0;height:0;border-top:8px solid transparent;border-bottom:8px solid transparent;border-left:14px solid var(--arrow);
+  animation:fly 1.15s cubic-bezier(.7,0,.2,1) .35s both;}
+@keyframes stroke{from{transform:scaleX(0);}to{transform:scaleX(1);}}
+@keyframes fly{from{left:0;}to{left:calc(100% - 14px);}}
+.hero-lower{display:grid;grid-template-columns:repeat(12,1fr);gap:24px 28px;}
+.hero-lower .intro{grid-column:1 / span 5;}
+.hero-lower .intro p{font-size:21px;line-height:1.5;max-width:30em;margin-bottom:32px;}
+.hero-lower .intro .actions{display:flex;align-items:center;gap:30px;flex-wrap:wrap;}
+.facts{grid-column:7 / span 6;display:grid;grid-template-columns:116px 1fr;gap:18px 20px;align-content:start;padding-top:6px;}
+.facts dt{color:var(--slate);font-size:15px;padding-top:2px;}
+.facts dd{font-size:18px;font-weight:500;line-height:1.45;}
+
+/* ---------- work ---------- */
+.sec{padding:140px 0 0;}
+.sec h2{font-size:clamp(40px,5.6vw,84px);margin-bottom:20px;}
+.sec .lede{font-size:21px;color:var(--slate);max-width:34em;text-wrap:balance;}
+.plates{margin-top:92px;}
+.plate{display:grid;grid-template-columns:repeat(12,1fr);gap:28px;align-items:end;margin-bottom:140px;}
+.plate .shot{background:var(--mist);padding:clamp(16px,2.6vw,36px);display:block;text-decoration:none;}
+.plate .shot img{width:100%;height:auto;aspect-ratio:16/10;object-fit:cover;object-position:top;background:var(--white);}
+.plate .copy h3{font-size:clamp(30px,3.2vw,46px);margin-bottom:14px;}
+.plate .meta{color:var(--slate);font-size:15px;margin-bottom:16px;}
+.plate .copy p{margin-bottom:14px;}
+.plate .copy p.res{margin-bottom:26px;}
+.plate .copy p strong{font-weight:600;}
+.p-a .shot{grid-column:1 / span 8;} .p-a .copy{grid-column:9 / span 4;}
+.p-b .copy{grid-column:1 / span 4;order:0;} .p-b .shot{grid-column:5 / span 8;order:1;}
+.p-c .shot{grid-column:1 / span 7;} .p-c .copy{grid-column:8 / span 5;padding-left:20px;}
+.p-d .copy{grid-column:1 / span 5;} .p-d .shot{grid-column:6 / span 7;}
+
+.more h3{font-size:clamp(30px,3.4vw,48px);margin-bottom:32px;}
+.index{list-style:none;border-top:1px solid rgba(14,23,38,.16);}
+.index li{border-bottom:1px solid rgba(14,23,38,.16);}
+.index a{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,5fr) minmax(0,2.4fr);gap:8px 28px;align-items:baseline;padding:26px 0;text-decoration:none;}
+.index .name{font-family:var(--display);font-weight:700;font-size:clamp(26px,3.4vw,50px);letter-spacing:-.03em;line-height:1;transition:color .15s;}
+.index .what{color:var(--slate);font-size:16px;line-height:1.45;}
+.index .who{color:var(--slate);font-size:15px;text-align:right;}
+.index a:hover .name,.index a:focus-visible .name{color:var(--arrow);}
+.index .thumb{display:none;}
+.peek{position:fixed;left:0;top:0;width:360px;pointer-events:none;z-index:60;opacity:0;transition:opacity .18s;background:var(--white);padding:8px;box-shadow:0 18px 40px -18px rgba(14,23,38,.45);}
+.peek.on{opacity:1;}
+.peek img{width:100%;aspect-ratio:16/10;object-fit:cover;object-position:top;}
+
+/* ---------- leadership ---------- */
+.statement{font-family:var(--display);font-weight:700;font-size:clamp(26px,3.3vw,46px);letter-spacing:-.025em;line-height:1.1;max-width:22em;margin-bottom:84px;text-wrap:balance;}
+.three{display:grid;grid-template-columns:repeat(3,1fr);gap:48px;}
+.three h3{font-size:clamp(26px,2.5vw,34px);letter-spacing:-.03em;margin-bottom:14px;line-height:1.02;}
+.three p{color:var(--slate);max-width:26em;}
+.also{margin-top:84px;display:grid;grid-template-columns:116px 1fr;gap:18px 20px;max-width:880px;}
+.also dt{color:var(--slate);font-size:15px;padding-top:2px;}
+.also dd{font-size:18px;font-weight:500;line-height:1.45;}
+
+/* ---------- experience ---------- */
+.jobs{margin-top:60px;border-top:1px solid rgba(14,23,38,.16);}
+.job{display:grid;grid-template-columns:repeat(12,1fr);gap:12px 28px;padding:34px 0;border-bottom:1px solid rgba(14,23,38,.16);}
+.job .when{grid-column:1 / span 3;font-family:var(--display);font-weight:700;font-size:26px;letter-spacing:-.03em;line-height:1.1;}
+.job .what{grid-column:4 / span 9;}
+.job h3{font-size:24px;letter-spacing:-.02em;line-height:1.1;margin-bottom:4px;}
+.job .co{color:var(--slate);margin-bottom:10px;}
+.job p{max-width:40em;}
+
+/* ---------- contact ---------- */
+.contact{margin-top:150px;background:var(--mist);padding:130px 0 120px;}
+.contact h2{font-size:clamp(64px,13vw,220px);line-height:.88;letter-spacing:-.05em;margin-bottom:46px;}
+.contact .mail{display:inline-block;font-family:var(--display);font-weight:700;font-size:clamp(22px,3.6vw,52px);letter-spacing:-.03em;line-height:1.1;color:var(--arrow);
+  text-decoration:underline;text-decoration-thickness:3px;text-underline-offset:8px;word-break:break-word;}
+.contact .mail:hover{color:var(--ink);}
+.contact .sub{margin:30px 0 40px;font-size:20px;max-width:28em;}
+.contact .row{display:flex;gap:30px;align-items:center;flex-wrap:wrap;}
+footer{padding:30px 0 40px;color:var(--slate);font-size:14px;}
+footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;}
+
+/* ---------- responsive ---------- */
+@media (max-width:1100px){
+  .hero-lower .intro{grid-column:1 / -1;}
+  .facts{grid-column:1 / -1;margin-top:28px;}
+  .plate{margin-bottom:96px;}
+  .plate .shot,.plate .copy{grid-column:1 / -1 !important;order:0 !important;padding-left:0 !important;}
+  .three{grid-template-columns:1fr;gap:40px;}
+}
+@media (max-width:900px){
+  :root{--rail:30px;}
+  .rail .track,.rail .fill{left:14px;}
+  .rail .head{left:7px;}
+  .rail ol{display:none;}
+  .topbar nav{gap:18px;}
+  .sec{padding-top:96px;}
+  .plates{margin-top:56px;}
+  .job .when,.job .what{grid-column:1 / -1;}
+  .index a{grid-template-columns:1fr;gap:6px;padding:22px 0;}
+  .index .who{text-align:left;}
+  .index .thumb{display:block;width:100%;aspect-ratio:16/10;object-fit:cover;object-position:top;margin-bottom:14px;background:var(--mist);}
+  .peek{display:none;}
+  .contact{margin-top:100px;padding:90px 0;}
+}
+@media (max-width:520px){
+  .topbar nav a:nth-child(2){display:none;}
+  .facts,.also{grid-template-columns:1fr;gap:2px 0;}
+  .facts dd,.also dd{margin-bottom:14px;}
+}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto;}
+  .draw i,.draw b{animation:none;}
+  .draw b{left:calc(100% - 14px);}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#work">Skip to work</a>
+
+<aside class="rail" aria-label="Page progress">
+  <div class="track" aria-hidden="true"></div>
+  <div class="fill" aria-hidden="true"></div>
+  <div class="head" aria-hidden="true"><svg width="16" height="14" viewBox="0 0 16 14"><path d="M0 0H16L8 14Z" fill="#2B3BF5"/></svg></div>
+  <ol>
+    <li><a href="#top"><span>Intro</span></a></li>
+    <li><a href="#work"><span>Work</span></a></li>
+    <li><a href="#leadership"><span>Leadership</span></a></li>
+    <li><a href="#experience"><span>Experience</span></a></li>
+    <li><a href="#contact"><span>Contact</span></a></li>
+  </ol>
+</aside>
+
+<main>
+  <header class="hero" id="top">
+    <div class="wrap">
+      <div class="topbar">
+        <a class="wordmark" href="#top">Robert Azucena</a>
+        <nav aria-label="Links">
+          <a href="Robert_Azucena_CV.pdf" target="_blank" rel="noopener">CV</a>
+          <a href="https://www.linkedin.com/in/robertazucena/" target="_blank" rel="noopener">LinkedIn</a>
+          <a href="mailto:robertazucena@gmail.com">Email</a>
+        </nav>
+      </div>
+
+      <p class="role">UX &amp; Digital Experience Leader</p>
+      <h1>I lead design teams that ship enterprise and AI products.</h1>
+
+      <div class="draw" aria-hidden="true"><i></i><b></b></div>
+
+      <div class="hero-lower">
+        <div class="intro">
+          <p>15+ years across product design, frontend engineering and people leadership. I take complex enterprise workflows from strategy and UX through to working, coded prototypes.</p>
+          <div class="actions">
+            <a class="btn" href="Robert_Azucena_CV.pdf" target="_blank" rel="noopener">Download CV</a>
+            <a class="link" href="mailto:robertazucena@gmail.com">Email me</a>
+          </div>
+        </div>
+        <dl class="facts">
+          <dt>Last role</dt><dd>Senior Manager, UX &amp; Digital Experience, Oracle Singapore, 2016 to 2026</dd>
+          <dt>Led</dt><dd>~30 designers, frontend developers and UX specialists</dd>
+          <dt>Reach</dt><dd>3 business units across 5 countries</dd>
+          <dt>Proof</dt><dd>~30% faster time-to-first-insight on Autonomous Database dashboards</dd>
+          <dt>Available</dt><dd>Immediately, in Singapore</dd>
+        </dl>
+      </div>
+    </div>
+  </header>
+
+  <section class="sec" id="work" aria-labelledby="work-h">
+    <div class="wrap">
+      <h2 id="work-h">Selected work</h2>
+      <p class="lede">Enterprise scale, AI-powered products, and prototypes you can click.</p>
+
+      <div class="plates">
+        <article class="plate p-a">
+          <a class="shot" href="../assets/prototype/oracle-eg/index.html" target="_blank" rel="noopener" aria-label="Open the Oracle AI Email Generator prototype"><img src="img/egen.jpg" alt="Oracle AI Email Generator home screen with the prompt editor" loading="lazy"></a>
+          <div class="copy">
+            <h3>Oracle AI Email Generator</h3>
+            <p class="meta">Lead Product Designer, shipped 2024</p>
+            <p>An enterprise AI platform that turns a simple prompt into an on-brand, ready-to-send HTML email for marketing and CX teams across business units.</p>
+            <p class="res"><strong>Result.</strong> Teams need less design and development support, and campaigns turn around faster.</p>
+            <a class="link" href="../assets/prototype/oracle-eg/index.html" target="_blank" rel="noopener">Open the prototype</a>
+          </div>
+        </article>
+
+        <article class="plate p-b">
+          <div class="copy">
+            <h3>Oracle Autonomous Database</h3>
+            <p class="meta">UX/UI Designer, live 2023</p>
+            <p>Admin and monitoring dashboards for enterprise DBAs, with at-a-glance status cards and guided setup.</p>
+            <p class="res"><strong>Result.</strong> About 30% faster time-to-first-insight and about 20% fewer navigation-related support tickets.</p>
+            <a class="link" href="../assets/prototype/oracle-ad/index.html" target="_blank" rel="noopener">Open the prototype</a>
+          </div>
+          <a class="shot" href="../assets/prototype/oracle-ad/index.html" target="_blank" rel="noopener" aria-label="Open the Oracle Autonomous Database prototype"><img src="img/adb.jpg" alt="Oracle Autonomous Database campaign screen, Ever Vigilant" loading="lazy"></a>
+        </article>
+
+        <article class="plate p-c">
+          <a class="shot" href="../assets/prototype/great-eastern/index.html" target="_blank" rel="noopener" aria-label="Open the Great Eastern claims portal prototype"><img src="img/ge.jpg" alt="Great Eastern claims control room with the recent submissions queue" loading="lazy"></a>
+          <div class="copy">
+            <h3>Great Eastern claims portal</h3>
+            <p class="meta">Lead Designer, shipped 2026</p>
+            <p>An 11-page claims platform with AI-powered anomaly detection across vehicle, homeowner, building owner and manufacturer claims.</p>
+            <p class="res"><strong>Scope.</strong> Control room, worklist, claim detail and final report, designed and prototyped end to end.</p>
+            <a class="link" href="../assets/prototype/great-eastern/index.html" target="_blank" rel="noopener">Open the prototype</a>
+          </div>
+        </article>
+
+        <article class="plate p-d">
+          <div class="copy">
+            <h3>Changi Airport Group on Oracle Cloud</h3>
+            <p class="meta">Lead Designer, shipped 2025</p>
+            <p>A co-branded pricing and ROI tool that compares Oracle, AWS, Azure and GCP, with a 5-year TCO model and a live stack configurator.</p>
+            <p class="res"><strong>Impact.</strong> Gave sales and product teams a working prototype to demonstrate Oracle Cloud.</p>
+            <a class="link" href="../assets/prototype/changi/index.html" target="_blank" rel="noopener">Open the prototype</a>
+          </div>
+          <a class="shot" href="../assets/prototype/changi/index.html" target="_blank" rel="noopener" aria-label="Open the Changi cloud pricing prototype"><img src="img/changi.jpg" alt="Changi cloud pricing comparison across Oracle, AWS, Azure and Google Cloud" loading="lazy"></a>
+        </article>
+      </div>
+
+      <div class="more">
+        <h3>More work</h3>
+        <ul class="index">
+          <li><a href="../assets/prototype/tata-motors/index.html" target="_blank" rel="noopener" data-img="img/tata.jpg"><img class="thumb" src="img/tata.jpg" alt="" loading="lazy"><span class="name">Tata Motors AI Workspace</span><span class="what">A 9-page AI assistant workspace for searching, managing and analysing enterprise assets.</span><span class="who">Lead Designer</span></a></li>
+          <li><a href="../assets/prototype/grab/index.html" target="_blank" rel="noopener" data-img="img/grab.jpg"><img class="thumb" src="img/grab.jpg" alt="" loading="lazy"><span class="name">Grab Employee Portal</span><span class="what">A card-based company portal that consolidates fragmented internal tools, news and resources.</span><span class="who">Lead Designer</span></a></li>
+          <li><a href="../assets/prototype/oracle-cm/index.html" target="_blank" rel="noopener" data-img="img/cm.jpg"><img class="thumb" src="img/cm.jpg" alt="" loading="lazy"><span class="name">Oracle Customer Moments</span><span class="what">Sales teams send personalised e-cards and video greetings, with an editor, analytics and team reporting.</span><span class="who">Lead Designer</span></a></li>
+          <li><a href="../assets/prototype/mufg/index.html" target="_blank" rel="noopener" data-img="img/mufg.jpg"><img class="thumb" src="img/mufg.jpg" alt="" loading="lazy"><span class="name">MUFG Asia Pacific</span><span class="what">A four-page corporate site built to pixel-accurate fidelity and verified on mobile and desktop.</span><span class="who">Lead Designer and frontend</span></a></li>
+          <li><a href="../assets/prototype/courtly/index.html" target="_blank" rel="noopener" data-img="img/courtly.jpg"><img class="thumb" src="img/courtly.jpg" alt="" loading="lazy"><span class="name">Courtly</span><span class="what">Sports court booking with nearby discovery, schedules, booking history and community matches.</span><span class="who">Lead Product Designer</span></a></li>
+          <li><a href="../assets/prototype/steady/index.html" target="_blank" rel="noopener" data-img="img/steady.jpg"><img class="thumb" src="img/steady.jpg" alt="" loading="lazy"><span class="name">Steady</span><span class="what">A wellness dashboard for heart rate, sleep, steps, nutrition and hydration in one calm place.</span><span class="who">Lead Product Designer</span></a></li>
+          <li><a href="../assets/prototype/on-engineers/index.html" target="_blank" rel="noopener" data-img="img/on.jpg"><img class="thumb" src="img/on.jpg" alt="" loading="lazy"><span class="name">ON Engineers</span><span class="what">A website for a Singapore electrical consultancy specialising in non-intrusive asset sensing.</span><span class="who">Website</span></a></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" id="leadership" aria-labelledby="lead-h">
+    <div class="wrap">
+      <h2 id="lead-h">Leadership</h2>
+      <p class="statement">Ten years at Oracle taking UX from hands-on design to strategy, delivery and people development.</p>
+      <div class="three">
+        <div><h3>Develop people</h3><p>Led a multidisciplinary team of ~30 designers, frontend developers and UX specialists, setting design standards and guiding performance and career growth.</p></div>
+        <div><h3>Raise the bar at scale</h3><p>Strengthened design system practices across business units, improving consistency and smoothing the handoff from design to development.</p></div>
+        <div><h3>Partner across the business</h3><p>Worked with product, engineering and senior stakeholders in 5 countries to take products from concept to launch, balancing user needs, technical constraints and business goals.</p></div>
+      </div>
+      <dl class="also">
+        <dt>Mentoring</dt><dd>Ran the internship and apprenticeship program for 4 years, mentoring ~10 early-career designers and developers through structured training and live projects.</dd>
+        <dt>Recognition</dt><dd>Judge at the CSS Design Awards, an international web design competition, from 2017 to 2020.</dd>
+      </dl>
+    </div>
+  </section>
+
+  <section class="sec" id="experience" aria-labelledby="exp-h">
+    <div class="wrap">
+      <h2 id="exp-h">Experience</h2>
+      <div class="jobs">
+        <div class="job"><div class="when">2016 to 2026</div><div class="what"><h3>UX &amp; Digital Experience Leader</h3><p class="co">Oracle, Singapore. Senior Manager.</p><p>Led UX strategy, design delivery and people development for enterprise applications and digital experiences across 3 business units and 5 countries.</p></div></div>
+        <div class="job"><div class="when">2015 to 2016</div><div class="what"><h3>Interactive and Digital Art Director</h3><p class="co">Ace:Daytons Communications</p><p>Led digital creative direction for web and interactive campaigns, from brief to launch.</p></div></div>
+        <div class="job"><div class="when">2014 to 2015</div><div class="what"><h3>UI/UX Designer and Frontend Developer</h3><p class="co">Clubvivre, Singapore</p><p>Designed web and app experiences and built them in HTML, CSS and JavaScript, from wireframe to launch.</p></div></div>
+        <div class="job"><div class="when">2010 to 2014</div><div class="what"><h3>Interactive Designer and Frontend Developer</h3><p class="co">Vocanic, Singapore</p><p>Designed and built interactive web experiences, refining animations and micro-interactions to improve usability and engagement.</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="contact" id="contact" aria-labelledby="contact-h">
+    <div class="wrap">
+      <h2 id="contact-h">Let's talk.</h2>
+      <a class="mail" href="mailto:robertazucena@gmail.com">robertazucena@gmail.com</a>
+      <p class="sub">Available immediately for UX leadership and senior design roles in Singapore.</p>
+      <div class="row">
+        <a class="btn" href="Robert_Azucena_CV.pdf" target="_blank" rel="noopener">Download CV</a>
+        <a class="link" href="https://www.linkedin.com/in/robertazucena/" target="_blank" rel="noopener">LinkedIn</a>
+        <a class="link" href="../index.html">See the interactive desktop</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer><div class="wrap"><span>Robert Azucena, Singapore</span><span>2026</span></div></footer>
+
+<div class="peek" id="peek" aria-hidden="true"><img alt="" src=""></div>
+
+<script>
+(function(){
+  /* the line: arrowhead tracks the reader through the sections */
+  var rail=document.querySelector('.rail'),head=rail.querySelector('.head'),fill=rail.querySelector('.fill'),track=rail.querySelector('.track');
+  var links=[].slice.call(rail.querySelectorAll('ol a'));
+  var ids=['top','work','leadership','experience','contact'];
+  var secs=ids.map(function(id){return document.getElementById(id);});
+  var ys=[],tops=[],small=false;
+  function measure(){
+    small=window.innerWidth<=900;
+    tops=secs.map(function(s){return s.getBoundingClientRect().top+window.scrollY;});
+    if(small){ys=[18,window.innerHeight-30];track.style.top='18px';track.style.height=(window.innerHeight-48)+'px';return;}
+    ys=links.map(function(a){var r=a.getBoundingClientRect();return r.top+r.height/2;});
+    track.style.top=ys[0]+'px';track.style.height=(ys[ys.length-1]-ys[0])+'px';
+  }
+  function update(){
+    var s=window.scrollY+2,i=0,y;
+    for(var k=0;k<tops.length;k++){if(tops[k]<=s)i=k;}
+    var nearEnd=window.scrollY+window.innerHeight>=document.documentElement.scrollHeight-4;
+    if(small){
+      var p=Math.min(1,window.scrollY/Math.max(1,document.documentElement.scrollHeight-window.innerHeight));
+      y=ys[0]+(ys[1]-ys[0])*p;
+    }else if(nearEnd){y=ys[ys.length-1];i=ys.length-1;}
+    else if(i>=ys.length-1){y=ys[ys.length-1];}
+    else{var f=Math.max(0,Math.min(1,(s-tops[i])/(tops[i+1]-tops[i])));y=ys[i]+(ys[i+1]-ys[i])*f;}
+    head.style.transform='translateY('+y+'px)';
+    var base=small?ys[0]:ys[0];
+    fill.style.top=base+'px';fill.style.height=Math.max(0,y-base)+'px';
+    links.forEach(function(a,n){a.removeAttribute('aria-current');a.classList.toggle('passed',n<i);if(n===i)a.setAttribute('aria-current','true');});
+  }
+  var queued=false;
+  function req(){if(queued)return;queued=true;requestAnimationFrame(function(){queued=false;update();});}
+  window.addEventListener('scroll',req,{passive:true});
+  window.addEventListener('resize',function(){measure();update();});
+  window.addEventListener('load',function(){measure();update();});
+  if(document.fonts&&document.fonts.ready){document.fonts.ready.then(function(){measure();update();});}
+  measure();update();
+
+  /* work index: the screenshot follows the cursor */
+  if(window.matchMedia('(hover:hover) and (pointer:fine)').matches){
+    var peek=document.getElementById('peek'),pimg=peek.querySelector('img'),tx=0,ty=0,x=0,y2=0,on=false;
+    function show(a,e){pimg.src=a.dataset.img;peek.classList.add('on');on=true;
+      if(e){tx=x=e.clientX;ty=y2=e.clientY;}else{var r=a.getBoundingClientRect();tx=x=r.left+r.width*.6;ty=y2=r.top+r.height/2;}}
+    function hide(){peek.classList.remove('on');on=false;}
+    [].forEach.call(document.querySelectorAll('.index a'),function(a){
+      a.addEventListener('mouseenter',function(e){show(a,e);});
+      a.addEventListener('mousemove',function(e){tx=e.clientX;ty=e.clientY;});
+      a.addEventListener('mouseleave',hide);
+      a.addEventListener('focus',function(){show(a);});
+      a.addEventListener('blur',hide);
+    });
+    (function loop(){
+      x+=(tx-x)*.16;y2+=(ty-y2)*.16;
+      var left=Math.min(x+32,window.innerWidth-392),top=Math.max(12,Math.min(y2-130,window.innerHeight-250));
+      peek.style.transform='translate('+left+'px,'+top+'px)';
+      requestAnimationFrame(loop);
+    })();
+  }
+})();
+</script>
+</body>
+</html>
