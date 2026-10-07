@@ -51,38 +51,25 @@ h1,h2,h3{font-family:var(--display);font-weight:800;letter-spacing:-.035em;line-
 .btn{display:inline-block;background:var(--ink);color:var(--white);font-weight:600;text-decoration:none;padding:15px 26px;border-radius:2px;transition:background .15s;}
 .btn:hover{background:var(--arrow);}
 
-/* ---------- hero: the product stack ---------- */
-.hero{position:relative;height:230vh;}
-.hero-sticky{position:sticky;top:0;height:100vh;overflow:hidden;--p:0;--mx:0;--my:0;}
-.hero-copy{position:relative;z-index:5;height:100%;display:flex;flex-direction:column;pointer-events:none;}
-.hero-copy a{pointer-events:auto;}
-.topbar{display:flex;justify-content:space-between;align-items:center;padding-top:30px;pointer-events:auto;}
+/* ---------- hero ---------- */
+.topbar{display:flex;justify-content:space-between;align-items:center;padding-top:30px;}
 .wordmark{font-family:var(--display);font-weight:800;font-size:22px;letter-spacing:-.03em;text-decoration:none;}
 .topbar nav{display:flex;gap:28px;font-size:15px;font-weight:500;}
 .topbar nav a{text-decoration:none;color:var(--slate);}
 .topbar nav a:hover{color:var(--ink);}
-.hero .role{margin-top:clamp(48px,9vh,110px);font-weight:600;color:var(--arrow);font-size:19px;margin-bottom:20px;}
-.hero h1{font-size:clamp(40px,5.4vw,88px);max-width:min(46vw,11em);text-wrap:pretty;}
-.hero .actions{display:flex;align-items:center;gap:30px;flex-wrap:wrap;margin-top:clamp(28px,5vh,52px);}
-.stage{position:absolute;inset:0;z-index:1;perspective:2400px;perspective-origin:62% 40%;}
-.scene{position:absolute;left:80%;top:60%;width:0;height:0;transform-style:preserve-3d;--sc:.85;
-  transform:scale(var(--sc)) rotateX(calc(58deg + var(--my)*5deg)) rotateZ(calc(-37deg + var(--mx)*8deg));}
-.layer{position:absolute;left:-290px;top:-181px;width:580px;height:362px;display:block;background:var(--white);
-  transform:translate3d(calc(var(--i)*var(--p)*-34px),calc(var(--i)*var(--p)*34px),calc(var(--i)*(14px + var(--p)*96px)));
-  box-shadow:0 0 0 1px rgba(14,23,38,.1),0 34px 44px -26px rgba(14,23,38,.5);
-  transition:opacity .25s,box-shadow .25s;backface-visibility:hidden;}
-.layer img{width:100%;height:100%;object-fit:cover;object-position:top;display:block;}
-.scene[data-hl] .layer{opacity:.35;}
-.scene[data-hl="0"] .layer[data-i="0"],.scene[data-hl="1"] .layer[data-i="1"],.scene[data-hl="2"] .layer[data-i="2"],
-.scene[data-hl="3"] .layer[data-i="3"],.scene[data-hl="4"] .layer[data-i="4"]{opacity:1;box-shadow:0 0 0 2px var(--arrow),0 40px 50px -26px rgba(43,59,245,.55);}
-.legend{position:absolute;z-index:5;left:var(--pad);bottom:40px;list-style:none;opacity:calc((var(--p) - .3) * 3);pointer-events:none;}
-.legend li{margin:2px 0;}
-.legend a{pointer-events:auto;display:inline-block;padding:3px 0;text-decoration:none;color:var(--slate);font-size:15px;font-weight:500;transition:color .15s,transform .15s;}
-.legend a:hover,.legend a:focus-visible{color:var(--arrow);transform:translateX(4px);}
-.legend .cap{color:var(--ink);font-weight:600;margin-bottom:6px;pointer-events:none;font-size:15px;}
-.hero-lower{padding-top:90px;display:grid;grid-template-columns:repeat(12,1fr);gap:24px 28px;}
+.hero{padding-bottom:120px;}
+.hero .role{margin-top:clamp(64px,11vh,132px);font-weight:600;color:var(--arrow);font-size:19px;margin-bottom:22px;}
+.hero h1{font-size:clamp(40px,7.4vw,118px);max-width:12.5em;text-wrap:pretty;}
+.draw{position:relative;height:16px;margin:clamp(44px,7vh,84px) 0 clamp(40px,6vh,72px);}
+.draw i{position:absolute;left:0;right:12px;top:7px;height:3px;background:var(--arrow);transform-origin:left center;animation:stroke 1.15s cubic-bezier(.7,0,.2,1) .35s both;}
+.draw b{position:absolute;top:0;left:0;width:0;height:0;border-top:8px solid transparent;border-bottom:8px solid transparent;border-left:14px solid var(--arrow);
+  animation:fly 1.15s cubic-bezier(.7,0,.2,1) .35s both;}
+@keyframes stroke{from{transform:scaleX(0);}to{transform:scaleX(1);}}
+@keyframes fly{from{left:0;}to{left:calc(100% - 14px);}}
+.hero-lower{display:grid;grid-template-columns:repeat(12,1fr);gap:24px 28px;}
 .hero-lower .intro{grid-column:1 / span 5;}
-.hero-lower .intro p{font-size:21px;line-height:1.5;max-width:30em;}
+.hero-lower .intro p{font-size:21px;line-height:1.5;max-width:30em;margin-bottom:32px;}
+.hero-lower .intro .actions{display:flex;align-items:center;gap:30px;flex-wrap:wrap;}
 .facts{grid-column:7 / span 6;display:grid;grid-template-columns:116px 1fr;gap:18px 20px;align-content:start;padding-top:6px;}
 .facts dt{color:var(--slate);font-size:15px;padding-top:2px;}
 .facts dd{font-size:18px;font-weight:500;line-height:1.45;}
@@ -148,10 +135,6 @@ footer{padding:30px 0 40px;color:var(--slate);font-size:14px;}
 footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;}
 
 /* ---------- responsive ---------- */
-@media (min-width:901px) and (max-height:820px){
-  .legend{display:flex;flex-wrap:wrap;gap:0 22px;max-width:560px;bottom:26px;}
-  .legend .cap{display:none;}
-}
 @media (max-width:1100px){
   .hero-lower .intro{grid-column:1 / -1;}
   .facts{grid-column:1 / -1;margin-top:28px;}
@@ -165,15 +148,6 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
   .rail .head{left:7px;}
   .rail ol{display:none;}
   .topbar nav{gap:18px;}
-  .hero{height:auto;}
-  .hero-sticky{position:relative;height:auto;overflow:visible;padding-bottom:30px;display:flex;flex-direction:column;overflow-x:clip;}
-  .hero-copy{order:1;} .stage{order:2;} .legend{order:3;}
-  .hero-copy{height:auto;}
-  .hero h1{max-width:100%;}
-  .stage{position:relative;inset:auto;height:clamp(300px,82vw,440px);margin-top:10px;perspective-origin:50% 40%;overflow:hidden;}
-  .scene{left:50%;top:60%;--sc:.5;}
-  .legend{position:static;opacity:1 !important;padding:8px var(--pad) 0;}
-  .hero-lower{padding-top:50px;}
   .sec{padding-top:96px;}
   .plates{margin-top:56px;}
   .job .when,.job .what{grid-column:1 / -1;}
@@ -190,6 +164,8 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
 }
 @media (prefers-reduced-motion:reduce){
   html{scroll-behavior:auto;}
+  .draw i,.draw b{animation:none;}
+  .draw b{left:calc(100% - 14px);}
 }
 </style>
 </head>
@@ -211,55 +187,39 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
 
 <main>
   <header class="hero" id="top">
-    <div class="hero-sticky" id="hero-sticky">
-      <div class="stage" aria-hidden="true">
-        <div class="scene" id="scene">
-          <span class="layer" data-i="0" style="--i:0"><img src="img/tata.jpg" alt=""></span>
-          <span class="layer" data-i="1" style="--i:1"><img src="img/changi.jpg" alt=""></span>
-          <span class="layer" data-i="2" style="--i:2"><img src="img/ge.jpg" alt=""></span>
-          <span class="layer" data-i="3" style="--i:3"><img src="img/adb.jpg" alt=""></span>
-          <span class="layer" data-i="4" style="--i:4"><img src="img/egen.jpg" alt=""></span>
-        </div>
+    <div class="wrap">
+      <div class="topbar">
+        <a class="wordmark" href="#top">Robert Azucena</a>
+        <nav aria-label="Links">
+          <a href="Robert_Azucena_CV.pdf" target="_blank" rel="noopener">CV</a>
+          <a href="https://www.linkedin.com/in/robertazucena/" target="_blank" rel="noopener">LinkedIn</a>
+          <a href="mailto:robertazucena@gmail.com">Email</a>
+        </nav>
       </div>
-      <div class="wrap hero-copy">
-        <div class="topbar">
-          <a class="wordmark" href="#top">Robert Azucena</a>
-          <nav aria-label="Links">
-            <a href="Robert_Azucena_CV.pdf" target="_blank" rel="noopener">CV</a>
-            <a href="https://www.linkedin.com/in/robertazucena/" target="_blank" rel="noopener">LinkedIn</a>
-            <a href="mailto:robertazucena@gmail.com">Email</a>
-          </nav>
+
+      <p class="role">UX &amp; Digital Experience Leader</p>
+      <h1>I lead design teams that ship enterprise and AI products.</h1>
+
+      <div class="draw" aria-hidden="true"><i></i><b></b></div>
+
+      <div class="hero-lower">
+        <div class="intro">
+          <p>15+ years across product design, frontend engineering and people leadership. I take complex enterprise workflows from strategy and UX through to working, coded prototypes.</p>
+          <div class="actions">
+            <a class="btn" href="Robert_Azucena_CV.pdf" target="_blank" rel="noopener">Download CV</a>
+            <a class="link" href="mailto:robertazucena@gmail.com">Email me</a>
+          </div>
         </div>
-        <p class="role">UX &amp; Digital Experience Leader</p>
-        <h1>I lead design teams that ship enterprise and AI products.</h1>
-        <div class="actions">
-          <a class="btn" href="Robert_Azucena_CV.pdf" target="_blank" rel="noopener">Download CV</a>
-          <a class="link" href="mailto:robertazucena@gmail.com">Email me</a>
-        </div>
+        <dl class="facts">
+          <dt>Last role</dt><dd>Senior Manager, UX &amp; Digital Experience, Oracle Singapore, 2016 to 2026</dd>
+          <dt>Led</dt><dd>~30 designers, frontend developers and UX specialists</dd>
+          <dt>Reach</dt><dd>3 business units across 5 countries</dd>
+          <dt>Proof</dt><dd>~30% faster time-to-first-insight on Autonomous Database dashboards</dd>
+          <dt>Available</dt><dd>Immediately, in Singapore</dd>
+        </dl>
       </div>
-      <ul class="legend" aria-label="Products in the stack">
-        <li class="cap">The stack</li>
-        <li><a href="../assets/prototype/oracle-eg/index.html" target="_blank" rel="noopener" data-hl="4">Oracle AI Email Generator</a></li>
-        <li><a href="../assets/prototype/oracle-ad/index.html" target="_blank" rel="noopener" data-hl="3">Oracle Autonomous Database</a></li>
-        <li><a href="../assets/prototype/great-eastern/index.html" target="_blank" rel="noopener" data-hl="2">Great Eastern claims portal</a></li>
-        <li><a href="../assets/prototype/changi/index.html" target="_blank" rel="noopener" data-hl="1">Changi on Oracle Cloud</a></li>
-        <li><a href="../assets/prototype/tata-motors/index.html" target="_blank" rel="noopener" data-hl="0">Tata Motors AI Workspace</a></li>
-      </ul>
     </div>
   </header>
-
-  <div class="wrap hero-lower">
-    <div class="intro">
-      <p>15+ years across product design, frontend engineering and people leadership. I take complex enterprise workflows from strategy and UX through to working, coded prototypes.</p>
-    </div>
-    <dl class="facts">
-      <dt>Last role</dt><dd>Senior Manager, UX &amp; Digital Experience, Oracle Singapore, 2016 to 2026</dd>
-      <dt>Led</dt><dd>~30 designers, frontend developers and UX specialists</dd>
-      <dt>Reach</dt><dd>3 business units across 5 countries</dd>
-      <dt>Proof</dt><dd>~30% faster time-to-first-insight on Autonomous Database dashboards</dd>
-      <dt>Available</dt><dd>Immediately, in Singapore</dd>
-    </dl>
-  </div>
 
   <section class="sec" id="work" aria-labelledby="work-h">
     <div class="wrap">
@@ -410,37 +370,6 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
   window.addEventListener('load',function(){measure();update();});
   if(document.fonts&&document.fonts.ready){document.fonts.ready.then(function(){measure();update();});}
   measure();update();
-
-  /* hero stack: tilts with the pointer, pulls apart as you scroll */
-  (function(){
-    var sticky=document.getElementById('hero-sticky'),scene=document.getElementById('scene'),hero=document.getElementById('top');
-    if(!sticky||!scene)return;
-    var reduce=window.matchMedia('(prefers-reduced-motion:reduce)').matches;
-    var tp=.16,cp=.16,tmx=0,tmy=0,cmx=0,cmy=0;
-    function target(){
-      if(window.innerWidth<=900||reduce){tp=.55;return;}
-      var range=hero.offsetHeight-window.innerHeight;
-      tp=.16+.84*Math.max(0,Math.min(1,window.scrollY/Math.max(1,range*.85)));
-    }
-    window.addEventListener('scroll',target,{passive:true});
-    window.addEventListener('resize',target);
-    if(!reduce){window.addEventListener('pointermove',function(e){tmx=(e.clientX/window.innerWidth-.5)*2;tmy=(e.clientY/window.innerHeight-.5)*2;},{passive:true});}
-    [].forEach.call(document.querySelectorAll('.legend a'),function(a){
-      function on(){scene.setAttribute('data-hl',a.getAttribute('data-hl'));}
-      function off(){scene.removeAttribute('data-hl');}
-      a.addEventListener('mouseenter',on);a.addEventListener('focus',on);a.addEventListener('mouseleave',off);a.addEventListener('blur',off);
-    });
-    target();cp=tp;
-    var t0=performance.now();
-    (function loop(now){
-      cp+=(tp-cp)*.1;cmx+=(tmx-cmx)*.06;cmy+=(tmy-cmy)*.06;
-      var drift=reduce?0:Math.sin((now-t0)/2600)*.35;
-      sticky.style.setProperty('--p',cp.toFixed(4));
-      sticky.style.setProperty('--mx',(cmx+drift).toFixed(4));
-      sticky.style.setProperty('--my',cmy.toFixed(4));
-      requestAnimationFrame(loop);
-    })(t0);
-  })();
 
   /* work index: the screenshot follows the cursor */
   if(window.matchMedia('(hover:hover) and (pointer:fine)').matches){
