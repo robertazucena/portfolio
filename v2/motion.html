@@ -317,8 +317,8 @@ dialog::backdrop{background:rgba(11,27,34,.5);backdrop-filter:blur(6px)}
     setAxes(name,850,75);var wf=name.offsetWidth;
     kTarget=(vw<860?96:132)/wf;
     /* closing wordmark */
-    big.style.fontSize='100px';setAxes(big,850,100);var bw=big.scrollWidth;
-    big.style.fontSize=(100*(vw-2*gut)/bw)+'px';big.style.fontVariationSettings='';
+    big.style.transition='none';big.style.fontSize='100px';setAxes(big,850,100);var bw=big.scrollWidth;
+    big.style.fontSize=(100*(vw-2*gut)/bw)+'px';big.style.fontVariationSettings='';void big.offsetWidth;big.style.transition='';
     var r=function(el){return el.getBoundingClientRect().top+window.scrollY;};
     cinTop=r(track);stmtTop=r(stmt);moreTop=r(more);bigTop=r(big);
     cEnd=cinTop+END*vh;
