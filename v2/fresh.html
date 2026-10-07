@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Robert Azucena | UX and Digital Experience Leader</title>
+<meta name="description" content="Robert Azucena leads design teams and builds the prototypes himself. 15 years in enterprise and AI products, Singapore.">
+<meta name="theme-color" content="#F4FBF8">
+<style>
+@font-face{font-family:'Funnel';src:url('fonts/funnel.woff2') format('woff2');font-weight:300 800;font-display:swap;}
+@font-face{font-family:'Figtree';src:url('fonts/figtree.woff2') format('woff2');font-weight:300 900;font-display:swap;}
+
+:root{
+  --bg:#F4FBF8; --white:#FFFFFF; --ink:#0F2730; --slate:#52666E; --line:rgba(15,39,48,.12);
+  --mint:#CDF3E1; --sky:#CFE6FF; --butter:#FFEDA8; --peach:#FFD8C4; --lilac:#DFD8FF; --rose:#FFD4E1;
+  --sun:#FFE27A; --alert:#FF5A3D;
+  --display:'Funnel',system-ui,sans-serif; --body:'Figtree',system-ui,sans-serif;
+  --gut:clamp(18px,4vw,56px);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{background:var(--bg);color:var(--ink);font:400 17px/1.55 var(--body);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit}
+img{display:block;max-width:100%}
+:focus-visible{outline:3px solid var(--ink);outline-offset:3px;border-radius:6px}
+.wrap{max-width:1280px;margin:0 auto;padding:0 var(--gut)}
+
+/* nav */
+.nav{position:fixed;z-index:20;top:14px;left:0;right:0;pointer-events:none}
+.nav .wrap{display:flex;justify-content:space-between;align-items:center}
+.nav .me{pointer-events:auto;font:700 17px var(--display);letter-spacing:-.01em;text-decoration:none;background:rgba(244,251,248,.82);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);padding:9px 16px;border-radius:99px}
+.nav ul{pointer-events:auto;list-style:none;display:flex;gap:2px;background:rgba(255,255,255,.86);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);padding:5px;border-radius:99px;box-shadow:0 1px 0 var(--line),0 8px 24px -12px rgba(15,39,48,.25)}
+.nav li a{display:block;text-decoration:none;font:600 14px var(--body);padding:7px 14px;border-radius:99px}
+.nav li a:hover{background:var(--mint)}
+.nav li:last-child a{background:var(--ink);color:#fff}
+.nav li:last-child a:hover{background:#1c4350}
+
+/* hero */
+.hero{position:relative;padding:112px 0 56px;overflow:hidden}
+.hero::before,.hero::after{content:"";position:absolute;border-radius:50%;filter:blur(70px);z-index:0;pointer-events:none}
+.hero::before{width:620px;height:620px;right:-120px;top:-140px;background:radial-gradient(circle,#BFE9FF 0,rgba(191,233,255,0) 70%)}
+.hero::after{width:560px;height:560px;left:-180px;bottom:-200px;background:radial-gradient(circle,#CDF3E1 0,rgba(205,243,225,0) 70%)}
+.hero .wrap{position:relative;z-index:1;display:grid;grid-template-columns:minmax(0,1.02fr) minmax(0,1fr);gap:clamp(24px,4vw,64px);align-items:center}
+.role{font:600 15px var(--body);color:var(--slate);margin-bottom:18px}
+h1{font:600 clamp(42px,6.2vw,92px)/.98 var(--display);letter-spacing:-.035em;max-width:11.5em}
+.lede{margin-top:24px;font-size:clamp(17px,1.5vw,20px);color:var(--slate);max-width:34em}
+.lede strong{color:var(--ink);font-weight:600}
+.cta{margin-top:30px;display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.btn{display:inline-flex;align-items:center;min-height:48px;padding:0 24px;border-radius:99px;font:700 16px var(--body);text-decoration:none;transition:transform .2s,background .2s}
+.btn.pri{background:var(--ink);color:#fff}
+.btn.pri:hover{background:#1c4350;transform:translateY(-2px)}
+.btn.sec{background:var(--white);box-shadow:inset 0 0 0 1.5px var(--ink)}
+.btn.sec:hover{background:var(--mint);transform:translateY(-2px)}
+.avail{margin-top:18px;font-size:15px;color:var(--slate);display:flex;align-items:center;gap:9px}
+.avail i{width:9px;height:9px;border-radius:50%;background:#18C48F;box-shadow:0 0 0 4px rgba(24,196,143,.22)}
+
+/* the board: complicated to easy */
+.demo{position:relative}
+.board{container-type:inline-size;position:relative;background:var(--white);border-radius:28px;aspect-ratio:1.1;padding:4.2cqw;box-shadow:0 1px 0 var(--line),0 40px 80px -40px rgba(15,39,48,.35)}
+.board .field{position:absolute;inset:4.2cqw;}
+.chip{position:absolute;left:var(--x);top:var(--y);width:var(--w);height:var(--h);background:var(--white);border-radius:2.6cqw;padding:2cqw;font-size:2.6cqw;line-height:1.25;box-shadow:0 0 0 1px var(--line);overflow:hidden;display:flex;flex-direction:column;justify-content:center;gap:.8cqw;
+  transition:transform .95s cubic-bezier(.2,.95,.25,1) var(--d,0s),box-shadow .6s;will-change:transform}
+.board[data-state="messy"] .chip{transform:translate(var(--mx),var(--my)) rotate(var(--r));box-shadow:0 0 0 1px var(--line),0 1.6cqw 3cqw -1cqw rgba(15,39,48,.35)}
+.chip small{font-size:2.2cqw;color:var(--slate);font-weight:500}
+.chip b{font-weight:700}
+
+.c-search{--x:0%;--y:0%;--w:62%;--h:17%;--mx:22cqw;--my:30cqw;--r:-7deg;--d:.02s;flex-direction:row;align-items:center;justify-content:flex-start;gap:1.6cqw}
+.c-search svg{width:3.2cqw;height:3.2cqw;flex:none;stroke:var(--slate)}
+.c-search span{color:var(--slate);font-size:2.8cqw}
+.c-tog{--x:65%;--y:0%;--w:35%;--h:17%;--mx:-30cqw;--my:36cqw;--r:9deg;--d:.06s;flex-direction:row;align-items:center;justify-content:space-between}
+.sw{width:7cqw;height:4cqw;border-radius:9cqw;background:#18C48F;position:relative;flex:none}
+.sw::after{content:"";position:absolute;right:.5cqw;top:.5cqw;width:3cqw;height:3cqw;border-radius:50%;background:#fff}
+.c-stat{--x:0%;--y:20%;--w:30%;--h:38%;--mx:30cqw;--my:6cqw;--r:11deg;--d:.1s;background:var(--butter);box-shadow:none}
+.c-stat .n{font:700 7.6cqw/1 var(--display);letter-spacing:-.03em}
+.c-line{--x:33%;--y:20%;--w:67%;--h:38%;--mx:-20cqw;--my:14cqw;--r:-5deg;--d:.14s;justify-content:flex-start}
+.c-line svg{width:100%;flex:1;min-height:0}
+.c-bars{--x:0%;--y:61%;--w:30%;--h:39%;--mx:26cqw;--my:-24cqw;--r:-10deg;--d:.18s;justify-content:flex-start}
+.bars{flex:1;display:flex;align-items:flex-end;gap:1.1cqw;min-height:0}
+.bars i{flex:1;background:var(--sky);border-radius:.8cqw .8cqw 0 0}
+.bars i:nth-child(4){background:#5AA9F6}
+.c-table{--x:33%;--y:61%;--w:37%;--h:39%;--mx:-5cqw;--my:-30cqw;--r:6deg;--d:.22s;justify-content:flex-start;gap:1.5cqw}
+.row{display:flex;align-items:center;gap:1.4cqw}
+.row i{width:2.4cqw;height:2.4cqw;border-radius:50%;background:var(--mint);flex:none}
+.row:nth-child(3) i{background:var(--peach)}
+.row:nth-child(4) i{background:var(--lilac)}
+.row u{flex:1;height:1.7cqw;border-radius:2cqw;background:#E7EEF0;text-decoration:none}
+.row u+u{flex:0 0 18%}
+.c-btn{--x:73%;--y:61%;--w:27%;--h:18%;--mx:-52cqw;--my:-6cqw;--r:-12deg;--d:.26s;background:var(--ink);color:#fff;align-items:center;box-shadow:none;font-weight:700;font-size:2.4cqw}
+.c-team{--x:73%;--y:82%;--w:27%;--h:18%;--mx:-44cqw;--my:-44cqw;--r:8deg;--d:.3s;background:var(--sky);box-shadow:none;flex-direction:row;align-items:center;gap:1.2cqw}
+.av{display:flex}
+.av i{width:3.8cqw;height:3.8cqw;border-radius:50%;border:.5cqw solid var(--sky);margin-left:-1.2cqw}
+.av i:first-child{margin-left:0;background:#FF8F6B}.av i:nth-child(2){background:#18C48F}.av i:nth-child(3){background:#7C6BFF}
+
+/* noise chips: the clutter that goes away */
+.noise{position:absolute;left:var(--nx);top:var(--ny);z-index:3;padding:1.2cqw 2cqw;border-radius:99px;font:700 2.1cqw/1.2 var(--body);white-space:nowrap;color:#fff;background:var(--alert);transform:scale(.3) rotate(0);opacity:0;transition:transform .7s cubic-bezier(.5,0,.2,1) var(--d,0s),opacity .45s var(--d,0s);pointer-events:none}
+.noise.y{background:var(--sun);color:var(--ink)}
+.noise.k{background:var(--ink)}
+.board[data-state="messy"] .noise{opacity:1;transform:scale(1) rotate(var(--r))}
+
+.switch{margin-top:18px;display:flex;justify-content:center}
+.seg{display:inline-flex;background:var(--white);border-radius:99px;padding:4px;box-shadow:0 0 0 1px var(--line)}
+.seg button{font:700 15px var(--body);color:var(--slate);background:none;border:0;border-radius:99px;padding:10px 20px;cursor:pointer;min-height:44px;transition:background .25s,color .25s}
+.seg button[aria-pressed="true"]{background:var(--ink);color:#fff}
+.seg button:not([aria-pressed="true"]):hover{background:var(--mint);color:var(--ink)}
+
+/* proof line */
+.proof{padding:28px 0 8px}
+.proof p{font:500 clamp(20px,2.4vw,32px)/1.3 var(--display);letter-spacing:-.015em;max-width:30em}
+.proof p span{color:var(--slate)}
+
+/* work */
+.work{padding:96px 0 40px}
+.sec-h{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:8px 24px;margin-bottom:28px}
+.sec-h h2{font:600 clamp(32px,4.4vw,60px)/1 var(--display);letter-spacing:-.03em}
+.sec-h p{color:var(--slate);max-width:26em}
+.stack{position:relative}
+.card{position:sticky;top:calc(78px + var(--n)*18px);margin-bottom:26px;background:var(--tint);border-radius:32px;padding:clamp(20px,3vw,44px);display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:clamp(20px,3vw,48px);align-items:center;min-height:min(72vh,540px);box-shadow:0 -12px 30px -22px rgba(15,39,48,.35)}
+.card .role-t{display:inline-block;font:700 14px var(--body);background:rgba(255,255,255,.7);padding:6px 12px;border-radius:99px;margin-bottom:16px}
+.card h3{font:600 clamp(28px,3.4vw,46px)/1.02 var(--display);letter-spacing:-.025em}
+.card .d{margin-top:14px;max-width:30em}
+.card .r{margin-top:14px;font-weight:700;max-width:30em}
+.card .go{margin-top:24px}
+.shot{display:block;border-radius:18px;overflow:hidden;background:#fff;box-shadow:0 0 0 1px rgba(15,39,48,.1),0 30px 60px -28px rgba(15,39,48,.5);transform:rotate(var(--tilt,0deg));transition:transform .5s cubic-bezier(.2,.9,.2,1)}
+.shot:hover{transform:rotate(0) scale(1.015)}
+.shot img{width:100%;height:auto;aspect-ratio:1.6;object-fit:cover}
+.more{margin-top:34px}
+.more h3{font:600 20px var(--display);margin-bottom:14px}
+.pills{display:flex;flex-wrap:wrap;gap:10px}
+.pills a{display:inline-flex;align-items:center;gap:10px;background:var(--white);box-shadow:0 0 0 1px var(--line);border-radius:99px;padding:11px 18px;text-decoration:none;font:600 15px var(--body);min-height:44px;transition:transform .2s,background .2s}
+.pills a::before{content:"";width:12px;height:12px;border-radius:50%;background:var(--dot)}
+.pills a:hover{transform:translateY(-2px);background:var(--mint)}
+
+/* experience */
+.exp{padding:88px 0 40px}
+.jobs{display:grid;border-top:1.5px solid var(--ink)}
+.job{display:grid;grid-template-columns:200px minmax(0,1fr);gap:24px;padding:26px 0;border-bottom:1px solid var(--line)}
+.job .when{font:600 17px var(--display);color:var(--slate)}
+.job h3{font:600 clamp(21px,2.2vw,28px)/1.15 var(--display);letter-spacing:-.015em}
+.job .co{font-weight:700;margin-top:4px}
+.job p+p{margin-top:8px;color:var(--slate);max-width:44em}
+
+/* contact */
+.contact{margin-top:72px;background:var(--sun);border-radius:40px 40px 0 0;padding:clamp(48px,8vw,104px) 0 44px}
+.contact h2{font:600 clamp(36px,6vw,88px)/.98 var(--display);letter-spacing:-.035em;max-width:11em}
+.contact .mail{display:inline-block;margin-top:28px;font:600 clamp(22px,3.4vw,46px)/1.1 var(--display);letter-spacing:-.02em;text-decoration-thickness:3px;text-underline-offset:8px;word-break:break-word}
+.contact .mail:hover{text-decoration-color:var(--alert)}
+.contact .row2{margin-top:30px;display:flex;flex-wrap:wrap;gap:10px}
+.contact .btn.sec{background:rgba(255,255,255,.55)}
+.foot{margin-top:56px;font-size:14px;color:rgba(15,39,48,.72);display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px}
+
+@media (max-width:900px){
+  .hero{padding-top:92px}
+  .hero .wrap{grid-template-columns:1fr}
+  .nav li:not(:last-child){display:none}
+  .card{position:relative;top:auto;grid-template-columns:1fr;min-height:0;box-shadow:none}
+  .card .shot{order:-1}
+  .job{grid-template-columns:1fr;gap:6px}
+}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .chip,.noise,.shot,.btn{transition:none!important}
+}
+</style>
+</head>
+<body>
+
+<nav class="nav" aria-label="Main">
+  <div class="wrap">
+    <a class="me" href="#top">Robert Azucena</a>
+    <ul>
+      <li><a href="#work">Work</a></li>
+      <li><a href="#experience">Experience</a></li>
+      <li><a href="#contact">Contact</a></li>
+      <li><a href="Robert_Azucena_CV.pdf" download>CV</a></li>
+    </ul>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <div class="wrap">
+    <div class="copy">
+      <p class="role">UX and Digital Experience Leader, Singapore</p>
+      <h1>I make complicated software feel easy.</h1>
+      <p class="lede">15 years designing enterprise and AI products, and building the prototypes myself. At Oracle I led about <strong>30 designers, developers and UX specialists</strong> across 3 business units and 5 countries.</p>
+      <div class="cta">
+        <a class="btn pri" href="#work">See the work</a>
+        <a class="btn sec" href="Robert_Azucena_CV.pdf" download>Download CV</a>
+      </div>
+      <p class="avail"><i></i>Available immediately in Singapore.</p>
+    </div>
+
+    <div class="demo">
+      <div class="board" id="board" data-state="messy" role="img" aria-label="Scattered interface pieces tidy themselves into one clear dashboard">
+        <div class="field" aria-hidden="true">
+          <div class="chip c-search"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg><span>Ask anything</span></div>
+          <div class="chip c-tog"><span><b>Auto-scaling</b></span><i class="sw"></i></div>
+          <div class="chip c-stat"><span class="n">30%</span><small>faster to first insight</small></div>
+          <div class="chip c-line"><small>Claims this week</small>
+            <svg viewBox="0 0 200 70" preserveAspectRatio="none"><defs><linearGradient id="g" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#18C48F" stop-opacity=".35"/><stop offset="1" stop-color="#18C48F" stop-opacity="0"/></linearGradient></defs><path d="M0 52 L28 44 L56 49 L84 30 L112 36 L140 18 L168 24 L200 8 L200 70 L0 70Z" fill="url(#g)"/><path d="M0 52 L28 44 L56 49 L84 30 L112 36 L140 18 L168 24 L200 8" fill="none" stroke="#18C48F" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/></svg></div>
+          <div class="chip c-bars"><small>Time to insight</small><div class="bars"><i style="height:90%"></i><i style="height:76%"></i><i style="height:64%"></i><i style="height:52%"></i><i style="height:48%"></i></div></div>
+          <div class="chip c-table"><small>Worklist</small><div class="row"><i></i><u></u><u></u></div><div class="row"><i></i><u></u><u></u></div><div class="row"><i></i><u></u><u></u></div></div>
+          <div class="chip c-btn">Send campaign</div>
+          <div class="chip c-team"><span class="av"><i></i><i></i><i></i></span><b>Team of 30</b></div>
+
+          <span class="noise" style="--nx:4%;--ny:14%;--r:-8deg;--d:.05s">14 unread alerts</span>
+          <span class="noise y" style="--nx:50%;--ny:6%;--r:6deg;--d:.1s">Are you sure?</span>
+          <span class="noise k" style="--nx:8%;--ny:52%;--r:5deg;--d:.15s">Settings › Advanced › Legacy</span>
+          <span class="noise" style="--nx:56%;--ny:44%;--r:-6deg;--d:.2s">Error: invalid state</span>
+          <span class="noise y" style="--nx:18%;--ny:82%;--r:-10deg;--d:.25s">Session expired</span>
+          <span class="noise k" style="--nx:58%;--ny:78%;--r:9deg;--d:.3s">Click here to continue</span>
+        </div>
+      </div>
+      <div class="switch">
+        <div class="seg" role="group" aria-label="Interface state">
+          <button type="button" id="b-messy" aria-pressed="true">Complicated</button>
+          <button type="button" id="b-calm" aria-pressed="false">Easy</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="work wrap" id="work" aria-labelledby="work-h">
+    <div class="sec-h">
+      <h2 id="work-h">Work you can click</h2>
+      <p>Every project opens as a running prototype I designed and built, not a screenshot.</p>
+    </div>
+    <div class="stack" id="stack"></div>
+    <div class="more">
+      <h3>Also built</h3>
+      <div class="pills" id="pills"></div>
+    </div>
+  </section>
+
+  <section class="exp wrap" id="experience" aria-labelledby="exp-h">
+    <div class="sec-h"><h2 id="exp-h">Experience</h2></div>
+    <div class="jobs">
+      <div class="job"><div class="when">2016 to 2026</div><div><h3>UX and Digital Experience Leader</h3><p class="co">Oracle, Singapore. Senior Manager.</p><p>Led UX strategy, design delivery and people development for enterprise applications and digital experiences across 3 business units and 5 countries.</p><p>Ran the internship and apprenticeship program for 4 years, mentoring about 10 early-career designers and developers.</p></div></div>
+      <div class="job"><div class="when">2015 to 2016</div><div><h3>Interactive and Digital Art Director</h3><p class="co">Ace:Daytons Communications</p><p>Led digital creative direction for web and interactive campaigns, from brief to launch.</p></div></div>
+      <div class="job"><div class="when">2014 to 2015</div><div><h3>UI/UX Designer and Frontend Developer</h3><p class="co">Clubvivre, Singapore</p><p>Designed web and app experiences and built them in HTML, CSS and JavaScript.</p></div></div>
+      <div class="job"><div class="when">2010 to 2014</div><div><h3>Interactive Designer and Frontend Developer</h3><p class="co">Vocanic, Singapore</p><p>Designed and built interactive web experiences, refining animations and micro-interactions.</p></div></div>
+      <div class="job"><div class="when">2017 to 2020</div><div><h3>Judge</h3><p class="co">CSS Design Awards</p><p>Reviewed web design and development submissions from around the world.</p></div></div>
+    </div>
+  </section>
+</main>
+
+<footer class="contact" id="contact">
+  <div class="wrap">
+    <h2>Let's make your next product feel easy.</h2>
+    <a class="mail" href="mailto:robertazucena@gmail.com">robertazucena@gmail.com</a>
+    <div class="row2">
+      <a class="btn pri" href="Robert_Azucena_CV.pdf" download>Download CV</a>
+      <a class="btn sec" href="https://www.linkedin.com/in/robertazucena" rel="noopener">LinkedIn</a>
+    </div>
+    <div class="foot"><span>Robert Azucena. Singapore.</span><span><a href="../index.html">View the current portfolio</a></span></div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var BASE='../assets/prototype/';
+  var P=[
+    {id:'oracle-eg',tint:'var(--mint)',name:'Oracle AI Email Generator',role:'Lead Product Designer, shipped 2024',img:'img/egen.jpg',
+     d:'An enterprise AI platform that turns a simple prompt into an on-brand, ready-to-send HTML email for marketing and CX teams.',
+     r:'Teams need less design and development support, and campaigns turn around faster.'},
+    {id:'oracle-ad',tint:'var(--sky)',name:'Oracle Autonomous Database',role:'UX/UI Designer, live 2023',img:'img/adb.jpg',
+     d:'Admin and monitoring dashboards for enterprise DBAs, with at-a-glance status cards and guided setup.',
+     r:'About 30% faster time-to-first-insight and about 20% fewer navigation-related support tickets.'},
+    {id:'great-eastern',tint:'var(--butter)',name:'Great Eastern claims portal',role:'Lead Designer, shipped 2026',img:'img/ge.jpg',
+     d:'An 11-page claims platform with AI-powered anomaly detection across vehicle, homeowner, building owner and manufacturer claims.',
+     r:'Control room, worklist, claim detail and final report, designed and prototyped end to end.'},
+    {id:'changi',tint:'var(--peach)',name:'Changi Airport Group on Oracle Cloud',role:'Lead Designer, shipped 2025',img:'img/changi.jpg',
+     d:'A co-branded pricing and ROI tool that compares Oracle, AWS, Azure and GCP, with a 5-year TCO model and a live stack configurator.',
+     r:'Gave sales and product teams a working prototype to demonstrate Oracle Cloud.'},
+    {id:'tata-motors',tint:'var(--lilac)',name:'Tata Motors AI Workspace',role:'Lead Designer',img:'img/tata.jpg',
+     d:'A 9-page AI assistant workspace for searching, managing and analysing enterprise assets.',
+     r:'Conversational home, AI-assisted search, asset detail and library views.'}
+  ];
+  var MORE=[['grab','Grab Employee Portal','#FF8F6B'],['oracle-cm','Oracle Customer Moments','#7C6BFF'],['mufg','MUFG Asia Pacific','#5AA9F6'],['courtly','Courtly','#18C48F'],['steady','Steady','#FFB400'],['on-engineers','ON Engineers','#FF5A3D']];
+
+  var stack=document.getElementById('stack');
+  P.forEach(function(p,i){
+    var url=BASE+p.id+'/index.html';
+    var a=document.createElement('article');
+    a.className='card';a.style.setProperty('--n',i);a.style.setProperty('--tint',p.tint);
+    a.style.setProperty('--tilt',(i%2?1.2:-1.2)+'deg');
+    a.innerHTML='<div><span class="role-t"></span><h3></h3><p class="d"></p><p class="r"></p><a class="btn pri go" target="_blank" rel="noopener">Open the prototype</a></div>'+
+      '<a class="shot" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true"><img alt="" loading="lazy"></a>';
+    a.querySelector('.role-t').textContent=p.role;
+    a.querySelector('h3').textContent=p.name;
+    a.querySelector('.d').textContent=p.d;
+    a.querySelector('.r').textContent=p.r;
+    var go=a.querySelector('.go');go.href=url;go.setAttribute('aria-label','Open the '+p.name+' prototype');
+    var s=a.querySelector('.shot');s.href=url;s.querySelector('img').src=p.img;
+    stack.appendChild(a);
+  });
+  var pills=document.getElementById('pills');
+  MORE.forEach(function(m){
+    var a=document.createElement('a');a.href=BASE+m[0]+'/index.html';a.target='_blank';a.rel='noopener';a.textContent=m[1];a.style.setProperty('--dot',m[2]);pills.appendChild(a);
+  });
+
+  /* hero board */
+  var board=document.getElementById('board'),bm=document.getElementById('b-messy'),bc=document.getElementById('b-calm');
+  var reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches,touched=false,timer;
+  function set(state){
+    board.dataset.state=state;
+    bm.setAttribute('aria-pressed',state==='messy');
+    bc.setAttribute('aria-pressed',state==='calm');
+  }
+  bm.addEventListener('click',function(){touched=true;clearTimeout(timer);set('messy');});
+  bc.addEventListener('click',function(){touched=true;clearTimeout(timer);set('calm');});
+  if(reduce){set('calm');}
+  else{timer=setTimeout(function(){if(!touched)set('calm');},1500);}
+})();
+</script>
+</body>
+</html>
