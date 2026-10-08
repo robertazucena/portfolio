@@ -1,5 +1,6 @@
 /* Portfolio preview helper: when this page is shown inside a frame, always start at the top.
-   It keeps the page at the top until the visitor scrolls, taps or types themselves.
+   It keeps the page at the top until the visitor scrolls, taps or types themselves, and stops the
+   page from scrolling the portfolio around it (autofocus, scrollIntoView).
    Opened on its own (not in a frame), it does nothing. */
 (function () {
   var framed = false; try { framed = window.self !== window.top; } catch (e) { framed = true; }
@@ -9,6 +10,27 @@
   ["wheel", "touchstart", "pointerdown", "keydown"].forEach(function (t) {
     window.addEventListener(t, function () { user = true; }, { passive: true, capture: true });
   });
+  /* focusing an input or calling scrollIntoView inside a frame also scrolls the page around it,
+     which made the portfolio jump. Until the visitor interacts, focus without scrolling and skip
+     scroll-into-view requests. */
+  try {
+    var nativeFocus = HTMLElement.prototype.focus;
+    HTMLElement.prototype.focus = function (opts) {
+      if (user) return nativeFocus.call(this, opts);
+      var o = {}; if (opts && typeof opts === "object") for (var k in opts) o[k] = opts[k];
+      o.preventScroll = true; return nativeFocus.call(this, o);
+    };
+    var nativeSIV = Element.prototype.scrollIntoView;
+    Element.prototype.scrollIntoView = function () { if (user) return nativeSIV.apply(this, arguments); };
+    if (Element.prototype.scrollIntoViewIfNeeded) {
+      var nativeSIVN = Element.prototype.scrollIntoViewIfNeeded;
+      Element.prototype.scrollIntoViewIfNeeded = function () { if (user) return nativeSIVN.apply(this, arguments); };
+    }
+  } catch (e) {}
+  function stripAutofocus() { try { var a = document.querySelectorAll("[autofocus]"); for (var i = 0; i < a.length; i++) a[i].removeAttribute("autofocus"); } catch (e) {} }
+  document.addEventListener("DOMContentLoaded", stripAutofocus);
+  try { new MutationObserver(function () { if (!user) stripAutofocus(); }).observe(document.documentElement, { childList: true, subtree: true }); } catch (e) {}
+
   function toTop() {
     if (user) return;
     if (window.scrollX || window.scrollY) window.scrollTo(0, 0);
