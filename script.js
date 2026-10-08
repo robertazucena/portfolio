@@ -18,7 +18,7 @@ const PROJECTS = [
     overview: "Sulyap brings news from every corner of the Philippines into one place. Each story is a short brief that shows which outlets covered it, then sends readers to the publisher to read it in full. Briefs are drafted by AI and approved by human editors, and the whole product wears a refined metallic-black identity.",
     cat: ["web"], mock: "portal",
     live: "https://robertazucena.com/assets/prototype/sulyap/index.html",
-    proto: { base: "assets/proto/sulyap/",
+    proto: { base: "assets/prototype/sulyap/",
       desktop: [["Top stories","index.html",10396],["Story brief","index.html#/story/1",4339],["Regions","index.html#/regions/Luzon",1784],["Business","index.html#/business",1651],["Weather & disasters","index.html#/weather",2469],["Our sources","index.html#/sources",2921],["How Sulyap works","index.html#/about",1597]],
       interactive: true,
       heroMobile: [["Top stories","index.html",0]] },
@@ -41,7 +41,7 @@ const PROJECTS = [
     overview: "Kahera is a modern store system for sari-sari stores in the Philippines. Owners ring up sales and give the right sukli, keep track of stock, log restocks bought from retail and grocery shops, and see how the store is doing today, this month and this year. Stores register to get access, the platform supports many stores, and the whole app works in Tagalog and English.",
     cat: ["web"], mock: "portal",
     live: "https://robertazucena.com/assets/prototype/kahera/index.html",
-    proto: { base: "assets/proto/kahera/",
+    proto: { base: "assets/prototype/kahera/",
       desktop: [["Landing","index.html#landing/en",5112],["Sell","index.html#demo/sell/en",3356],["Products","index.html#demo/products/en",2329],["Restock","index.html#demo/restock/en",900],["Dashboard","index.html#demo/reports/en",2387],["Settings","index.html#demo/settings/en",900]],
       interactive: true,
       heroMobile: [["Sell","index.html#demo/sell/en",0]] },
@@ -62,7 +62,7 @@ const PROJECTS = [
     client: "Oracle · Marketing & CX", role: "Lead Product Designer", sector: "Web & Mobile · AI Email Platform", scope: "5 views: Home, Templates, Editor, Analytics, API",
     cat: ["ai","enterprise"], mock: "email",
     live: "https://robertazucena.com/assets/prototype/oracle-eg/index.html",
-    proto: { base: "assets/proto/oracle-eg/",
+    proto: { base: "assets/prototype/oracle-eg/",
       desktop: [["Home","index.html#/",1098],["Templates","index.html#/templates",1180],["Analytics","index.html#/analytics",1768],["Editor","index.html#/editor",1226],["API Docs","index.html#/docs",906]],
       interactive: true,
       heroMobile: [["Home","index.html#/",0],["Templates","index.html#/templates",0],["Analytics","index.html#/analytics",0],["Editor","index.html#/editor",0]] },
@@ -90,7 +90,7 @@ const PROJECTS = [
     client: "Oracle · OCI", role: "Creative Technologist", sector: "Web Experience · Enterprise Software Campaign", scope: "Launch campaign site and OCI dashboards",
     cat: ["enterprise","web"], mock: "dashboard",
     live: "https://robertazucena.com/assets/prototype/oracle-ad/index.html",
-    proto: { base: "assets/proto/oracle-ad/",
+    proto: { base: "assets/prototype/oracle-ad/",
       desktop: [["Self-Patching","index.html#s1",900],["No Human Error","index.html#s3",900],["Explore Database","index.html#explore",900],["Talk to Expert","index.html#chat",900]],
       interactive: true,
       heroMobile: [["Autonomous Database","index.html#s1",0]] },
@@ -113,7 +113,7 @@ const PROJECTS = [
     client: "Great Eastern", role: "Lead Product Designer", sector: "Web App · AI Insurance Claims Platform", scope: "11-page platform, AI anomaly detection UX",
     cat: ["ai","enterprise"], mock: "claims",
     live: "https://robertazucena.com/assets/prototype/great-eastern/index.html",
-    proto: { base: "assets/proto/great-eastern/",
+    proto: { base: "assets/prototype/great-eastern/",
       desktop: [["Claims Control Room","index.html",900],["Auto Worklist","claims.html",900],["Claim Detail","claim-detail.html",955],["AI Assessment","ai-progress.html#still",900],["AI Results","ai-results.html",900],["Final Report","final-report.html",1030]],
       interactive: true,
       heroMobile: [["Claims Control Room","index.html",0]] },
@@ -136,7 +136,7 @@ const PROJECTS = [
     client: "Changi Airport Group · Oracle", role: "Lead Product Designer", sector: "Web App · Cloud Pricing Comparison Dashboard", scope: "4 views: pricing, ROI, configure, optimizer",
     cat: ["enterprise","web"], mock: "pricing",
     live: "https://robertazucena.com/assets/prototype/changi/index.html",
-    proto: { base: "assets/proto/changi/",
+    proto: { base: "assets/prototype/changi/",
       desktop: [["Pricing Comparison","index.html#pricing",1883],["ROI Summary","index.html#roi",1708],["Configure Stack","index.html#configure",1783],["Cloud Optimizer","index.html#dashboard",2025]],
       interactive: true,
       heroMobile: [["Pricing Comparison","index.html",0]] },
@@ -159,7 +159,7 @@ const PROJECTS = [
     client: "Tata Motors · Oracle", role: "Lead Product Designer", sector: "Web App · Enterprise AI Model Discovery Platform", scope: "9 pages: AI home, search, library, analytics and more",
     cat: ["ai","enterprise"], mock: "workspace",
     live: "https://robertazucena.com/assets/prototype/tata-motors/index.html",
-    proto: { base: "assets/proto/tata-motors/",
+    proto: { base: "assets/prototype/tata-motors/",
       desktop: [["AI Home","index.html",900],["Search & Synthesis","search-results.html",1470],["Asset Detail","asset-detail.html",1652],["Asset Library","library.html",1130],["Analytics","analytics.html",1098],["Projects","projects.html",900]],
       interactive: true,
       heroMobile: [["AI Home","index.html",0]] },
@@ -182,7 +182,7 @@ const PROJECTS = [
     client: "Grab · Oracle", role: "Lead Designer", sector: "Product Design · Employee Portal", scope: "5 pages: home, analytics, team, resources, tools",
     cat: ["enterprise","web"], mock: "portal",
     live: "https://robertazucena.com/assets/prototype/grab/index.html",
-    proto: { base: "assets/proto/grab/",
+    proto: { base: "assets/prototype/grab/",
       desktop: [["Home","index.html",2594],["Analytics","analytics.html",2145],["My Team","team.html",1828],["Resources","resources.html",2092],["Tools","tools.html",3872]],
       interactive: true,
       heroMobile: [["Home","index.html",0]] },
@@ -205,7 +205,7 @@ const PROJECTS = [
     client: "MUFG Asia Pacific", role: "UI/UX Designer and Creative Technologist", sector: "Web App · Financial Services", scope: "4 pages: What’s New, Services, Sustainability, About",
     cat: ["web"], mock: "corporate", wide: true,
     live: "https://robertazucena.com/assets/prototype/mufg/index.html",
-    proto: { base: "assets/proto/mufg/",
+    proto: { base: "assets/prototype/mufg/",
       desktop: [["What’s New","index.html",2547],["Our Services","services.html",2176],["Sustainability","sustainability.html",2895],["About Us","about.html",2397]],
       interactive: true,
       heroMobile: [["What’s New","index.html",0]] },
@@ -233,7 +233,7 @@ const PROJECTS = [
     client: "Oracle", role: "Lead Designer", sector: "Systems Design · Customer Engagement", scope: "7 pages: gallery, editor, dashboard, team, reports",
     cat: ["ai","enterprise"], mock: "ecard",
     live: "https://robertazucena.com/assets/prototype/oracle-cm/index.html",
-    proto: { base: "assets/proto/oracle-cm/",
+    proto: { base: "assets/prototype/oracle-cm/",
       desktop: [["Moments Gallery","index.html",1214],["Moment Editor","moment.html",1202],["Moments Dashboard","dashboard.html",1277],["Team Activity","team-activity.html",1515]],
       interactive: true,
       heroMobile: [["Moments Gallery","index.html",0]] },
@@ -256,7 +256,7 @@ const PROJECTS = [
     client: null, role: "Lead Product Designer", sector: "Product Design · Sports Court Booking", scope: "6 pages: dashboard, court details, booking, community, profile, edit profile",
     cat: ["web"], mock: "portal",
     live: "https://robertazucena.com/assets/prototype/courtly/index.html",
-    proto: { base: "assets/proto/courtly/",
+    proto: { base: "assets/prototype/courtly/",
       desktop: [["Dashboard","index.html",2200],["Court Details","court-details.html",2200],["Booking","booking.html",1600],["Community Games","community.html",1800],["Profile","profile.html",2400],["Edit Profile","edit-profile.html",2200]],
       interactive: true,
       heroMobile: [["Dashboard","index.html",0]] },
@@ -279,7 +279,7 @@ const PROJECTS = [
     client: null, role: "Lead Product Designer", sector: "Product Design · Health & Wellness", scope: "5 pages: Today, Health, Sleep, Circle, Rhythm",
     cat: ["web"], mock: "portal",
     live: "https://robertazucena.com/assets/prototype/steady/index.html",
-    proto: { base: "assets/proto/steady/",
+    proto: { base: "assets/prototype/steady/",
       desktop: [["Today","index.html",2200],["Health","health.html",2200],["Sleep","sleep.html",2200],["Circle","circle.html",2200],["Rhythm","rhythm.html",2200]],
       interactive: true,
       heroMobile: [["Today","index.html",0]] },
@@ -302,7 +302,7 @@ const PROJECTS = [
     client: "ON Engineers · Singapore", role: "Lead Product Designer", sector: "Website · Electrical Asset Sensing & Analytics", scope: "7 pages: home, ASA, other services, case studies, papers, about, contact",
     cat: ["web"], mock: "corporate",
     live: "https://robertazucena.com/assets/prototype/on-engineers/index.html",
-    proto: { base: "assets/proto/on-engineers/",
+    proto: { base: "assets/prototype/on-engineers/",
       desktop: [["Home","index.html",4200],["ASA Services","asa-services.html",4200],["Other Services","other-services.html",3600],["Case Studies","case-studies.html",3000],["Technical Papers","technical-papers.html",3600],["About","about.html",4200],["Contact","contact.html",1800]],
       interactive: true,
       heroMobile: [["Home","index.html",0]] },
@@ -445,22 +445,24 @@ const liveIframe = (src, label, vw, vh, inter) => inter
   : `<div class="lv"><iframe src="${src}" title="${label}" scrolling="no" tabindex="-1" aria-hidden="true" data-vw="${vw}" data-vh="${vh}"></iframe></div>`;
 const liveInter = (base, [l, file], dev) => dev === "web"
   ? `<div class="mk shot live inter">${chrome(l)}<div class="shot-view loading" data-lenis-prevent>${liveIframe(base + file, l, 1440, 900, true)}</div></div>`
+  : dev === "tablet"
+  ? `<div class="tablet-f live inter"><div class="shot-view loading" data-lenis-prevent>${liveIframe(base + file, l, 1180, 820, true)}</div></div>`
   : `<div class="phone-f live inter"><div class="shot-view loading" data-lenis-prevent>${liveIframe(base + file, l, 390, 844, true)}</div></div>`;
 const liveDesk = (base, [l, file, h], pan = true) => `<div class="mk shot live ${pan ? "scroll" : ""}" data-h="${h}">${chrome(l)}<div class="shot-view loading" data-lenis-prevent>${liveIframe(base + file, l, 1440, 900)}</div></div>`;
 const liveMob = (base, [l, file, h]) => `<div class="phone-f scroll live" data-h="${h}"><div class="shot-view loading" data-lenis-prevent>${liveIframe(base + file, l, 390, 844)}</div></div>`;
 const caseVisual = (p) => p.proto ? liveDesk(p.proto.base, p.proto.desktop[0], false) : visual(p);
 function bindViewer(root, p) {
   const v = $(".viewer", root); if (!v || !p.proto) return;
-  const web = $('[data-pane="web"]', v), mob = $('[data-pane="mobile"]', v);
+  const panes = { web: $('[data-pane="web"]', v), tablet: $('[data-pane="tablet"]', v), mobile: $('[data-pane="mobile"]', v) };
+  const page = { tablet: p.proto.heroTablet ? p.proto.heroTablet[0] : p.proto.desktop[0], mobile: p.proto.heroMobile[0] };
   v.addEventListener("click", (e) => {
     const b = e.target.closest(".seg button"); if (!b) return;
     const dev = b.dataset.dev;
     $$(".seg button", v).forEach(x => x.setAttribute("aria-pressed", String(x === b)));
-    web.hidden = dev !== "web"; mob.hidden = dev !== "mobile";
-    if (dev === "mobile" && !mob.childElementCount) {
-      mob.innerHTML = liveInter(p.proto.base, p.proto.heroMobile[0], "mobile");
-    }
-    requestAnimationFrame(() => { bindLive(dev === "mobile" ? mob : web); dispatchEvent(new Event("resize")); lenis && lenis.resize(); });
+    Object.entries(panes).forEach(([k, el]) => { if (el) el.hidden = k !== dev; });
+    const pane = panes[dev];
+    if (dev !== "web" && pane && !pane.childElementCount) pane.innerHTML = liveInter(p.proto.base, page[dev], dev);
+    requestAnimationFrame(() => { bindLive(pane); dispatchEvent(new Event("resize")); lenis && lenis.resize(); });
   });
 }
 function bindLive(root) {
@@ -481,7 +483,7 @@ function bindLive(root) {
     const measure = () => { if (inter) return; try { const dh = ifr.contentDocument.documentElement.scrollHeight; if (dh > 200 && fr.classList.contains("scroll")) H = dh; } catch (e) {} layout(); };
     /* always start each live page at its top (browsers restore old scroll positions on reload) */
     const toTop = () => { try { const w = ifr.contentWindow; if (w.history && "scrollRestoration" in w.history) w.history.scrollRestoration = "manual"; w.scrollTo(0, 0); const se = w.document.scrollingElement; if (se) se.scrollTop = 0; } catch (e) {} };
-    ifr.addEventListener("load", () => { const cur = ifr.getAttribute("src"); if (!cur || cur === "about:blank") return; view.classList.remove("loading"); toTop(); setTimeout(toTop, 300); setTimeout(() => { toTop(); measure(); }, 900); });
+    ifr.addEventListener("load", () => { const cur = ifr.getAttribute("src"); if (!cur || cur === "about:blank") return; view.classList.remove("loading"); if (!inter) view.scrollTop = 0; toTop(); setTimeout(toTop, 300); setTimeout(() => { toTop(); measure(); }, 900); if (!inter) [1800, 3000].forEach(t => setTimeout(toTop, t)); });
     addEventListener("resize", layout);
   });
 }
@@ -528,6 +530,11 @@ const whenLoaded = (imgs, max) => Promise.race([
 const pad = (n) => String(n).padStart(2, "0");
 
 // work cards
+/* prototypes live in assets/prototype/ on robertazucena.com (and locally); the claude.ai preview host
+   reserves that folder name, so the preview serves the same files from assets/proto/ */
+const PROTO_DIR = (/(^|\.)robertazucena\.com$/.test(location.hostname) || /^(localhost|127\.0\.0\.1|)$/.test(location.hostname) || location.protocol === "file:") ? "assets/prototype/" : "assets/proto/";
+if (PROTO_DIR !== "assets/prototype/") PROJECTS.forEach(p => { if (p.proto) p.proto.base = p.proto.base.replace("assets/prototype/", PROTO_DIR); });
+
 /* the first 8 projects are Selected work; anything after the 8th moves to More work automatically */
 const SELECTED_MAX = 8;
 const SELECTED = PROJECTS.slice(0, SELECTED_MAX), MORE_P = PROJECTS.slice(SELECTED_MAX);
@@ -669,8 +676,9 @@ function caseHTML(p) {
       <div><span class="mono">Deliverables</span><b>${p.deliverables}</b></div>
     </div>
     ${(p.proto && p.proto.interactive) ? `<div class="case-hero viewer">
-      <div class="vw-bar"><div class="seg" role="group" aria-label="Device"><button type="button" id="dev-web" data-dev="web" aria-pressed="true">Web</button><button type="button" id="dev-mobile" data-dev="mobile" aria-pressed="false">Mobile</button></div><span class="mono hint">Scroll and click inside</span></div>
+      <div class="vw-bar"><div class="seg" role="group" aria-label="Device"><button type="button" id="dev-web" data-dev="web" aria-pressed="true">Web</button><button type="button" id="dev-tablet" data-dev="tablet" aria-pressed="false">iPad</button><button type="button" id="dev-mobile" data-dev="mobile" aria-pressed="false">Mobile</button></div><span class="mono hint">Scroll and click inside</span></div>
       <div class="stage" data-pane="web">${liveInter(p.proto.base, p.proto.desktop[0], "web")}</div>
+      <div class="tablet-stage" data-pane="tablet" hidden></div>
       <div class="phone-stage" data-pane="mobile" hidden></div>
     </div>` : `<div class="case-hero"><div class="stage">${caseVisual(p)}</div></div>`}
     <div class="case-stats">${p.stats.map((s,k)=>`<div class="cs ${k===0?"ink":""}" style="--rd:${k*0.12}s">${k===0?'<span class="cs-grid" aria-hidden="true"></span>':""}<div class="cs-top"><span>${pad(k+1)} / ${pad(p.stats.length)}</span><i aria-hidden="true"></i></div><div>${statValue(s[0])}<p class="cs-d">${s[1]}</p></div></div>`).join("")}</div>

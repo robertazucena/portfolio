@@ -1,9 +1,9 @@
 /* When framed (e.g. a portfolio preview whose frame is stretched to the full page height),
-   size "screen-height" sections against a normal screen (16:10 desktop, 390x844 phone) instead of the stretched frame. */
+   size "screen-height" sections against a normal screen (16:10 desktop, 820x1180 / 1180x820 tablet, 390x844 phone) instead of the stretched frame. */
 (function(){
   var framed = false; try { framed = window.self !== window.top; } catch (e) { framed = true; }
   function setVh(){
-    var w = window.innerWidth, h = framed ? Math.min(window.innerHeight, w < 760 ? w * 844 / 390 : w * 0.625) : window.innerHeight;
+    var w = window.innerWidth, h = framed ? Math.min(window.innerHeight, w < 760 ? w * 844 / 390 : (w < 1100 ? w * 1180 / 820 : (w <= 1200 ? w * 820 / 1180 : w * 0.625))) : window.innerHeight;
     document.documentElement.style.setProperty('--vh', (h / 100) + 'px');
   }
   setVh(); window.addEventListener('resize', setVh);

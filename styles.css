@@ -384,7 +384,6 @@ section{position:relative}
 .gal-mob{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
 .scr{margin:0;display:grid;gap:10px;min-width:0}
 .gal-desk .scr:last-child:nth-child(odd){grid-column:1/-1}
-.gal-desk .scr:last-child:nth-child(odd) .mk{aspect-ratio:21/9}
 .scr figcaption{font-size:13.5px;color:var(--ink-2);letter-spacing:-.01em}
 .phone-f{aspect-ratio:9/19.5;max-width:100%;border-radius:clamp(18px,2.4vw,30px);background:#fff;border:1px solid rgba(15,17,19,.14);padding:5px;box-shadow:0 30px 60px -30px rgba(15,17,19,.3),0 10px 24px -14px rgba(15,17,19,.16);display:flex}
 .phone-f .shot-view{flex:1;border-radius:clamp(14px,2vw,25px);overflow:hidden;position:relative;background:#f4f5f6}
@@ -509,6 +508,9 @@ section{position:relative}
 .case-hero.viewer{display:flex;flex-direction:column;align-items:center;gap:clamp(20px,3vw,36px);padding-top:clamp(20px,3vw,36px)}
 .case-hero.viewer .vw-bar{width:min(100%,1040px)}
 .phone-stage{width:min(340px,78%)}
+.tablet-stage{width:min(880px,94%)}
+.tablet-f{aspect-ratio:1180/820;max-width:100%;border-radius:clamp(20px,2.6vw,34px);background:#fff;border:1px solid rgba(15,17,19,.14);padding:clamp(8px,1vw,12px);box-shadow:0 40px 80px -40px rgba(15,17,19,.32),0 12px 28px -16px rgba(15,17,19,.16);display:flex}
+.tablet-f .shot-view{flex:1;border-radius:clamp(12px,1.6vw,20px);overflow:hidden;position:relative;background:#f4f5f6}
 
 /* ---------- Loaders ---------- */
 #loader{display:none}
