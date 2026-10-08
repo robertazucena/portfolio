@@ -252,7 +252,7 @@ const PROJECTS = [
     cat: ["web"], mock: "portal",
     live: "https://robertazucena.com/assets/prototype/courtly/index.html",
     proto: { base: "assets/prototype/courtly/",
-      desktop: [["Dashboard","index.html",2200],["Court Details","court-details.html",2200],["Booking","booking.html",1600],["Community Games","community.html",1800],["Profile","profile.html",2400],["Edit Profile","edit-profile.html",2200]],
+      desktop: [["Dashboard","index.html",1174],["Court Details","court-details.html",2200],["Booking","booking.html",1600],["Community Games","community.html",1800],["Profile","profile.html",2400],["Edit Profile","edit-profile.html",2200]],
       interactive: true,
       heroMobile: [["Dashboard","index.html",0]] },
     summary: "Your all-in-one platform for sports court bookings.",
@@ -265,7 +265,7 @@ const PROJECTS = [
     insight: "People don’t want a court. They want <em>a game tonight</em>.",
     approach: [["Flow","Mapped the shortest path from “I want to play” to a confirmed slot."],["System","Built a green and slate token system in Geist, shared across every page."],["Design","Designed in Figma with auto layout so every screen translated cleanly to code."],["Build","Hand-built six pages in HTML, CSS and JavaScript, with one stylesheet and one script."]],
     solution: "Discovery, booking and community in one calm flow.",
-    features: [["Nearby courts","A dashboard of courts close to you, with live availability."],["Slot booking","Facilities, today’s open slots and a clear checkout."],["Community games","Join open games like a basketball run tonight or a futsal league."],["Profile","Stats, achievements, activity, payment methods and notifications."]],
+    features: [["Dashboard","Favourite-sport filters, nearby courts with ratings and prices, and your upcoming and past bookings."],["Slot booking","Facilities, today’s open slots and a clear checkout."],["Community games","Join open games like a basketball run tonight or a futsal league."],["Profile","Stats, achievements, activity, payment methods and notifications."]],
     outcomes: ["A booking flow that gets to a confirmed slot in a few taps","One token system across six pages","Clean layouts from 375 to 1440px, verified in the browser"],
     reflection: "Small touches, like a preloader of bouncing sports balls, give a utility app its personality."
   },

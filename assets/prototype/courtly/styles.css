@@ -2,7 +2,7 @@
    Courtly — Shared Styles
    ========================================================================== */
 
-@import url('https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&family=Geist+Mono:wght@400;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,500..800&family=Geist:wght@400;500;600;700;800&display=swap');
 
 :root {
   /* Brand */
@@ -1366,4 +1366,183 @@ body.page-leaving .app .sidebar {
   .edit-header-row { flex-direction: column; align-items: stretch; }
   .edit-header-actions { justify-content: stretch; }
   .edit-header-actions .btn { flex: 1; }
+}
+
+/* ==========================================================================
+   v3 polish layer — same product, finer craft
+   Display type, motion curves, press feedback, mobile-native baseline
+   ========================================================================== */
+:root {
+  --font-display: 'Bricolage Grotesque', 'Geist', -apple-system, 'Segoe UI', sans-serif;
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+  --green-700: #15803d;
+  --ink: #0b1f14;
+  --shadow-card: 0 1px 0 rgba(15,23,42,.04), 0 12px 28px -18px rgba(15,23,42,.28);
+  --shadow-lift: 0 1px 0 rgba(15,23,42,.04), 0 22px 36px -20px rgba(20,83,45,.38);
+}
+
+/* --- mobile-native baseline --- */
+html { -webkit-tap-highlight-color: transparent; overscroll-behavior-y: none; scroll-behavior: auto; }
+body { min-height: 100dvh; font-variant-numeric: tabular-nums; text-rendering: optimizeLegibility; }
+.app { min-height: 100dvh; }
+.sidebar { height: 100dvh; }
+a, button, [role="button"], .time-slot, .sport-pill, .filter-pill, .toggle-switch { touch-action: manipulation; -webkit-touch-callout: none; }
+button, .sport-pill, .filter-pill, .nav-item, .btn, .time-slot { user-select: none; -webkit-user-select: none; }
+input, textarea, select { font-size: 16px; }
+@media (min-width: 1025px) { input, textarea, select { font-size: 14px; } }
+:focus-visible { outline: 2px solid var(--green-600); outline-offset: 2px; }
+.mobile-topbar { padding-top: max(0px, env(safe-area-inset-top)); }
+
+/* --- display type: headings and numbers carry the personality --- */
+.greeting p:last-child, .section-header-row h2, .section-title, .stat-box .value, .booking-header h1,
+.court-info h3, .profile-header h1, .page-title, h1 {
+  font-family: var(--font-display);
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+.greeting p:last-child { font-size: 26px; font-weight: 750; line-height: 1.05; }
+.greeting p:first-child { font-size: 13px; font-weight: 500; letter-spacing: 0; margin-bottom: 2px; }
+.section-title, .section-header-row h2 { font-size: 20px; font-weight: 750; }
+.stat-box .value { font-size: 38px; font-weight: 800; line-height: 1; letter-spacing: -0.03em; }
+.brand-name { font-family: var(--font-display); font-weight: 800; letter-spacing: -0.03em; font-size: 22px; }
+.court-info h3 { font-size: 17px; font-weight: 700; }
+
+/* --- press feedback: everything tappable answers the finger --- */
+.btn, .sport-pill, .filter-pill, .nav-item, .time-slot, .court-card, .previous-card, .upcoming-card, .btn-upgrade, .toggle-switch, .menu-toggle {
+  transition: transform 160ms var(--ease-out), background-color 180ms var(--ease-out), border-color 180ms var(--ease-out), color 180ms var(--ease-out), box-shadow 220ms var(--ease-out), opacity 180ms;
+}
+.btn:active, .sport-pill:active, .filter-pill:active, .nav-item:active, .time-slot:not(.booked):active, .btn-upgrade:active { transform: scale(0.97); }
+.court-card:active { transform: scale(0.985); }
+@media (hover: hover) and (pointer: fine) {
+  .court-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lift); }
+  .court-card:active { transform: scale(0.985); }
+  .court-card:hover .court-image { transform: scale(1.04); }
+}
+@media (hover: none) {
+  .court-card:hover { transform: none; box-shadow: var(--shadow-sm); }
+  .nav-item:hover, .sport-pill:hover:not(.active), .time-slot:not(.booked):hover { background: inherit; }
+}
+.court-card { box-shadow: var(--shadow-card); overflow: hidden; }
+.court-card img.court-image { transition: transform 600ms var(--ease-out); background: linear-gradient(135deg, var(--green-900), var(--green-600)); aspect-ratio: 5 / 4; height: auto; }
+
+/* --- sport pills: selected state is confident, not pale --- */
+.sport-pill.active { background: var(--green-900); border-color: var(--green-900); color: #fff; }
+.sport-pill.active svg { stroke: #fff; }
+.sport-pill { padding: 10px 16px; }
+
+/* --- court price reads as a price tag, rating as a quiet fact --- */
+.court-price { font-family: var(--font-display); font-size: 18px; font-weight: 800; letter-spacing: -0.02em; color: var(--green-700); }
+.court-price::after { content: ""; }
+.courts-empty { margin-top: 12px; padding: 28px 20px; text-align: center; color: var(--slate-600); background: var(--white); border: 1px dashed var(--slate-200); border-radius: var(--r-xl); }
+.courts-grid .court-card[hidden] { display: none; }
+.courts-grid .court-card.enter { animation: card-in 380ms var(--ease-out) both; animation-delay: calc(var(--n, 0) * 55ms); }
+@keyframes card-in { from { opacity: 0; transform: translateY(10px) scale(.98); } to { opacity: 1; transform: none; } }
+
+/* --- upcoming booking: the one card that is about "now" --- */
+.upcoming-card {
+  position: relative; overflow: hidden; isolation: isolate;
+  background: radial-gradient(120% 140% at 100% 0%, var(--green-600) 0%, var(--green-900) 55%);
+  box-shadow: 0 18px 30px -18px rgba(20,83,45,.7);
+}
+.upcoming-card::after {
+  content: ""; position: absolute; z-index: -1; right: -34px; top: 50%; width: 150px; height: 150px; translate: 0 -50%;
+  border: 2px solid rgba(255,255,255,.14); border-radius: 50%;
+  box-shadow: 0 0 0 28px rgba(255,255,255,.04);
+}
+.upcoming-card .tag { color: #86efac; }
+.upcoming-card .title { font-family: var(--font-display); font-size: 17px; font-weight: 700; letter-spacing: -0.015em; }
+.upcoming-card .booking-details { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.upcoming-card .eta { align-self: flex-start; margin-top: 8px; font-size: 12px; font-weight: 700; color: var(--green-900); background: #bbf7d0; padding: 4px 10px; border-radius: var(--r-pill); }
+.previous-card { background: var(--slate-100); }
+
+/* --- stats: numbers lead, emoji out, progress you can read --- */
+.stat-box { box-shadow: var(--shadow-card); }
+.stat-box.amber .value { color: var(--amber-600); }
+.streak-bars { display: flex; gap: 6px; }
+.streak-bars i { flex: 1; height: 8px; border-radius: 4px; background: var(--slate-200); }
+.streak-bars i.on { background: var(--amber-600); transform-origin: left; animation: bar-in 600ms var(--ease-out) both; }
+.streak-bars i:nth-child(2) { animation-delay: 80ms; } .streak-bars i:nth-child(3) { animation-delay: 160ms; }
+@keyframes bar-in { from { transform: scaleX(0); } to { transform: none; } }
+
+/* --- sidebar --- */
+.nav-item.active { background: var(--green-900); color: #fff; }
+.nav-item.active .active-bar { background: #86efac; }
+.nav-item { transition-duration: 160ms; }
+
+/* --- time slots --- */
+.time-slot.selected { background: var(--green-900); border-color: var(--green-900); }
+.time-slot.selected .t, .time-slot.selected .s { color: #fff; }
+.time-slot.selected { animation: slot-pop 280ms var(--ease-out); }
+@keyframes slot-pop { 0% { transform: scale(.94); } 60% { transform: scale(1.03); } 100% { transform: scale(1); } }
+.time-slot.booked .t { text-decoration: line-through; }
+
+/* --- confirm button + success state replace the old alert() --- */
+.confirm-pay-btn { position: relative; min-height: 52px; font-size: 16px; }
+.confirm-pay-btn.loading .lbl { opacity: 0; }
+.confirm-pay-btn.loading::after { content: ""; position: absolute; width: 20px; height: 20px; border-radius: 50%; border: 2.5px solid rgba(255,255,255,.35); border-top-color: #fff; animation: spin 640ms linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.success-layer { position: fixed; inset: 0; z-index: 400; display: none; align-items: center; justify-content: center; padding: 20px; background: rgba(15,23,42,.55); backdrop-filter: blur(6px); }
+.success-layer.open { display: flex; animation: fade-in 220ms var(--ease-out) both; }
+@keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+.success-card { background: #fff; border-radius: 28px; padding: 32px 28px 24px; width: 100%; max-width: 400px; text-align: center; animation: sheet-up 480ms var(--ease-drawer) both; }
+@keyframes sheet-up { from { opacity: 0; transform: translateY(40px) scale(.97); } to { opacity: 1; transform: none; } }
+.success-card .check { width: 72px; height: 72px; margin: 0 auto 18px; color: var(--green-600); }
+.success-card .check svg { width: 100%; height: 100%; }
+.success-card .check circle { stroke-dasharray: 152; stroke-dashoffset: 152; animation: draw 600ms 120ms var(--ease-out) forwards; }
+.success-card .check path { stroke-dasharray: 40; stroke-dashoffset: 40; animation: draw 420ms 520ms var(--ease-out) forwards; }
+@keyframes draw { to { stroke-dashoffset: 0; } }
+.success-card h2 { font-family: var(--font-display); font-size: 30px; font-weight: 800; letter-spacing: -0.03em; }
+.success-card p { margin-top: 8px; color: var(--slate-600); line-height: 1.45; }
+.success-card p.paid { font-size: 13px; color: var(--slate-400); }
+.success-actions { display: grid; gap: 10px; margin-top: 22px; }
+.success-actions .btn { width: 100%; padding: 14px; font-size: 15px; justify-content: center; text-align: center; }
+
+/* --- loader: shorter, and only on the first page of a visit --- */
+.preloader.quick { display: none; }
+
+@media (max-width: 640px) {
+  .greeting p:last-child { font-size: 22px; }
+  .stat-box .value { font-size: 32px; }
+  .courts-grid { gap: 16px; }
+  .sport-pills-row { flex-wrap: nowrap; overflow-x: auto; margin: 0 -24px; padding: 2px 24px 6px; scrollbar-width: none; scroll-snap-type: x proximity; }
+  .sport-pills-row::-webkit-scrollbar { display: none; }
+  .sport-pill { flex: none; scroll-snap-align: start; }
+  .success-layer { align-items: flex-end; padding: 0; }
+  .success-card { border-radius: 28px 28px 0 0; max-width: none; padding-bottom: calc(24px + env(safe-area-inset-bottom)); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .court-card, .court-card img, .streak-bars i, .time-slot.selected, .success-card, .success-card .check circle, .success-card .check path { animation: none !important; transition: none !important; }
+  .success-card .check circle, .success-card .check path { stroke-dashoffset: 0; }
+}
+.court-info h3 { text-wrap: nowrap; }
+.workspace { width: 100%; }
+@media (max-width: 1024px) { .workspace { align-items: stretch; } .content-left, .content-right { width: 100%; } }
+
+/* --- pagination --- */
+.section-header-row h2 .count { font-family: var(--font); font-size: 13px; font-weight: 700; color: var(--green-700); background: var(--green-100); padding: 2px 9px; border-radius: var(--r-pill); vertical-align: middle; margin-left: 6px; letter-spacing: 0; }
+.pager { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-top: 20px; }
+.pager-info { font-size: 13px; color: var(--slate-600); }
+.pager-controls { display: flex; align-items: center; gap: 6px; }
+.pager-btn { min-width: 40px; height: 40px; padding: 0 12px; border-radius: var(--r-pill); border: 1px solid var(--slate-200); background: var(--white); color: var(--slate-600); font-weight: 700; font-size: 14px; display: inline-flex; align-items: center; justify-content: center; transition: transform 160ms var(--ease-out), background-color 180ms, color 180ms, border-color 180ms; font-variant-numeric: tabular-nums; }
+.pager-btn svg { width: 16px; height: 16px; }
+.pager-btn:active:not([disabled]) { transform: scale(0.94); }
+.pager-btn[aria-current="page"] { background: var(--green-900); border-color: var(--green-900); color: #fff; }
+.pager-btn[disabled] { opacity: .4; cursor: not-allowed; }
+@media (hover: hover) and (pointer: fine) { .pager-btn:hover:not([disabled]):not([aria-current]) { border-color: var(--green-600); color: var(--green-700); } }
+@media (max-width: 640px) { .pager { flex-direction: column; align-items: stretch; text-align: center; } .pager-controls { justify-content: center; } }
+@media (max-width: 640px) { .sport-pills-row { scroll-padding-inline: 24px; } }
+
+/* Court details: taller hero so the full court view shows */
+.hero-media { height: auto; aspect-ratio: 16 / 10; max-height: 560px; }
+@media (max-width: 640px) { .hero-media { height: auto; aspect-ratio: 4 / 3; } }
+
+/* Slots header: align title and Select Date on one centre line */
+.slots-header { align-items: center; margin-bottom: 16px; }
+.slots-header h3 { margin: 0; line-height: 1.3; }
+.date-picker-btn { align-self: center; margin: 0; }
+@media (max-width: 640px) {
+  .slots-header { flex-wrap: nowrap; gap: 10px; }
+  .slots-header h3 { flex: 1; min-width: 0; font-size: 15px; }
+  .date-picker-btn { flex-shrink: 0; white-space: nowrap; }
 }

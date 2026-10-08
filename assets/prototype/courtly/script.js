@@ -1,7 +1,11 @@
 // Courtly — shared interactions, preloader, and page transitions
 
 const __pageStart = performance.now();
-const __PRELOADER_MIN_MS = 900;
+let __seen = false;
+try { __seen = sessionStorage.getItem('courtly:seen') === '1'; sessionStorage.setItem('courtly:seen', '1'); } catch (e) {}
+const __PRELOADER_MIN_MS = __seen ? 0 : 800;
+if (__seen) { const p = document.getElementById('preloader'); if (p) p.classList.add('quick'); }
+const __buzz = (ms = 6) => { try { navigator.vibrate && navigator.vibrate(ms); } catch (e) {} };
 
 function __hidePreloader() {
   const el = document.getElementById('preloader');
@@ -38,7 +42,7 @@ document.addEventListener('click', (e) => {
   const href = a.getAttribute('href');
   e.preventDefault();
   document.body.classList.add('page-leaving');
-  setTimeout(() => { window.location.href = href; }, 260);
+  setTimeout(() => { window.location.href = href; }, 220);
 });
 
 // Restore visibility if user navigates back via bfcache (page not reloaded)
@@ -180,12 +184,110 @@ document.addEventListener('DOMContentLoaded', () => {
       }, 900);
     });
   }
+
+  // Greeting follows the clock
+  const greet = document.querySelector('.greeting p:last-child');
+  if (greet) {
+    const h = new Date().getHours();
+    const word = h < 12 ? 'Good morning' : h < 18 ? 'Good afternoon' : 'Good evening';
+    greet.textContent = greet.textContent.replace(/^Good (morning|afternoon|evening)/, word);
+  }
+
+  // Nearby courts: sport filter + pagination (dashboard)
+  const grid = document.getElementById('courts-grid');
+  if (grid) {
+    const PAGE_SIZE = 6;
+    const cards = [...grid.querySelectorAll('.court-card')];
+    const empty = document.getElementById('courts-empty');
+    const pager = document.getElementById('pager');
+    const count = document.getElementById('courts-count');
+    const section = grid.closest('section');
+    let sport = 'all', page = 1;
+
+    function renderCourts(animate) {
+      const list = cards.filter(c => sport === 'all' || c.dataset.sports.split(' ').includes(sport));
+      const pages = Math.max(1, Math.ceil(list.length / PAGE_SIZE));
+      page = Math.min(page, pages);
+      const start = (page - 1) * PAGE_SIZE;
+      cards.forEach(c => { c.hidden = true; c.classList.remove('enter'); });
+      list.slice(start, start + PAGE_SIZE).forEach((c, i) => {
+        c.hidden = false;
+        if (animate) { c.style.setProperty('--n', i); void c.offsetWidth; c.classList.add('enter'); }
+      });
+      if (empty) empty.hidden = list.length > 0;
+      if (count) count.textContent = list.length ? list.length : '';
+      if (!pager) return;
+      if (pages < 2) { pager.innerHTML = list.length ? `<p class="pager-info">Showing all ${list.length} ${list.length === 1 ? 'court' : 'courts'}</p>` : ''; return; }
+      const from = start + 1, to = Math.min(start + PAGE_SIZE, list.length);
+      let h = `<p class="pager-info">Showing ${from}-${to} of ${list.length} courts</p><div class="pager-controls">`;
+      h += `<button class="pager-btn" data-page="${page - 1}" aria-label="Previous page" ${page === 1 ? 'disabled' : ''}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>`;
+      for (let p = 1; p <= pages; p++) h += `<button class="pager-btn num" data-page="${p}" ${p === page ? 'aria-current="page"' : ''} aria-label="Page ${p}">${p}</button>`;
+      h += `<button class="pager-btn" data-page="${page + 1}" aria-label="Next page" ${page === pages ? 'disabled' : ''}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button></div>`;
+      pager.innerHTML = h;
+    }
+
+    pager && pager.addEventListener('click', (e) => {
+      const b = e.target.closest('[data-page]');
+      if (!b || b.disabled) return;
+      __buzz();
+      page = +b.dataset.page;
+      renderCourts(true);
+      const top = section.getBoundingClientRect().top;
+      if (top < 0 || top > window.innerHeight * 0.5) section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+
+    document.querySelectorAll('.sport-pill[data-sport]').forEach(pill => {
+      pill.addEventListener('click', () => {
+        __buzz();
+        sport = pill.dataset.sport;
+        page = 1;
+        renderCourts(true);
+      });
+    });
+    renderCourts(false);
+  }
+
+  // Confirm & Pay: loading -> success sheet (replaces the old alert)
+  const confirmBtn = document.getElementById('confirm-btn');
+  const success = document.getElementById('success');
+  if (confirmBtn && success) {
+    confirmBtn.addEventListener('click', () => {
+      if (confirmBtn.classList.contains('loading')) return;
+      confirmBtn.classList.add('loading');
+      __buzz(10);
+      setTimeout(() => {
+        confirmBtn.classList.remove('loading');
+        success.classList.add('open');
+        success.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+        __buzz([14, 40, 22]);
+        const f = success.querySelector('a'); f && f.focus({ preventScroll: true });
+      }, 800);
+    });
+  }
 });
 
-/* Photo fallback: if an image can't load (offline, blocked host), show a neutral placeholder instead of a broken icon */
+/* Photo fallback: if a photo can't load (offline, blocked host), keep the card clean.
+   Large photos turn transparent so the green panel behind them shows; small avatars show initials. */
 (function () {
-  var PH = "data:image/svg+xml;charset=utf-8," + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300" viewBox="0 0 400 300"><rect width="400" height="300" fill="#EEF1F3"/><g fill="none" stroke="#B9C2C9" stroke-width="10" stroke-linejoin="round"><rect x="140" y="105" width="120" height="90" rx="12"/><path d="M150 185l35-38 28 26 20-18 27 30"/></g><circle cx="228" cy="132" r="9" fill="#B9C2C9"/></svg>');
-  function swap(img) { if (img.dataset.ph) return; img.dataset.ph = "1"; img.src = PH; img.style.objectFit = "cover"; }
+  var CLEAR = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
+  function initials(alt) {
+    var w = (alt || "").trim().split(/\s+/).filter(Boolean);
+    return ((w[0] || "")[0] || "") + ((w[1] || "")[0] || "");
+  }
+  function avatar(alt) {
+    var t = initials(alt).toUpperCase();
+    var svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80"><rect width="80" height="80" fill="#DCFCE7"/>' +
+      (t ? '<text x="40" y="49" text-anchor="middle" font-family="Inter,Arial,sans-serif" font-size="28" font-weight="700" fill="#166534">' + t + '</text>'
+         : '<circle cx="40" cy="31" r="13" fill="#86EFAC"/><path d="M14 72c4-16 15-23 26-23s22 7 26 23z" fill="#86EFAC"/>') + '</svg>';
+    return "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg);
+  }
+  function swap(img) {
+    if (img.dataset.ph) return; img.dataset.ph = "1";
+    var small = (img.getBoundingClientRect().width || img.width || 0) <= 120 || /avatar|user|profile/i.test(img.className + " " + (img.parentNode && img.parentNode.className));
+    img.src = small ? avatar(img.alt) : CLEAR;
+    if (!small) img.alt = "";
+  }
   document.addEventListener("error", function (e) { var t = e.target; if (t && t.tagName === "IMG") swap(t); }, true);
   function sweep() { Array.prototype.forEach.call(document.images, function (img) { if (img.complete && img.naturalWidth === 0 && img.getAttribute("src")) swap(img); }); }
   if (document.readyState === "complete") sweep(); else window.addEventListener("load", sweep);
