@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta name="robots" content="noindex, nofollow">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Sulyap — Philippine news in one place</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=Playfair+Display:ital,wght@0,500..900;1,500..800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="now" aria-label="Right now"><div class="wrap" id="now"></div></div>
+<header class="top">
+  <div class="wrap bar">
+    <a class="logo" href="#/" aria-label="Sulyap home"><b>SULYAP</b><svg class="glint" width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M7 0 C7.5 4.2 9.8 6.5 14 7 C9.8 7.5 7.5 9.8 7 14 C6.5 9.8 4.2 7.5 0 7 C4.2 6.5 6.5 4.2 7 0Z" fill="currentColor"/></svg></a>
+    <nav class="main" aria-label="Sections" id="nav"></nav>
+    <div class="tools">
+      <button class="search" id="openPal" aria-label="Search news"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><span>Search news</span><kbd>⌘K</kbd></button>
+      <a class="iconbtn" id="savedbtn" href="#/saved" aria-label="Saved stories" title="Saved stories"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12v18l-6-4-6 4z"/></svg><span class="badge" id="badge" hidden>0</span></a><button class="iconbtn" id="skin" aria-label="Switch to print edition" title="Print edition"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h13v14a2 2 0 0 0 2 2H6a2 2 0 0 1-2-2zM17 9h3v10a2 2 0 0 1-2 2M7 9h7M7 13h7M7 17h4"/></svg></button><button class="iconbtn" id="theme" aria-label="Switch light or dark mode"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+    </div>
+  </div>
+</header>
+<main id="view"></main>
+<div class="subbar"><form id="subform" novalidate><label for="subemail">Get the morning briefing by email</label><input id="subemail" type="email" name="e" placeholder="Enter your email address" autocomplete="email"><button type="submit">Subscribe <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12h16M14 6l6 6-6 6"/></svg></button></form></div>
+<footer>
+  <div class="wrap">
+    <div class="cols">
+      <div><a class="logo" href="#/"><b>SULYAP</b><svg class="glint" width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M7 0 C7.5 4.2 9.8 6.5 14 7 C9.8 7.5 7.5 9.8 7 14 C6.5 9.8 4.2 7.5 0 7 C4.2 6.5 6.5 4.2 7 0Z" fill="currentColor"/></svg></a>
+        <p>News from every corner of the Philippines in one place. We write short briefs, show who covered each story, and send you to the publisher to read it in full.</p></div>
+      <div><h4>Sections</h4><ul id="fnav"></ul></div>
+      <div><h4>Regions</h4><ul><li><a href="#/regions/Luzon">Luzon</a></li><li><a href="#/regions/Visayas">Visayas</a></li><li><a href="#/regions/Mindanao">Mindanao</a></li></ul></div>
+      <div><h4>About Sulyap</h4><ul><li><a href="#/about">How Sulyap works</a></li><li><a href="#/standards">Editorial standards</a></li><li><a href="#/sources">Our sources</a></li><li><a href="#/sources/photos">Photo credits</a></li><li><a href="#/contact">Contact the editors</a></li><li><a href="#/contact/tip">Send a tip</a></li><li><a href="#/saved">Saved stories</a></li></ul></div>
+    </div>
+    <div class="fine"><span><span class="proto">Prototype</span>&nbsp; All stories, outlets, figures and illustrations are sample content for design testing.</span><span>© 2026 Sulyap</span></div>
+  </div>
+</footer><div id="toast" role="status" aria-live="polite"></div>
+
+<div id="rprog"></div>
+<div class="pal" id="pal" hidden><div class="pal-box" role="dialog" aria-modal="true" aria-label="Search Sulyap"><div class="pal-in"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="palq" placeholder="Search stories, places and sections" autocomplete="off" aria-label="Search"><kbd>Esc</kbd></div><div class="pal-res" id="palres"></div><div class="pal-foot"><span><kbd>↑</kbd><kbd>↓</kbd> to move</span><span><kbd>Enter</kbd> to open</span><span><kbd>/</kbd> or <kbd>⌘K</kbd> to search anytime</span></div></div></div>
+<div class="viewer" id="viewer" hidden><button class="v-nav" data-v="-1" aria-label="Previous story"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M15 6l-6 6 6 6"/></svg></button><div class="v-card" id="vcard"></div><button class="v-nav" data-v="1" aria-label="Next story"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg></button></div>
+<nav class="tabbar" aria-label="Quick links">
+<a href="#/" data-t=""><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>Home</a>
+<a href="#/regions/Luzon" data-t="regions"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>Regions</a>
+<button id="tabSearch"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>Search</button>
+<a href="#/weather" data-t="weather"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M7 17a4 4 0 1 1 .8-7.9A6 6 0 0 1 19 11a3 3 0 0 1-1 6z"/></svg>Weather</a>
+<a href="#/sources" data-t="sources"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h10"/></svg>Sources</a>
+</nav>
+<script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Grab Heroes Portal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+
+<!-- ================================================================
+     NAVBAR
+     ================================================================ -->
+<header class="gp-appnav">
+<meta name="robots" content="noindex, nofollow">
+  <div class="gp-shell gp-appnav__inner">
+    <div class="gp-appnav__left">
+      <a href="index.html"><img class="gp-appnav__logo" src="assets/logo.png" alt="Grab"></a>
+      <nav>
+        <ul class="gp-appnav__links">
+          <li><a href="index.html" class="gp-appnav__item is-active">Home</a></li>
+          <li><a href="analytics.html" class="gp-appnav__item">Analytics</a></li>
+          <li><a href="team.html" class="gp-appnav__item">My Team</a></li>
+          <li><a href="resources.html" class="gp-appnav__item">Resources</a></li>
+          <li><a href="tools.html" class="gp-appnav__item">Tools</a></li>
+        </ul>
+      </nav>
+    </div>
+    <div class="gp-appnav__right">
+      <div class="gp-appnav__search">
+        <svg viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="1.8"/><path d="M21 21l-4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        <span>Search anything...</span>
+      </div>
+      <div class="gp-appnav__bell">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M6 8a6 6 0 1 1 12 0c0 4 1.5 5.5 1.5 5.5H4.5S6 12 6 8Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M10 18a2 2 0 0 0 4 0" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+      </div>
+      <div class="gp-appnav__user">
+        <span class="gp-appnav__avatar"><span style="background:#00893d;color:#fff;width:100%;height:100%;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700">AY</span></span>
+        <div class="gp-appnav__user-meta">
+          <span class="gp-appnav__user-name">Alexander Yuan</span>
+          <span class="gp-appnav__user-role">Operations Lead</span>
+        </div>
+      </div>
+      <button class="gp-appnav__menu-btn" type="button">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        MENU
+      </button>
+    </div>
+  </div>
+<div class="gp-mobile-menu" id="gpMobileMenu"><div class="gp-mobile-menu__inner"><a href="index.html" class="gp-appnav__item">Home</a><a href="analytics.html" class="gp-appnav__item is-active">Analytics</a><a href="team.html" class="gp-appnav__item">My Team</a><a href="resources.html" class="gp-appnav__item">Resources</a><a href="tools.html" class="gp-appnav__item">Tools</a></div></div>
+</header>
+
+<main class="gp-shell">
+  <!-- ================================================================
+       WELCOME BANNER + TODO PANEL
+       ================================================================ -->
+  <div class="gp-toprow">
+    <div class="gp-welcome">
+      <div class="gp-card gp-welcome__card">
+        <p class="gp-welcome__greeting">Welcome back,<br><strong>Alexander!</strong></p>
+        <div>
+          <div class="gp-welcome__actions-head">
+            My top actions
+            <a href="#" class="gp-link"><svg viewBox="0 0 24 24" fill="none" width="13" height="13"><path d="M4 16.5V20h3.5L18.4 9.1a1.5 1.5 0 0 0 0-2.1l-1.4-1.4a1.5 1.5 0 0 0-2.1 0L4 16.5Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>Edit</a>
+          </div>
+          <div class="gp-welcome__actions">
+            <a href="#" class="gp-action">
+              <span class="gp-action__icon"><img src="assets/icon-my-activity.webp" alt=""></span>
+              My activity
+            </a>
+            <a href="#" class="gp-action">
+              <span class="gp-action__icon"><img src="assets/icon-timesheets.webp" alt=""></span>
+              Timesheets
+            </a>
+            <a href="#" class="gp-action">
+              <span class="gp-action__icon"><img src="assets/icon-payslips.webp" alt=""></span>
+              Payslips
+            </a>
+            <a href="#" class="gp-action">
+              <span class="gp-action__icon"><img src="assets/icon-connections.webp" alt=""></span>
+              Connections
+            </a>
+            <a href="#" class="gp-action">
+              <span class="gp-action__icon"><img src="assets/icon-leave.webp" alt=""></span>
+              Leave
+            </a>
+            <a href="#" class="gp-action">
+              <span class="gp-action__icon"><img src="assets/icon-skill-center.webp" alt=""></span>
+              Skill Center
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="gp-welcome__hero">
+        <img class="gp-welcome__hero-photo" src="assets/gp-welcome-hero-photo.jpg" alt="">
+        <div class="gp-welcome__hero-scrim"></div>
+        <div class="gp-welcome__hero-copy">
+          <span class="gp-welcome__hero-eyebrow">Our Grab Heroes Portal</span>
+          <h3 class="gp-welcome__hero-title">Empowering every employee to excel</h3>
+        </div>
+      </div>
+    </div>
+
+    <aside class="gp-card gp-todo">
+      <div class="gp-todo__head">
+        <h3>Your to-dos</h3>
+        <a href="#" class="gp-link">View all</a>
+      </div>
+      <ul class="gp-todo__list">
+        <li><a href="#" class="gp-todo__item">
+          <span class="gp-todo__body">
+            <span class="gp-todo__tag">Reminder</span>
+            <span class="gp-todo__text">Update your contact details and your marital status in the employee portal.</span>
+          </span>
+          <svg class="gp-todo__chevron" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a></li>
+        <li><a href="#" class="gp-todo__item gp-todo__item--alert">
+          <span class="gp-todo__body">
+            <span class="gp-todo__tag">Action required</span>
+            <span class="gp-todo__text">Complete your mandatory cybersecurity training.</span>
+          </span>
+          <svg class="gp-todo__chevron" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a></li>
+        <li><a href="#" class="gp-todo__item">
+          <span class="gp-todo__body">
+            <span class="gp-todo__tag">Reminder</span>
+            <span class="gp-todo__text">Upload missing documents for benefits enrollment.</span>
+          </span>
+          <svg class="gp-todo__chevron" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a></li>
+        <li><a href="#" class="gp-todo__item">
+          <span class="gp-todo__body">
+            <span class="gp-todo__tag">Reminder</span>
+            <span class="gp-todo__text">Read the latest terms and conditions and make sure that you agree/disagree.</span>
+          </span>
+          <svg class="gp-todo__chevron" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a></li>
+      </ul>
+    </aside>
+  </div>
+
+  <!-- ================================================================
+       NEWSROOM CAROUSEL
+       ================================================================ -->
+  <section class="gp-newsroom">
+    <div class="gp-newsroom__header">
+      <div class="gp-newsroom__heading-group">
+        <h2>Newsroom</h2>
+        <a href="#" class="gp-newsroom__viewall">View all</a>
+      </div>
+      <div class="gp-newsroom__dial">
+        <button class="gp-newsroom__arrow" type="button" aria-label="Previous slide" onclick="gpShiftDial(-1)">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div class="gp-newsroom__dots" id="gpDots">
+          <span class="is-active"></span><span></span><span></span>
+        </div>
+        <button class="gp-newsroom__arrow" type="button" aria-label="Next slide" onclick="gpShiftDial(1)">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="gp-newsroom__grid">
+      <a href="#" class="gp-story--featured">
+        <img class="gp-story--featured__art" src="assets/gp-story-featured-art.jpg" alt="">
+        <div class="gp-story--featured__scrim"></div>
+        <div class="gp-story--featured__body">
+          <span class="gp-story__posted">Posted 1 day ago</span>
+          <p class="gp-story--featured__title">Grab Reports Third Quarter 2024 Results</p>
+        </div>
+      </a>
+
+      <div class="gp-newsroom__side">
+        <a href="#" class="gp-story--compact">
+          <div class="gp-story--compact__art">
+            <img src="assets/news-grabmaps-loqate.jpg" alt="">
+          </div>
+          <div>
+            <p class="gp-story--compact__title">Loqate partners with GrabMaps to enhance location data capabilities in Southeast Asia</p>
+            <span class="gp-story__posted gp-story--compact__posted">Posted 54 minutes ago</span>
+          </div>
+        </a>
+        <a href="#" class="gp-story--compact">
+          <div class="gp-story--compact__art">
+            <img src="assets/news-grabbenefits.jpg" alt="">
+          </div>
+          <div>
+            <p class="gp-story--compact__title">Grab Commits S$4 21 Million Yearly to Upgraded GrabBenefits 2.0 Partner Welfare Programme in Singapore</p>
+            <span class="gp-story__posted gp-story--compact__posted">Posted 3 days ago</span>
+          </div>
+        </a>
+        <a href="#" class="gp-story--compact">
+          <div class="gp-story--compact__art">
+            <img src="assets/news-grab-ph-stem.jpg" alt="">
+          </div>
+          <div>
+            <p class="gp-story--compact__title">Grab PH Opens Doors for Future Business, STEM, Sustainability Leaders</p>
+            <span class="gp-story__posted gp-story--compact__posted">Posted 4 days ago</span>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- ================================================================
+     TOOLS SECTION
+     ================================================================ -->
+<section class="gp-tools" id="gpToolsSection">
+  <div class="gp-shell">
+    <p class="gp-tools__intro">Tools, resources and tasks -- everything you need to power through your day, all in one place.</p>
+    <div class="gp-tools__layout">
+      <nav class="gp-tools__rail" id="gpRail">
+        <button class="gp-tools__rail-item is-active" type="button">My Grab</button>
+        <button class="gp-tools__rail-item" type="button">My Team</button>
+        <button class="gp-tools__rail-item" type="button">My Learning</button>
+        <button class="gp-tools__rail-item" type="button">My Help</button>
+        <button class="gp-tools__rail-item" type="button">My Procurement</button>
+      </nav>
+      <select class="gp-tools__rail-select" id="gpRailSelect" aria-label="Select a section">
+        <option>My Grab</option>
+        <option>My Team</option>
+        <option>My Learning</option>
+        <option>My Help</option>
+        <option>My Procurement</option>
+      </select>
+
+      <div class="gp-tools__image">
+        <img src="assets/tools-section-photo.jpg" alt="">
+      </div>
+
+      <div class="gp-tools__list" id="gpCapabilities">
+        <a href="#" class="gp-capability">
+          <span class="gp-capability__icon"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="3.4" stroke="currentColor" stroke-width="1.6"/><path d="M5 20c1.2-4 4-6 7-6s5.8 2 7 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
+          <span><p class="gp-capability__title">Personal Information</p><p class="gp-capability__desc">See your personal details, contact info, compensation and more.</p></span>
+        </a>
+        <a href="#" class="gp-capability">
+          <span class="gp-capability__icon"><svg viewBox="0 0 24 24" fill="none"><circle cx="7" cy="7" r="2.4" stroke="currentColor" stroke-width="1.6"/><circle cx="17" cy="7" r="2.4" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="17" r="2.4" stroke="currentColor" stroke-width="1.6"/><path d="M9 8.5 10.5 15M15 8.5 13.5 15" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
+          <span><p class="gp-capability__title">Connections</p><p class="gp-capability__desc">Check out the employee directory here.</p></span>
+        </a>
+        <a href="#" class="gp-capability">
+          <span class="gp-capability__icon"><svg viewBox="0 0 24 24" fill="none"><path d="M6 3v18M18 3v18M6 8h12M6 16h12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
+          <span><p class="gp-capability__title">Journeys</p><p class="gp-capability__desc">Request a workspace category change.</p></span>
+        </a>
+        <a href="#" class="gp-capability">
+          <span class="gp-capability__icon"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="1.6"/><path d="M12 8v4l3 2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          <span><p class="gp-capability__title">Time and Absence</p><p class="gp-capability__desc">Request, extend or cancel a personal leave of absence.</p></span>
+        </a>
+        <a href="#" class="gp-capability">
+          <span class="gp-capability__icon"><svg viewBox="0 0 24 24" fill="none"><rect x="4" y="8" width="16" height="12" rx="2" stroke="currentColor" stroke-width="1.6"/><path d="M9 8V6a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2" stroke="currentColor" stroke-width="1.6"/></svg></span>
+          <span><p class="gp-capability__title">Career and Performance</p><p class="gp-capability__desc">Keep track of your career development here.</p></span>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================
+     FOOTER
+     ================================================================ -->
+<footer class="gp-footer">
+  <div class="gp-shell gp-footer__top">
+    <div>
+      <img class="gp-footer__brand-logo" src="assets/logo.png" alt="Grab">
+      <p class="gp-footer__tagline">Forward Together</p>
+      <p class="gp-footer__address">3 Media Close,<br>Singapore 138498</p>
+    </div>
+    <div class="gp-footer__links">
+    <div class="gp-footer__col">
+      <h4>About Grab</h4>
+      <ul>
+        <li><a href="#">About Us</a></li><li><a href="#">Inside Grab</a></li><li><a href="#">Investor Relations</a></li>
+        <li><a href="#">Locations</a></li><li><a href="#">Grab Financial Group</a></li><li><a href="#">Compliance and Ethics</a></li>
+        <li><a href="#">Financial services</a></li><li><a href="#">Financial resources</a></li>
+      </ul>
+    </div>
+    <div class="gp-footer__col">
+      <h4>News</h4>
+      <ul>
+        <li><a href="#">What's New</a></li><li><a href="#">Newsroom</a></li><li><a href="#">People</a></li>
+        <li><a href="#">Business</a></li><li><a href="#">Tech &amp; Product</a></li><li><a href="#">Consumers &amp; Drivers</a></li>
+        <li><a href="#">Social Impact &amp; Safety</a></li>
+      </ul>
+    </div>
+    <div class="gp-footer__col">
+      <h4>Top Actions</h4>
+      <ul>
+        <li><a href="#">Travel</a></li><li><a href="#">Expenses</a></li><li><a href="#">Connections</a></li>
+        <li><a href="#">My Help</a></li><li><a href="#">Self-Service Apps</a></li><li><a href="#">Procurement</a></li>
+      </ul>
+    </div>
+    <div class="gp-footer__col">
+      <h4>Social Impact</h4>
+      <ul>
+        <li><a href="#">Sustainability</a></li><li><a href="#">Grab Stories</a></li><li><a href="#">Global Events</a></li>
+        <li><a href="#">GrabForGood Fund</a></li><li><a href="#">Food Blog</a></li>
+      </ul>
+    </div>
+    <div class="gp-footer__col">
+      <h4>Quick Links</h4>
+      <ul>
+        <li><a href="#">Help Centre</a></li><li><a href="#">Developer Portal</a></li><li><a href="#">Open Positions</a></li>
+        <li><a href="#">Issues &amp; Feedback</a></li>
+      </ul>
+    </div>
+    </div>
+  </div>
+
+  <img class="gp-footer__skyline" src="assets/skyline.webp" alt="">
+  <div class="gp-footer__skyline-strip"></div>
+
+  <div class="gp-shell gp-footer__legal">
+    <div class="gp-footer__legal-left">
+      <span>© Grab 2010 - 2024</span>
+      <span>Confidential - Grab Internal</span>
+    </div>
+    <div class="gp-footer__legal-right">
+      <a href="#">Terms and Policies</a>
+      <a href="#">Privacy Notice</a>
+    </div>
+  </div>
+</footer>
+
+<button class="gp-theme-toggle" type="button" onclick="gpToggleTheme()" aria-label="Toggle color theme">
+  <svg class="gp-icon-sun" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="4.5" stroke="currentColor" stroke-width="1.8"/><path d="M12 2.5v3M12 18.5v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2.5 12h3M18.5 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+  <svg class="gp-icon-moon" viewBox="0 0 24 24" fill="none"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+</button>
+
+<script src="script.js"></script>

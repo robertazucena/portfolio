@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta name="robots" content="noindex, nofollow">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Autonomous Database — Immersive</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div id="app">
+  <div id="preloader">
+    <div class="preloader-logo">
+      <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADQAAAA0CAYAAADFeBvrAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAOdEVYdFNvZnR3YXJlAEZpZ21hnrGWYwAAAuhJREFUeAHtmj9oE1Ecx7/vUmhJ01qF0lgKFgMZHLShBoyLzdDQoUPrZKFilkqdCv6ZRVcJ1i20S7Ud3BTpUOxgOmiEYm07OEjVCEErBRuapjRp9Hm/M3e5FiHJuxPuwn3g4N6R3L3P7/3ee78LYSjxfqivbX9vdwIMfeDyYQMYsMo5exRaXJ7RXQOSAxe68fvXK4B3w5awFCRXOLTwNvVXKBL8Yl8ZFZZqch8EXMn+YBSMR2F/2goHUl7ijE+gTmAMPZKccz2oE2SXYxLqDEfI6jhCVscRsjqOkNVxhKxOA0ymsaMTLo8HDc0tFT+b//FdPr7BTEwRaj3bi66rY3D7/FWJ6CGpnfV3SM9OmyLHkpHzHAboHr8J7/AIjFLczSI9N4XNZ08hDEPC0Aj5bt9Fe/+g1i7msijIEc9tfKz4XUrLJm8n3Kf9SrvB0yIH55ZybkRKWKhrdOyQDHUiPTulSNVCY8dJJTCUtgRJ7ayvYO9T5aD8C6FVjjrhvVxOs/TcNFLxWM0yBM2hD3fG8fNNQrtGaSyKkBBFU5381CEaGaN8jt3XAqK/f60ICZ24eEk7N0OGoEVh+/WS1j6ue0YtCAm5POXo0QiZhX7ZpkVDBMOVguiD/xdCQvnN8qg0+/wwi9ZzveVnCI68kNB2spzr3qER4Qmsh1ZOdekmsmsrEEFIiEoVNd9pQzx1Q3yZJUjmzIO41t56OS+0BRBCQrQifY0/1Nq0wQaevDgU4WqgkfUOX1FkqKgllG1A3tdEMVTLdY1eV4rSo1RbZKoSKjQqtMmKVgmGazkqJqnzJKXv3NGOVgNJbMTuicuUMPz6sLU4r8wpSrf2yGBNrxAUjJwsQHUg3cMMDL8+WAo55ZzfFKyOI2R1HCGr4whZHUfI6jhCVkeigg51hASOJdQLjD2W9gvFSfkkBbsjO4QWlmekcGI1A+YK21qK+k4OKP2jUSU5EIyC82uwCZwjIwusNbk9k4HniQxd+wOxAP2bsJ+J6QAAAABJRU5ErkJggg==" alt="Oracle">
+    </div>
+    <div class="preloader-bar-track"><div class="preloader-bar-fill" id="preloaderFill"></div></div>
+    <div class="preloader-label">Loading</div>
+  </div>
+  <canvas id="neuro"></canvas>
+  <div class="bg-wash"></div>
+  <div class="noise-grain"></div>
+
+  <div class="grid-wrap"><div class="grid-floor" id="gridFloor"></div><div class="grid-fog"></div></div>
+
+  <div class="stars" id="stars"></div>
+  <div class="floaters" id="floaters"></div>
+
+  <header>
+    <div class="brand">
+      <div class="brand-mark">
+        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADQAAAA0CAYAAADFeBvrAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAOdEVYdFNvZnR3YXJlAEZpZ21hnrGWYwAAAuhJREFUeAHtmj9oE1Ecx7/vUmhJ01qF0lgKFgMZHLShBoyLzdDQoUPrZKFilkqdCv6ZRVcJ1i20S7Ud3BTpUOxgOmiEYm07OEjVCEErBRuapjRp9Hm/M3e5FiHJuxPuwn3g4N6R3L3P7/3ee78LYSjxfqivbX9vdwIMfeDyYQMYsMo5exRaXJ7RXQOSAxe68fvXK4B3w5awFCRXOLTwNvVXKBL8Yl8ZFZZqch8EXMn+YBSMR2F/2goHUl7ijE+gTmAMPZKccz2oE2SXYxLqDEfI6jhCVscRsjqOkNVxhKxOA0ymsaMTLo8HDc0tFT+b//FdPr7BTEwRaj3bi66rY3D7/FWJ6CGpnfV3SM9OmyLHkpHzHAboHr8J7/AIjFLczSI9N4XNZ08hDEPC0Aj5bt9Fe/+g1i7msijIEc9tfKz4XUrLJm8n3Kf9SrvB0yIH55ZybkRKWKhrdOyQDHUiPTulSNVCY8dJJTCUtgRJ7ayvYO9T5aD8C6FVjjrhvVxOs/TcNFLxWM0yBM2hD3fG8fNNQrtGaSyKkBBFU5381CEaGaN8jt3XAqK/f60ICZ24eEk7N0OGoEVh+/WS1j6ue0YtCAm5POXo0QiZhX7ZpkVDBMOVguiD/xdCQvnN8qg0+/wwi9ZzveVnCI68kNB2spzr3qER4Qmsh1ZOdekmsmsrEEFIiEoVNd9pQzx1Q3yZJUjmzIO41t56OS+0BRBCQrQifY0/1Nq0wQaevDgU4WqgkfUOX1FkqKgllG1A3tdEMVTLdY1eV4rSo1RbZKoSKjQqtMmKVgmGazkqJqnzJKXv3NGOVgNJbMTuicuUMPz6sLU4r8wpSrf2yGBNrxAUjJwsQHUg3cMMDL8+WAo55ZzfFKyOI2R1HCGr4whZHUfI6jhCVkeigg51hASOJdQLjD2W9gvFSfkkBbsjO4QWlmekcGI1A+YK21qK+k4OKP2jUSU5EIyC82uwCZwjIwusNbk9k4HniQxd+wOxAP2bsJ+J6QAAAABJRU5ErkJggg==" alt="Oracle">
+      </div>
+      <div class="brand-name"><b>Autonomous</b> <span>Database</span></div>
+    </div>
+    <div class="nav-actions">
+      <button class="btn" id="exploreBtn">Explore Database</button>
+      <button class="btn primary" id="talkBtn">Talk to Expert</button>
+    </div>
+  </header>
+
+  <button class="arrow prev" id="prevBtn" aria-label="Previous">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
+  <button class="arrow next" id="nextBtn" aria-label="Next">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
+
+  <main id="stage"></main>
+
+  <nav class="bottom-tabs" id="bottomTabs"></nav>
+
+  <div class="explore-panel" id="explorePanel" aria-hidden="true">
+    <div class="explore-backdrop" id="exploreBackdrop"></div>
+    <div class="explore-sheet">
+      <button class="explore-close" id="exploreClose" aria-label="Close">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+      </button>
+      <div id="exploreContent"></div>
+    </div>
+  </div>
+
+  <div class="chat-panel" id="chatPanel" aria-hidden="true">
+    <div class="chat-backdrop" id="chatBackdrop"></div>
+    <div class="chat-sheet">
+      <div class="chat-header">
+        <div class="chat-avatar">
+          <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADQAAAA0CAYAAADFeBvrAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAOdEVYdFNvZnR3YXJlAEZpZ21hnrGWYwAAAuhJREFUeAHtmj9oE1Ecx7/vUmhJ01qF0lgKFgMZHLShBoyLzdDQoUPrZKFilkqdCv6ZRVcJ1i20S7Ud3BTpUOxgOmiEYm07OEjVCEErBRuapjRp9Hm/M3e5FiHJuxPuwn3g4N6R3L3P7/3ee78LYSjxfqivbX9vdwIMfeDyYQMYsMo5exRaXJ7RXQOSAxe68fvXK4B3w5awFCRXOLTwNvVXKBL8Yl8ZFZZqch8EXMn+YBSMR2F/2goHUl7ijE+gTmAMPZKccz2oE2SXYxLqDEfI6jhCVscRsjqOkNVxhKxOA0ymsaMTLo8HDc0tFT+b//FdPr7BTEwRaj3bi66rY3D7/FWJ6CGpnfV3SM9OmyLHkpHzHAboHr8J7/AIjFLczSI9N4XNZ08hDEPC0Aj5bt9Fe/+g1i7msijIEc9tfKz4XUrLJm8n3Kf9SrvB0yIH55ZybkRKWKhrdOyQDHUiPTulSNVCY8dJJTCUtgRJ7ayvYO9T5aD8C6FVjjrhvVxOs/TcNFLxWM0yBM2hD3fG8fNNQrtGaSyKkBBFU5381CEaGaN8jt3XAqK/f60ICZ24eEk7N0OGoEVh+/WS1j6ue0YtCAm5POXo0QiZhX7ZpkVDBMOVguiD/xdCQvnN8qg0+/wwi9ZzveVnCI68kNB2spzr3qER4Qmsh1ZOdekmsmsrEEFIiEoVNd9pQzx1Q3yZJUjmzIO41t56OS+0BRBCQrQifY0/1Nq0wQaevDgU4WqgkfUOX1FkqKgllG1A3tdEMVTLdY1eV4rSo1RbZKoSKjQqtMmKVgmGazkqJqnzJKXv3NGOVgNJbMTuicuUMPz6sLU4r8wpSrf2yGBNrxAUjJwsQHUg3cMMDL8+WAo55ZzfFKyOI2R1HCGr4whZHUfI6jhCVkeigg51hASOJdQLjD2W9gvFSfkkBbsjO4QWlmekcGI1A+YK21qK+k4OKP2jUSU5EIyC82uwCZwjIwusNbk9k4HniQxd+wOxAP2bsJ+J6QAAAABJRU5ErkJggg==" alt="Oracle">
+        </div>
+        <div class="chat-header-text">
+          <div class="chat-header-name">Oracle Expert</div>
+          <div class="chat-header-status"><span class="status-dot"></span>Online now</div>
+        </div>
+        <button class="explore-close" id="chatClose" aria-label="Close">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+
+      <div class="chat-body">
+        <div class="chat-day-divider"><span>Today</span></div>
+
+        <div class="chat-msg agent">
+          <div class="chat-msg-avatar">
+            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADQAAAA0CAYAAADFeBvrAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAOdEVYdFNvZnR3YXJlAEZpZ21hnrGWYwAAAuhJREFUeAHtmj9oE1Ecx7/vUmhJ01qF0lgKFgMZHLShBoyLzdDQoUPrZKFilkqdCv6ZRVcJ1i20S7Ud3BTpUOxgOmiEYm07OEjVCEErBRuapjRp9Hm/M3e5FiHJuxPuwn3g4N6R3L3P7/3ee78LYSjxfqivbX9vdwIMfeDyYQMYsMo5exRaXJ7RXQOSAxe68fvXK4B3w5awFCRXOLTwNvVXKBL8Yl8ZFZZqch8EXMn+YBSMR2F/2goHUl7ijE+gTmAMPZKccz2oE2SXYxLqDEfI6jhCVscRsjqOkNVxhKxOA0ymsaMTLo8HDc0tFT+b//FdPr7BTEwRaj3bi66rY3D7/FWJ6CGpnfV3SM9OmyLHkpHzHAboHr8J7/AIjFLczSI9N4XNZ08hDEPC0Aj5bt9Fe/+g1i7msijIEc9tfKz4XUrLJm8n3Kf9SrvB0yIH55ZybkRKWKhrdOyQDHUiPTulSNVCY8dJJTCUtgRJ7ayvYO9T5aD8C6FVjjrhvVxOs/TcNFLxWM0yBM2hD3fG8fNNQrtGaSyKkBBFU5381CEaGaN8jt3XAqK/f60ICZ24eEk7N0OGoEVh+/WS1j6ue0YtCAm5POXo0QiZhX7ZpkVDBMOVguiD/xdCQvnN8qg0+/wwi9ZzveVnCI68kNB2spzr3qER4Qmsh1ZOdekmsmsrEEFIiEoVNd9pQzx1Q3yZJUjmzIO41t56OS+0BRBCQrQifY0/1Nq0wQaevDgU4WqgkfUOX1FkqKgllG1A3tdEMVTLdY1eV4rSo1RbZKoSKjQqtMmKVgmGazkqJqnzJKXv3NGOVgNJbMTuicuUMPz6sLU4r8wpSrf2yGBNrxAUjJwsQHUg3cMMDL8+WAo55ZzfFKyOI2R1HCGr4whZHUfI6jhCVkeigg51hASOJdQLjD2W9gvFSfkkBbsjO4QWlmekcGI1A+YK21qK+k4OKP2jUSU5EIyC82uwCZwjIwusNbk9k4HniQxd+wOxAP2bsJ+J6QAAAABJRU5ErkJggg==" alt="Oracle">
+          </div>
+          <div class="chat-bubble">
+            <p>Hi, I'm your Oracle Autonomous Database expert 👋</p>
+            <p>Happy to help with pricing, security, migration, or a live walkthrough. What are you working on?</p>
+          </div>
+        </div>
+
+        <div class="chat-chips">
+          <button class="chat-chip">Pricing &amp; plans</button>
+          <button class="chat-chip">Security &amp; compliance</button>
+          <button class="chat-chip">Migrate my database</button>
+          <button class="chat-chip">Book a live demo</button>
+        </div>
+
+        <div class="chat-msg user">
+          <div class="chat-bubble">
+            <p>Can you walk me through zero-downtime patching?</p>
+          </div>
+        </div>
+
+        <div class="chat-msg agent">
+          <div class="chat-msg-avatar">
+            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADQAAAA0CAYAAADFeBvrAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAOdEVYdFNvZnR3YXJlAEZpZ21hnrGWYwAAAuhJREFUeAHtmj9oE1Ecx7/vUmhJ01qF0lgKFgMZHLShBoyLzdDQoUPrZKFilkqdCv6ZRVcJ1i20S7Ud3BTpUOxgOmiEYm07OEjVCEErBRuapjRp9Hm/M3e5FiHJuxPuwn3g4N6R3L3P7/3ee78LYSjxfqivbX9vdwIMfeDyYQMYsMo5exRaXJ7RXQOSAxe68fvXK4B3w5awFCRXOLTwNvVXKBL8Yl8ZFZZqch8EXMn+YBSMR2F/2goHUl7ijE+gTmAMPZKccz2oE2SXYxLqDEfI6jhCVscRsjqOkNVxhKxOA0ymsaMTLo8HDc0tFT+b//FdPr7BTEwRaj3bi66rY3D7/FWJ6CGpnfV3SM9OmyLHkpHzHAboHr8J7/AIjFLczSI9N4XNZ08hDEPC0Aj5bt9Fe/+g1i7msijIEc9tfKz4XUrLJm8n3Kf9SrvB0yIH55ZybkRKWKhrdOyQDHUiPTulSNVCY8dJJTCUtgRJ7ayvYO9T5aD8C6FVjjrhvVxOs/TcNFLxWM0yBM2hD3fG8fNNQrtGaSyKkBBFU5381CEaGaN8jt3XAqK/f60ICZ24eEk7N0OGoEVh+/WS1j6ue0YtCAm5POXo0QiZhX7ZpkVDBMOVguiD/xdCQvnN8qg0+/wwi9ZzveVnCI68kNB2spzr3qER4Qmsh1ZOdekmsmsrEEFIiEoVNd9pQzx1Q3yZJUjmzIO41t56OS+0BRBCQrQifY0/1Nq0wQaevDgU4WqgkfUOX1FkqKgllG1A3tdEMVTLdY1eV4rSo1RbZKoSKjQqtMmKVgmGazkqJqnzJKXv3NGOVgNJbMTuicuUMPz6sLU4r8wpSrf2yGBNrxAUjJwsQHUg3cMMDL8+WAo55ZzfFKyOI2R1HCGr4whZHUfI6jhCVkeigg51hASOJdQLjD2W9gvFSfkkBbsjO4QWlmekcGI1A+YK21qK+k4OKP2jUSU5EIyC82uwCZwjIwusNbk9k4HniQxd+wOxAP2bsJ+J6QAAAABJRU5ErkJggg==" alt="Oracle">
+          </div>
+          <div class="chat-bubble">
+            <p>Sure — Autonomous Database rolls out security patches and firmware updates live, with structural rolling updates so transactional systems stay online and at full throughput the whole time.</p>
+          </div>
+        </div>
+
+        <div class="chat-typing">
+          <div class="chat-msg-avatar">
+            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADQAAAA0CAYAAADFeBvrAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAOdEVYdFNvZnR3YXJlAEZpZ21hnrGWYwAAAuhJREFUeAHtmj9oE1Ecx7/vUmhJ01qF0lgKFgMZHLShBoyLzdDQoUPrZKFilkqdCv6ZRVcJ1i20S7Ud3BTpUOxgOmiEYm07OEjVCEErBRuapjRp9Hm/M3e5FiHJuxPuwn3g4N6R3L3P7/3ee78LYSjxfqivbX9vdwIMfeDyYQMYsMo5exRaXJ7RXQOSAxe68fvXK4B3w5awFCRXOLTwNvVXKBL8Yl8ZFZZqch8EXMn+YBSMR2F/2goHUl7ijE+gTmAMPZKccz2oE2SXYxLqDEfI6jhCVscRsjqOkNVxhKxOA0ymsaMTLo8HDc0tFT+b//FdPr7BTEwRaj3bi66rY3D7/FWJ6CGpnfV3SM9OmyLHkpHzHAboHr8J7/AIjFLczSI9N4XNZ08hDEPC0Aj5bt9Fe/+g1i7msijIEc9tfKz4XUrLJm8n3Kf9SrvB0yIH55ZybkRKWKhrdOyQDHUiPTulSNVCY8dJJTCUtgRJ7ayvYO9T5aD8C6FVjjrhvVxOs/TcNFLxWM0yBM2hD3fG8fNNQrtGaSyKkBBFU5381CEaGaN8jt3XAqK/f60ICZ24eEk7N0OGoEVh+/WS1j6ue0YtCAm5POXo0QiZhX7ZpkVDBMOVguiD/xdCQvnN8qg0+/wwi9ZzveVnCI68kNB2spzr3qER4Qmsh1ZOdekmsmsrEEFIiEoVNd9pQzx1Q3yZJUjmzIO41t56OS+0BRBCQrQifY0/1Nq0wQaevDgU4WqgkfUOX1FkqKgllG1A3tdEMVTLdY1eV4rSo1RbZKoSKjQqtMmKVgmGazkqJqnzJKXv3NGOVgNJbMTuicuUMPz6sLU4r8wpSrf2yGBNrxAUjJwsQHUg3cMMDL8+WAo55ZzfFKyOI2R1HCGr4whZHUfI6jhCVkeigg51hASOJdQLjD2W9gvFSfkkBbsjO4QWlmekcGI1A+YK21qK+k4OKP2jUSU5EIyC82uwCZwjIwusNbk9k4HniQxd+wOxAP2bsJ+J6QAAAABJRU5ErkJggg==" alt="Oracle">
+          </div>
+          <div class="chat-bubble typing-bubble"><span></span><span></span><span></span></div>
+        </div>
+      </div>
+
+      <div class="chat-input-row">
+        <input type="text" class="chat-input" placeholder="Type your message…" disabled>
+        <button class="chat-send" aria-label="Send" disabled>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M4 12l16-8-6 8 6 8-16-8z" fill="currentColor"/></svg>
+        </button>
+      </div>
+      <div class="chat-static-note">Preview only — this chat isn't connected yet.</div>
+    </div>
+  </div>
+</div>
+
+<script id="slide-data" type="application/json">
+{}
+</script>
+
+<script src="script.js"></script>
+</body>
+</html>

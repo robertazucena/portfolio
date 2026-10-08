@@ -1,0 +1,13 @@
+{
+  "name": "Robert Azucena — UX & Digital Experience Leader",
+  "short_name": "Robert Azucena",
+  "start_url": "/",
+  "display": "browser",
+  "background_color": "#F5F6F7",
+  "theme_color": "#F5F6F7",
+  "icons": [
+    { "src": "assets/icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "assets/icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "assets/icons/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

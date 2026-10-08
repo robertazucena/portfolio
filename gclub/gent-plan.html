@@ -1,13 +1,96 @@
 <!doctype html>
 <html lang="en">
 <head>
+<!--
+====================================================================================================
+G CLUB PROTOTYPE · PAGE NOTES (developer handoff)   [GENT-A5]
+====================================================================================================
+Page ID   : GENT-A5
+File      : gent-plan.html
+Name      : Gentleman application: plan & payment (also plan change)
+Group     : Gentleman application
+Audience  : Gentleman applicant; also registered Gentlemen changing plan
+Journey   : Step 5 of 5. From GENT-A4. Ends the application. Also opened from GENT-P1 and PUB-01 to
+            change plan (upgrade mode).
+Purpose   : Pick a plan, pay or save a card, review the application, accept the terms and submit,
+            all on one page.
+
+What it does:
+  - Plan cards: Starter ₱300 / 2 weeks, Monthly ₱800 / month (pre-selected, Best value), Free ₱0 /
+    14 days (muted). Starter and Monthly show + 300 and + 800 credit, repeated in the order
+    summary. setPlan and applyPlanToPayment keep the order summary, payment methods and button
+    label in step.
+  - Free plan: card required (all four card fields), card only, 20 messages and 1 booking for 14
+    days, then the member must move to Starter or Monthly. Starter and Monthly also accept G-Cash
+    (authorize simulation, 2.2 seconds).
+  - Application mode (data-mode="application"): sidebar shows 5 steps; recap of the entered
+    details; terms checkbox opens a terms modal; the single button reads Pay ₱X & submit or Save
+    card & submit and stays disabled until the terms are ticked.
+  - On success completeGentApplication marks the person registered and signed in (display name
+    "Alex"), then shows a confirmation with a Submitted / In review / Approved tracker, a receipt
+    line, a credit line with a Top up link, and Browse while you wait / View profile.
+  - Upgrade mode (data-mode="upgrade", from ?from=profile or ?from=market, or any registered
+    visitor without a param): no sidebar, no Free card, no recap or terms. Button reads Pay ₱X &
+    upgrade, then a receipt with a back link.
+
+Reached from:
+  - gent-verify.html (Continue, ?from=application)
+  - gent-profile.html (Change plan, Upgrade: ?from=profile)
+  - index.html (locked cards and banner: ?from=market)
+Goes to:
+  - GENT-P1 gent-profile.html
+  - gent-verify.html, gent-profile.html or index.html (Back, by mode)
+  - index.html and gent-profile.html (confirmation buttons)
+  - index.html via the header logo and terms.html via the footer (all pages)
+
+Session state read:
+  - gclubPlanName
+  - gclubPlanPrice
+  - gclubPlanPeriod
+  - gclubPlanReturn
+  - gclubRegistered
+  - gclubFreeStart
+  - gclubFreeMsgCount
+  - gclubFreeBookingsUsed
+Session state written:
+  - gclubPlanName
+  - gclubPlanPrice
+  - gclubPlanPeriod
+  - gclubPlanReturn
+  - gclubMembershipActive (paid plans)
+  - gclubFreePlan, gclubFreeStart, gclubFreeMsgCount, gclubFreeBookingsUsed (Free)
+  - gclubRegistered, gclubLoggedInName, gclubLoggedInInitial, gclubLoggedInProfile (on submit)
+  - gclubGentProgress (5, cleared on submit)
+  - gclubCredit (credit added when a paid plan is bought)
+
+Backend this page needs:
+  - Create the account and application in one transaction
+  - Subscription plans and pricing
+  - Card tokenization and charging; G-Cash authorization
+  - Free trial clock (14 days) with expiry, message counter (20) and booking counter (1) stored
+    per user
+  - Record of terms acceptance and receipts
+  - Plan credit added at purchase and at each renewal (Starter 300, Monthly 800), one credit per
+    peso. The prototype adds it to a browser-side balance at purchase only; renewals are not
+    simulated.
+
+Notes:
+  - This page replaced the earlier separate payment and review pages (gent-payment.html and gent-
+    review.html, now deleted).
+  - Add ?freeDay=15 on index.html or gent-profile.html to see a Free account 15 days in.
+  - All money is in pesos. Starter and Monthly show their credit on the card and the order
+    summary, add it to the wallet when bought, and link to Top up on the confirmation.
+
+Shared code: script.js (loaded once per page) and style.css. Full documentation: G Club Developer Handoff.
+====================================================================================================
+-->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Choose your plan — Gentleman application</title>
 <meta name="description" content="Select the access that suits you. Your membership and booking activity remain private.">
 <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body data-page-id="GENT-A5">
 <svg xmlns="http://www.w3.org/2000/svg" style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true" focusable="false">
   <symbol id="g-crown-logo" viewBox="0 0 1222 1287">
     <g fill="#c9a24e" fill-rule="evenodd"><path d="m594.3 380.2-3.3.4q-3.4.4-6.7.4h-6.8q-3.4 0-6.7.3l-6.5.5q-3.3.3-6.7.2t-6.6.4-6.6.6-6.5.5l-6.4 1q-3.1.6-6.5.8-3.3.1-6.5.5-3.3.3-6.5.8l-6.4.9q-3.2.4-6.2 1.2l-6.2 1.5-6.2 1.4-6.1 1.5q-3 .8-6.2 1.4t-6.2 1.5l-6 1.7-6.1 1.7-6 1.8-6 2-6 2-5.9 2-5.8 2.4q-3 1-5.8 2.2l-5.8 2.5q-2.8 1.4-5.7 2.5t-5.8 2.4-5.7 2.6-5.7 2.6-5.7 2.6-5.5 3-5.6 3l-5.6 2.8q-2.8 1.4-5.5 3l-5.4 3.3-5.5 3.2-5.5 3.1-5.5 3q-2.8 1.5-5.4 3.3l-5.3 3.5-5.3 3.6q-2.7 1.7-5.3 3.6t-5.2 3.7l-5.3 3.7-5.2 3.7-5.2 4-5.1 3.8-5.2 4-5 4-5.2 4.1-5 4.2-5 4.4q-2.4 2.3-4.9 4.4l-4.9 4.6q-2.4 2.3-5 4.4-2.5 2.1-4.8 4.5l-4.8 4.8-4.8 4.8-4.7 4.8q-2.4 2.5-4.5 5-2 2.5-4.4 5-2.3 2.4-4.4 4.9l-4.2 5-4.3 5-4.2 5-4 5.2-3.8 5.1-4 5.2-3.9 5.1-3.7 5.3-3.7 5.2-3.6 5.3q-2 2.6-3.6 5.3l-3.2 5.4-3.3 5.5-3.3 5.4-3.1 5.4q-1.5 2.8-3.2 5.5-1.6 2.7-3 5.5l-2.8 5.7-2.8 5.6-2.8 5.6-2.7 5.6-2.6 5.8-2.5 5.7q-1.3 2.8-2.4 5.8l-2.2 5.8-2.1 6q-1.2 2.8-2.2 5.8l-2.1 5.9-2.1 5.9-1.8 6-1.7 6.1-1.8 6-1.6 6.1-1.7 6.1q-1 3-1.6 6.1l-1.3 6.3-1.2 6.2q-.6 3.2-1.4 6.3t-1.4 6.1l-1.1 6.4q-.5 3.1-.8 6.4-.4 3.2-.5 6.6t-.7 6.5-.6 6.5-.5 6.6q-.4 3.2-.4 6.6v6.7q0 3.4-.4 6.7-.4 3.2-.5 6.5 0 3.4.3 6.6.4 3.2.5 6.6v6.7q.1 3.4.5 6.6t.4 6.6.7 6.5q.5 3.2.7 6.5t.5 6.5q.4 3.3 1 6.4l1 6.4q.6 3 1.5 6.1l1.4 6.2q.6 3.2 1.4 6.2l1.6 6.1 1.5 6.2 1.7 6q.8 3.1 1.8 6l2 6 2.1 6 2.3 5.8q1 3 2.2 5.8l2.4 5.8 2.4 5.8q1.2 2.9 2.6 5.7l2.8 5.6 2.8 5.6 2.8 5.6q1.4 2.9 3 5.5l3.3 5.5 3.1 5.5 3.3 5.4 3.4 5.3 3.7 5.3 3.6 5.3 3.8 5.2 4 5.1 4 5.1 4 5.1 4 5.1 4.3 5 4.5 5q2.4 2.4 4.5 4.9 2 2.5 4.3 5l4.8 4.8 4.8 4.8q2.3 2.4 4.8 4.7 2.4 2.3 5 4.4 2.5 2 5 4.3l4.9 4.4 5 4.2 5 4.2 5.1 4q2.6 2.2 5.2 4l5.2 3.7 5.2 3.8q2.6 1.9 5.3 3.6l5.3 3.6 5.3 3.5 5.4 3.5 5.4 3.2 5.5 3.1 5.5 3.1q2.7 1.7 5.5 3l5.6 3 5.5 3q2.8 1.5 5.6 2.7 3 1.1 5.7 2.6 2.8 1.4 5.7 2.6 3 1.1 5.8 2.4l5.7 2.5 5.8 2.4q3 1 5.9 2.2l5.8 2.3 6 2 5.9 2q2.9 1.2 6 2l6 1.8 5.9 2 6 2 6 1.7 6.2 1.5 6.1 1.5 6.2 1.5 6.2 1.5 6.1 1.4q3.1.8 6.3 1.2 3.3.4 6.4 1l6.4 1 6.3 1 6.4 1 6.4 1q3.1.6 6.3 1l6.4 1q3.1.6 6.4.8l6.6.4q3.3.2 6.5.8 3.1.5 6.5.5t6.6.5 6.6.5h13.5q3.4 0 6.6.5t6.6.5h27.1q3.3 0 6.5-.5t6.6-.5h6.8q3.4 0 6.6-.5t6.5-.5 6.6-.4 6.6-.5q3.4 0 6.5-.6t6.4-1l6.6-.4q3.3-.2 6.5-.7l6.4-.8 6.4-1 6.3-1.1 6.4-1 6.2-1.2q3.1-.7 6.3-1.1 3.3-.5 6.3-1.3l6.2-1.3 6.3-1.2q3.2-.6 6.2-1.5t6.2-1.4q3.1-.6 6.1-1.4l6.2-1.5q3.1-.7 6.1-1.7l6-1.6 6.2-1.7 6-1.7q3.1-.8 6-1.8l6-1.9 6.1-1.7 6.1-1.7 6-1.8 6-2 6-2q3-1 6-1.7l6-1.7 6-1.9 6-1.8 6.1-1.9 6-1.8 6-1.8 6-1.9 6.1-1.6 6-1.9q3-1 6.2-1.5 3.1-.5 6.1-1.5t6.2-1.6l6.2-1.4 6.2-1.3q3.1-.7 6.3-1.2t6.3-1l6.4-1 6.3-1q3.2-.5 6.6-.5t6.6-.5 6.5-.5h6.8q3.4 0 6.6.4l6.4 1q3.2.3 6.4.9 3.2.5 6.2 1.3l6 1.9 6 2.1 5.6 2.6 5.6 3q2.7 1.6 5.3 3.5l5.2 3.8 5 4q2.6 2 5 4.5 2.4 2.4 4.7 5 2.2 2.4 3.3 1.4t1-4.4V945.8q0-3.4.5-6.6t1-6.3l1.2-6.3 1.4-6.2q.8-3 2-6l2.7-5.6q1.4-2.8 3.3-5.4l3.6-5.3 3.8-5.2q2-2.5 4.5-4.9l4.8-4.8q2.4-2.3 5-4.4l5-3.9 5.3-3.7 5.4-3.4q2.7-1.6 5.5-3l5.6-2.9q2.8-1.4 5.7-2.6t6-2.1l5.9-2q3-1 6-1.6l6.3-1.2q3.2-.5 6.3-1.2 3.1-.8 6.4-1t6.5-.7 6.5-.6 3.6-3.1-.7-6-4.2-2.8h-305q-3.4 0-6.7.2l-6.5.5q-3.3.3-6.7.3H657.4q-3.4 0-4.9 1.9T651 845t1.5 5.6 4.8 2.3h47.4q3.4 0 6.6.5t6.4.8l6.6.4q3.3.3 6.5.8l6.3 1 6.3 1.3 6.1 1.5 6.2 1.5 6 1.6 6.1 1.9 5.9 2 5.8 2.4 5.8 2.4 5.6 2.8q2.7 1.6 5.5 3 2.8 1.5 5.4 3.3l5.3 3.7q2.6 1.8 5.1 3.9 2.6 2 5 4.4l4.8 4.8 4.7 4.8q2.2 2.5 4.1 5 2 2.7 3.4 5.5l3 5.5q1.4 2.8 2.5 5.7t2.1 6 1.7 6 1.2 6.3l.9 6.4q.3 3.3.9 6.4t.5 6.5v54.3q0 3.4-.5 6.6t-.5 6.5-.5 6.6-1 6.3-1 6.4l-1 6.3q-.6 3.2-1.5 6.2l-1.9 6-1.9 6q-1 3-2.2 5.8l-2.6 5.8-2.6 5.6q-1.4 2.9-3 5.6l-3.3 5.4-3.4 5.4-3.8 5.2-4 5q-2 2.7-4.3 5l-4.4 5q-2.2 2.5-4.7 4.7l-4.9 4.5q-2.4 2.3-5 4.3l-5.1 3.9-5.2 3.9q-2.6 2-5.3 3.7t-5.4 3.3l-5.5 3-5.6 2.8q-2.8 1.4-5.5 3.1t-5.6 2.8l-5.8 2.5-5.7 2.5q-3 1-5.9 2.2-2.9 1.1-6 2l-6 1.9-5.9 2-6 1.8q-3 .9-6.1 1.4-3.2.6-6.2 1.4-3.1.8-6.3 1.4l-6.3 1-6.5.7-6.5.7q-3.2.3-6.4.9-3.2.5-6.5.6-3.4 0-6.6.5t-6.6.4h-20.3q-3.4 0-6.6-.4t-6.6-.5-6.6-.4l-6.4-1q-3.2-.5-6.5-.7t-6.5-.6l-6.4-1-6.2-1.2-6.2-1.5-6.2-1.4q-3.1-.6-6.1-1.5l-6-1.7q-3.1-.8-6.1-1.8l-6-1.8-6-2.1-5.8-2.3q-3-1-5.8-2.4t-5.7-2.4l-5.8-2.4-5.7-2.7q-2.7-1.5-5.6-2.8t-5.5-3l-5.5-3.2-5.5-3.1-5.4-3.3q-2.7-1.6-5.3-3.5-2.6-2-5.3-3.6t-5.3-3.6l-5.2-3.9q-2.5-2-5.1-3.8-2.7-1.9-5.1-4l-5-4.5q-2.4-2.2-5-4.3l-5-4.4-4.7-4.7-4.8-4.8-4.8-4.8q-2.4-2.4-4.4-5l-4-5-4.1-5.2-4.1-5-4-5.2-3.9-5.1-3.8-5.2-3.7-5.3-3.4-5.3-3.4-5.4q-1.7-2.7-3-5.5-1.5-2.8-3.2-5.5-1.8-2.6-3.4-5.4-1.7-2.7-3-5.5l-2.6-5.7-2.7-5.7-2.8-5.6-2.7-5.6-2.7-5.7-2.4-5.7-2.4-5.9q-1.1-2.9-2-5.9-1-3-2.2-5.9-1.1-2.9-2-5.9l-2-6-2-5.9-1.9-6-1.7-6-1.7-6.1-1.5-6.2-1.4-6.2q-.8-3-1.4-6.2l-1.4-6-1.4-6.2-1.3-6.3-1-6.3-1-6.4-.9-6.4-1-6.3q-.5-3.2-.8-6.5l-.4-6.6q-.2-3.3-.7-6.4-.6-3.2-1-6.5-.3-3.2-.4-6.5l-.2-6.7q0-3.4-.4-6.7l-.5-6.5V812l-.1-6.8v-33.9q0-3.4.5-6.6t.5-6.5l.1-6.7.5-6.6.8-6.5q.5-3.2.6-6.5 0-3.4.5-6.6l1-6.3 1-6.4q.4-3.2.6-6.5l.7-6.5q.4-3.2 1.1-6.3t1.1-6.3 1.1-6.4 1.4-6.2 1.4-6.2l1.5-6.1 1.4-6.2 1.5-6.2 1.8-6 1.8-6 1.9-6 2-6 2-5.9q1-3 2.3-5.9 1.2-2.8 2.2-5.8t2.3-5.8l2.6-5.7 2.5-5.8q1.2-2.9 2.6-5.7l2.8-5.6 2.8-5.6 2.7-5.6 3-5.6 3.3-5.4 3.1-5.5 3.3-5.4q1.6-2.7 3.4-5.3l3.6-5.4 3.8-5.2 3.9-5.1 3.9-5.2 4.2-5 4.2-5 4.2-5q2-2.6 4.3-5l4.4-5q2.2-2.5 4.6-4.9l4.8-4.8q2.4-2.4 4.9-4.5l5-4.4 5-4.3q2.4-2.2 5-4.1l5.1-4 5.2-4 5.1-3.9 5.3-3.6 5.3-3.5 5.4-3.2 5.5-3.3 5.5-3.1 5.5-3.1q2.7-1.6 5.6-2.8t5.6-2.7l5.7-2.8q2.8-1.4 5.7-2.5l5.8-2.5 5.8-2.3 6-2 5.8-2.1 6-2 6.1-1.4 6.1-1.7 6.2-1.5 6.2-1.4q3-.8 6.2-1.2 3.2-.5 6.3-1.3 3-.7 6.4-1 3.3-.2 6.4-.7l6.4-1q3.2-.5 6.5-.6 3.4 0 6.6-.4t6.6-.5h27.1l6.7.1q3.4.1 6.6.5t6.5.6l6.6.5 6.5.7 6.3 1 6.3 1.2q3.2.5 6.3 1.2l6.2 1.3 6.2 1.4 6.2 1.6 6.1 1.5 6 1.8 6 1.8 6 1.8 6 2.1 5.8 2.3 5.8 2.4 5.8 2.4 5.7 2.5 5.7 2.6q2.9 1.3 5.6 3 2.7 1.5 5.6 2.8l5.6 2.8 5.5 3.1 5.4 3.3 5.4 3.3 5.4 3.3 5.3 3.6 5.2 3.7 5.2 4 5.2 3.8 5.1 3.9 5.1 4 5.1 4q2.6 2.1 5 4.5t4.9 4.4 5 4.5l4.7 4.8 4.8 4.8 4.8 4.8 4.8 4.8q2.4 2.4 4.4 5 2 2.5 4.3 5l4.5 4.9q2.3 2.4 4.3 5l4 5 4.2 5.1 4 5.1 4 5.1 3.9 5.2 3.8 5.2 3.8 5.2 3.8 5.2q1.9 2.6 3.6 5.3l3.5 5.3q1.6 2.7 3.5 5.3t3.6 5.3l3.4 5.4q1.6 2.7 3 5.5 1.5 2.8 3.3 5.4l3.3 5.4 3.2 5.5 3.2 5.4 3 5.6 2.8 5.6q1.4 2.8 3 5.5t3.1 5.5l2.8 5.6 2.8 5.6 2.8 5.6 2.6 5.7 2.6 5.8 2.5 5.7 2.7 5.6q1.4 2.8 2.6 5.8l2.2 5.8q1 3 4.4 3.1 3.3.3 6.7.2h13.5q3.3 0 3.6-3.2.2-3.2.2-6.6V425.1q.1-3.4-1.7-4.2t-4.8.3l-5.7 2.5q-2.8 1.3-5.8 2.3t-6 1.7-6.3 1.4q-3 .7-6.3 1t-6.5.6-6.5.8q-3.1.6-6.6.5h-13.5l-6.7-.1q-3.4-.1-6.6-.5t-6.6-.6-6.5-.4q-3.3-.4-6.4-1l-6.4-1-6.4-.8-6.4-1-6.2-1.3q-3.2-.6-6.2-1.4l-6.3-1.3q-3.1-.6-6.3-1t-6.3-1.2l-6.2-1.5-6.2-1.3-6.1-1.6q-3-.9-6.1-1.5-3.2-.7-6.2-1.6l-6.1-1.5-6.2-1.5q-3-.8-6.1-1.4-3.2-.7-6.2-1.6t-6.1-1.6l-6.1-1.6q-3-.9-6.1-1.6l-6.2-1.5-6.2-1.3q-3.1-.6-6.2-1.5-3-.8-6.2-1.4l-6.3-1.1q-3.2-.5-6.2-1.3t-6.2-1.4l-6.3-1-6.4-1-6.4-1.1q-3.1-.6-6.3-1l-6.4-1-6.3-1-6.4-1q-3.1-.6-6.5-.7t-6.6-.4-6.4-1q-3.1-.5-6.5-.6l-6.6-.5q-3.2-.3-6.6-.3t-6.7-.3l-6.5-.5q-3.3-.2-6.7-.2h-6.8q-3.4 0-6.6-.5t-6.5-.5h-27.1l-7.2.1Zm-31.1-228-1.7.5-3.3 1q-1.6.6-3 1.6-1.5 1-2.8 2.3-1.4 1.2-2.5 2.4l-2.4 2.4q-1.3 1.3-2.2 2.8l-1.7 3-1.5 3-1.3 3.2q-.5 1.7-.6 3.5-.2 1.8 1 .9 1.3-.9 3-1.5l3.2-1q1.6-.4 3.5-.3h7.4q1.9 0 3.5.5l3.3 1 3.2 1.1q1.6.6 3 1.6l2.9 2.1 2.7 2.5 2.6 2.7q1.3 1.3 2.3 2.7t2.2 2.8 2.4 2.7 1.7 3l1.5 3 1.6 3.1q.8 1.5 1.3 3.2l1.1 3.2q.6 1.6 1 3.3t1 3.3q.5 1.6.4 3.5t.5 3.5.5 3.5v7.4q-.1 1.8-.6 3.4-.5 1.7-.5 3.5t-.5 3.5l-.9 3.4-1 3.3q-.5 1.6-1.2 3.1l-1.5 3.1-1.4 3.2-1.3 3.1-1.7 3q-.9 1.5-2 2.9-1 1.4-2.3 2.7l-2.6 2.6q-1.4 1.3-2.4 2.7t-2.3 2.4-2.8 2.4-2.7 2.3l-3 1.9-2.9 1.8-3 1.6-3 1.5q-1.6.8-3.3 1-1.8.3-3.4 1-1.6.5-3.3.8-1.8.2-3.6.1-2 0-3.5.5-1.7.6-3.4.2l-3.5-.5q-1.8-.1-3.5-.5t-3.3-1l-3.2-1q-1.7-.6-3.2-1.4l-3-1.5q-1.6-.7-3-1.8l-2.7-2.5-2.6-2.6q-1.3-1.3-2.3-2.7l-2-3q-1-1.4-1.7-3-.8-1.5-1.3-3l-1-3.3q-.6-1.7-.6-3.5v-3.7q0-1.9.4-3.5l1.1-3.3q.6-1.6 1.4-3.1.7-1.6 1.7-3l2-2.9q.9-1.4 2.4-2.4l2.9-2q1.4-1 3-1.5t3.4-.7 3.4-.8 3.4-.4q1.9 0 3.6.5 1.6.4 2.1-.4t-.5-2.3-2.3-2.8-2.6-2.7l-2.6-2.6-2.6-2.6-2.6-2.6-2.6-2.6q-1.3-1.3-2.4-2.7l-2.2-2.8-2-2.9q-1-1.4-2.4-2.7t-2.2-2.8-1.7-3-1.8-3l-1.7-3q-1-1.4-1.8-2.9-.7-1.5-1.7-3-1-1.4-1.7-3l-1.6-3q-.8-1.5-1.4-3.1l-1.3-3.2q-.8-1.6-1.5-.3l-1.5 2.7-1.5 3q-.8 1.5-1.4 3.2-.5 1.6-1.3 3.1l-1.5 3q-.8 1.6-1.8 3l-1.8 3-1.8 3-2 2.8-1.9 3-2 2.8q-1.2 1.3-2.1 2.8t-2 2.9-2.3 2.7-2.2 2.8q-1.2 1.4-2.6 2.7l-2.6 2.6q-1.3 1.3-2.4 2.7l-2.2 2.8q-1.3 1.3-2.2 2.8t-2.3 2.4.2 1l3.3-.2 3.6-.2q1.8 0 3.6.3l3.4.6q1.7.3 3.4.9 1.6.5 3 1.4l3 1.9q1.5.9 2.4 2.4.8 1.6 2 3l1.9 2.8q.8 1.6 1.3 3.2t.9 3.3l.5 3.5q.3 1.8.3 3.6v3.7q0 1.8-.5 3.5l-1 3.3-.7 3.4q-.3 1.7-1 3.3l-1.5 3-1.5 3.1-1.8 3-2.2 2.8-2 2.8q-1 1.4-2.3 2.8l-2.7 2.6-2.7 2.3q-1.4 1.1-2.9 2l-2.9 1.9q-1.4 1-3 1.7l-3 1.6q-1.5.8-3.2 1.3-1.6.6-3.3.8l-3.4.7q-1.7.4-3.3 1-1.7.5-3.5.5h-11.1q-1.9 0-3.5-.5t-3.4-.7-3.4-.7-3.3-1-3.1-1.4q-1.6-.8-3-1.8t-3-1.8q-1.4-.8-2.8-2l-2.8-2.2q-1.4-1-2.7-2.4t-2.3-2.8l-2-2.8-1.5-3-1.6-3.1-1.4-3.2q-.7-1.5-1-3.2t-.6-3.5-.1-3.6v-3.8q0-1.8.3-3.5l.7-3.4q.3-1.8.8-3.4t1.5-3l1.9-3 2-2.9q1-1.4 2.3-2.7l2.6-2.6q1.3-1.3 2.7-2.3l2.9-2q1.4-1 3-1.8l3-1.5 2.8-1.6q1.3-.7-.4-1.3-1.6-.6-3.1-1.4-1.6-.8-3.2-1.3l-3.2-1.1-3.2-1.2q-1.7-.5-3.2-1.2t-3-1.6-3.1-1.5-3.2-1.4-3.1-1.3l-3.2-1.4-3-1.8q-1.4-1-2.9-1.7-1.5-.8-3.2-1.2-1.6-.6-3-1.6l-3-1.8-3-1.6q-1.6-.7-3-1.7-1.5-1-3-1.7l-3-1.5-3.1-1.7-3-1.7-3-1.8q-1.4-1-3-1.7l-3-1.7q-1.4-1-2.9-1.8l-3-1.8-2.8-2-3-1.6q-1.6-.8-3-1.8l-2.9-2-2.8-2-3-2q-1.4-.9-2.5-1.2-1.2-.4-.4 1.3.8 1.6 1.8 3l1.9 3 1.7 3q1 1.4 1.7 3l1.6 3 1.8 3q1 1.4 1.6 3 .7 1.5 1.7 3 1 1.3 1.8 2.9l1.5 3 1.6 3.1 1.5 3 1.7 3 1.8 3q.7 1.6 1.6 3l1.8 3 1.6 3q.7 1.6 1.7 3 1 1.5 1.7 3l1.6 3 1.5 3.2 1.6 3 1.5 3 1.5 3.1 1.6 3.1 1.5 3 1.5 3.1 1.6 3.1 1.5 3 1.5 3.1q.8 1.5 1.4 3.2.5 1.6 1.3 3.1l1.5 3.1 1.5 3 1.6 3.1 1.2 3.2 1.3 3.1 1.5 3.2 1.3 3.1 1.5 3.1 1.3 3.2 1 3.2q.6 1.6 1.4 3.1 1 1.5 1.4 3.2l1.1 3.2q.6 1.6 1.4 3.1l1.2 3.2 1.1 3.3 1.1 3.2q.6 1.6 1 3.3l1.1 3.2 1 3.3 1.2 3.3 1 3.2 1 3.3q.6 1.7 2 1l2.9-1.6 3-1.5 3.2-1.4 3.1-1.4 3.2-1.2 3.2-1.3q1.5-.8 3.1-1.4t3.3-1q1.7-.3 3.2-1 1.6-.8 3.2-1.3l3.3-1.2q1.5-.5 3.3-.8l3.4-.7 3.3-.9 3.3-1 3.3-1q1.6-.5 3.4-.6 1.9 0 3.6-.4t3.3-1l3.3-1q1.6-.4 3.5-.5t3.4-.6 3.4-.7l3.5-.5 3.4-.8q1.6-.5 3.3-.7l3.6-.4q1.8-.2 3.4-.7 1.6-.6 3.5-.5t3.5-.6q1.6-.5 3.4-.5 1.9 0 3.6-.3l3.5-.4q1.8-.3 3.6-.3t3.6-.2l3.5-.5 3.6-.4q1.8 0 3.5-.5t3.5-.4 3.5-.5 3.5-.5h3.7q1.8 0 3.5-.5t3.5-.5h7.3q1.9 0 3.5-.5t3.5-.5h3.8l3.6-.1q1.8-.2 3.4-.6 1.7-.4 3.6-.3h11.1q2 .1 3.6-.2t3.5-.6l3.6-.2h74q1.9 0 3.5.5t3.5.5h7.4q1.8 0 3.5.4t3.5.5h3.7l3.6.2q1.9 0 3.5.5t3.5.4h7.4q1.9 0 3.5.5t3.5.5 3.5.4 3.5.6h3.7q1.9-.1 3.5.4t3.5.6 3.5.3 3.5.6l3.6.2q1.8.2 3.5.6t3.5.3 3.5.6 3.5.5 3.5.4 3.5.6 3.5.5 3.4.6l3.5.5 3.4.8 3.2 1q1.7.6 3.4.8l3.5.4q1.8.3 3.4.9 1.6.5 3.3.8l3.5.6 3.4.6q1.8.3 3.4.8l3.3 1q1.6.6 3.4.9 1.7.2 3.3.8t3.3.9 3.4.8 3.1 1.3l3.2 1.4 3.3 1q1.6.5 3.1 1.3 1.6.7 3.3 1.1l3.2 1.2q1.5.8 3.1 1.3l3.3 1.1q1.6.7 3 1.6 1.5 1 2.5-.2t1.5-2.8l1-3.3 1.1-3.2q.6-1.6 1-3.3t1.2-3.2q.8-1.6 1.3-3.2l1.2-3.2 1.3-3.2q.5-1.6 1.2-3.1.7-1.6 1.1-3.3t1.3-3.2l1.6-3 1.6-3q.8-1.6 1.3-3.2t1.3-3.2l1.4-3 1.3-3.2 1.5-3.1 1.5-3 1.5-3.1 1.5-3.1 1.7-3 1.8-3 1.6-3 1.5-3 1.5-3.2 1.6-3 1.6-3 1.7-3 1.8-3q1-1.4 1.8-3 .7-1.5 1.8-3 1-1.4 1.8-2.9.7-1.5 1.7-3 1-1.4 1.7-3l1.7-3 2-2.8 1.8-3 1.8-3 1.9-2.8 1.9-3 1.9-2.9 2-2.8 1.7-3 1.8-3 2-2.8 2-3 1.9-2.8 2-2.9q1.2-1.4 2.1-2.8l2-3 1.9-2.8 2-3q.8-1.4 1.9-2.8l2-2.8q1.2-1.4 2.1-3 1-1.5-.2-1.2l-2.6 1.1-3 1.7-3 1.7-3 1.6-3 1.5-3.2 1.5-3 1.8q-1.4 1-3 1.7l-3 1.6-3 1.5-3.1 1.5-3 1.6q-1.6.7-3 1.6l-3 1.8-3 1.6-3.1 1.5q-1.6.8-3.2 1.3t-3 1.6-3.1 1.5l-3.2 1.3-3 1.6-3.1 1.5-3 1.5-3.1 1.6q-1.5.8-3.2 1.3l-3.2 1.2-3.2 1.1-3.2 1.3-3 1.5-3.1 1.5-3.1 1.5-3.2 1.3-3.2 1.2q-1.6.6-3.1 1.4t-3.2 1.3-1.8 1.2q-.2.6 1.4 1.1 1.7.5 3.2 1.3l3 1.7q1.5.8 3 1.9l2.7 2.2q1.4 1 2.7 2.4t2.5 2.7 2 2.8l1.9 3q.8 1.4 1 3.2.3 1.7.9 3.4l1 3.2q.4 1.7.4 3.5v3.8l-.1 3.6-.5 3.5q-.4 1.7-1 3.3t-1.3 3.1l-1.5 3.1-1.7 3-1.9 3q-1 1.4-2.2 2.7l-2.6 2.6q-1.3 1.3-2.8 2.3l-2.9 1.9-3 1.9-3 1.6-3 1.5q-1.5.8-3.2 1.4l-3.2 1q-1.6.6-3.4.7-1.9.1-3.5.5t-3.6.4h-7.4q-1.8 0-3.5-.5t-3.5-.5-3.4-.5l-3.3-1.1q-1.6-.6-3.1-1.4l-3-1.6-3.1-1.5q-1.5-.7-3-1.7l-2.9-2q-1.4-1.1-2.7-2.4l-2.6-2.7-2.6-2.6q-1.4-1.3-2.3-2.7t-2-2.9-2-2.9l-1.8-3q-1-1.4-1.5-3l-1.1-3.2-.8-3.4-.6-3.5-.8-3.3q-.4-1.7-.5-3.5t.5-3.5.7-3.3.7-3.4 1.3-3.2l1.7-3q.9-1.5 2.1-2.8 1.3-1.4 2.7-2.6 1.4-1.1 2.9-1.9l3-1.5q1.6-.7 3.4-.8l3.7-.1h7.4q1.9 0 1.8-1.1t-1.5-2.4-2.5-2.7l-2.2-2.8q-1-1.4-2.5-2.7-1.3-1.2-2.2-2.7t-2.3-2.8q-1.4-1.2-2.5-2.7l-2.2-2.7-2-2.9-2-2.8-2.4-2.8q-1.2-1.3-2.1-2.8t-1.7-3l-1.8-3q-1-1.4-1.8-3l-1.6-3q-1-1.4-1.8-3l-1.6-3-1.5-3-1.5-3-1.5-3.1q-.8-1.6-1.6-2.5-.7-1-1.5.6t-1.3 3.2-1.3 3.2l-1.8 3q-1 1.4-1.7 3l-1.7 3-1.7 3-2 2.8-1.8 3-2.2 2.8-2.3 2.7q-1.1 1.4-2 2.9-1 1.4-2.3 2.7-1.4 1.3-2.5 2.7l-2.2 2.8-2.4 2.7-2.6 2.6-2.7 2.6-2.6 2.6-2.6 2.6-2.6 2.7q-1.2 1.3-.7 1.8t2.2.3l3.5-.6q1.8-.2 3.4.4 1.6.5 3.4.6t3.5.6 3.1 1.3 3 1.8l2.8 2q1.4 1.1 2.4 2.6l2.1 2.8q1.2 1.4 1.7 3l1 3.3.9 3.3q.3 1.8.3 3.6v3.7q0 1.9-.5 3.5l-1 3.3q-.5 1.6-1.3 3.1l-1.6 3q-.7 1.6-1.7 3l-2 3-2.6 2.6q-1.3 1.3-2.7 2.4l-2.8 2q-1.5 1-3 1.7l-3.1 1.5-3.2 1.2-3.3 1q-1.6.6-3.5.5h-11.1q-1.8 0-3.5-.5l-3.2-1q-1.7-.5-3.3-1.2l-3.1-1.3-3-1.5-3.2-1.5-3-1.8-2.8-2q-1.4-1-2.7-2.4l-2.6-2.6-2.7-2.6q-1.3-1.3-2.4-2.7l-2.2-2.8-2-2.9-1.8-3q-1-1.4-1.5-3t-1.4-3.1l-1.4-3.2q-.7-1.5-1.2-3.1l-1.1-3.3-1-3.3-.9-3.3q-.4-1.7-.5-3.5l-.1-3.7v-11q0-2 .5-3.5.6-1.6 1-3.4l.5-3.4q.2-1.8 1-3.3 1-1.4 1.5-3l1.1-3.3 1.3-3.2 1.8-3q1-1.4 1.7-3 .7-1.5 2-2.8l2.5-2.7 2.6-2.6 2.6-2.6 2.6-2.7q1.3-1.3 2.8-2.2t3-1.8q1.4-.9 3-1.5t3.3-1 3.4-.7h7.4l3.6.1q1.8.2 3.4.7l3.3 1.1q1.7.7 2.4-.1.8-.7.2-2.4l-1.3-3.2-1.5-3.1-1.5-3q-.8-1.6-2-3l-2.6-2.5-2.7-2.6q-1.3-1.3-2.8-2.1l-3-1.6q-1.6-.8-3.2-1.3t-3.4-.8-3.6-.2h-3.7q-1.8 0-3.5.3-1.7.4-3.3 1l-3.1 1.4q-1.6.7-3 1.6-1.6.9-2.9 2.2t-2.7 2.2-2.5 2.5l-2 2.9-1.9 2.9q-1 1.4-1.8 3-1 1.4-1.7 3-.7 1.5-1.7 2.9t-1.6 3l-1.3 3.2q-.8 1.5-1.4 3.2l-1 3.2-1.2 3.2-.9 3.4-.7 3.4-.6 3.4q-.3 1.7-.9 3.3-.6 1.7-.5 3.5t-.4 3.6q-.5 1.6-.6 3.4v18.5q0 1.9.5 3.5t.5 3.5.5 3.5.4 3.5.5 3.5 1 3.3l.8 3.4 1.1 3.2 1.1 3.2 1.4 3.2 1.5 3q.7 1.6 1.7 3l1.8 3 1.7 3q1 1.4 1.8 3l1.9 2.9 2 2.8q1 1.5 2.3 2.8l2.6 2.6 2.6 2.6q1.3 1.3 2.8 2.3l3 1.8 2.8 2q1.4 1.2 2.1 2.7t-.4 2.5q-1.2 1-2.8.5l-3.3-1.1-3.2-1.1q-1.7-.6-3.1-1.4l-3-1.8q-1.5-.9-2.8-2.2t-2.6-2.7l-2.6-2.6-2.3-2.7-2.1-2.8-2-3q-1-1.4-1.8-2.9l-1.6-3-1.3-3.2q-.6-1.6-1.4-3.1t-1.3-3.2l-1-3.2q-.8-1.6-1.3-3.2l-1-3.3-1-3.3-1-3.3-.7-3.4-.5-3.4q-.2-1.7-.8-3-.5-1.2-1 .5l-.4 3.6q-.1 1.8-.6 3.4l-1 3.3-1 3.3-1 3.3-1 3.3-1 3.2-1 3.3q-.5 1.6-1.3 3.2l-1.5 3-1.5 3.1-1.7 3q-1 1.5-1.7 3-.7 1.6-2 3l-2.1 2.7q-1 1.5-2.3 2.8l-2.6 2.6-2.6 2.6q-1.3 1.3-2.8 2.1-1.5 1-3 1.7-1.6.8-3.2 1.3l-3.3 1q-1.6.6-3.3.8-1.8.3-3.4.8t-3.4 0-.8-1.6 2.4-2l3-1.7q1.5-1 3-1.7 1.6-.7 3-2l2.7-2.1q1.4-1 2.8-2.3l2.6-2.6 2.6-2.6q1.4-1.3 2.5-2.6t2-3l1.6-3 1.8-3q.9-1.4 1.6-3l1.8-3q1-1.4 1.7-3l1.5-3q.9-1.5 1.2-3.2t.8-3.3l1-3.3q.6-1.6 1-3.3t1-3.3q.5-1.7.6-3.5l.5-3.5.5-3.4.6-3.5q.2-1.7.2-3.6v-18.5q-.1-1.8-.6-3.5t-.4-3.5-.2-3.6l-.6-3.5-.7-3.4-.9-3.3-1-3.2-1.1-3.3-1.1-3.3-1-3.2q-.5-1.7-1.3-3.2-.7-1.6-1.6-3l-1.8-3q-.7-1.5-1.8-3-1-1.4-1.7-3-.8-1.5-1.8-2.9l-2.2-2.8q-1.3-1.4-2.7-2.3t-2.9-2l-2.8-2-3-2q-1.4-1-3-1.4-1.7-.5-3.5-.5h-7.8Z"/><path d="m575.4 333.2-1 .4q-1.2.4-2.2.4h-12.7l-2 .2-2 .6-2 .3h-2l-2.2-.2q-1.1 0-2 .2l-2 .5q-1 .3-2 .3l-2 .1H537q-1 0-2 .3l-2 .6q-.9.2-2 .1h-4.2q-1 0-2 .4t-2 .5-2 .1h-2.1l-2 .2-2 .5-2 .3h-4.2q-1.1 0-2 .2l-2 .6q-.9.3-2 .2h-2l-2 .5q-1 .4-2 .4h-2q-1.1 0-2 .3l-2 .6q-1 .3-2 .2h-2.1q-1 .1-2 .5l-1.9.5-1.9.5-2 .4-2 .2q-1 0-2 .3-.9.4-1.9.5l-2 .2q-1.1 0-2 .3-1 .4-2 .5t-2 .3l-1.9.5-2 .3-2 .4-1.9.5q-1 0-2 .3-1 .1-1.9.4-1 .4-2 .4t-2 .4q-.9.3-1.9.4l-2 .3-1.9.5-2 .4-1.8.6-2 .4-1.9.5-1.9.6-1.8.6-1.9.7-1.9.5-2 .5-1.9.4-1.9.5-1.8.7-1.8.8-1.9.6-1.8.6-1.9.7-1.9.6-1.8.6-1.9.7-1.8.8-1.8.7-1.7.9-1.8.9-1.9.7-1.7.8q-.9.4-1.3 1.1t-.5 1.8.3 2l.5 2 .3 2 .4 2 .5 1.8.5 2q.4.9.5 1.9t.3 2l.4 2q.3.9.4 2 0 1 .4 1.9l.4 1.9.2 2q0 1 .3 2l.6 2q.3.8 1 1 .8.1 1.8-.3l1.9-.7 1.8-.6 1.9-.6 1.8-.7 2-.5 1.9-.5 1.9-.5 1.9-.6 1.8-.7 1.9-.6 1.9-.5 2-.4 1.8-.7q.9-.4 1.9-.6l1.9-.4 2-.5 1.9-.5 1.9-.5 1.9-.4 2-.5 1.9-.5 1.9-.5q.9-.3 2-.4 1 0 2-.3l1.8-.5q1-.3 2-.3t2-.5 2-.4l2-.1 2-.4 1.9-.5 1.9-.5 1.9-.5 2-.5 1.9-.4 2-.3q1-.1 1.9-.5t2-.3l2-.2 2-.5q.9-.3 2-.4h2q1 0 2-.3l2-.5q.9-.2 2-.2 1 0 2-.3l1.9-.5q1-.3 2-.3l2.2.1q1 0 2-.3l1.9-.6q1-.2 2-.1h2.1l2-.6q.8-.4 1.9-.4h4.1l2-.6q.9-.4 2-.4h2q1.2.1 2.1-.1l2-.6q.9-.3 2-.3h2q1 0 2-.4l2-.5 2-.2h2.1l2.2.2q1 0 2-.3l2-.5q.9-.3 1.9-.3h6.4l2-.1 2-.5 2-.3 2-.1h8.5l2-.4 2-.5 2-.1h19.1q1 0 2-.4l1.9-.5 2-.1h38.2q1.1.1 2 .4 1 .4 2 .5l2 .1h19.2q1 0 2 .3l1.9.4q1 .3 2 .3h8.5l2 .2 2 .4 2 .4h4.2l2 .1 2 .6q.9.3 2 .3h6.3l2 .4q.9.4 1.9.5 1 .2 2 .1h4.3q1 0 2 .3l2 .5 2 .2h2.1l2 .2 2 .6q.9.3 2 .2h2l2 .5q1 .4 2 .5h4.1l2 .6q.9.3 2 .4h2q1 0 2 .3l2 .5q.9.3 2 .2h2l2 .6q.9.4 2 .4h2l2 .6q.9.4 2 .4l2 .1 2 .4q.8.4 1.9.4l2 .4 1.9.5 2 .3q1 0 2 .4l1.8.6 1.8.7 2 .2q1.1 0 2.1.2l2 .5q.9.3 2 .3 1 0 1.9.4t2 .5 2 .3l1.8.5 2 .3q1 0 2 .3l1.9.6 2 .4 1.9.5 1.9.5 2 .5 1.8.5 2 .5 1.9.4q1 .2 1.9.6l1.8.6 2 .5 1.9.4q1 .3 1.8.8t1.8.7l2 .4 1.9.6 1.8.6 2 .7q1 .4 1.6.3t.9-1.1l.4-2 .3-2 .4-2q.1-1 .4-1.9l.5-2 .3-2q0-1 .4-1.9t.4-2 .3-1.9l.5-2q.3-.9.3-2l.2-2 .5-1.9.4-2q0-1 .3-2 .2-.8-.3-1.5t-1.5-1.1l-1.8-1-1.7-.8-1.8-.8-1.9-.7-1.8-.7-1.8-.8-1.8-.7-2-.5-2-.4-1.8-.6-1.8-.7-2-.5q-.9-.3-1.7-.8l-1.8-.8-2-.4-1.9-.5-1.8-.7-2-.5-1.9-.5-1.9-.5-2-.3q-1 0-2-.4l-1.9-.5-1.9-.4-1.8-.7-2-.6-1.8-.4-2-.6-2-.3q-1 0-2-.4-.9-.3-1.9-.4l-2-.3q-1-.1-1.9-.5l-2-.4h-2q-1-.1-2-.6-.9-.3-1.9-.4h-2l-2-.6-2-.4h-2l-2-.6q-.9-.3-2-.4h-2l-2-.5q-.8-.4-1.9-.5h-2q-1.1 0-2.1-.3l-1.9-.5-2-.2q-1.1 0-2-.3l-2-.5-2-.2h-2.1q-1 0-2-.3l-2-.5q-.9-.3-2-.2h-2l-2-.5q-.9-.4-2-.5h-4.2l-2-.1q-1-.1-2-.5-.9-.3-2-.4H705q-1 0-2-.4l-1.9-.5-2-.2-2.2.1h-2q-1.1 0-2-.4-1-.4-2-.5-1-.2-2-.1h-8.5l-2.1-.1-2-.5q-.9-.3-1.9-.4h-14.8q-1.1 0-2-.3l-2-.4-2-.3h-76.8Zm43.8-286-.2 1q-.3 1.2-.8 2l-1 2-1 2-.7 2-.6 2.1-.6 2.2-.8 2-1 2-.8 2-.5 2.2-.8 2-1 2-1 2-1 2-1 1.9-1 2-.9 2-1 1.9-1 2-1 1.9-1 2-1 2-.9 1.9-1.1 2-1.2 1.8-1 2-1 1.9-1 2-1 2-1 1.9q-.5 1-1.2 1.9l-1.2 1.8-1 2q-.5 1-1.2 1.9l-1.3 1.8-1.1 1.9-1.3 1.8-1.3 1.9-1.1 1.9-1.4 1.8q-.7.9-1.2 1.9t-1.2 1.8l-1.2 2q-.4 1-1 1.9l-1.2 1.9q-.6 1-1.4 1.8l-1.4 1.8q-.7.9-.2 1.7t1.7.6q1.3 0 2.3.2 1.1.2 2.1.6l2.1.8 2 .7 2.2.5q1.1.3 2 1 .8.8 1.8 1.3t1.9 1.3 1.8 1.4 1.7 1.4 1.3 1.8 1.4 1.7l1.7 1.7q.9.8 1.4 1.8t1.2 1.9 1.3 1.8 1.2 1.9l1.1 2 1 1.9 1 2 1 2 1 1.9.7 2q.3 1.1.8 2l1 2q.6 1 .8 2l.7 2.2q.4 1 .5 2.1t.5 2.2.6 2.1l.5 2.2.8 2q.4 1 .5 2.2t.3 2.2q.4 1 .5 2.2l.4 2.2q.1 1.1.5 2.2.4 1 .3 2.2 0 1.2.3 2.3.4 1 .5 2.1l.4 2q.3 1 .5 0l.7-1.9q.4-1 .5-2.2 0-1.1.5-2.1t.6-2.2v-2.3q0-1.2.6-2.2t.4-2.1q0-1.3.4-2.2t.8-2.1l.5-2.1q.3-1.1.8-2.1l.8-2 .5-2.2.8-2 1-2 .7-2.1q.3-1 .9-2 .5-1 .7-2 .3-1.1.8-2.1l1-2 1-2 1-2 1-1.9 1-2q.3-1 1.1-1.8l1.4-1.8 1.3-1.8q.6-1 1.5-1.8l1.7-1.7q.8-.8 1.3-1.8t1.3-1.8l1.7-1.7q.8-1 1.7-1.7l1.8-1.3 2-1 2-1q.9-.5 2-.8 1-.2 2-.7t2.2-.6 2.1-.5 2.3-.4 2-.2.6-1.5l-.9-2q-.4-1-1.1-1.9t-1.2-1.9l-1.1-1.9q-.6-.9-1.4-1.7-.9-.9-1.3-1.9l-1-2-1.2-1.8-1.1-2-1.1-1.8-1.3-2-1-1.9q-.5-1-1.2-1.8l-1.3-1.9-1.1-1.9-1.1-1.9-1-2-1-2q-.4-1-1-1.9l-1-2-1-1.9q-.4-1-1.1-1.9l-1.2-1.9-1-2-1-1.9-1-2-1-2-1-1.9-1-2q-.5-1-.7-2l-.8-2-1-2-1-2-.6-2q-.3-1.2-.9-2.1l-1-2-1-2q-.4-1-1-1.9l-.8-2-.7-2-1-2q-.5-1-.7-2.1l-.6-2.1-.8-2.1-.7-2q-.3-1.1-.8-2l-1.1-2Z"/></g>
@@ -41,6 +124,87 @@
     }
   })();
 </script>
+<div id="terms-modal-backdrop" class="modal-backdrop">
+  <div class="modal-panel" role="dialog" aria-modal="true" aria-label="Terms and Conditions" style="max-width:720px;">
+    <button class="modal-close" type="button" aria-label="Close" data-modal-close-terms>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <div class="modal-scroll">
+      <p class="eyebrow" style="margin-bottom:4px;">Legal</p>
+      <h2 style="font-family:var(--font-serif); font-size:26px; font-weight:400; margin:0 0 6px;">Terms &amp; Conditions</h2>
+      <p style="color:var(--muted); font-size:13px; margin:0 0 20px;">Last updated: September 17, 2026</p>
+      <div class="legal-doc" style="max-height:50vh; overflow-y:auto; padding-right:8px; margin-bottom:20px;">
+            <div class="legal-section">
+            <p>These Terms &amp; Conditions ("Terms") govern your access to and use of G Club (the "Platform"), operated for members located in the Philippines. By creating an account, browsing profiles, or making a booking, you agree to these Terms. If you do not agree, please do not use the Platform.</p>
+            </div>
+
+
+            <div class="legal-section">
+            <h2>1. Eligibility &amp; Accounts</h2>
+            <p>You must be at least 18 years old to create an account. You are responsible for keeping your login details and account information accurate, current, and confidential. G Club may request identity verification (government ID and a live selfie or video) before approving an account, and may decline or remove any account that fails this review.</p>
+            </div>
+
+
+            <div class="legal-section">
+            <h2>2. Bookings &amp; Payments</h2>
+            <p>Bookings are requested through the Platform and are not confirmed until accepted by the companion. Payment is authorized (placed on hold) at the time a request is sent and only captured once the companion accepts; if a request is declined or expires, the hold is released and nothing is charged.</p>
+            <p>Rates, available hours, and service areas are set by each companion and may change at any time. G Club charges a service fee on top of the companion's rate, disclosed before you confirm a booking.</p>
+            </div>
+
+
+            <div class="legal-section">
+            <h2>3. Verification</h2>
+            <p>G Club takes reasonable steps to verify companion identities before a profile is approved, including document and video review. Verification reduces risk but does not guarantee the conduct, character, or safety of any member. Members are responsible for exercising their own judgment when meeting anyone arranged through the Platform.</p>
+            </div>
+
+
+            <div class="legal-section">
+            <h2>4. Conduct &amp; Community Guidelines</h2>
+            <p>Members agree to treat each other with respect, to honor confirmed bookings, and to communicate through the Platform's messaging system for anything related to a booking. Harassment, threats, discrimination, and attempts to solicit services outside the scope of a booking are prohibited and may result in suspension or termination of your account.</p>
+            </div>
+
+
+            <div class="legal-callout">
+              <h3>5. Off-Platform Arrangements &amp; Limitation of Liability</h3>
+              <p>For everyone's safety, all bookings, payments, and communication between members are intended to take place through G Club. Sharing personal contact details (including phone numbers) and arranging to meet at a private residence, condominium, apartment, or similar private housing are not permitted through the Platform's messaging system.</p>
+              <p><strong>If members choose to communicate, arrange a meeting, exchange payment, or interact in any way outside of the Platform — including but not limited to sharing personal contact information, meeting at a private residence, or agreeing to terms not facilitated through G Club — they do so entirely at their own risk.</strong> G Club has no visibility into, control over, or responsibility for any arrangement made outside the Platform, and is not liable for any loss, injury, harm, dispute, financial loss, or other damage arising from such off-platform conduct, however caused.</p>
+              <p>This limitation applies regardless of whether the parties involved met, were introduced through, or were originally verified by G Club. Using the Platform to initially connect does not extend G Club's responsibility to anything that subsequently happens outside of it.</p>
+            </div>
+
+            <div class="legal-section">
+            <h2>6. Prohibited Content in Messaging</h2>
+            <p>To help keep interactions on the Platform, messages that contain phone numbers or that reference meeting at a private home, condo, apartment, or similar private housing are automatically blocked before sending. These filters are provided as a safety measure and best effort only — they do not catch every possible attempt to share such information, and members remain responsible for their own conduct regardless of whether a message is blocked.</p>
+            </div>
+
+
+            <div class="legal-section">
+            <h2>7. Cancellations</h2>
+            <p>Either party may decline a booking request before it is accepted at no cost. Cancellation of a confirmed booking may be subject to a fee, disclosed at the time of booking, to compensate the other party for reserved time.</p>
+            </div>
+
+
+            <div class="legal-section">
+            <h2>8. Account Suspension &amp; Termination</h2>
+            <p>G Club may suspend or terminate any account that violates these Terms, provides false verification information, or engages in conduct that puts other members at risk, with or without prior notice.</p>
+            </div>
+
+
+            <div class="legal-section">
+            <h2>9. Changes to These Terms</h2>
+            <p>G Club may update these Terms from time to time. Continued use of the Platform after changes are posted constitutes acceptance of the updated Terms.</p>
+            </div>
+
+
+            <div class="legal-section">
+            <h2>10. Contact</h2>
+            <p>Questions about these Terms can be sent through the Support link in your account, or to the contact details listed in the footer of this page.</p>
+            </div>
+      </div>
+      <button type="button" class="btn btn-dark btn-block btn-lg" data-modal-close-terms>Close</button>
+    </div>
+  </div>
+</div>
+
 <div class="page-shell">
 <header class="nav">
   <div class="container nav-inner">
@@ -56,23 +220,36 @@
   <div class="container">
     <div class="app-content">
         <div class="app-progress">
-          <p class="eyebrow">Optional upgrade</p>
-          <div class="progress-step is-filled is-current" aria-label="Step 1: Choose your plan (current)">
+          <p class="eyebrow">Gentleman application</p>
+          <div class="progress-step is-filled" aria-label="Step 1: Welcome">
             <span class="marker">1</span>
-            <span class="label-text" aria-hidden="true">Choose your plan</span>
+            <span class="label-text" aria-hidden="true">Welcome</span>
           </div>
-          <div class="progress-step" aria-label="Step 2: Payment">
+          <div class="progress-step is-filled" aria-label="Step 2: Your details">
             <span class="marker">2</span>
-            <span class="label-text" aria-hidden="true">Payment</span>
+            <span class="label-text" aria-hidden="true">Your details</span>
+          </div>
+          <div class="progress-step is-filled" aria-label="Step 3: Preferences">
+            <span class="marker">3</span>
+            <span class="label-text" aria-hidden="true">Preferences</span>
+          </div>
+          <div class="progress-step is-filled" aria-label="Step 4: Verification">
+            <span class="marker">4</span>
+            <span class="label-text" aria-hidden="true">Verification</span>
+          </div>
+          <div class="progress-step is-filled is-current" aria-label="Step 5: Plan & payment (current)">
+            <span class="marker">5</span>
+            <span class="label-text" aria-hidden="true">Plan & payment</span>
           </div>
         </div>
         <div class="form-column">
-          <div class="form-heading">
-            <p class="eyebrow">Optional &middot; Step 1 of 2</p>
-            <h1>Choose your plan</h1>
-            <p>Select the access that suits you. Your membership and booking activity remain private.</p>
+          <div class="form-heading" id="plan-heading">
+            <p class="eyebrow">Step 5 of 5</p>
+            <h1 id="pay-title">Choose your plan</h1>
+            <p id="pay-desc">Select the access that suits you. Your membership and booking activity remain private.</p>
           </div>
-          <div class="form-card">
+          <div class="form-card" id="plan-form-card" data-mode="application">
+            <div id="plan-main-sections" style="display:flex; flex-direction:column; gap:24px; width:100%;">
             <div class="plan-grid">
               <div class="plan-card" data-plan-name="Starter" data-plan-price="300" data-plan-period="/ 2 weeks">
                 <div class="plan-heading">
@@ -83,6 +260,7 @@
                   <p class="amount">&#8369;300</p>
                   <p class="period">/ 2 weeks</p>
                 </div>
+                <p class="plan-credit">+ 300 credit <span>added again at each renewal</span></p>
                 <p class="plan-desc">Try the platform, browse profiles, and book your first companion</p>
                 <ul class="plan-perks">
                   <li class="plan-perk"><span class="dot"></span>View girl profiles</li>
@@ -103,6 +281,7 @@
                   <p class="amount">&#8369;800</p>
                   <p class="period">/ month</p>
                 </div>
+                <p class="plan-credit">+ 800 credit <span>added again at each renewal</span></p>
                 <p class="plan-desc">Full access with priority booking and member perks</p>
                 <ul class="plan-perks">
                   <li class="plan-perk"><span class="dot"></span>View girl profiles</li>
@@ -112,18 +291,152 @@
                   <li class="plan-perk"><span class="dot"></span>Advanced search filters</li>
                 </ul>
               </div>
+              <div class="plan-card is-wide is-muted" id="plan-card-limited" data-plan-name="Free" data-plan-price="0" data-plan-period="/ 14 days">
+                <div class="plan-heading">
+                  <div class="plan-title-group">
+                    <p class="plan-title">Free</p>
+                    <span class="plan-badge is-soft">Card required</span>
+                  </div>
+                  <span class="plan-radio"></span>
+                </div>
+                <div class="plan-price">
+                  <p class="amount">&#8369;0</p>
+                  <p class="period">/ 14 days</p>
+                </div>
+                <p class="plan-desc">Try G Club free for 14 days. A card is saved to start &mdash; choose Starter or Monthly to keep going afterwards.</p>
+                <ul class="plan-perks">
+                  <li class="plan-perk"><span class="dot"></span>View girl profiles</li>
+                  <li class="plan-perk"><span class="dot"></span>Basic search filters</li>
+                  <li class="plan-perk"><span class="dot"></span>20 messages</li>
+                  <li class="plan-perk"><span class="dot"></span>1 booking included</li>
+                </ul>
+              </div>
             </div>
-            <hr class="divider">
-<div class="form-actions">
-              <a href="gent-review.html" class="btn btn-ghost" data-transition><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg> Back to review</a>
-              <a href="gent-payment.html" class="btn btn-dark" data-transition id="gent-plan-continue">Continue <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
+              <hr class="divider">
+              <div class="order-summary" id="pay-order-summary">
+                <div>
+                  <p class="ord-label">Order summary</p>
+                  <p class="plan-line" id="pay-plan-line">Monthly plan - &#8369;800 / month</p>
+                  <p class="plan-credit-line" id="pay-credit-line">800 credit added now and again at each renewal</p>
+                </div>
+              </div>
+              <div id="pay-method-section">
+              <p class="field-label-standalone" style="margin-bottom:12px;">Payment method</p>
+              <div class="payment-methods" style="margin-bottom:24px;">
+                <span class="pm-label">Accepted payments</span>
+                <button type="button" class="payment-badge" data-method="visa">VISA</button>
+                <button type="button" class="payment-badge" data-method="mastercard">Mastercard</button>
+                <button type="button" class="payment-badge" data-method="amex">AMEX</button>
+                <button type="button" class="payment-badge" data-method="gcash">G-Cash</button>
+              </div>
+
+              <div id="pay-fields-card">
+                <div class="form-field" style="margin-bottom:16px;">
+                  <label>Card number</label>
+                  <input type="text" placeholder="1234 5678 9012 3456">
+                </div>
+                <div class="form-row" style="margin-bottom:16px;">
+                  <div class="form-field">
+                    <label>Expiry date</label>
+                    <input type="text" placeholder="MM / YY">
+                  </div>
+                  <div class="form-field">
+                    <label>CVV</label>
+                    <input type="text" placeholder="&bull;&bull;&bull;">
+                  </div>
+                </div>
+                <div class="form-field" style="margin-bottom:16px;">
+                  <label>Cardholder name</label>
+                  <input type="text" placeholder="Name as it appears on card">
+                </div>
+              </div>
+
+              <div id="pay-fields-gcash" style="display:none;">
+                <div class="form-field" style="margin-bottom:16px;">
+                  <label>G-Cash mobile number</label>
+                  <input type="text" placeholder="09XX XXX XXXX" id="gcash-number-input">
+                </div>
+              </div>
+
+              <p class="field-note" id="pay-card-error" style="display:none; color:#b8564f; margin:0 0 16px;">Please fill in all card details to continue.</p>
+              <div class="billing-note" id="pay-billing-note" style="margin-bottom:24px;">
+                Your billing details are never shared with companions or shown on your profile.
+              </div>
+              </div>
+              <div id="app-only-sections" style="display:flex; flex-direction:column; gap:20px; width:100%;">
+                <hr class="divider">
+                <div class="summary-block" style="display:flex; flex-direction:column; width:100%;">
+                  <div class="summary-row" style="padding:14px 0; border-bottom:1px solid var(--line);"><span class="lbl">Display name</span><span style="font-weight:600;">Alex</span></div>
+                  <div class="summary-row" style="padding:14px 0; border-bottom:1px solid var(--line);"><span class="lbl">Age</span><span style="font-weight:600;">34</span></div>
+                  <div class="summary-row" style="padding:14px 0; border-bottom:1px solid var(--line);"><span class="lbl">Location</span><span style="font-weight:600;">Makati, Philippines</span></div>
+                  <div style="padding:16px 0; display:flex; flex-direction:column; gap:12px;">
+                    <span style="color:var(--muted); font-size:14px;">Interests &amp; preferences</span>
+                    <div class="choice-row">
+                      <span class="tag">Conversation</span>
+                      <span class="tag">Dining companion</span>
+                      <span class="tag">Travel companion</span>
+                      <span class="tag">City exploring</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="review-note"><span class="dot"></span><span>Your profile is private by default. Most accounts are approved within 24 hours.</span></div>
+                <label class="checkbox">
+                  <input type="checkbox" id="terms-agree-checkbox">
+                  <span>I agree to the <a href="#" id="open-terms-link" style="color:var(--gold-deep); font-weight:600;">Terms &amp; Conditions</a></span>
+                </label>
+              </div>
+              <hr class="divider">
+              <div class="form-actions is-sticky-actions" id="plan-actions">
+                <a href="gent-verify.html" class="btn btn-ghost" data-transition id="gent-plan-back"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg> Back</a>
+                <button type="button" class="btn btn-dark is-disabled" id="pay-continue-btn" disabled>Pay &#8369;800 &amp; submit <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></button>
+              </div>
+            </div>
+            <div id="pay-authorize-section" style="display:none; width:100%;">
+              <div class="authorize-state">
+                <div class="authorize-spinner"></div>
+                <h2>Authorizing with G-Cash</h2>
+                <p class="authorize-amount" id="authorize-amount-value">&#8369;800</p>
+                <p class="authorize-desc">Please confirm the payment in your G-Cash app. Keep this page open while we wait for authorization.</p>
+                <div class="authorize-actions">
+                  <a href="gent-plan.html" class="authorize-cancel" data-transition>Cancel</a>
+                  <span class="authorize-waiting">Waiting for confirmation&hellip;</span>
+                </div>
+              </div>
+            </div>
+
+            <div id="pay-success-section" style="display:none; width:100%;">
+              <div class="payment-success">
+                <div class="success-check-icon">
+                  <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20 6 9 17l-5-5"/></svg>
+                </div>
+                <div>
+                  <h2 id="pay-success-title">Payment confirmed</h2>
+                  <p class="sub" id="pay-success-sub">Your G-Cash payment was successful.</p>
+                </div>
+                <p class="receipt-line credit-note" id="pay-credit-note" style="display:none;"></p>
+                <div class="transaction-details">
+                  <div class="transaction-detail">
+                    <span class="lbl">Amount</span>
+                    <span class="val" id="pay-amount-value">&#8369;800</span>
+                  </div>
+                  <div class="transaction-detail">
+                    <span class="lbl" id="pay-ref-label">G-Cash reference number</span>
+                    <span class="val" id="pay-ref-value">GC-8427-1935-6201</span>
+                  </div>
+                  <div class="transaction-detail">
+                    <span class="lbl">Date</span>
+                    <span class="val" id="pay-date-value">September 13, 2026</span>
+                  </div>
+                </div>
+                <a href="gent-profile.html" class="btn btn-dark" data-transition id="pay-done-link">Back to profile <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
+              </div>
             </div>
           </div>
         </div>
-        <div class="step-explain">
-          <p class="label">Optional &middot; Step 1 of 2</p>
+        <div class="step-explain" id="plan-explain">
+          <p class="label">Step 5 of 5</p>
           <h2>Your membership</h2>
-          <p>Choose the pace that feels right. Both plans include verified profiles, secure payments, and discreet account activity. Your membership is never shown publicly.</p>
+          <p>Choose the pace that feels right. Every plan includes verified profiles, secure payments, and discreet account activity. Payments are encrypted, billing is discreet, and nothing is shown on your profile.</p>
         </div>
     </div>
   </div>

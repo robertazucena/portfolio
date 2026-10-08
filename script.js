@@ -1,2406 +1,1156 @@
-(function initPreloader(){
-  var pctEl = document.getElementById('pl-pct');
-  var fillEl = document.getElementById('pl-fill');
-  var preloader = document.getElementById('preloader');
+(() => {
+"use strict";
+document.documentElement.classList.add("js");
+const RM = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const FINE = matchMedia("(hover:hover) and (pointer:fine)").matches;
+var SH = { scroll: 0 };
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
 
-  var progress = 0;
-  var pageLoaded = false;
-  var minTimeElapsed = false;
-  setTimeout(function(){ minTimeElapsed = true; }, 3000);
-  window.addEventListener('load', function(){ pageLoaded = true; });
-
-  function tickProgress(){
-    var target = (pageLoaded && minTimeElapsed) ? 100 : 92;
-    progress += (target - progress) * 0.08 + (progress < 92 ? 0.35 : 0);
-    if (progress > target) progress = target;
-    var shown = Math.min(100, Math.round(progress));
-    pctEl.textContent = shown + '%';
-    fillEl.style.width = shown + '%';
-
-    if (progress >= 99.5){
-      setTimeout(function(){
-        preloader.classList.add('pl-exit');
-        setTimeout(function(){ preloader.remove(); document.body.classList.remove('pl-loading'); document.dispatchEvent(new Event('preloader:done')); }, 640);
-      }, 200);
-      return;
-    }
-    requestAnimationFrame(tickProgress);
-  }
-  requestAnimationFrame(tickProgress);
-
-  /* minimal wireframe polygon: rotates, then shifts to the next platonic solid */
-  try{
-    if(!window.THREE) throw new Error('three.js unavailable');
-
-    var canvas = document.getElementById('pl-canvas');
-    var size = 130;
-    var renderer = new THREE.WebGLRenderer({canvas:canvas, alpha:true, antialias:true});
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
-    renderer.setSize(size, size, false);
-
-    var scene = new THREE.Scene();
-    var camera = new THREE.PerspectiveCamera(45, 1, 1, 500);
-    camera.position.z = 140;
-
-    /* same purple -> pink -> teal gradient as the .pl-fill progress bar, mapped across each vertex */
-    var GRADIENT_STOPS = [[155,126,240],[240,130,196],[44,224,184]]; /* --purple, --pink, --teal */
-    function gradientColor(t){
-      t = Math.min(1, Math.max(0, t));
-      var seg = t * (GRADIENT_STOPS.length - 1);
-      var i = Math.min(GRADIENT_STOPS.length - 2, Math.floor(seg));
-      var f = seg - i;
-      var a = GRADIENT_STOPS[i], b = GRADIENT_STOPS[i + 1];
-      return [
-        (a[0] + (b[0] - a[0]) * f) / 255,
-        (a[1] + (b[1] - a[1]) * f) / 255,
-        (a[2] + (b[2] - a[2]) * f) / 255
-      ];
-    }
-    var RADIUS = 36.55; /* 15% smaller than the original 43 */
-    var shapeDefs = [
-      function(){ return new THREE.TetrahedronGeometry(RADIUS, 0); },
-      function(){ return new THREE.OctahedronGeometry(RADIUS, 0); },
-      function(){ return new THREE.IcosahedronGeometry(RADIUS, 0); },
-      function(){ return new THREE.DodecahedronGeometry(RADIUS, 0); }
-    ];
-
-    function makeShape(idx){
-      var geometry = new THREE.EdgesGeometry(shapeDefs[idx]());
-      var pos = geometry.attributes.position;
-      var colors = new Float32Array(pos.count * 3);
-      for(var i = 0; i < pos.count; i++){
-        var t = (pos.getX(i) + RADIUS) / (RADIUS * 2); /* left -> right, like the 90deg progress gradient */
-        var c = gradientColor(t);
-        colors[i*3] = c[0]; colors[i*3+1] = c[1]; colors[i*3+2] = c[2];
-      }
-      geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
-      return new THREE.LineSegments(
-        geometry,
-        new THREE.LineBasicMaterial({vertexColors:true, transparent:true, opacity:0.9, linewidth:2})
-      );
-    }
-
-    var ptr = 0;
-    var current = makeShape(ptr);
-    scene.add(current);
-    var next = null;
-    var STAGE_MS = 1500, SHIFT_MS = 650;
-    var stageStart = performance.now();
-    var shifting = false, shiftStart = 0;
-
-    function easeInOutCubic(t){ return t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t+2,3)/2; }
-
-    var clock = new THREE.Clock();
-    function animate(){
-      if(!preloader.isConnected) return; // stop once the preloader is gone
-      requestAnimationFrame(animate);
-      var dt = clock.getDelta();
-      var now = performance.now();
-
-      current.rotation.x += dt * 0.4;
-      current.rotation.y += dt * 0.6;
-      if(next){ next.rotation.x += dt * 0.4; next.rotation.y += dt * 0.6; }
-
-      if(!shifting && now - stageStart > STAGE_MS){
-        shifting = true; shiftStart = now;
-        ptr = (ptr + 1) % shapeDefs.length;
-        next = makeShape(ptr);
-        next.scale.setScalar(0.001);
-        scene.add(next);
-      }
-
-      if(shifting){
-        var p = Math.min(1, (now - shiftStart) / SHIFT_MS);
-        var e = easeInOutCubic(p);
-        current.scale.setScalar(1 - e);
-        current.rotation.z += dt * 1.6;
-        next.scale.setScalar(Math.max(0.001, e));
-        next.rotation.z -= dt * 1.6;
-
-        if(p >= 1){
-          scene.remove(current);
-          current.geometry.dispose(); current.material.dispose();
-          current = next; next = null; shifting = false; stageStart = now;
-        }
-      }
-      renderer.render(scene, camera);
-    }
-    animate();
-  }catch(err){
-    document.body.classList.add('pl-no-webgl');
-  }
-})();
-
-
-/* ---------------- light / dark theme toggle ---------------- */
-(function(){
-  const root = document.documentElement;
-  const btn = document.getElementById('theme-toggle');
-  if(!btn) return;
-  btn.addEventListener('click', ()=>{
-    const isLight = root.getAttribute('data-theme') === 'light';
-    if(isLight){
-      root.removeAttribute('data-theme');
-      try{ localStorage.setItem('ra-theme','dark'); }catch(e){}
-    } else {
-      root.setAttribute('data-theme','light');
-      try{ localStorage.setItem('ra-theme','light'); }catch(e){}
-    }
-  });
-})();
-
-/* ---------------- background music toggle ----------------
-   Never autoplays with sound on load — browsers block that anyway, and
-   unsolicited audio is bad UX regardless. Only plays after the visitor
-   explicitly clicks the toggle. Preference is remembered across visits,
-   but resuming playback on return visits still requires a user gesture
-   per browser autoplay policy, so we just leave the button in the
-   correct state and let them click again if playback was blocked. */
-(function(){
-  const btn = document.getElementById('music-toggle');
-  const audio = document.getElementById('bg-music');
-  if(!btn || !audio) return;
-
-  audio.volume = 0.35;
-
-  function setPlayingState(isPlaying){
-    btn.classList.toggle('playing', isPlaying);
-    btn.setAttribute('aria-label', isPlaying ? 'Mute background music' : 'Play background music');
-    btn.title = isPlaying ? 'Mute background music' : 'Play background music';
-  }
-
-  btn.addEventListener('click', ()=>{
-    if(audio.paused){
-      audio.play().then(()=>{
-        setPlayingState(true);
-        try{ localStorage.setItem('ra-music','on'); }catch(e){}
-      }).catch(()=>{
-        setPlayingState(false);
-      });
-    } else {
-      audio.pause();
-      setPlayingState(false);
-      try{ localStorage.setItem('ra-music','off'); }catch(e){}
-    }
-  });
-
-  audio.addEventListener('ended', ()=> setPlayingState(false));
-  audio.addEventListener('error', ()=> setPlayingState(false));
-  setPlayingState(false);
-
-  /* first click anywhere on the page starts the music automatically,
-     unless the visitor has already explicitly muted it via the icon.
-     Runs on document (bubble phase), so if that first click IS the
-     icon itself, the icon's own handler above fires first and this
-     just sees the already-correct state and does nothing extra. */
-  document.addEventListener('click', function firstInteractionPlay(){
-    document.removeEventListener('click', firstInteractionPlay);
-    let pref;
-    try{ pref = localStorage.getItem('ra-music'); }catch(e){ pref = null; }
-    if(pref === 'off') return; // respect an explicit mute
-    if(audio.paused){
-      audio.play().then(()=>{
-        setPlayingState(true);
-      }).catch(()=>{
-        setPlayingState(false);
-      });
-    }
-  }, {once:true});
-})();
-
-/* ---------------- stars ---------------- */
-(function(){
-  const s = document.getElementById('stars');
-  for(let i=0;i<70;i++){
-    const el=document.createElement('span');
-    el.style.left=Math.random()*100+'%';
-    el.style.top=Math.random()*100+'%';
-    el.style.animationDelay=(Math.random()*4)+'s';
-    s.appendChild(el);
-  }
-})();
-
-/* ---------------- clock ---------------- */
-function updateClock(){
-  const d=new Date();
-  const days=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-  let h=d.getHours(); const m=d.getMinutes().toString().padStart(2,'0');
-  const ap=h>=12?'PM':'AM'; h=h%12; if(h===0)h=12;
-  document.getElementById('clock').textContent=`${days[d.getDay()]} ${h}:${m} ${ap}`;
-}
-updateClock(); setInterval(updateClock,15000);
-
-/* ---------------- interactive terminal prompt ---------------- */
-(function(){
-  const win = document.getElementById('win-terminal');
-  const body = win.querySelector('.winbody');
-  const hiddenInput = document.getElementById('term-hidden-input');
-  if(!win || !body || !hiddenInput) return;
-
-  function focusInput(e){
-    if(e && e.pointerType !== 'touch') e.preventDefault();
-    hiddenInput.focus();
-  }
-  win.addEventListener('pointerdown', focusInput);
-
-  /* mobile: a tap fires pointerdown (focuses fine) but is then followed by a
-     synthetic "click" once the finger lifts, which some mobile browsers use
-     to blur any off-screen input — closing the keyboard right after it opens.
-     Suppressing that trailing click (not the pointerdown/scroll itself) stops
-     the auto-close without needing a long-press to work around it. */
-  win.addEventListener('touchend', e=>{
-    e.preventDefault();
-    hiddenInput.focus();
-  }, {passive:false});
-
-  function escapeHtml(str){
-    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-  }
-
-  const TERM_REPLIES = [
-    'Awesome right? Almost working lol',
-    "command not found, but I respect the confidence",
-    "let me check with my manager... jk I don't have one",
-    "404: skill issue not found",
-    "still faster than my Figma load times",
-    "sudo make me a sandwich — permission denied",
-    "yeah I have no idea what that does either",
-    "compiling... compiling... nah I'm just messing with you",
-    "that's between you and the terminal gods now",
-    "bold of you to assume this is a real shell"
-  ];
-  let replyIndex = 0;
-
-  hiddenInput.addEventListener('input', ()=>{
-    const typed = document.getElementById('term-typed');
-    if(typed) typed.textContent = hiddenInput.value;
-  });
-
-  hiddenInput.addEventListener('keydown', e=>{
-    if(e.key !== 'Enter') return;
-    e.preventDefault();
-    const inputLine = document.getElementById('term-input-line');
-    const typedText = hiddenInput.value;
-    if(inputLine){
-      inputLine.removeAttribute('id');
-      inputLine.innerHTML = `<span class="term-prompt">~ </span>${escapeHtml(typedText)}`;
-    }
-
-    const out = document.createElement('div');
-    out.className = 'term-line term-out';
-    out.textContent = TERM_REPLIES[replyIndex % TERM_REPLIES.length];
-    replyIndex++;
-    body.insertBefore(out, hiddenInput);
-
-    const spacer = document.createElement('div');
-    spacer.className = 'term-line';
-    spacer.innerHTML = '&nbsp;';
-    body.insertBefore(spacer, hiddenInput);
-
-    const newLine = document.createElement('div');
-    newLine.id = 'term-input-line';
-    newLine.className = 'term-line';
-    newLine.innerHTML = '<span class="term-prompt">~ </span><span id="term-typed"></span><span class="cursor"></span>';
-    body.insertBefore(newLine, hiddenInput);
-
-    hiddenInput.value = '';
-    body.scrollTop = body.scrollHeight;
-  });
-})();
-
-/* ---------------- terminal boot sequence: type effect after preloader finishes ---------------- */
-(function(){
-  const loginLine = document.getElementById('term-line-login');
-  const cmd1 = document.getElementById('term-cmd-1');
-  const cursor1 = document.getElementById('term-cursor-1');
-  const out1 = document.getElementById('term-out-1');
-  const cmd2 = document.getElementById('term-cmd-2');
-  const cursor2 = document.getElementById('term-cursor-2');
-  const out2 = document.getElementById('term-out-2');
-  const inputLine = document.getElementById('term-input-line');
-  if(!loginLine || !cmd1 || !cmd2 || !inputLine) return;
-
-  const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  let started = false;
-
-  function typeInto(el, text, speed, cb){
-    let i = 0;
-    const interval = setInterval(()=>{
-      i++;
-      el.textContent = text.slice(0, i);
-      if(i >= text.length){
-        clearInterval(interval);
-        if(cb) cb();
-      }
-    }, speed);
-  }
-
-  function fadeIn(el){
-    el.style.transition = 'opacity .35s ease';
-    requestAnimationFrame(()=>{ el.style.opacity = '1'; });
-  }
-
-  function showInstantly(){
-    loginLine.style.opacity = '1';
-    cmd1.textContent = 'whoami';
-    out1.style.opacity = '1';
-    cmd2.textContent = 'cat skills.json';
-    out2.style.opacity = '1';
-    inputLine.style.opacity = '1';
-  }
-
-  function runBoot(){
-    if(started) return;
-    started = true;
-
-    if(reduceMotion){
-      showInstantly();
-      return;
-    }
-
-    fadeIn(loginLine);
-
-    setTimeout(()=>{
-      cursor1.style.display = 'inline-block';
-      typeInto(cmd1, 'whoami', 70, ()=>{
-        cursor1.style.display = 'none';
-        setTimeout(()=>{
-          fadeIn(out1);
-          setTimeout(()=>{
-            cursor2.style.display = 'inline-block';
-            typeInto(cmd2, 'cat skills.json', 55, ()=>{
-              cursor2.style.display = 'none';
-              setTimeout(()=>{
-                fadeIn(out2);
-                setTimeout(()=>{
-                  fadeIn(inputLine);
-                }, 400);
-              }, 300);
-            });
-          }, 500);
-        }, 300);
-      });
-    }, 500);
-  }
-
-  if(!document.body.classList.contains('pl-loading')) runBoot();
-  document.addEventListener('preloader:done', runBoot, {once:true});
-})();
-
-/* ---------------- sticky-note signature: type on when visible ---------------- */
-(function(){
-  const link = document.getElementById('sig-link');
-  const textEl = document.getElementById('sig-text');
-  if(!link || !textEl) return;
-  const fullText = link.dataset.text || '';
-  textEl.textContent = '';
-  let started = false;
-  let preloaderDone = !document.body.classList.contains('pl-loading');
-  let inView = false;
-
-  function typeText(){
-    if(started) return;
-    started = true;
-    let i = 0;
-    const interval = setInterval(()=>{
-      i++;
-      textEl.textContent = fullText.slice(0, i);
-      if(i >= fullText.length) clearInterval(interval);
-    }, 85);
-  }
-
-  function maybeType(){
-    if(preloaderDone && inView) typeText();
-  }
-
-  document.addEventListener('preloader:done', function(){
-    preloaderDone = true;
-    maybeType();
-  }, {once:true});
-
-  if('IntersectionObserver' in window){
-    const observer = new IntersectionObserver(entries=>{
-      entries.forEach(entry=>{
-        if(entry.isIntersecting){
-          inView = true;
-          maybeType();
-          observer.unobserve(link);
-        }
-      });
-    }, {threshold:0.4});
-    observer.observe(link);
-  } else {
-    inView = true;
-    maybeType();
-  }
-
-  /* fallback: some mobile browsers don't reliably re-fire IntersectionObserver
-     during programmatic/static-flow layout shifts, so also check geometry directly */
-  function checkVisibleFallback(){
-    if(started) return;
-    const r = link.getBoundingClientRect();
-    if(r.bottom > 0 && r.top < window.innerHeight){
-      inView = true;
-      maybeType();
-    }
-  }
-  window.addEventListener('scroll', checkVisibleFallback, {passive:true});
-  window.addEventListener('resize', checkVisibleFallback);
-  checkVisibleFallback();
-})();
-
-/* ---------------- Email Me: sends straight to robertazucena@gmail.com via EmailJS ----------------
-   No backend server is involved — EmailJS is a client-side email delivery service.
-   To make this live, create a free account at emailjs.com, connect a Gmail service,
-   build a template with {{from_name}}, {{from_email}}, {{message}} merge fields, and
-   paste your Public Key / Service ID / Template ID into the three constants below. */
-(function(){
-try{
-  const EMAILJS_PUBLIC_KEY = 'e8eHhNt4Pwx3vfdaI';
-  const EMAILJS_SERVICE_ID = 'service_t2fioya';
-  const EMAILJS_TEMPLATE_ID = 'template_gvo2cen';
-
-  const form = document.getElementById('mail-form');
-  const status = document.getElementById('mail-status');
-  const submitBtn = document.getElementById('mail-submit');
-  const successPanel = document.getElementById('mail-success');
-  const successText = document.getElementById('mail-success-text');
-  const resetBtn = document.getElementById('mail-reset');
-  if(!form || !status || !submitBtn) return;
-
-  function showSuccess(message){
-    if(!successPanel) return;
-    if(successText) successText.textContent = message;
-    successPanel.classList.add('show');
-  }
-  function hideSuccess(){
-    if(!successPanel) return;
-    successPanel.classList.remove('show');
-  }
-  window.hideMailSuccess = hideSuccess;
-
-  if(resetBtn){
-    resetBtn.addEventListener('click', ()=>{
-      hideSuccess();
-      form.reset();
-      fields.forEach(clearFieldError);
-      status.classList.remove('show','visible','success','error');
-    });
-  }
-
-  if(window.emailjs){
-    try{ window.emailjs.init({publicKey: EMAILJS_PUBLIC_KEY}); }catch(initErr){ console.error('EmailJS init failed', initErr); }
-  }
-
-  const fields = [
-    {
-      input: document.getElementById('mail-name'),
-      errorEl: document.getElementById('mail-name-error'),
-      validate(v){ return v ? '' : 'Please enter your full name.'; }
+/* =========================================================
+   CONTENT — edit projects here. Visuals are placeholder mockups.
+   ========================================================= */
+const PROJECTS = [
+  {
+    slug: "sulyap", title: "Sulyap", short: "Sulyap",
+    client: "Own product", role: "Lead Product Designer", sector: "Web App · Philippine News Platform", scope: "Top stories, story briefs, regions, sections, sources and search",
+    status: "In development · 2026", deliverables: "Product Design, Design System, Prototype",
+    overview: "Sulyap brings news from every corner of the Philippines into one place. Each story is a short brief that shows which outlets covered it, then sends readers to the publisher to read it in full. Briefs are drafted by AI and approved by human editors, and the whole product wears a refined metallic-black identity.",
+    cat: ["web"], mock: "portal",
+    live: "https://robertazucena.com/assets/prototype/sulyap/index.html",
+    proto: { base: "assets/proto/sulyap/",
+      desktop: [["Top stories","index.html",10396],["Story brief","index.html#/story/1",4339],["Regions","index.html#/regions/Luzon",1784],["Business","index.html#/business",1651],["Weather & disasters","index.html#/weather",2469],["Our sources","index.html#/sources",2921],["How Sulyap works","index.html#/about",1597]],
+      interactive: true,
+      heroMobile: [["Top stories","index.html",0]] },
+    summary: "Philippine news in one place: short briefs from every corner of the country, each linking back to the publishers who reported it.",
+    metric: ["7", "Sections"],
+    tags: ["Product design", "News UX", "AI-assisted editorial"],
+    stats: [["1 place","National, regional and government outlets, side by side"],["7 sections","Top stories, Nation, Regions, Business, Weather, Sports and Entertainment"],["⌘K","Search every story, place and section from anywhere"]],
+    challenge: "Philippine news is spread across dozens of national, regional and government outlets, and following a story means hopping between sites.",
+    insight: "Readers want <em>the whole picture</em> fast, and publishers still deserve the click.",
+    approach: [["Sources","Mapped national, regional and government outlets into one source registry."],["Pipeline","Designed a supervised flow: AI drafts each brief, an editor approves it."],["Structure","Organised the site into clear sections and regions, inspired by how sports sites handle live, dense content."],["Identity","Set a refined metallic-black brand with editorial type and illustrated fallbacks."]],
+    solution: "Short, trusted briefs that always link back to the source.",
+    features: [["Right now","A live ticker for weather signals, earthquakes, class suspensions, markets and transit."],["Story briefs","Who covered it, when it was updated, and a link to read it in full."],["Search anywhere","A ⌘K palette across stories, places and sections."],["Reader touches","Saved stories, a print edition, dark mode and a morning briefing."]],
+    outcomes: ["One place to follow Philippine news across outlets","Every brief credits and links to its publishers","A prototype ready for testing with real readers"],
+    reflection: "An aggregator only earns trust if it is generous to its sources. Showing who reported each story became the core of the design."
+  },
+  {
+    slug: "kahera", title: "Kahera", short: "Kahera",
+    client: "Own product", role: "Lead Product Designer", sector: "Web App · Store System for Sari-sari Stores", scope: "Landing, sell, products, restock, dashboard and settings",
+    status: "In development · 2026", deliverables: "Product Design, Design System, Prototype",
+    overview: "Kahera is a modern store system for sari-sari stores in the Philippines. Owners ring up sales and give the right sukli, keep track of stock, log restocks bought from retail and grocery shops, and see how the store is doing today, this month and this year. Stores register to get access, the platform supports many stores, and the whole app works in Tagalog and English.",
+    cat: ["web"], mock: "portal",
+    live: "https://robertazucena.com/assets/prototype/kahera/index.html",
+    proto: { base: "assets/proto/kahera/",
+      desktop: [["Landing","index.html#landing/en",5112],["Sell","index.html#demo/sell/en",3356],["Products","index.html#demo/products/en",2329],["Restock","index.html#demo/restock/en",900],["Dashboard","index.html#demo/reports/en",2387],["Settings","index.html#demo/settings/en",900]],
+      interactive: true,
+      heroMobile: [["Sell","index.html#demo/sell/en",0]] },
+    summary: "A simple, beautiful store system for sari-sari stores: sell, give sukli, restock and see your sales, in Tagalog or English.",
+    metric: ["5", "Store tools"],
+    tags: ["Product design", "Retail POS", "Bilingual UX"],
+    stats: [["5 tools","Sell, Products, Restock, Dashboard and Settings"],["TL / EN","Every screen in Tagalog and English"],["Multi-store","Stores register for access, with an admin view to add more"]],
+    challenge: "Most sari-sari stores still run on memory and a notebook, so stock runs out unnoticed and nobody knows the day’s real profit.",
+    insight: "A store system only works if it is <em>faster than the notebook</em>.",
+    approach: [["Listen","Started from how owners actually work: quick sales, exact change, and restocking from retail and grocery shops."],["Flow","Made selling the home screen: tap products, see the total and sukli, complete the sale."],["Clarity","Turned sales into a plain-language dashboard: today, this month and best sellers."],["Access","Designed a register-and-sign-in flow with store codes and PINs, built for many stores."]],
+    solution: "Selling, stock and sales in one friendly app.",
+    features: [["Sell","Tap products, see the total and the exact sukli, done."],["Products & stock","Stock levels at a glance, with alerts when items run low."],["Restock","Log what you bought from retail or grocery shops, no supplier flow needed."],["Dashboard","Sales, customers and estimated profit, with trends and best sellers."]],
+    outcomes: ["A sales flow faster than writing in a notebook","Low-stock warnings before shelves run empty","A bilingual product ready for testing with real store owners"],
+    reflection: "Designing for sari-sari stores meant designing for one hand, a busy counter and a customer waiting. Every extra tap had to earn its place."
+  },
+  {
+    slug: "oracle-ai-email", title: "Oracle AI Email Generator", short: "AI Email Generator",
+    client: "Oracle · Marketing & CX", role: "Lead Product Designer", sector: "Web & Mobile · AI Email Platform", scope: "5 views: Home, Templates, Editor, Analytics, API",
+    cat: ["ai","enterprise"], mock: "email",
+    live: "https://robertazucena.com/assets/prototype/oracle-eg/index.html",
+    proto: { base: "assets/proto/oracle-eg/",
+      desktop: [["Home","index.html#/",1098],["Templates","index.html#/templates",1180],["Analytics","index.html#/analytics",1768],["Editor","index.html#/editor",1226],["API Docs","index.html#/docs",906]],
+      interactive: true,
+      heroMobile: [["Home","index.html#/",0],["Templates","index.html#/templates",0],["Analytics","index.html#/analytics",0],["Editor","index.html#/editor",0]] },
+    shots: {
+      url: "oracle-ai-email-gen / home",
+      hero: "assets/case/oracle-eg/hero.jpg",
+      desktop: [["Home","assets/case/oracle-eg/home-desktop.jpg"],["Templates","assets/case/oracle-eg/templates-desktop.jpg"],["Analytics","assets/case/oracle-eg/analytics-desktop.jpg"],["Editor","assets/case/oracle-eg/editor-desktop.jpg"],["API Docs","assets/case/oracle-eg/docs-desktop.jpg"]]
     },
-    {
-      input: document.getElementById('mail-email'),
-      errorEl: document.getElementById('mail-email-error'),
-      validate(v, input){
-        if(!v) return 'Please enter your email.';
-        if(!input.checkValidity()) return 'Please enter a valid email address.';
-        return '';
-      }
+    summary: "Create personalised email templates effortlessly. An AI platform that turns simple prompts into professional, ready-to-send HTML emails.",
+    status: "Shipped · 2024", deliverables: "Design System, Prototypes, Modern Dashboard",
+    overview: "Oracle AI Email Generator transforms simple prompts into professional, ready-to-send HTML email templates. Users can customise tone, add contextual data and generate personalised content in seconds. Built for enterprise teams, it streamlines email creation while keeping every message consistent and on brand.",
+    metric: ["Prompt → HTML", "Brief to send-ready"],
+    tags: ["AI / LLM product design", "Prompt UX", "Design systems"],
+    stats: [["Prompt → HTML","One plain-language brief becomes a send-ready, on-brand email"],["5 views","Home, Templates, Editor, Analytics and API, one connected flow"],["AI in the loop","Refine prompts, a suggested send time and predicted open and click rates"]],
+    challenge: "Every campaign email needed a designer, a developer and days of back-and-forth, even the simple ones.",
+    insight: "Marketers wanted to <em>describe</em> an email and trust what came back.",
+    approach: [["Map","Traced the brief-to-send journey with marketers, CX leads and email developers to find where time was lost."],["Guardrails","Defined approved modules, brand tokens and tone options the AI had to compose from."],["Prototype","Built the full flow as a coded prototype: prompt, template, live editor, scheduling and analytics."],["Test","Tested with marketing and CX teams and reworked the editing and review steps around their feedback."]],
+    solution: "A prompt-first app: write a brief, refine, schedule and track, on-brand by default.",
+    features: [["Prompt-first home","Describe the email, attach data context and pick a tone, then generate."],["Template library","Starting points filtered by Marketing, Newsletter, Welcome, Promo, Product Update and Onboarding."],["Live editor with AI refine","Preview the email and refine it with one-tap prompts like “Make it formal” or “Shorter”."],["Smart scheduling","Recipients, send time and an AI-suggested slot, with predicted open and click rates."],["Analytics","Sends, opens, clicks and bounce rate over 30 days, plus top templates and campaign results."],["API","Endpoints to generate, dispatch and measure emails from other systems."]],
+    outcomes: ["Teams create routine campaign emails without waiting on design or development","Faster campaign turnaround across business units","Design team freed to focus on high-value creative work"],
+    reflection: "With enterprise AI, the interface’s main job is to make output trustworthy. Guardrails built into the system did more for adoption than any single prompt feature."
+  },
+  {
+    slug: "oracle-autonomous-db", title: "Oracle Autonomous Database", short: "Autonomous Database",
+    client: "Oracle · OCI", role: "Creative Technologist", sector: "Web Experience · Enterprise Software Campaign", scope: "Launch campaign site and OCI dashboards",
+    cat: ["enterprise","web"], mock: "dashboard",
+    live: "https://robertazucena.com/assets/prototype/oracle-ad/index.html",
+    proto: { base: "assets/proto/oracle-ad/",
+      desktop: [["Self-Patching","index.html#s1",900],["No Human Error","index.html#s3",900],["Explore Database","index.html#explore",900],["Talk to Expert","index.html#chat",900]],
+      interactive: true,
+      heroMobile: [["Autonomous Database","index.html#s1",0]] },
+    summary: "Experience the power of autonomous innovation. An interactive campaign for Oracle Autonomous Database, and the OCI dashboards DBAs use every day.",
+    status: "Live · 2023", deliverables: "Web Experience, Motion 3D Experience",
+    overview: "An interactive campaign presenting Oracle Autonomous Database as intelligent, self-managing and always secure. I led UI/UX and delivered the campaign web app from concept to launch in collaboration with Larry Ellison’s team, using an “autonomous driving” concept to turn complex technology into a simple story. I then worked on the OCI admin and monitoring dashboards for enterprise DBAs: a restructured information architecture, at-a-glance status cards and guided setup flows.",
+    metric: ["30%", "Faster first insight"],
+    tags: ["WebGL campaign", "Enterprise UX", "Data visualisation"],
+    stats: [["30%","Faster time-to-first-insight for enterprise DBAs"],["20%","Fewer navigation-related support tickets"],["5 scenes","An immersive WebGL launch, one scene per capability"]],
+    challenge: "The launch had to make a self-driving database feel real, while DBAs still dug through dense consoles to check basic health.",
+    insight: "Show the promise as an <em>experience</em>, then make the console answer one question first: what needs me?",
+    approach: [["Story","Turned each capability into its own scene: self-patching, vigilance, no human error, machine learning, time."],["Build","Built the campaign site in WebGL, with layered parallax, an Explore brief and an expert chat."],["Restructure","Reorganised the OCI console around tasks, with status cards and guided setup."],["Validate","Tested navigation with admins and tracked support ticket themes after release."]],
+    solution: "An immersive campaign site, and a monitoring home DBAs can read at a glance.",
+    features: [["Immersive scenes","Five WebGL scenes, one per capability, with swipe and keyboard navigation."],["Explore & expert chat","A capabilities brief and a “Talk to Expert” chat preview."],["Status cards","Health, performance, storage and alerts up front in the console."],["Guided setup","Step-by-step provisioning for first-time admins."]],
+    outcomes: ["30% faster time-to-first-insight","20% fewer navigation-related support tickets","A launch that showed the product instead of describing it"],
+    reflection: "In infrastructure tools, density only works when it’s ordered. Deciding what comes first mattered more than any single visual choice."
+  },
+  {
+    slug: "great-eastern-claims", title: "Great Eastern Claims AI Portal", short: "Claims AI Portal",
+    client: "Great Eastern", role: "Lead Product Designer", sector: "Web App · AI Insurance Claims Platform", scope: "11-page platform, AI anomaly detection UX",
+    cat: ["ai","enterprise"], mock: "claims",
+    live: "https://robertazucena.com/assets/prototype/great-eastern/index.html",
+    proto: { base: "assets/proto/great-eastern/",
+      desktop: [["Claims Control Room","index.html",900],["Auto Worklist","claims.html",900],["Claim Detail","claim-detail.html",955],["AI Assessment","ai-progress.html#still",900],["AI Results","ai-results.html",900],["Final Report","final-report.html",1030]],
+      interactive: true,
+      heroMobile: [["Claims Control Room","index.html",0]] },
+    summary: "An AI-powered claims control centre for faster, smarter insurance processing.",
+    status: "Shipped · 2026", deliverables: "Modern Dashboard, Design System, Prototypes",
+    overview: "An AI-powered insurance claims dashboard that centralises claim intake, review and resolution. It gives real-time insight into claim volumes, processing status and AI-assisted outcomes, so claims teams can prioritise cases and work more efficiently. A submission queue tracks every claim’s progress and keeps case management moving.",
+    metric: ["11", "Pages designed"],
+    tags: ["AI-assisted review", "Enterprise UX", "Prototyping"],
+    stats: [["11","Pages, from the control room to the final report"],["4","Claim types: vehicle, homeowner, building owner and manufacturer"],["Explainable AI","Every flag shows severity, confidence and estimated cost"]],
+    challenge: "Suspicious claims were hard to spot in long queues across four claim types.",
+    insight: "Assessors need AI to <em>point</em> at what matters, not decide for them.",
+    approach: [["Model","Mapped each claim type’s journey and the evidence assessors check."],["Signal design","Designed how anomaly scores and reasons appear in queues and claim detail."],["Build","Prototyped all 11 pages in high fidelity for stakeholder demos."],["Refine","Iterated on wording and thresholds so flags felt helpful, not alarming."]],
+    solution: "One portal with risk-sorted queues and explainable AI flags.",
+    features: [["Claims control room","Live queue, AI-handled counts and status across the portfolio."],["Claim worklists","One worklist per claim type, with evidence counts and status."],["AI assessment","Damage found per part, with severity, confidence and estimated cost."],["Final report","Itemised findings and an adjuster sign-off, ready to approve."]],
+    outcomes: ["One consistent workflow across four claim types","Anomalies visible at queue level instead of buried in documents","A demo-ready prototype for stakeholder buy-in"],
+    reflection: "Explainability is a UX problem. The words around an AI score decide whether people act on it."
+  },
+  {
+    slug: "changi-oracle-cloud", title: "Changi Airport Group × Oracle Cloud", short: "Changi × Oracle Cloud",
+    client: "Changi Airport Group · Oracle", role: "Lead Product Designer", sector: "Web App · Cloud Pricing Comparison Dashboard", scope: "4 views: pricing, ROI, configure, optimizer",
+    cat: ["enterprise","web"], mock: "pricing",
+    live: "https://robertazucena.com/assets/prototype/changi/index.html",
+    proto: { base: "assets/proto/changi/",
+      desktop: [["Pricing Comparison","index.html#pricing",1883],["ROI Summary","index.html#roi",1708],["Configure Stack","index.html#configure",1783],["Cloud Optimizer","index.html#dashboard",2025]],
+      interactive: true,
+      heroMobile: [["Pricing Comparison","index.html",0]] },
+    summary: "Compare cloud infrastructure costs across leading providers, side by side.",
+    status: "Shipped · 2025", deliverables: "Calculator Dashboard, Design System, Prototypes",
+    overview: "A cloud pricing comparison dashboard that helps organisations evaluate infrastructure costs across leading cloud providers. It compares compute, storage and other services side by side, highlighting cost differences and potential savings, so teams can make cloud adoption and optimisation decisions with clear, data-driven insight.",
+    metric: ["5-yr", "TCO model"],
+    tags: ["Data visualisation", "Co-branding", "Coded prototype"],
+    stats: [["4 clouds","Oracle, AWS, Azure and Google Cloud on one scale"],["5-year","TCO model with annual savings and payback period"],["4 views","Pricing, ROI, configure and a co-branded optimizer"]],
+    challenge: "Cloud cost comparisons lived in spreadsheets that were hard to explain.",
+    insight: "People trust a number more when they can <em>change the inputs</em>.",
+    approach: [["Align","Agreed the cost model and assumptions with sales and solution engineers."],["Visualise","Designed comparisons that stay readable across four clouds and five years."],["Configure","Built a live configurator so inputs could change in the meeting."],["Brand","Created a co-branded look, down to a flight-themed loader."]],
+    solution: "A co-branded tool comparing four clouds over five years, live.",
+    features: [["Pricing comparison","Product-by-product prices across four clouds."],["ROI summary","Annual savings, five-year TCO and payback at a glance."],["Configure stack","Change compute, storage and network and watch the estimate update."],["Cloud optimizer","An executive view for Changi, personalised by industry."]],
+    outcomes: ["A spreadsheet argument turned into an interactive conversation","Sales could adjust assumptions live with the client","A reusable pattern for future cloud value tools"],
+    reflection: "Interactivity creates trust. Letting a client change the inputs did more for credibility than any chart styling."
+  },
+  {
+    slug: "tata-motors-ai", title: "Tata Motors AI Workspace", short: "Tata Motors AI Workspace",
+    client: "Tata Motors · Oracle", role: "Lead Product Designer", sector: "Web App · Enterprise AI Model Discovery Platform", scope: "9 pages: AI home, search, library, analytics and more",
+    cat: ["ai","enterprise"], mock: "workspace",
+    live: "https://robertazucena.com/assets/prototype/tata-motors/index.html",
+    proto: { base: "assets/proto/tata-motors/",
+      desktop: [["AI Home","index.html",900],["Search & Synthesis","search-results.html",1470],["Asset Detail","asset-detail.html",1652],["Asset Library","library.html",1130],["Analytics","analytics.html",1098],["Projects","projects.html",900]],
+      interactive: true,
+      heroMobile: [["AI Home","index.html",0]] },
+    summary: "An AI-powered workspace for discovering, evaluating and deploying machine learning models across Tata Motors’ engineering teams.",
+    status: "Shipped · 2026", deliverables: "AI Workspace, Design System, Prototypes",
+    overview: "One AI workspace where engineering and data teams search, evaluate and deploy models. A conversational home lets people ask in plain language to find assets, analyse data or generate reports. AI-assisted search surfaces production-ready models with a synthesised recommendation, each asset page combines a generated summary, performance metrics and related assets, and a library lets teams browse the catalogue by category and status.",
+    metric: ["9", "Pages designed"],
+    tags: ["AI / LLM product design", "Search UX", "Prototyping"],
+    stats: [["9","Pages, from AI home and search to library, analytics and upload"],["Plain language","Ask for what you need instead of learning where it lives"],["AI synthesis","Every search comes with a summary and a recommended asset"]],
+    challenge: "Assets were spread across systems, each with its own search.",
+    insight: "People know <em>what</em> they need, not where it lives.",
+    approach: [["Inventory","Mapped asset types, metadata and the questions teams asked about them."],["Converse","Designed natural-language search with answers backed by sources."],["Workspace","Combined search, library, detail and analytics in one shell."],["Demo","Delivered a coded prototype to show Oracle Cloud and AI capabilities."]],
+    solution: "One AI workspace to ask, find, manage and analyse assets.",
+    features: [["Conversational home","Ask in plain language or jump straight to search, analyse, report or summarise."],["AI search & synthesis","Results arrive with a summary and a recommended asset."],["Library & asset detail","Browse by category; each asset shows performance, datasets, API and logs."],["Analytics & projects","Track deployments, accuracy and in-flight builds across teams."]],
+    outcomes: ["One entry point instead of several search tools","A prototype that helped sales show Oracle Cloud and AI in context","A reusable pattern for AI assistants on enterprise data"],
+    reflection: "An AI answer is only as useful as its sources. Linking every response back to real assets is what made the assistant credible."
+  },
+  {
+    slug: "grab-employee-portal", title: "Grab Employee Portal", short: "Grab Employee Portal",
+    client: "Grab · Oracle", role: "Lead Designer", sector: "Product Design · Employee Portal", scope: "5 pages: home, analytics, team, resources, tools",
+    cat: ["enterprise","web"], mock: "portal",
+    live: "https://robertazucena.com/assets/prototype/grab/index.html",
+    proto: { base: "assets/proto/grab/",
+      desktop: [["Home","index.html",2594],["Analytics","analytics.html",2145],["My Team","team.html",1828],["Resources","resources.html",2092],["Tools","tools.html",3872]],
+      interactive: true,
+      heroMobile: [["Home","index.html",0]] },
+    summary: "A card-based company-wide portal that brings scattered internal tools, news and resources into one place.",
+    status: "Shipped · 2024", deliverables: "Design System, Prototypes, Motion",
+    overview: "An employee portal built for accessibility and efficiency. A card-based layout groups personal tasks, announcements, company news and workplace resources into clear sections. Grab’s green branding and straightforward navigation help employees stay informed and connected.",
+    metric: ["1", "Portal for everything"],
+    tags: ["Information architecture", "Design systems", "Intranet UX"],
+    stats: [["5","Pages: home, analytics, team, resources and tools"],["1 front door","Tools, news and resources in one place"],["Cards","A modular system that grows with the company"]],
+    challenge: "Employees jumped between scattered tools, links and channels.",
+    insight: "An intranet should open with <em>what you need today</em>.",
+    approach: [["Audit","Catalogued internal tools, content types and how often people used them."],["Structure","Grouped everything into a clear, task-based information architecture."],["System","Designed one card system for tools, news and resources."],["Prototype","Built a coded prototype across home, analytics, team, resources and tools."]],
+    solution: "A card-based portal: tools up front, news alongside.",
+    features: [["Personal home","Top actions, to-dos and the newsroom on arrival."],["Tools hub","Every self-service tool, grouped by My Grab, Team, Learning, Help and Procurement."],["Team directory","Find colleagues across departments and countries."],["Analytics & resources","Company KPIs, plus templates, policies and training in one place."]],
+    outcomes: ["One front door instead of scattered links","A card system that scales with new tools","A clear structure every team could use"],
+    reflection: "Consolidation is mostly an information architecture job. The cards were the easy part."
+  },
+  {
+    slug: "mufg-asia-pacific", title: "MUFG Asia Pacific", short: "MUFG Asia Pacific",
+    client: "MUFG Asia Pacific", role: "UI/UX Designer and Creative Technologist", sector: "Web App · Financial Services", scope: "4 pages: What’s New, Services, Sustainability, About",
+    cat: ["web"], mock: "corporate", wide: true,
+    live: "https://robertazucena.com/assets/prototype/mufg/index.html",
+    proto: { base: "assets/proto/mufg/",
+      desktop: [["What’s New","index.html",2547],["Our Services","services.html",2176],["Sustainability","sustainability.html",2895],["About Us","about.html",2397]],
+      interactive: true,
+      heroMobile: [["What’s New","index.html",0]] },
+    shots: {
+      url: "mufg-apac / what’s new",
+      hero: "assets/case/mufg/hero.jpg",
+      desktop: [["What’s New","assets/case/mufg/index-desktop.jpg"],["Our Services","assets/case/mufg/services-desktop.jpg"],["Sustainability","assets/case/mufg/sustainability-desktop.jpg"],["About Us","assets/case/mufg/about-desktop.jpg"]]
     },
-    {
-      input: document.getElementById('mail-message'),
-      errorEl: document.getElementById('mail-message-error'),
-      validate(v){ return v ? '' : 'Please enter a message.'; }
-    }
-  ];
-
-  const winMail = document.getElementById('win-mail');
-  const winMailBody = winMail ? winMail.querySelector('.winbody') : null;
-  const winMailTitlebar = winMail ? winMail.querySelector('.titlebar') : null;
-
-  function syncMailWindowHeight(){
-    if(!winMail || !winMailBody || !winMailTitlebar) return;
-    const prevFlex = winMailBody.style.flex;
-    const prevHeight = winMailBody.style.height;
-    winMailBody.style.flex = 'none';
-    winMailBody.style.height = 'auto';
-    const natural = winMailBody.scrollHeight;
-    winMailBody.style.flex = prevFlex;
-    winMailBody.style.height = prevHeight;
-
-    const target = Math.round(natural + winMailTitlebar.getBoundingClientRect().height + 4);
-    const current = Math.round(winMail.getBoundingClientRect().height);
-    if(Math.abs(target - current) < 4) return;
-
-    winMail.classList.add('animating');
-    winMail.style.height = target + 'px';
-    setTimeout(()=>winMail.classList.remove('animating'), 420);
-  }
-  window.syncMailWindowHeight = syncMailWindowHeight;
-
-  function showFieldError(field, message){
-    const wrap = field.input.closest('.mail-field');
-    field.errorEl.textContent = message;
-    field.errorEl.classList.add('show');
-    wrap.classList.add('invalid');
-  }
-
-  function clearFieldError(field){
-    const wrap = field.input.closest('.mail-field');
-    field.errorEl.classList.remove('show');
-    field.errorEl.textContent = '';
-    wrap.classList.remove('invalid');
-  }
-
-  function validateFieldNow(field){
-    const message = field.validate(field.input.value.trim(), field.input);
-    if(message){ showFieldError(field, message); return false; }
-    clearFieldError(field);
-    return true;
-  }
-
-  function validateFieldNow(field){
-    const message = field.validate(field.input.value.trim(), field.input);
-    if(message){ showFieldError(field, message); }
-    else{ clearFieldError(field); }
-    syncMailWindowHeight();
-    return !message;
-  }
-
-  function showStatus(kind, message){
-    status.textContent = message;
-    status.classList.remove('success','error','visible');
-    status.classList.add('show', kind);
-    syncMailWindowHeight();
-    // let the window grow first, then fade the message in on the next frame
-    requestAnimationFrame(()=>{
-      requestAnimationFrame(()=>{
-        status.classList.add('visible');
-        status.scrollIntoView({block:'nearest', behavior:'smooth'});
-      });
-    });
-  }
-
-  fields.forEach(field=>{
-    field.input.addEventListener('input', ()=>{
-      if(field.input.closest('.mail-field').classList.contains('invalid')){
-        validateFieldNow(field);
-      }
-    });
-  });
-
-  form.addEventListener('submit', function(e){
-    e.preventDefault();
-    e.stopPropagation();
-    status.classList.remove('show','visible','success','error');
-
-    let allValid = true;
-    let firstInvalidField = null;
-    fields.forEach(field=>{
-      const ok = validateFieldNow(field);
-      if(!ok){
-        allValid = false;
-        if(!firstInvalidField) firstInvalidField = field;
-      }
-    });
-    if(!allValid){
-      if(firstInvalidField){
-        firstInvalidField.errorEl.scrollIntoView({block:'nearest', behavior:'smooth'});
-      }
-      return;
-    }
-
-    const fullname = form.elements['fullname'].value.trim();
-    const email = form.elements['email'].value.trim();
-    const message = form.elements['message'].value.trim();
-
-    if(!window.emailjs){
-      showStatus('error', "Sorry, the message service didn't load. Please email me directly at robertazucena@gmail.com.");
-      return;
-    }
-
-    submitBtn.disabled = true;
-    submitBtn.textContent = 'Sending…';
-
-    window.emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
-      from_name: fullname,
-      from_email: email,
-      message: message
-    }).then(function(){
-      form.reset();
-      fields.forEach(clearFieldError);
-      status.classList.remove('show','visible','success','error');
-      showSuccess(`Thank you, ${fullname}! Your message has been sent — I'll get back to you soon.`);
-    }).catch(function(err){
-      console.error('EmailJS send failed', err);
-      showStatus('error', "Something went wrong sending your message. Please email me directly at robertazucena@gmail.com.");
-    }).finally(function(){
-      submitBtn.disabled = false;
-      submitBtn.textContent = 'Send Message';
-    });
-  });
-}catch(err){
-  console.error('mail form init failed', err);
-}
-})();
-(function(){
-  const hint = document.getElementById('hint');
-  const dock = document.getElementById('dock');
-  const menubar = document.getElementById('menubar');
-  if(!hint) return;
-  const hide = ()=> hint.classList.add('hint-hide');
-  /* Some browsers (and headless/testing environments) treat the cursor as
-     resting at (0,0) by default, which overlaps the full-width menubar —
-     that can fire a spurious mouseenter with no real user interaction.
-     Real cursor movement (a 'mousemove') has to happen at least once
-     before an enter on dock/menubar counts as an intentional hover. */
-  let hasMouseMoved = false;
-  document.addEventListener('mousemove', ()=>{ hasMouseMoved = true; }, {once:true, passive:true});
-  const hideIfIntentional = ()=>{ if(hasMouseMoved) hide(); };
-  if(dock) dock.addEventListener('mouseenter', hideIfIntentional);
-  if(menubar) menubar.addEventListener('mouseenter', hideIfIntentional);
-})();
-
-/* ---------------- windows: show + drag + focus ---------------- */
-const isMobile = () => window.innerWidth <= 760;
-let zTop = 10;
-
-function focusWin(win){
-  zTop++;
-  if(win.id === 'win-mail'){
-    const backdrop = document.getElementById('mail-backdrop');
-    if(backdrop && backdrop.classList.contains('show')){
-      win.style.zIndex = 5500;
-      return;
-    }
-  }
-  win.style.zIndex = zTop;
-}
-
-/* keeps the Email Me window anchored just above its dock icon, whether it's
-   being opened fresh, restored from the dock, or snapped back via Reset */
-function positionMailNearDock(){
-  const w = document.getElementById('win-mail');
-  const d = document.querySelector('.dockitem[data-dock="mail"]');
-  if(!w || !d || isMobile()) return;
-  const desktopRect = document.getElementById('desktop').getBoundingClientRect();
-  const iconRect = d.getBoundingClientRect();
-  const winWidth = w.offsetWidth || 360;
-  const iconCenterX = iconRect.left + iconRect.width / 2 - desktopRect.left;
-  const margin = 16;
-  let left = iconCenterX - winWidth / 2;
-  left = Math.max(margin, Math.min(left, desktopRect.width - winWidth - margin));
-  w.style.left = Math.round(left) + 'px';
-  w.style.bottom = '130px';
-  w.style.top = 'auto';
-}
-
-/* opens the Email Me window the same way the dock icon does — reused by the
-   dock click handler and by the "Email Rob" button inside the AI chat, so
-   escalating from chat keeps visitors on-site instead of bouncing them out
-   to their own mail client */
-function openMailWindow(){
-  const w = document.getElementById('win-mail');
-  const backdrop = document.getElementById('mail-backdrop');
-  if(!w) return;
-  positionMailNearDock();
-  if(backdrop) backdrop.classList.add('show');
-  if(minimizedThumbs[w.id]) restoreWin(w);
-  else openWin(w);
-  requestAnimationFrame(()=>{
-    requestAnimationFrame(()=>{ if(window.syncMailWindowHeight) window.syncMailWindowHeight(); });
-  });
-  if(isMobile()){
-    requestAnimationFrame(()=> w.scrollIntoView({behavior:'smooth', block:'start'}));
-  }
-}
-
-function makeDraggable(win){
-  const handle = win.querySelector('[data-drag]');
-  if(!handle) return;
-  let sx,sy,ox,oy,dragging=false,moved=false;
-  handle.addEventListener('pointerdown', e=>{
-    if(isMobile() || e.target.closest('[data-close], [data-maximize], [data-minimize]')) return;
-    if(win.dataset.maximized==='true') win.dataset.maximized='false';
-    dragging=true;
-    moved=false;
-    sx=e.clientX; sy=e.clientY;
-    const r=win.getBoundingClientRect();
-    ox=r.left; oy=r.top;
-    focusWin(win);
-    handle.setPointerCapture(e.pointerId);
-  });
-  handle.addEventListener('pointermove', e=>{
-    if(!dragging) return;
-    moved = true;
-    const nx = ox + (e.clientX - sx);
-    const ny = Math.max(30, oy + (e.clientY - sy));
-    win.style.left = nx+'px';
-    win.style.top = ny+'px';
-    win.style.right='auto';
-  });
-  ['pointerup','pointercancel'].forEach(ev=>handle.addEventListener(ev,()=>{
-    dragging=false;
-    if(moved) refreshResetButtonState();
-  }));
-}
-
-/* corner grip: drag to resize a window, macOS-style. Sizes captured here are
-   what "Reset Windows" restores, same as position. */
-function makeResizable(win){
-  const handle = document.createElement('div');
-  handle.className = 'win-resize-handle';
-  handle.setAttribute('aria-hidden', 'true');
-  win.appendChild(handle);
-
-  const MIN_W = 260, MIN_H = 160;
-  let sx, sy, ow, oh, resizing = false, resized = false;
-
-  handle.addEventListener('pointerdown', e=>{
-    if(isMobile() || win.dataset.maximized==='true') return;
-    resizing = true;
-    resized = false;
-    sx = e.clientX; sy = e.clientY;
-    const r = win.getBoundingClientRect();
-    ow = r.width; oh = r.height;
-    focusWin(win);
-    handle.setPointerCapture(e.pointerId);
-    e.stopPropagation();
-  });
-  handle.addEventListener('pointermove', e=>{
-    if(!resizing) return;
-    resized = true;
-    const nw = Math.max(MIN_W, ow + (e.clientX - sx));
-    const nh = Math.max(MIN_H, oh + (e.clientY - sy));
-    win.style.width = nw + 'px';
-    win.style.height = nh + 'px';
-    win.style.right = 'auto';
-  });
-  ['pointerup','pointercancel'].forEach(ev=>handle.addEventListener(ev,()=>{
-    if(!resizing) return;
-    resizing = false;
-    if(resized) refreshResetButtonState();
-  }));
-}
-
-/* green dot: expand the window to fill the desktop, click again to restore */
-function toggleMaximize(win){
-  if(isMobile()) return;
-  win.classList.add('animating');
-  win.addEventListener('transitionend', function handler(e){
-    if(e.propertyName==='width'){
-      win.classList.remove('animating');
-      win.removeEventListener('transitionend', handler);
-    }
-  });
-
-  if(win.dataset.maximized==='true'){
-    win.style.left = win.dataset.prevLeft;
-    win.style.top = win.dataset.prevTop;
-    win.style.width = win.dataset.prevWidth;
-    win.style.height = win.dataset.prevHeight;
-    win.dataset.maximized = 'false';
-  } else {
-    const r = win.getBoundingClientRect();
-    win.dataset.prevLeft = win.style.left || (r.left+'px');
-    win.dataset.prevTop = win.style.top || (r.top+'px');
-    win.dataset.prevWidth = win.style.width || (r.width+'px');
-    win.dataset.prevHeight = win.style.height || (r.height+'px');
-
-    /* maximize caps out at 1140px and stays centered instead of filling the whole desktop */
-    const desktopEl = document.getElementById('desktop');
-    const desktopWidth = desktopEl ? desktopEl.clientWidth : window.innerWidth;
-    const margin = 18;
-    const maxWidth = 1140;
-    const targetWidth = Math.min(maxWidth, desktopWidth - margin*2);
-    const left = Math.max(margin, (desktopWidth - targetWidth) / 2);
-
-    win.style.left = Math.round(left) + 'px';
-    win.style.top = '42px';
-    win.style.width = Math.round(targetWidth) + 'px';
-    win.style.height = 'calc(100vh - 100px)';
-    win.dataset.maximized = 'true';
-  }
-  if(win.id !== 'win-mail') refreshResetButtonState();
-  focusWin(win);
-}
-
-/* red dot: close the window (animates out, can be reopened from the dock) */
-function closeWin(win){
-  if(win.classList.contains('hidden-win')) return;
-  if(win.dataset.maximized==='true'){
-    win.style.left = win.dataset.prevLeft;
-    win.style.top = win.dataset.prevTop;
-    win.style.width = win.dataset.prevWidth;
-    win.style.height = win.dataset.prevHeight;
-    win.dataset.maximized = 'false';
-  }
-  win.classList.add('closing');
-  win.classList.remove('show');
-  win.addEventListener('transitionend', function handler(e){
-    if(e.propertyName==='opacity'){
-      win.classList.add('hidden-win');
-      win.classList.remove('closing');
-      win.removeEventListener('transitionend', handler);
-      if(win.id !== 'win-mail') refreshResetButtonState();
-    }
-  });
-}
-
-function openWin(win){
-  win.classList.remove('hidden-win','closing');
-  requestAnimationFrame(()=>win.classList.add('show'));
-  focusWin(win);
-  if(win.id !== 'win-mail') refreshResetButtonState();
-}
-
-/* yellow dot: genie-minimize into the dock, same idea as macOS — click the dock
-   thumbnail to bring the window back out */
-const MINIMIZE_META = {
-  'win-terminal': {icon:'💻', label:'Terminal'},
-  'win-about': {icon:'📁', label:'Finder'},
-  'win-autonomous': {icon:'🗄️', label:'Oracle AD'},
-  'win-grab': {icon:'🚗', label:'Grab'},
-  'win-sticky': {icon:'📝', label:'Sticky Note'},
-  'win-mail': {icon:'✉️', label:'New Message'}
-};
-const dockEl = document.getElementById('dock');
-const minimizedThumbs = {};
-
-function ensureDockSep(){
-  let sep = dockEl.querySelector('.dock-sep');
-  if(!sep){
-    sep = document.createElement('div');
-    sep.className = 'dock-sep';
-    dockEl.appendChild(sep);
-  }
-  return sep;
-}
-function removeDockSepIfEmpty(){
-  if(!dockEl.querySelector('.dock-min-item')){
-    const sep = dockEl.querySelector('.dock-sep');
-    if(sep) sep.remove();
-  }
-}
-function getDockThumb(win){
-  if(minimizedThumbs[win.id]) return minimizedThumbs[win.id];
-  const meta = MINIMIZE_META[win.id] || {icon:'🗔', label:win.id};
-  ensureDockSep();
-  const thumb = document.createElement('div');
-  thumb.className = 'dock-min-item';
-  thumb.innerHTML = `${meta.icon}<span class="dock-tip">${meta.label}</span>`;
-  thumb.setAttribute('tabindex', '0');
-  thumb.setAttribute('role', 'button');
-  thumb.addEventListener('click', ()=>restoreWin(win));
-  dockEl.appendChild(thumb);
-  minimizedThumbs[win.id] = thumb;
-  return thumb;
-}
-
-function minimizeWin(win){
-  if(isMobile() || win.classList.contains('hidden-win') || win.classList.contains('minimizing')) return;
-  const thumb = getDockThumb(win);
-  const winRect = win.getBoundingClientRect();
-
-  win.style.transformOrigin = 'center center';
-  win.classList.add('minimizing');
-  requestAnimationFrame(()=>{
-    const thumbRect = thumb.getBoundingClientRect();
-    const dx = (thumbRect.left + thumbRect.width/2) - (winRect.left + winRect.width/2);
-    const dy = (thumbRect.top + thumbRect.height/2) - (winRect.top + winRect.height/2);
-    const sx = Math.max(0.04, thumbRect.width / winRect.width);
-    const sy = Math.max(0.04, thumbRect.height / winRect.height);
-    win.style.transform = `translate(${dx}px, ${dy}px) scale(${sx}, ${sy})`;
-    win.style.opacity = '0';
-  });
-
-  win.addEventListener('transitionend', function handler(e){
-    if(e.propertyName !== 'transform') return;
-    win.removeEventListener('transitionend', handler);
-    win.classList.remove('minimizing','show');
-    win.classList.add('hidden-win');
-    win.style.transform = '';
-    win.style.opacity = '';
-    win.style.transformOrigin = '';
-    requestAnimationFrame(()=>thumb.classList.add('visible'));
-    if(win.id !== 'win-mail') refreshResetButtonState();
-  });
-}
-
-function restoreWin(win){
-  const thumb = minimizedThumbs[win.id];
-  if(!thumb || !win.classList.contains('hidden-win')) return;
-  thumb.classList.remove('visible');
-
-  if(win.id === 'win-mail'){
-    const backdrop = document.getElementById('mail-backdrop');
-    if(backdrop) backdrop.classList.add('show');
-  }
-
-  win.classList.remove('hidden-win');
-  win.classList.add('show');
-  focusWin(win);
-  if(win.id !== 'win-mail') refreshResetButtonState();
-
-  const winRect = win.getBoundingClientRect();
-  const thumbRect = thumb.getBoundingClientRect();
-  const dx = (thumbRect.left + thumbRect.width/2) - (winRect.left + winRect.width/2);
-  const dy = (thumbRect.top + thumbRect.height/2) - (winRect.top + winRect.height/2);
-  const sx = Math.max(0.04, thumbRect.width / winRect.width);
-  const sy = Math.max(0.04, thumbRect.height / winRect.height);
-
-  win.style.transformOrigin = 'center center';
-  win.style.transition = 'none';
-  win.style.transform = `translate(${dx}px, ${dy}px) scale(${sx}, ${sy})`;
-  win.style.opacity = '0';
-  void win.offsetWidth; /* force reflow so the transition below actually animates */
-  win.classList.add('minimizing');
-  requestAnimationFrame(()=>{
-    win.style.transition = '';
-    win.style.transform = '';
-    win.style.opacity = '';
-  });
-
-  win.addEventListener('transitionend', function handler(e){
-    if(e.propertyName !== 'transform') return;
-    win.removeEventListener('transitionend', handler);
-    win.classList.remove('minimizing');
-    win.style.transformOrigin = '';
-    thumb.remove();
-    delete minimizedThumbs[win.id];
-    removeDockSepIfEmpty();
-  });
-}
-
-/* dock reset button: stays disabled until a window is moved, resized (maximize/
-   restore), closed, or minimized -- then it snaps every window back to its
-   default position/size and reopens anything closed or tucked in the dock */
-const initialLayout = {};
-document.querySelectorAll('.win').forEach(win=>{
-  initialLayout[win.id] = {
-    left: win.style.left, top: win.style.top,
-    width: win.style.width, height: win.style.height
-  };
-});
-const dockResetBtn = document.getElementById('dock-reset');
-/* recomputes whether any window differs from its initial layout/visibility,
-   so restoring a window (unmaximizing, reopening, un-minimizing) with no other
-   changes correctly turns Reset back off instead of leaving it stuck on */
-function windowsAreDirty(){
-  let dirty = false;
-  document.querySelectorAll('.win').forEach(win=>{
-    if(win.id === 'win-mail') return; /* Email Me is excluded from dirty tracking */
-    if(win.classList.contains('hidden-win')){ dirty = true; return; }
-    if(win.dataset.maximized === 'true'){ dirty = true; return; }
-    const layout = initialLayout[win.id];
-    if(!layout) return;
-    if(win.style.left !== layout.left || win.style.top !== layout.top ||
-       win.style.width !== layout.width || win.style.height !== layout.height){
-      dirty = true;
-    }
-  });
-  return dirty;
-}
-function refreshResetButtonState(){
-  if(!dockResetBtn) return;
-  if(windowsAreDirty()){
-    dockResetBtn.classList.add('enabled');
-    dockResetBtn.removeAttribute('aria-disabled');
-  } else {
-    dockResetBtn.classList.remove('enabled');
-    dockResetBtn.setAttribute('aria-disabled', 'true');
-  }
-}
-function resetAllWindows(){
-  document.querySelectorAll('.win').forEach(win=>{
-    if(win.id === 'win-mail') return; /* Email Me stays as-is — Reset never opens or repositions it */
-    if(win.classList.contains('hidden-win')){
-      if(minimizedThumbs[win.id]) restoreWin(win);
-      else openWin(win);
-    }
-    const layout = initialLayout[win.id];
-    if(layout){
-      win.style.left = layout.left;
-      win.style.top = layout.top;
-      win.style.width = layout.width;
-      win.style.height = layout.height;
-    }
-    win.dataset.maximized = 'false';
-  });
-  if(dockResetBtn){
-    dockResetBtn.classList.remove('enabled');
-    dockResetBtn.setAttribute('aria-disabled', 'true');
-  }
-}
-if(dockResetBtn){
-  dockResetBtn.addEventListener('click', ()=>{
-    if(!dockResetBtn.classList.contains('enabled')) return;
-    resetAllWindows();
-  });
-}
-
-/* "Let's connect" sticky-note button: opens the standalone chat panel
-   (slides in from the left, blurred backdrop). Wiring for the actual
-   AI chat conversation comes later — this just gets the shell in place. */
-(function(){
-  const connectBtn = document.getElementById('connect-btn');
-  const chatPanel = document.getElementById('connect-chat-panel');
-  const chatBackdrop = document.getElementById('connect-chat-backdrop');
-  const chatClose = document.getElementById('connect-chat-close');
-  if(!connectBtn || !chatPanel || !chatBackdrop) return;
-
-  /* iOS Safari doesn't reliably reflow position:fixed / 100dvh containers
-     above the on-screen keyboard, so the input bar (last flex child) can end
-     up hidden behind it. window.visualViewport is the only thing that
-     accurately reports the *actual* visible height including keyboard
-     state, so we size the panel to that directly and keep it in sync. */
-  function syncChatPanelHeight(){
-    if(!window.visualViewport) return;
-    const vv = window.visualViewport;
-    chatPanel.style.height = vv.height + 'px';
-    chatPanel.style.top = vv.offsetTop + 'px';
-  }
-  if(window.visualViewport){
-    window.visualViewport.addEventListener('resize', syncChatPanelHeight);
-    window.visualViewport.addEventListener('scroll', syncChatPanelHeight);
-  }
-
-  function openChat(){
-    chatBackdrop.classList.add('show');
-    chatPanel.classList.add('show');
-    chatPanel.setAttribute('aria-hidden', 'false');
-    syncChatPanelHeight();
-  }
-  function closeChat(){
-    chatBackdrop.classList.remove('show');
-    chatPanel.classList.remove('show');
-    chatPanel.setAttribute('aria-hidden', 'true');
-  }
-
-  connectBtn.addEventListener('click', openChat);
-  if(chatClose) chatClose.addEventListener('click', closeChat);
-  chatBackdrop.addEventListener('click', closeChat);
-  document.addEventListener('keydown', e=>{
-    if(e.key === 'Escape' && chatPanel.classList.contains('show')) closeChat();
-  });
-
-  /* ---- Chat: sends questions to our own backend endpoint, which holds
-     the Anthropic API key and Robert's bio/CV context server-side.
-     NEVER call api.anthropic.com directly from this page — that would
-     require putting a secret key in public JS. See /api/chat (backend)
-     for the server-side piece. */
-  const CHAT_ENDPOINT = 'https://chat.robertazucena.workers.dev';
-
-  const chatInput = document.getElementById('connect-chat-input');
-  const chatSendBtn = document.getElementById('connect-chat-send');
-  const chatMessages = document.getElementById('connect-chat-messages');
-  const chatPlaceholder = document.getElementById('connect-chat-placeholder');
-
-  let chatHistory = []; // [{role:'user'|'assistant', content:'...'}, ...]
-  let chatBusy = false;
-
-  /* Lightweight, safe markdown-lite renderer for assistant replies: supports
-     **bold** (for company/project highlights), "- " bullet lists, and blank-line
-     paragraph breaks. Everything is HTML-escaped first so there's no injection
-     risk even though the text ultimately comes from an API response. */
-  function escapeHtml(str){
-    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-  }
-  function renderAssistantMarkdown(raw){
-    const paragraphs = raw.split(/\n\s*\n/);
-    return paragraphs.map(block=>{
-      const lines = block.split('\n').map(l=>l.trim()).filter(Boolean);
-      const isList = lines.length > 0 && lines.every(l=>l.startsWith('- '));
-      if(isList){
-        const items = lines.map(l=>{
-          const escaped = escapeHtml(l.slice(2));
-          const bolded = escaped.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
-          return `<li>${bolded}</li>`;
-        }).join('');
-        return `<ul class="chat-list">${items}</ul>`;
-      }
-      const escaped = escapeHtml(block.trim());
-      const bolded = escaped.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>');
-      return `<p>${bolded}</p>`;
-    }).join('');
-  }
-
-  function addBubble(role, text){
-    if(chatPlaceholder) chatPlaceholder.style.display = 'none';
-    const el = document.createElement('div');
-    el.className = 'chat-msg ' + role;
-    if(role === 'assistant'){
-      el.innerHTML = renderAssistantMarkdown(text);
-    } else {
-      el.textContent = text;
-    }
-    if(role === 'user'){
-      chatMessages.appendChild(el);
-      chatMessages.parentElement.scrollTop = chatMessages.parentElement.scrollHeight;
-      return el;
-    }
-    /* bot-side messages (assistant/pending/error) show next to Robert's avatar,
-       like a normal chat app */
-    const row = document.createElement('div');
-    row.className = 'chat-row';
-    const avatar = document.createElement('img');
-    avatar.className = 'chat-avatar';
-    avatar.src = AVATAR_IMG;
-    avatar.alt = '';
-    row.appendChild(avatar);
-    row.appendChild(el);
-    chatMessages.appendChild(row);
-    chatMessages.parentElement.scrollTop = chatMessages.parentElement.scrollHeight;
-    return row;
-  }
-
-  /* WhatsApp fallback: stays hidden until the AI genuinely seems to be
-     failing the visitor — either a request error, or a reply that reads
-     as uncertain/unhelpful. Reveals after the 3rd such instance. */
-  const UNCLEAR_REPLY_PATTERNS = [
-    "not sure", "don't have that", "do not have that", "don't know that",
-    "do not know that", "isn't covered", "is not covered", "unable to answer",
-    "couldn't find", "could not find", "not something i have",
-    "reach out to robert", "chat on whatsapp", "use the whatsapp option",
-    "didn't get a response", "try again"
-  ];
-  function looksUnclear(replyText){
-    const lower = replyText.toLowerCase();
-    return UNCLEAR_REPLY_PATTERNS.some(p => lower.includes(p));
-  }
-
-  /* also reveal instantly, no need to wait for 3 strikes, if the visitor
-     directly asks to talk to Rob / a human instead of the bot */
-  const DIRECT_CONTACT_PATTERNS = [
-    "talk to rob", "talk to robert", "speak to rob", "speak to robert",
-    "speak with rob", "speak with robert", "chat with rob", "chat with robert",
-    "talk directly", "speak directly", "contact rob directly", "contact robert directly",
-    "real person", "actual person", "human please", "talk to a human", "speak to a human",
-    "message rob", "message robert", "call rob", "call robert",
-    "connect me with rob", "connect me with robert", "connect with rob directly",
-    "whatsapp", "talk to the real", "speak to the real"
-  ];
-  function wantsDirectContact(userText){
-    const lower = userText.toLowerCase();
-    return DIRECT_CONTACT_PATTERNS.some(p => lower.includes(p));
-  }
-
-  let unclearCount = 0;
-  let whatsappRevealed = false;
-  function registerUnclearMoment(){
-    if(whatsappRevealed) return;
-    unclearCount++;
-    if(unclearCount >= 3) revealWhatsAppFallback();
-  }
-  function revealWhatsAppFallback(){
-    if(whatsappRevealed) return;
-    whatsappRevealed = true;
-
-    const headerLink = document.getElementById('whatsapp-header-link');
-    if(headerLink) headerLink.style.display = 'flex';
-
-    const row = document.createElement('div');
-    row.className = 'chat-row';
-    const avatar = document.createElement('img');
-    avatar.className = 'chat-avatar';
-    avatar.src = AVATAR_IMG;
-    avatar.alt = '';
-    const el = document.createElement('div');
-    el.className = 'chat-msg assistant';
-    el.innerHTML = `<p>It looks like I might not be getting you the answers you need — want to talk to Rob directly instead?</p>
-      <div class="escalation-actions">
-        <a class="whatsapp-btn" href="${WHATSAPP_LINK}" target="_blank" rel="noopener">
-          <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor"><path d="M16.004 3C9.107 3 3.51 8.597 3.51 15.494c0 2.727.883 5.253 2.383 7.312L4 29l6.36-1.858a12.44 12.44 0 0 0 5.644 1.352h.005c6.897 0 12.494-5.597 12.494-12.494C28.503 8.597 22.906 3 16.004 3zm0 22.85a10.32 10.32 0 0 1-5.263-1.44l-.378-.224-3.775 1.103 1.12-3.68-.246-.378a10.31 10.31 0 0 1-1.588-5.517c0-5.713 4.65-10.36 10.363-10.36 5.712 0 10.36 4.647 10.36 10.36 0 5.713-4.648 10.136-10.593 10.136zm5.727-7.73c-.314-.157-1.86-.918-2.148-1.022-.288-.105-.498-.157-.708.157-.21.314-.812 1.022-.996 1.232-.183.21-.367.236-.681.079-.314-.157-1.325-.488-2.523-1.556-.933-.832-1.563-1.86-1.746-2.174-.183-.314-.02-.484.138-.64.142-.14.314-.367.472-.55.157-.183.21-.314.314-.524.105-.21.052-.393-.026-.55-.079-.157-.708-1.706-.97-2.336-.256-.615-.516-.532-.708-.542l-.603-.011a1.16 1.16 0 0 0-.838.393c-.288.314-1.1 1.075-1.1 2.622s1.126 3.043 1.283 3.253c.157.21 2.217 3.386 5.373 4.75.75.324 1.335.518 1.79.663.752.24 1.436.206 1.978.125.603-.09 1.86-.76 2.122-1.494.262-.734.262-1.363.183-1.494-.078-.13-.288-.21-.602-.367z"/></svg>
-          Chat on WhatsApp
-        </a>
-        <button type="button" class="email-rob-btn" id="escalation-email-btn">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 6l9 7 9-7"/></svg>
-          Email Rob
-        </button>
-      </div>`;
-    row.appendChild(avatar);
-    row.appendChild(el);
-    chatMessages.appendChild(row);
-    const emailBtn = el.querySelector('#escalation-email-btn');
-    if(emailBtn) emailBtn.addEventListener('click', ()=>{
-      closeChat();
-      openMailWindow();
-    });
-    chatMessages.parentElement.scrollTop = chatMessages.parentElement.scrollHeight;
-  }
-
-  async function sendChatMessage(){
-    const text = chatInput.value.trim();
-    if(!text || chatBusy) return;
-
-    chatBusy = true;
-    chatInput.disabled = true;
-    chatSendBtn.disabled = true;
-    chatInput.value = '';
-
-    addBubble('user', text);
-    chatHistory.push({role:'user', content:text});
-    if(wantsDirectContact(text)) revealWhatsAppFallback();
-    const pending = addBubble('pending', 'Thinking…');
-
-    try {
-      const res = await fetch(CHAT_ENDPOINT, {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({ messages: chatHistory })
-      });
-      if(!res.ok) throw new Error('Request failed (' + res.status + ')');
-      const data = await res.json();
-      const reply = data.reply || "Sorry, I didn't get a response — try again.";
-      pending.remove();
-      addBubble('assistant', reply);
-      chatHistory.push({role:'assistant', content:reply});
-      if(looksUnclear(reply)) registerUnclearMoment();
-    } catch (err) {
-      pending.remove();
-      addBubble('error', "Couldn't reach the chat right now. Please try again in a moment, or use the Chat on WhatsApp option.");
-      console.error('Chat error:', err);
-      registerUnclearMoment();
-    } finally {
-      chatBusy = false;
-      chatInput.disabled = false;
-      chatSendBtn.disabled = false;
-      chatInput.focus();
-    }
-  }
-
-  chatSendBtn.addEventListener('click', sendChatMessage);
-  chatInput.addEventListener('keydown', e=>{
-    if(e.key === 'Enter' && !e.shiftKey){
-      e.preventDefault();
-      sendChatMessage();
-    }
-  });
-})();
-
-document.querySelectorAll('.win').forEach((win,i)=>{
-  makeDraggable(win);
-  makeResizable(win);
-  win.addEventListener('pointerdown', ()=>focusWin(win));
-  if(!win.classList.contains('hidden-win')){
-    setTimeout(()=>win.classList.add('show'), 120 + i*110);
-  }
-  const closeBtn = win.querySelector('[data-close]');
-  if(closeBtn){
-    closeBtn.addEventListener('click', (e)=>{
-      e.stopPropagation();
-      closeWin(win);
-      if(win.id === 'win-mail'){
-        const backdrop = document.getElementById('mail-backdrop');
-        if(backdrop) backdrop.classList.remove('show');
-        if(window.hideMailSuccess) window.hideMailSuccess();
-      }
-    });
-  }
-  const maxBtn = win.querySelector('[data-maximize]');
-  if(maxBtn){
-    maxBtn.addEventListener('click', (e)=>{
-      e.stopPropagation();
-      /* featured case-study windows (Oracle AD, Grab, ...): green dot opens the full
-         case study page instead of just expanding the desktop window */
-      if(win.classList.contains('case-win')){
-        const cta = win.querySelector('[data-open-project]');
-        if(cta){ openProject(cta.dataset.openProject); return; }
-      }
-      toggleMaximize(win);
-    });
-  }
-  const minBtn = win.querySelector('[data-minimize]');
-  if(minBtn){
-    minBtn.addEventListener('click', (e)=>{
-      e.stopPropagation();
-      minimizeWin(win);
-      if(win.id === 'win-mail'){
-        const backdrop = document.getElementById('mail-backdrop');
-        if(backdrop) backdrop.classList.remove('show');
-      }
-    });
-  }
-});
-
-/* clicking the blurred backdrop closes the Email Me window, like a modal */
-(function(){
-  const backdrop = document.getElementById('mail-backdrop');
-  const winMail = document.getElementById('win-mail');
-  if(!backdrop || !winMail) return;
-  backdrop.addEventListener('click', ()=>{
-    closeWin(winMail);
-    backdrop.classList.remove('show');
-    if(window.hideMailSuccess) window.hideMailSuccess();
-  });
-})();
-
-/* ---------------- Courtly screenshots (embedded) ---------------- */
-const COURTLY_IMG = {
-  mobile:'assets/images/courtly/mobile.jpg',
-  dashboard:'assets/images/courtly/dashboard.jpg',
-  details:'assets/images/courtly/details.jpg',
-  confirm:'assets/images/courtly/confirm.jpg',
-  community:'assets/images/courtly/community.jpg',
-};
-
-const STEADY_IMG = {
-  dashboard:'assets/images/steady/dashboard.jpg',
-  food:'assets/images/steady/food.jpg',
-  morning:'assets/images/steady/morning.jpg',
-  network:'assets/images/steady/network.jpg',
-  mobile:'assets/images/steady/mobile.jpg',
-};
-
-const MUFG_IMG = {
-  mobile:'assets/images/mufg/mobile.jpg',
-  landing:'assets/images/mufg/landing.jpg',
-  sustainability:'assets/images/mufg/sustainability.jpg',
-  inner:'assets/images/mufg/inner.jpg',
-  about:'assets/images/mufg/about.jpg',
-};
-
-const AUTONOMOUS_IMG = {
-  vigilant:'assets/images/autonomous/vigilant.jpg',
-  autopilot:'assets/images/autonomous/autopilot.jpg',
-  features:'assets/images/autonomous/features.jpg',
-  cta:'assets/images/autonomous/cta.jpg'
-};
-
-const ORACLE_EGEN_IMG = {
-  home:'assets/images/oracle-egen/home.jpg',
-  editor:'assets/images/oracle-egen/editor.jpg',
-  templates:'assets/images/oracle-egen/templates.jpg',
-  analytics:'assets/images/oracle-egen/analytics.jpg',
-  mobile:'assets/images/oracle-egen/mobile.jpg',
-};
-
-const CHANGI_IMG = {
-  pricing:'assets/images/changi/pricing.jpg',
-  roi:'assets/images/changi/roi.jpg',
-  configure:'assets/images/changi/configure.jpg',
-  dashboard:'assets/images/changi/dashboard.jpg',
-  mobile:'assets/images/changi/mobile.jpg',
-};
-
-const CV_PDF = 'assets/files/Robert_Azucena_CV.pdf';
-
-const CUSTOMER_MOMENTS_IMG = {
-  browse:'assets/images/cm/browse.jpg',
-  dashboard:'assets/images/cm/dashboard.jpg',
-  team:'assets/images/cm/team.jpg',
-  settings:'assets/images/cm/settings.jpg',
-  mobile:'assets/images/cm/mobile.jpg',
-};
-
-const WHATSAPP_NUMBER = '6589275688';
-const WHATSAPP_MESSAGE = "Hi Robert! I found your portfolio and wanted to connect.";
-const WHATSAPP_LINK = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(WHATSAPP_MESSAGE)}`;
-(function(){
-  const headerLink = document.getElementById('whatsapp-header-link');
-  if(headerLink) headerLink.href = WHATSAPP_LINK;
-})();
-
-const GRAB_IMG = {
-  landing:'assets/images/grab/landing.jpg',
-  analytics:'assets/images/grab/analytics.jpg',
-  team:'assets/images/grab/team.jpg',
-  resources:'assets/images/grab/resources.jpg',
-  mobile:'assets/images/grab/mobile.jpg',
-};
-const GE_IMG = {
-  dashboard:'assets/images/ge/dashboard.jpg',
-  worklist:'assets/images/ge/worklist.jpg',
-  detail:'assets/images/ge/detail.jpg',
-  report:'assets/images/ge/report.jpg',
-  mobile:'assets/images/ge/mobile.jpg',
-};
-const TATA_IMG = {
-  home:'assets/images/tata-motors/home.jpg',
-  search:'assets/images/tata-motors/search.jpg',
-  detail:'assets/images/tata-motors/detail.jpg',
-  library:'assets/images/tata-motors/library.jpg',
-  mobile:'assets/images/tata-motors/mobile.jpg',
-};
-const ON_ENGINEERS_IMG = {
-  home:'assets/images/on-engineers/home.jpg',
-  about:'assets/images/on-engineers/about.jpg',
-  asaServices:'assets/images/on-engineers/asa-services.jpg',
-  mobile:'assets/images/on-engineers/mobile.jpg',
-};
-const AVATAR_IMG = 'assets/images/avatar.jpg';
-
-/* set the small preview window's thumbnail from the embedded screenshot */
-document.getElementById('autonomous-thumb-1').src = AUTONOMOUS_IMG.vigilant;
-document.getElementById('autonomous-thumb-2').src = AUTONOMOUS_IMG.autopilot;
-document.getElementById('autonomous-thumb-3').src = AUTONOMOUS_IMG.features;
-document.getElementById('autonomous-thumb-4').src = AUTONOMOUS_IMG.cta;
-document.getElementById('grab-thumb-img').src = GRAB_IMG.landing;
-document.getElementById('chat-hero-avatar').src = AVATAR_IMG;
-
-/* compute the exact top-to-bottom scroll distance for the Grab auto-scroll screenshot,
-   so the animation travels precisely from the top to the true bottom of the image */
-(function(){
-  const img = document.getElementById('grab-thumb-img');
-  if(!img) return;
-  function setScrollDistance(){
-    const frame = img.parentElement; // .mac-screen
-    if(!frame || !img.naturalWidth || !img.naturalHeight) return;
-    const renderedHeight = frame.clientWidth * (img.naturalHeight / img.naturalWidth);
-    const overflow = renderedHeight - frame.clientHeight;
-    img.style.setProperty('--scroll-end', (overflow > 0 ? -overflow : 0) + 'px');
-  }
-  /* embedded/base64 images can finish decoding before a 'load' listener is even
-     attached (the event fires and gets missed), so poll a couple of frames
-     instead of relying on 'load' alone */
-  function trySetScrollDistance(attemptsLeft){
-    if(img.naturalWidth && img.naturalHeight){
-      setScrollDistance();
-      return;
-    }
-    if(attemptsLeft > 0){
-      requestAnimationFrame(()=>trySetScrollDistance(attemptsLeft - 1));
-    }
-  }
-  trySetScrollDistance(30);
-  img.addEventListener('load', setScrollDistance);
-  window.addEventListener('resize', setScrollDistance);
-})();
-
-/* crossfade between the Oracle AD campaign screens inside the mac screen */
-(function(){
-  const fadeImgs = document.querySelectorAll('#win-autonomous .mac-fade img');
-  if(!fadeImgs.length) return;
-  const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if(reduceMotion) return;
-  let i = 0;
-  setInterval(()=>{
-    fadeImgs[i].classList.remove('is-active');
-    i = (i + 1) % fadeImgs.length;
-    fadeImgs[i].classList.add('is-active');
-  }, 3200);
-})();
-
-/* ---------------- Finder panes ---------------- */
-const projects = {
-  'great-eastern':{
-    name:'Great Eastern', slug:'great-eastern', category:'Web App · AI Insurance Claims Platform',
-    accent:'#d90429', icon:'🦁', folderBg:'linear-gradient(150deg,#ff6b5c,#a30f1f)',
-    lead:'AI-Powered Claims Control Center for Faster, Smarter Insurance Processing',
-    role:'Lead Product Designer', timeline:'Shipped — 2026',
-    tools:['Modern Dashboard','Design System','Prototypes'],
-    metaLabels:{role:'Role', timeline:'Status', tools:'Deliverables'},
-    prototypeUrl:'https://robertazucena.com/assets/prototype/great-eastern/index.html',
-    gallery:'great-eastern',
-    detail:"This web app is an AI-powered insurance claims management dashboard that centralizes claim intake, review, and resolution workflows. It provides real-time insights into claim volumes, processing status, and AI-assisted outcomes, enabling claims teams to prioritize cases and improve operational efficiency. The interface also includes a submission queue for tracking claim progress and streamlining case management."
+    summary: "An intuitive and trustworthy experience for MUFG Asia Pacific, designed and hand-built for desktop and mobile.",
+    status: "Beta · 2023", deliverables: "Web App, Mobile Responsive",
+    overview: "A financial services experience led by a prominent hero banner that highlights key business initiatives with strong imagery. A clean navigation bar and card-based layout present services with clear icons and short descriptions, and bold red accents give it an institutional yet trustworthy feel.",
+    metric: ["4", "Pages designed & built"],
+    tags: ["Frontend development", "Responsive design", "Design systems"],
+    stats: [["4","Pages: What’s New, Our Services, Sustainability and About Us"],["Pixel-accurate","Hand-built in HTML, CSS and JavaScript to match the design"],["Desktop → mobile","Responsive layouts at 1180, 900 and 640px breakpoints"]],
+    challenge: "Dense banking content had to feel calm and match the design on every screen.",
+    insight: "For a bank, <em>precision</em> is part of the brand.",
+    approach: [["Structure","Organised the content into four clear destinations: What’s New, Our Services, Sustainability and About Us."],["System","Designed one card system, with icon tiles, tag chips and a red accent rail, and reused it across every page."],["Build","Hand-built all four pages from one shared stylesheet and a small script for navigation, sliders and header state."],["QA","Checked every page against the design at desktop, tablet and mobile breakpoints and tuned the details until they matched."]],
+    solution: "Four hand-built pages on one shared card system.",
+    features: [["What’s New","Hero, featured service cards, announcements and a newsroom feed."],["Our Services","Capability cards, ESG lending and key figures for corporate clients."],["Sustainability","Three ESG pillars, a milestones slider and leadership quotes."],["About Us","Heritage, group figures and the regional network across Asia Pacific."],["Shared system","One stylesheet and one script, responsive from desktop to mobile."]],
+    outcomes: ["Four pages delivered at pixel-accurate fidelity across desktop and mobile","No design-to-development gap: designed and built by the same person","A reusable card and content system for future pages"],
+    reflection: "Designing and building it myself removed the handoff completely. That’s why I still prototype in code."
   },
-  courtly:{
-    name:'Courtly', slug:'courtly', category:'Product Design · Sports Court Booking',
-    accent:'#22c07a', icon:'🏀', folderBg:'linear-gradient(150deg,#34d399,#0f9d63)',
-    lead:'Your all-in-one platform for sports court bookings.',
-    role:'Lead Product Designer', timeline:'Shipped — 2025',
-    tools:['Product Design','Design System','Prototypes'],
-    metaLabels:{role:'Role', timeline:'Status', tools:'Deliverables'},
-    prototypeUrl:'https://robertazucena.com/assets/prototype/courtly/index.html',
-    gallery:'courtly',
-    detail:"Courtly is a modern sports court booking platform that helps users discover nearby venues, reserve courts, and manage their bookings in one place. The dashboard provides personalized recommendations, upcoming schedules, booking history, and activity streaks to encourage regular play. With a clean, intuitive interface, users can quickly find courts, join community matches, and stay active."
+  {
+    slug: "oracle-customer-moments", title: "Oracle Customer Moments", short: "Customer Moments (myDash)",
+    client: "Oracle", role: "Lead Designer", sector: "Systems Design · Customer Engagement", scope: "7 pages: gallery, editor, dashboard, team, reports",
+    cat: ["ai","enterprise"], mock: "ecard",
+    live: "https://robertazucena.com/assets/prototype/oracle-cm/index.html",
+    proto: { base: "assets/proto/oracle-cm/",
+      desktop: [["Moments Gallery","index.html",1214],["Moment Editor","moment.html",1202],["Moments Dashboard","dashboard.html",1277],["Team Activity","team-activity.html",1515]],
+      interactive: true,
+      heroMobile: [["Moments Gallery","index.html",0]] },
+    summary: "A clean, modern and engaging way for employees to discover and share personalised customer moments.",
+    status: "In deployment · 2025", deliverables: "UX Framework, UI Design, Research",
+    overview: "Customer Moments is an internal Oracle platform for recognising and celebrating people, from a quick “job well done” to birthdays and milestones, with appreciation flowing across peers and up to executives. A card layout showcases e-cards and videos with search, filters and categories. Paired with Oracle’s minimalist styling and clear hierarchy, it makes sending a moment quick and effortless.",
+    metric: ["7", "Pages designed"],
+    tags: ["Product design", "Editor UX", "Analytics"],
+    stats: [["7","Pages: gallery, editor, dashboard, team activity, reports, help and settings"],["AI-assisted","“Rewrite with AI” for every personal message"],["Team view","A leaderboard and live activity feed for managers"]],
+    challenge: "Personal customer outreach needed design help every time.",
+    insight: "A personal touch only scales if it takes <em>minutes</em>.",
+    approach: [["Moments","Listed the customer milestones sales teams cared about most."],["Editor","Designed a two-step editor: personalise, then preview and send."],["Measure","Added delivery and open analytics for every moment sent."],["Report","Built team activity and reports so managers could see what was working."]],
+    solution: "Pick a moment, personalise a card or video, send and track it.",
+    features: [["Moments gallery","E-cards and videos for every occasion, searchable by category."],["Moment editor","Personalise the recipient and message, rewrite with AI, preview and send."],["Moments dashboard","Sent, opened and open rate, with a delivery funnel and recent activity."],["Team activity","A leaderboard and live feed of what the team is sending."]],
+    outcomes: ["Personal outreach without a design request","Visibility into which moments customers responded to","Team-level reporting for sales managers"],
+    reflection: "Small gestures need a fast tool. Removing steps from the editor mattered more than adding template options."
   },
-  'oracle-egen':{
-    name:'Oracle EG', pageTitle:'Oracle Email Generator AI', slug:'oracle-egen', category:'Web &amp; Mobile · AI Email Platform',
-    accent:'#ff6b4a', icon:'✉️', folderBg:'linear-gradient(150deg,#ff8a5c,#c1391f)',
-    lead:'Create personalized email templates effortlessly.',
-    role:'Lead Product Designer', timeline:'Shipped — 2024',
-    tools:['Design System','Prototypes','Modern Dashboard'],
-    metaLabels:{role:'Role', timeline:'Status', tools:'Deliverables'},
-    prototypeUrl:'https://robertazucena.com/assets/prototype/oracle-eg/index.html',
-    gallery:'oracle-egen',
-    detail:"Oracle AI Email Generator is an AI-powered platform that transforms simple prompts into professional, ready-to-send HTML email templates. Users can customize tone, add contextual data, and generate personalized email content in seconds. Built for enterprise teams, it streamlines email creation while ensuring consistency, efficiency, and brand alignment."
+  {
+    slug: "courtly", title: "Courtly", short: "Courtly",
+    client: null, role: "Lead Product Designer", sector: "Product Design · Sports Court Booking", scope: "6 pages: dashboard, court details, booking, community, profile, edit profile",
+    cat: ["web"], mock: "portal",
+    live: "https://robertazucena.com/assets/prototype/courtly/index.html",
+    proto: { base: "assets/proto/courtly/",
+      desktop: [["Dashboard","index.html",2200],["Court Details","court-details.html",2200],["Booking","booking.html",1600],["Community Games","community.html",1800],["Profile","profile.html",2400],["Edit Profile","edit-profile.html",2200]],
+      interactive: true,
+      heroMobile: [["Dashboard","index.html",0]] },
+    summary: "Your all-in-one platform for sports court bookings.",
+    status: "Shipped · 2025", deliverables: "Product Design, Design System, Prototypes",
+    overview: "Courtly helps people discover nearby venues, reserve courts and manage their bookings in one place. The dashboard offers personalised recommendations, upcoming schedules, booking history and activity streaks that encourage regular play. With a clean, intuitive interface, users can quickly find courts, join community matches and stay active.",
+    metric: ["6", "Pages designed & built"],
+    tags: ["Product design", "Booking UX", "Frontend development"],
+    stats: [["6","Pages, from discovery to checkout to profile"],["5 sports","Basketball, volleyball, tennis, badminton and futsal"],["375–1440px","Responsive and checked at every width"]],
+    challenge: "Booking a court usually means calls, chat groups and guesswork about what’s free.",
+    insight: "People don’t want a court. They want <em>a game tonight</em>.",
+    approach: [["Flow","Mapped the shortest path from “I want to play” to a confirmed slot."],["System","Built a green and slate token system in Geist, shared across every page."],["Design","Designed in Figma with auto layout so every screen translated cleanly to code."],["Build","Hand-built six pages in HTML, CSS and JavaScript, with one stylesheet and one script."]],
+    solution: "Discovery, booking and community in one calm flow.",
+    features: [["Nearby courts","A dashboard of courts close to you, with live availability."],["Slot booking","Facilities, today’s open slots and a clear checkout."],["Community games","Join open games like a basketball run tonight or a futsal league."],["Profile","Stats, achievements, activity, payment methods and notifications."]],
+    outcomes: ["A booking flow that gets to a confirmed slot in a few taps","One token system across six pages","Clean layouts from 375 to 1440px, verified in the browser"],
+    reflection: "Small touches, like a preloader of bouncing sports balls, give a utility app its personality."
   },
-  'changi':{
-    name:'Changi', pageTitle:'Changi Airport Group', slug:'changi', category:'Web App · Cloud Pricing Comparison Dashboard',
-    accent:'#7c56e0', icon:'✈️', folderBg:'linear-gradient(150deg,#9b7ef0,#5a3fc0)',
-    lead:'Compare Cloud Infrastructure Costs Across Leading Providers',
-    role:'Lead Product Designer', timeline:'Shipped — 2025',
-    tools:['Calculator Dashboard','Design System','Prototypes'],
-    metaLabels:{role:'Role', timeline:'Status', tools:'Deliverables'},
-    prototypeUrl:'https://robertazucena.com/assets/prototype/changi/index.html',
-    gallery:'changi',
-    detail:"This web app is a cloud pricing comparison dashboard that helps organizations evaluate infrastructure costs across leading cloud providers. It presents side-by-side comparisons of compute, storage, and other services, highlighting cost differences and potential savings. The platform enables users to make informed cloud adoption and optimization decisions with clear, data-driven insights."
+  {
+    slug: "steady", title: "Steady", short: "Steady",
+    client: null, role: "Lead Product Designer", sector: "Product Design · Health & Wellness", scope: "5 pages: Today, Health, Sleep, Circle, Rhythm",
+    cat: ["web"], mock: "portal",
+    live: "https://robertazucena.com/assets/prototype/steady/index.html",
+    proto: { base: "assets/proto/steady/",
+      desktop: [["Today","index.html",2200],["Health","health.html",2200],["Sleep","sleep.html",2200],["Circle","circle.html",2200],["Rhythm","rhythm.html",2200]],
+      interactive: true,
+      heroMobile: [["Today","index.html",0]] },
+    summary: "A calmer, smarter way to stay on top of your wellbeing.",
+    status: "Shipped · 2026", deliverables: "Product Design, Design System, Prototypes",
+    overview: "Steady brings daily health habits into one calm view, tracking heart rate, sleep, steps, nutrition and hydration at a glance. Personalised insights and gentle reminders help people build routines that last, and a warm visual language keeps health tracking approachable and motivating.",
+    metric: ["5", "Pages designed & built"],
+    tags: ["Product design", "Data visualisation", "AI companion"],
+    stats: [["5","Pages: Today, Health, Sleep, Circle and Rhythm"],["1 tap","AI companion on every page"],["1 source","Shared components built once and reused everywhere"]],
+    challenge: "Health apps tend to shout numbers at you. Most people just want to know how they’re doing today.",
+    insight: "Wellness data should feel <em>reassuring</em>, not clinical.",
+    approach: [["Tone","Set a calm visual voice with soft surfaces and warm amber charts."],["Structure","Split the day into five spaces: Today, Health, Sleep, Circle and Rhythm."],["Components","Defined the nav, footer, preloader, AI widget and modals once and reused them on every page."],["Build","Compiled self-contained pages from shared CSS and JavaScript, so they open anywhere."]],
+    solution: "Five calm spaces, one steady companion.",
+    features: [["Today","A daily overview of how you’re doing, at a glance."],["Nourish log","Mindful eating, logged with a single “Log food” action."],["Sleep & routine","Sleep goals with a simple trend line and a morning routine."],["Wellness circle","Friends, peers and wellness pros, with peer chat built in."]],
+    outcomes: ["Five pages built on one shared component set","A gentle chart language people can read at a glance","An AI companion that’s present without getting in the way"],
+    reflection: "Removing things, like a hydration log that never earned its place, made the app calmer."
   },
-  'oracle-ad':{
-    name:'Oracle AD', pageTitle:'Oracle Autonomous Database', slug:'oracle-ad', category:'Web Experience · Enterprise Software Campaign',
-    accent:'#ff6b4a', icon:'🗄️', folderBg:'linear-gradient(150deg,#ff8a5c,#c1391f)',
-    lead:'Experience the Power of Autonomous Innovation.',
-    role:'Creative Technologist', timeline:'Live — 2023',
-    tools:['Web Experience','Motion 3D Experience'],
-    metaLabels:{role:'Role', timeline:'Status', tools:'Deliverables'},
-    prototypeUrl:'https://robertazucena.com/assets/prototype/oracle-ad/index.html',
-    gallery:'oracle-ad',
-    stats:[
-      ['30%', 'Faster time-to-first-insight'],
-      ['20%', 'Fewer navigation-related support tickets']
-    ],
-    detail:"This interactive campaign showcases how Oracle Autonomous Database transforms database management with intelligent automation, self-healing, and always-on security. I had the opportunity to collaborate with Larry Ellison's team, leading the UI/UX design and delivering the campaign web application from concept to launch with a polished, engaging user experience. Inspired by autonomous driving, the experience simplifies complex technology into an intuitive story that highlights Oracle's innovation.<br><br>Alongside the campaign, I also worked as UX/UI Designer on the OCI administration and monitoring dashboards used by enterprise DBAs — redesigning the information architecture with at-a-glance status cards and guided setup flows, which reduced time-to-first-insight by approximately 30% and navigation-related support tickets by approximately 20%."
-  },
-  steady:{
-    name:'Steady', slug:'steady', category:'Product Design · Health & Wellness',
-    accent:'var(--orange)', icon:'🫀', folderBg:'linear-gradient(150deg,#ffab6b,#e2632c)',
-    lead:'A calmer, smarter way to stay on top of your wellbeing.',
-    role:'Lead Product Designer', timeline:'Shipped — 2026',
-    tools:['Product Design','Design System','Prototypes'],
-    metaLabels:{role:'Role', timeline:'Status', tools:'Deliverables'},
-    prototypeUrl:'https://robertazucena.com/assets/prototype/steady/index.html',
-    gallery:'steady',
-    detail:'A thoughtfully designed wellness dashboard that brings your daily health habits into one clear, calming space. Track heart rate, sleep, steps, nutrition, and hydration at a glance. Personalized insights and gentle reminders help turn everyday actions into steady, sustainable habits. The warm visual language makes health tracking feel simple, approachable, and motivating.'
-  },
-  mufg:{
-    name:'MUFG', slug:'mufg', category:'Web App · Financial Services',
-    accent:'var(--red)', icon:'🏦', folderBg:'linear-gradient(150deg,#ff5f57,#a30f0f)',
-    lead:'Creating an intuitive and trustworthy user experience.',
-    role:'UI/UX Designer and Creative Technologist', timeline:'Beta — 2023',
-    tools:['Web App','Mobile Responsive'],
-    metaLabels:{role:'Role', timeline:'Status', tools:'Deliverables'},
-    prototypeUrl:'https://robertazucena.com/assets/prototype/mufg/index.html',
-    gallery:'mufg',
-    detail:'The MUFG UI features a modern, professional design with a prominent hero banner that highlights key business initiatives alongside strong visual imagery. A clean navigation bar and card-based layout showcase financial services with clear icons, concise descriptions, and bold red accents, creating an intuitive and trustworthy user experience.'
-  },
-  grab:{
-    name:'Grab', slug:'grab', category:'Product Design · Employee Portal',
-    accent:'#00B14F', icon:'🚗', folderBg:'linear-gradient(150deg,#3fd977,#00893a)',
-    lead:'A spatial intelligence dashboard.',
-    role:'Lead Designer', timeline:'Shipped — 2024',
-    tools:['Design System','Prototypes','Motion'],
-    metaLabels:{role:'Role', timeline:'Status', tools:'Deliverables'},
-    prototypeUrl:'https://robertazucena.com/assets/prototype/grab/index.html',
-    gallery:'grab',
-    detail:"The Grab employee portal features a clean, modern, and user-friendly interface that prioritizes accessibility and efficiency. Its card-based layout organizes personalized tasks, announcements, company news, and workplace resources into clear, easy-to-navigate sections. Combined with Grab's signature green branding and intuitive navigation, the design creates a seamless experience that helps employees stay informed, productive, and connected."
-  },
-  'tata-motors':{
-    name:'Tata Motors', pageTitle:'Tata Motors AI Workspace', slug:'tata-motors', category:'Web App · Enterprise AI Model Discovery Platform',
-    accent:'#1a56db', icon:'🚛', folderBg:'linear-gradient(150deg,#4f7df0,#173fa8)',
-    lead:'An AI-powered workspace for discovering, evaluating, and deploying machine learning models across Tata Motors\' engineering teams.',
-    role:'Lead Product Designer', timeline:'Shipped — 2026',
-    tools:['AI Workspace','Design System','Prototypes'],
-    metaLabels:{role:'Role', timeline:'Status', tools:'Deliverables'},
-    prototypeUrl:'https://robertazucena.com/assets/prototype/tata-motors/index.html',
-    gallery:'tata-motors',
-    detail:"This enterprise web app gives Tata Motors' engineering and data teams a single AI-powered workspace to search, evaluate, and deploy machine learning models across the organization. A conversational home screen lets users ask natural-language questions to search assets, analyze data, or generate reports, while an AI-assisted search experience surfaces production-ready models alongside a synthesized recommendation. Each asset's detail page consolidates a generated summary, performance metrics, and related assets, and a dedicated library view lets teams browse and manage their full catalog of AI assets by category and status."
-  },
-  'on-engineers':{
-    name:'ON Engineers', pageTitle:'ON Engineers — Power Engineers into ASA', slug:'on-engineers', category:'Website · Electrical Asset Sensing &amp; Analytics',
-    accent:'#f5821f', icon:'⚡', folderBg:'linear-gradient(150deg,#ff9a4d,#c25a0f)',
-    lead:'A corporate and field-assessment platform for ON Engineers — non-intrusive condition monitoring for switchgear, transformers, cables, motors & generators.',
-    role:'Lead Product Designer', timeline:'Shipped — 2026',
-    tools:['Web Design','Design System','Prototypes'],
-    metaLabels:{role:'Role', timeline:'Status', tools:'Deliverables'},
-    prototypeUrl:'https://robertazucena.com/assets/prototype/on-engineers/index.html',
-    gallery:'on-engineers',
-    detail:"ON Engineers is a Singapore electrical consultancy — formed from the merger of J.M. Pang & Seah and Quality Power Management, now part of the SWTS Asia group — specializing in ASA (Asset Sensing &amp; Analytics), non-intrusive condition monitoring that reads partial discharge, thermal, acoustic, and dissolved-gas signals from live electrical assets without requiring a shutdown. The homepage frames the site around four pillars — ASA Services, Other Services, Case Studies, and Technical Papers — backed by a stat band (111 licensed engineers, 25+ OEM sensor platforms, zero shutdowns required) and a rotating library of real field assessments.<br><br>The About page tells the merger story through a timeline from 1976 to the 2022 SWTS Asia acquisition, introduces the four-person leadership team with their licensing credentials, and visualizes staff strength across every switching-voltage tier. The ASA Services page breaks down the diagnostic techniques themselves — PRPD plotting, UHFCT, acoustic imaging, and on-site dissolved gas analysis — alongside a filterable archive of field assessments tagged by finding severity, and closes with a wall of the facilities and clients the practice has served."
-  },
-  'customer-moments':{
-    name:'Customer Moments', slug:'customer-moments', category:'Systems Design · Customer Engagement',
-    accent:'#ff6b4a', icon:'💌', folderBg:'linear-gradient(150deg,#ff8a5c,#c1391f)',
-    lead:'A clean, modern, and visually engaging design that makes it easy for employees to discover and share personalized customer content.',
-    role:'Lead Designer', timeline:'In deployment — 2025',
-    tools:['UX Framework','UI Design','Research'],
-    metaLabels:{role:'Role', timeline:'Status', tools:'Deliverables'},
-    prototypeUrl:'https://robertazucena.com/assets/prototype/oracle-cm/index.html',
-    gallery:'customer-moments',
-    detail:"Customer Moments is an internal Oracle platform that gives employees an easy way to recognize and celebrate one another — from a quick \"job well done\" or congratulations, to birthdays and other meaningful milestones. It's designed to reach across the whole organization, so appreciation flows freely between peers and up to executives alike, not just top-down.<br><br>The card-based layout showcases e-cards and videos with intuitive search, filtering, and category options for quick navigation. Combined with Oracle's minimalist styling, consistent branding, and clear information hierarchy, the interface delivers a seamless and efficient user experience."
+  {
+    slug: "on-engineers", title: "ON Engineers", short: "ON Engineers",
+    client: "ON Engineers · Singapore", role: "Lead Product Designer", sector: "Website · Electrical Asset Sensing & Analytics", scope: "7 pages: home, ASA, other services, case studies, papers, about, contact",
+    cat: ["web"], mock: "corporate",
+    live: "https://robertazucena.com/assets/prototype/on-engineers/index.html",
+    proto: { base: "assets/proto/on-engineers/",
+      desktop: [["Home","index.html",4200],["ASA Services","asa-services.html",4200],["Other Services","other-services.html",3600],["Case Studies","case-studies.html",3000],["Technical Papers","technical-papers.html",3600],["About","about.html",4200],["Contact","contact.html",1800]],
+      interactive: true,
+      heroMobile: [["Home","index.html",0]] },
+    summary: "A corporate and field-assessment platform for ON Engineers’ non-intrusive condition monitoring of switchgear, transformers, cables, motors and generators.",
+    status: "Shipped · 2026", deliverables: "Web Design, Design System, Prototypes",
+    overview: "ON Engineers is a Singapore electrical consultancy formed from the JMPS and QPM merger and now part of the SWTS Asia group. It specialises in ASA: non-intrusive monitoring that reads partial discharge, thermal, acoustic and dissolved-gas signals without a shutdown. The site is organised around four pillars (ASA Services, Other Services, Case Studies and Technical Papers), with the merger story, leadership and staff strength on About, and a filterable archive of field assessments on ASA Services.",
+    metric: ["7", "Pages designed & built"],
+    tags: ["Website design", "Technical content", "Frontend development"],
+    stats: [["7","Pages, from services to field case studies"],["111","Licensed engineers presented across every voltage tier"],["20+","Technical papers and videos, organised by topic"]],
+    challenge: "Partial discharge testing is hard to explain, and it sells best when facility owners can see the evidence.",
+    insight: "A fault doesn’t announce itself. <em>Partial discharge does.</em>",
+    approach: [["Story","Led with one idea: see inside your switchgear before it fails."],["Structure","Organised the firm around four pillars: ASA services, other services, case studies and papers."],["Evidence","Turned field assessments into visual case studies with real equipment."],["Build","Hand-built seven pages in HTML, CSS and JavaScript, with a shared stylesheet and script."]],
+    solution: "Technical depth made easy to scan.",
+    features: [["ASA explained","What ASA is, with the diagnostic techniques shown at work."],["Field case studies","Assessments across switchgear, transformers, cables and busbars."],["Technical library","Papers and video playlists on partial discharge, transformers, cables and fault current."],["LEW training","Seven modules toward the Licensed Electrical Worker qualification."]],
+    outcomes: ["A clear story for a highly technical service","Field evidence turned into scannable case studies","One consultation call to action on every page"],
+    reflection: "With engineers as the audience, showing the evidence works better than marketing copy."
   }
-};
-
-/* Curated order for Prev/Next case-study navigation — deliberately not
-   alphabetical or by date, but arranged to show range: alternating
-   high-profile enterprise/AI work with consumer/lifestyle projects,
-   opening and closing on strong notes. Edit this array to reorder. */
-const PROJECT_ORDER = [
-  'oracle-ad',
-  'courtly',
-  'great-eastern',
-  'steady',
-  'grab',
-  'oracle-egen',
-  'mufg',
-  'customer-moments',
-  'changi',
-  'tata-motors',
-  'on-engineers'
 ];
-function getPrevNextProjects(slug){
-  const idx = PROJECT_ORDER.indexOf(slug);
-  if(idx === -1) return null;
-  const prevSlug = PROJECT_ORDER[(idx - 1 + PROJECT_ORDER.length) % PROJECT_ORDER.length];
-  const nextSlug = PROJECT_ORDER[(idx + 1) % PROJECT_ORDER.length];
-  return {
-    prev: {slug: prevSlug, name: projects[prevSlug].name},
-    next: {slug: nextSlug, name: projects[nextSlug].name}
-  };
+
+const XP = [
+  { yr: "2026 — Now", title: "Independent UX & AI Design Consultant", co: "Monarch Studio", where: "Singapore and Manila",
+    pts: ["Designed and built the studio’s flagship WebGL website.","UX direction and design-to-code delivery for the studio and its clients."] },
+  { yr: "2016 — 2026", title: "UX & Digital Experience Leader (Senior Manager)", co: "Oracle", where: "Singapore · 3 business units · 5 countries",
+    pts: ["Led a team of ~30 designers, frontend developers and UX specialists.","Led AI Email Generator and Autonomous Database (~30% faster time-to-insight)."] },
+  { yr: "2015 — 2016", title: "Interactive / Digital Art Director", co: "Ace:Daytons Communications", where: "Digital creative direction", pts: [] },
+  { yr: "2014 — 2015", title: "UI/UX Designer & Frontend Developer", co: "Clubvivre", where: "Singapore", pts: [] },
+  { yr: "2010 — 2014", title: "Interactive Designer / Frontend Developer", co: "Vocanic", where: "Singapore", pts: [] }
+];
+
+const CLIENTS = ["Oracle","Changi Airport Group","Tata Motors","Great Eastern","MUFG","Grab","Monarch Studio","Oracle Cloud Infrastructure"];
+
+/* =========================================================
+   MOCK UI GENERATORS (placeholder imagery)
+   ========================================================= */
+const L = (w, c = "") => `<i class="ln ${c}" style="width:${w}%"></i>`;
+const chrome = (u) => `<div class="mk-chrome"><b></b><b></b><b></b><span>${u}</span></div>`;
+const side = (n = 6, on = 1) => `<div class="side"><div class="cap" style="margin-bottom:1.4cqw">Menu</div>${Array.from({length:n},(_,i)=>`<div class="ni ${i===on?"on":""}"><i></i>${L(60+((i*17)%35))}</div>`).join("")}</div>`;
+function spark(seed = 1, h = 60, fill = true) {
+  let pts = [], y = 30;
+  for (let i = 0; i <= 24; i++) { y += Math.sin(i * .9 + seed) * 6 + Math.cos(i * .37 * seed) * 4; y = Math.max(8, Math.min(h - 6, y)); pts.push([i * (300 / 24), y]); }
+  const d = pts.map((p, i) => (i ? "L" : "M") + p[0].toFixed(1) + " " + p[1].toFixed(1)).join(" ");
+  return `<svg viewBox="0 0 300 ${h}" preserveAspectRatio="none">${fill ? `<path d="${d} L300 ${h} L0 ${h}Z" fill="#f1f2f4"/>` : ""}<path d="${d}" fill="none" stroke="#16191c" stroke-width="1.6"/><circle cx="${pts[24][0]}" cy="${pts[24][1]}" r="3.2" fill="#16191c"/></svg>`;
 }
-
-function renderFinderPane(pane){
-  const c = document.getElementById('finder-content');
-  document.querySelectorAll('.finder-item').forEach(it=>it.classList.toggle('active', it.dataset.pane===pane));
-
-  if(pane==='about'){
-    c.innerHTML = `
-      <div class="about-header">
-        <div class="avatar"><img src="${AVATAR_IMG}" alt="Robert Azucena"></div>
-        <div>
-          <h2>Robert Azucena</h2>
-          <p>UX &amp; Digital Experience Leader</p>
-        </div>
+const MOCKS = {
+  email: () => `<div class="mk">${chrome("email-studio / new campaign")}<div class="mk-body">
+    <div class="main" style="flex:.85;border-right:1px solid #eef0f1;gap:1.4cqw">
+      <div class="cap">Brief</div>
+      <div class="bubble">Launch email for a cloud summit in Singapore. Warm tone, about 120 words, CTA to register.</div>
+      <div class="bubble ai"><span class="spark"></span>Drafted 3 on-brand variants from approved modules.</div>
+      <div class="row" style="gap:.8cqw;flex-wrap:wrap"><span class="pill-s">Shorter headline</span><span class="pill-s">Add speaker block</span><span class="pill-s ok">Brand check passed</span></div>
+      <div class="input">Refine this email…<i></i></div>
+    </div>
+    <div class="main" style="background:#f6f7f8;align-items:center">
+      <div style="width:78%;background:#fff;border-radius:1.2cqw;padding:2cqw;display:flex;flex-direction:column;gap:1cqw;box-shadow:0 1cqw 3cqw -1.5cqw rgba(0,0,0,.18)">
+        <div class="row" style="justify-content:space-between;align-items:center"><span style="width:7cqw;height:1.6cqw;background:#16191c;border-radius:.4cqw"></span><span class="cap">Variant B</span></div>
+        <div style="aspect-ratio:16/7;border-radius:1cqw;background:radial-gradient(120% 140% at 80% 0%,#5b6168,#16191c 70%)"></div>
+        <div class="t-l" style="font-size:2.7cqw">See what’s next in cloud.</div>
+        ${L(96)}${L(88)}${L(64)}
+        <div style="align-self:flex-start;background:#16191c;color:#fff;font-size:1.4cqw;padding:1cqw 2.2cqw;border-radius:99px;margin-top:.6cqw">Register now</div>
       </div>
-      <p class="about-bio">I design at the intersection of AI and function — where systems thinking meets thoughtful craft and human experience.<br><br>Based in Singapore. previously at <strong>Oracle</strong>, and various early‑stage ventures.</p>
-      <div class="tag-row">
-        <span class="tag">UX Research</span><span class="tag">UI Architecture</span><span class="tag">Figma Enthusiast</span>
-        <span class="tag">Creative Direction</span><span class="tag">User Interface</span>
-        <span class="tag">Design Systems</span><span class="tag">Information Architecture</span>
-        <span class="tag">Interaction Design</span><span class="tag">Prototyping</span>
-        <span class="tag">Accessibility (a11y)</span><span class="tag">Motion Design</span>
-      </div>`;
-  } else if(pane==='projects'){
-    let grid = '<div class="proj-grid">';
-    Object.values(projects).forEach(p=>{
-      grid += `<div class="proj-folder" data-open-project="${p.slug}" tabindex="0" role="button">
-        <div class="folder-icon" style="background:${p.folderBg};">${p.icon}</div>
-        <span>${p.name}</span>
-      </div>`;
-    });
-    grid += '</div>';
-    c.innerHTML = grid;
-  } else if(pane==='documents'){
-    c.innerHTML = `<div class="proj-grid">
-      <a class="proj-folder" href="${CV_PDF}" target="_blank" rel="noopener" style="text-decoration:none;">
-        <div class="folder-icon" style="background:linear-gradient(150deg,#ff6f6b,#c23636);">📄</div>
-        <span>Robert_Azucena_CV.pdf</span>
-      </a>
-    </div>`;
-  } else {
-    c.innerHTML = `<div class="empty-state">⬇ No downloads yet.</div>`;
-  }
-}
-document.querySelectorAll('.finder-item').forEach(it=>{
-  it.addEventListener('click', ()=>renderFinderPane(it.dataset.pane));
-});
-renderFinderPane(isMobile() ? 'projects' : 'about');
+    </div></div></div>`,
+  dashboard: () => `<div class="mk">${chrome("cloud console / autonomous database")}<div class="mk-body">${side(7,1)}
+    <div class="main">
+      <div class="row" style="justify-content:space-between;align-items:center"><div class="t-l">Overview</div><span class="pill-s ok">All systems healthy</span></div>
+      <div class="row">
+        <div class="box"><div class="cap">Status</div><div class="t" style="margin-top:1cqw">Available</div></div>
+        <div class="box"><div class="cap">CPU</div><div class="t" style="margin-top:1cqw">Normal</div><div class="meter" style="margin-top:1cqw"><i style="width:42%"></i></div></div>
+        <div class="box"><div class="cap">Storage</div><div class="t" style="margin-top:1cqw">In range</div><div class="meter" style="margin-top:1cqw"><i style="width:63%"></i></div></div>
+        <div class="box ink"><div class="cap">Alerts</div><div class="t" style="margin-top:1cqw">Review</div></div>
+      </div>
+      <div class="row" style="flex:1;min-height:0">
+        <div class="box" style="flex:1.6;display:flex;flex-direction:column"><div class="row" style="justify-content:space-between"><div class="cap">Performance · 24h</div><div class="cap">Live</div></div><div style="margin-top:auto">${spark(1.3,70)}</div></div>
+        <div class="box fill"><div class="cap">Guided setup</div>${[1,1,0,0].map((d,i)=>`<div class="row" style="align-items:center;gap:1cqw;margin-top:1.2cqw"><span style="width:2cqw;height:2cqw;border-radius:50%;${d?"background:#16191c":"border:1px solid #c3c7cc"};flex:none"></span>${L(70-i*8, d?"dk":"")}</div>`).join("")}</div>
+      </div>
+    </div></div></div>`,
+  claims: () => `<div class="mk">${chrome("claims / review queue")}<div class="mk-body">
+    <div class="main" style="flex:1.25;border-right:1px solid #eef0f1">
+      <div class="row" style="justify-content:space-between;align-items:center"><div class="t-l">Queue</div><div class="row" style="gap:.6cqw"><span class="pill-s hot">All</span><span class="pill-s">Flagged</span></div></div>
+      <div class="tbl">${[["Vehicle","warn",1],["Homeowner","ok",0],["Building owner","warn",0],["Manufacturer","ok",0],["Vehicle","ok",0],["Homeowner","warn",0]].map(([t,s,on],i)=>`<div class="tr ${on?"on":""}">${L(70-i*5,"dk")}<span>${t}</span><span class="pill-s ${s}">${s==="warn"?"Flag":"Clear"}</span>${L(60)}</div>`).join("")}</div>
+    </div>
+    <div class="main">
+      <div class="cap">Claim detail</div><div class="t">Vehicle · Collision</div>
+      <div class="box ink"><div class="cap">AI anomaly score</div><div class="t-l" style="margin:1cqw 0">High</div><div class="meter" style="background:#2c3136"><i style="width:82%;background:#fff"></i></div></div>
+      <div class="cap">Why it was flagged</div>
+      ${["Repair estimate above typical range","Similar claim filed recently","Photo metadata mismatch"].map(s=>`<div class="row" style="align-items:center;gap:1cqw;font-size:1.45cqw;color:#555b61"><span style="width:1.2cqw;height:1.2cqw;background:#16191c;transform:rotate(45deg);flex:none"></span>${s}</div>`).join("")}
+      <div class="row" style="margin-top:auto"><span class="pill-s hot" style="flex:1;justify-content:center">Request info</span><span class="pill-s" style="flex:1;justify-content:center">Escalate</span></div>
+    </div></div></div>`,
+  pricing: () => `<div class="mk">${chrome("cloud value tool / 5-year TCO")}<div class="mk-body">
+    <div class="main" style="flex:.7;border-right:1px solid #eef0f1;background:#fbfbfc">
+      <div class="cap">Configure stack</div>
+      ${["Compute","Storage","Database","Network","Support"].map((s,i)=>`<div><div style="font-size:1.4cqw;margin-bottom:.8cqw">${s}</div><div class="slider"><div class="tr"><i style="left:${[64,40,78,30,55][i]}%"></i></div></div></div>`).join("")}
+      <div class="box ink" style="margin-top:auto;flex:none"><div class="cap">Projected savings</div><div class="t-l" style="margin-top:.8cqw">Over 5 yrs</div></div>
+    </div>
+    <div class="main">
+      <div class="row" style="justify-content:space-between;align-items:center"><div class="t-l">Total cost of ownership</div><div class="row" style="gap:.6cqw"><span class="pill-s hot">5 yr</span><span class="pill-s">3 yr</span></div></div>
+      <div style="flex:1;padding-bottom:3cqw;min-height:0"><div class="bar"><div class="k" style="height:46%"><span>Oracle</span></div><div style="height:78%"><span>AWS</span></div><div style="height:72%"><span>Azure</span></div><div style="height:84%"><span>GCP</span></div></div></div>
+      <div class="row">${[1,2,3,4,5].map(y=>`<div class="box fill" style="padding:1.2cqw"><div class="cap">Y${y}</div>${L(80-y*6,"dk")}</div>`).join("")}</div>
+    </div></div></div>`,
+  workspace: () => `<div class="mk">${chrome("ai workspace / assets")}<div class="mk-body">${side(6,0)}
+    <div class="main">
+      <div class="t-l">Ask about any asset</div>
+      <div class="input" style="margin-top:0;border-color:#16191c;color:#16191c">Which plant assets are due for maintenance this quarter?<i></i></div>
+      <div class="box fill" style="flex:none"><div class="row" style="align-items:center;gap:1cqw"><span class="spark"></span><span class="cap">Answer · 4 sources</span></div>${L(92,"dk")}${L(84)}${L(56)}</div>
+      <div class="row" style="flex:1;min-height:0">${["Line A","Robotics","Paint","Logistics"].map(t=>`<div class="tile" style="flex:1;aspect-ratio:auto"><i></i><div style="font-size:1.45cqw;font-weight:500">${t}</div>${L(70)}</div>`).join("")}</div>
+    </div></div></div>`,
+  ecard: () => `<div class="mk">${chrome("mydash / new moment")}<div class="mk-body">
+    <div class="main" style="flex:1.3">
+      <div class="row" style="gap:.6cqw"><span class="pill-s hot">E-card</span><span class="pill-s">Video</span><span class="pill-s">Templates</span></div>
+      <div class="ecard"><i class="ring"></i><i class="ring"></i><div class="cap" style="margin-bottom:1cqw">To: Priya, Acme Corp</div><div class="ser">Happy 5th<br>anniversary.</div></div>
+    </div>
+    <div class="main" style="border-left:1px solid #eef0f1;background:#fbfbfc">
+      <div class="cap">Video greeting</div>
+      <div style="aspect-ratio:16/10;border-radius:1.2cqw;background:linear-gradient(160deg,#d9dce0,#aeb3b9);display:grid;place-items:center"><span class="play"></span></div>
+      <div class="cap">Engagement</div><div>${spark(2.4,50,true)}</div>
+      <div class="row" style="margin-top:auto"><span class="pill-s ok" style="flex:1;justify-content:center">Opened</span><span class="pill-s" style="flex:1;justify-content:center">Replied</span></div>
+    </div></div></div>`,
+  portal: () => `<div class="mk">${chrome("people portal / home")}<div class="mk-body">
+    <div class="main">
+      <div class="row" style="justify-content:space-between;align-items:flex-end"><div><div class="cap">Thursday</div><div class="t-l" style="margin-top:.6cqw">Good morning</div></div><div class="input" style="margin:0;width:40%">Search tools &amp; docs<i></i></div></div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1.4cqw">${["Leave","Payroll","IT help","Learning","Benefits","Travel","Directory","Analytics"].map((t,i)=>`<div class="tile" style="${i===7?"background:#16191c;color:#fff":""}"><i style="${i===7?"background:#fff":""}"></i><div style="font-size:1.45cqw;font-weight:500">${t}</div></div>`).join("")}</div>
+      <div class="row"><div class="box fill"><div class="cap">Company news</div>${L(90,"dk")}${L(70)}</div><div class="box fill"><div class="cap">For your team</div>${L(80,"dk")}${L(60)}</div></div>
+    </div></div></div>`,
+  corporate: () => `<div class="mk">${chrome("apac.bank / home")}<div class="mk-body" style="padding:2.4cqw;gap:2.4cqw;align-items:flex-start;background:#f6f7f8">
+    <div style="flex:1;display:flex;flex-direction:column;gap:1.6cqw;background:#fff;border-radius:1.2cqw;padding:1.8cqw;min-width:0">
+      <div class="row" style="justify-content:space-between;align-items:center"><span style="width:8cqw;height:1.8cqw;background:#16191c;border-radius:.4cqw"></span><div class="row" style="gap:1.6cqw;width:40%">${L(30)}${L(30)}${L(30)}</div></div>
+      <div class="site-hero"><i class="glow"></i><div class="cap" style="color:#8f969d">Asia Pacific</div><div class="t-l" style="color:#fff;max-width:70%;font-size:3cqw">Committed to the region’s growth.</div>${L(50)}</div>
+      <div class="row">${[1,2,3].map(()=>`<div class="box">${L(40,"dk")}${L(90)}${L(70)}</div>`).join("")}</div>
+    </div>
+    <div class="phone"><span style="width:50%;height:1.2cqw;background:#16191c;border-radius:.3cqw"></span><div style="background:#16191c;border-radius:1cqw;aspect-ratio:1;display:flex;align-items:flex-end;padding:1cqw">${L(70)}</div>${L(90,"dk")}${L(70)}${L(80)}${L(50)}<div style="height:5cqw;background:#f2f3f5;border-radius:.8cqw"></div></div>
+  </div></div>`
+};
 
-/* ---------------- Project overlay ---------------- */
-function galleryHTML(p){
-  const t = (icon,label,grad)=>`<div class="placeholder-tile" style="background:${grad};"><span class="icon">${icon}</span><span class="label">${label}</span></div>`;
-  if(p.gallery==='customer-moments'){
-    return `<div class="gallery g1">
-      <div class="shot-tile wide"><img src="${CUSTOMER_MOMENTS_IMG.browse}" alt="Customer Moments browse page — e-card and video templates for holidays, milestones, and appreciation moments" loading="lazy"></div>
+
+/* real screenshots in a browser frame */
+const shot = (p) => `<div class="mk shot">${chrome(p.shots.url)}<div class="shot-view"><img src="${p.shots.hero}" alt="${p.title}, home page" decoding="async"></div></div>`;
+const visual = (p) => p.shots ? shot(p) : MOCKS[p.mock]();
+/* live prototype frames: the real HTML, rendered at true width and scaled down */
+const liveIframe = (src, label, vw, vh, inter) => inter
+  ? `<div class="lv"><iframe src="${src}" title="${label} (live prototype)" data-vw="${vw}" data-vh="${vh}"></iframe></div>`
+  : `<div class="lv"><iframe src="${src}" title="${label}" scrolling="no" tabindex="-1" aria-hidden="true" data-vw="${vw}" data-vh="${vh}"></iframe></div>`;
+const liveInter = (base, [l, file], dev) => dev === "web"
+  ? `<div class="mk shot live inter">${chrome(l)}<div class="shot-view loading" data-lenis-prevent>${liveIframe(base + file, l, 1440, 900, true)}</div></div>`
+  : `<div class="phone-f live inter"><div class="shot-view loading" data-lenis-prevent>${liveIframe(base + file, l, 390, 844, true)}</div></div>`;
+const liveDesk = (base, [l, file, h], pan = true) => `<div class="mk shot live ${pan ? "scroll" : ""}" data-h="${h}">${chrome(l)}<div class="shot-view loading" data-lenis-prevent>${liveIframe(base + file, l, 1440, 900)}</div></div>`;
+const liveMob = (base, [l, file, h]) => `<div class="phone-f scroll live" data-h="${h}"><div class="shot-view loading" data-lenis-prevent>${liveIframe(base + file, l, 390, 844)}</div></div>`;
+const caseVisual = (p) => p.proto ? liveDesk(p.proto.base, p.proto.desktop[0], false) : visual(p);
+function bindViewer(root, p) {
+  const v = $(".viewer", root); if (!v || !p.proto) return;
+  const web = $('[data-pane="web"]', v), mob = $('[data-pane="mobile"]', v);
+  v.addEventListener("click", (e) => {
+    const b = e.target.closest(".seg button"); if (!b) return;
+    const dev = b.dataset.dev;
+    $$(".seg button", v).forEach(x => x.setAttribute("aria-pressed", String(x === b)));
+    web.hidden = dev !== "web"; mob.hidden = dev !== "mobile";
+    if (dev === "mobile" && !mob.childElementCount) {
+      mob.innerHTML = liveInter(p.proto.base, p.proto.heroMobile[0], "mobile");
+    }
+    requestAnimationFrame(() => { bindLive(dev === "mobile" ? mob : web); dispatchEvent(new Event("resize")); lenis && lenis.resize(); });
+  });
+}
+function bindLive(root) {
+  $$(".live", root).forEach(fr => {
+    const view = fr.querySelector(".shot-view"), lv = fr.querySelector(".lv"), ifr = fr.querySelector("iframe");
+    const W = +ifr.dataset.vw, VH = +ifr.dataset.vh; let H = fr.classList.contains("scroll") ? +fr.dataset.h : VH;
+    const inter = fr.classList.contains("inter");
+    const layout = () => {
+      const s = view.clientWidth / W; if (!s) return;
+      if (inter) { const hv = view.clientHeight / s; ifr.style.width = W + "px"; ifr.style.height = hv + "px"; ifr.style.transform = `scale(${s})`; lv.style.height = view.clientHeight + "px"; return; }
+      ifr.style.width = W + "px"; ifr.style.height = H + "px"; ifr.style.transform = `scale(${s})`;
+      lv.style.height = (H * s) + "px";
+      const d = Math.max(0, H * s - view.clientHeight);
+      lv.style.setProperty("--shift", -d + "px"); lv.style.setProperty("--dur", Math.max(2, d / 320) + "s");
+    };
+    layout();
+    if (fr._bound) return; fr._bound = 1;
+    const measure = () => { if (inter) return; try { const dh = ifr.contentDocument.documentElement.scrollHeight; if (dh > 200 && fr.classList.contains("scroll")) H = dh; } catch (e) {} layout(); };
+    /* always start each live page at its top (browsers restore old scroll positions on reload) */
+    const toTop = () => { try { const w = ifr.contentWindow; if (w.history && "scrollRestoration" in w.history) w.history.scrollRestoration = "manual"; w.scrollTo(0, 0); const se = w.document.scrollingElement; if (se) se.scrollTop = 0; } catch (e) {} };
+    ifr.addEventListener("load", () => { const cur = ifr.getAttribute("src"); if (!cur || cur === "about:blank") return; view.classList.remove("loading"); toTop(); setTimeout(toTop, 300); setTimeout(() => { toTop(); measure(); }, 900); });
+    addEventListener("resize", layout);
+  });
+}
+
+function galleryHTML(p) {
+  if (p.proto) { const g = p.proto; return `<div class="gal">
+    <div class="gal-head"><span class="mono">Desktop · 1440px · live HTML</span><span class="mono hint">Hover to scroll each page</span></div>
+    <div class="gal-desk">${g.desktop.map(d => `<figure class="scr">${liveDesk(g.base, d)}<figcaption>${d[0]}</figcaption></figure>`).join("")}</div>
+    ${g.mobile && g.mobile.length ? `<div class="gal-head"><span class="mono">Mobile · 390px · live HTML</span></div>
+    <div class="gal-mob">${g.mobile.map(m => `<figure class="scr">${liveMob(g.base, m)}<figcaption>${m[0]}</figcaption></figure>`).join("")}</div>` : ""}
+  </div>`; }
+  const g = p.shots;
+  return `<div class="gal">
+    <div class="gal-head"><span class="mono">Desktop · 1440px</span><span class="mono hint">Hover to scroll each page</span></div>
+    <div class="gal-desk">${g.desktop.map(([l,src]) => `<figure class="scr"><div class="mk shot scroll">${chrome(l)}<div class="shot-view" data-lenis-prevent><img src="${src}" alt="${p.title}, ${l} page on desktop" decoding="async"></div></div><figcaption>${l}</figcaption></figure>`).join("")}</div>
+    ${g.mobile && g.mobile.length ? `<div class="gal-head"><span class="mono">Mobile · 390px</span></div>
+    <div class="gal-mob">${g.mobile.map(([l,src]) => `<figure class="scr"><div class="phone-f scroll"><div class="shot-view" data-lenis-prevent><img src="${src}" alt="${p.title}, ${l} page on mobile" decoding="async"></div></div><figcaption>${l}</figcaption></figure>`).join("")}</div>` : ""}
+  </div>`;
+}
+function bindScrollers(root) {
+  $$(".scroll .shot-view img", root).forEach(img => {
+    const set = () => { const v = img.parentElement; const d = Math.max(0, img.offsetHeight - v.clientHeight); img.style.setProperty("--shift", -d + "px"); img.style.setProperty("--dur", Math.max(2, d / 320) + "s"); };
+    img.complete ? set() : img.addEventListener("load", set);
+    addEventListener("resize", set);
+  });
+}
+
+function watchImgs(root) {
+  $$(".shot-view img", root).forEach(img => {
+    if (img.complete && img.naturalWidth) return;
+    const v = img.parentElement; v.classList.add("loading");
+    const f = () => v.classList.remove("loading");
+    img.addEventListener("load", f, { once: true }); img.addEventListener("error", f, { once: true });
+  });
+}
+const whenLoaded = (imgs, max) => Promise.race([
+  Promise.all(imgs.map(i => (i.complete && i.naturalWidth) ? 1 : new Promise(r => { i.addEventListener("load", r, { once: true }); i.addEventListener("error", r, { once: true }); }))),
+  new Promise(r => setTimeout(r, max))
+]);
+
+/* =========================================================
+   RENDER
+   ========================================================= */
+const pad = (n) => String(n).padStart(2, "0");
+
+// work cards
+/* the first 8 projects are Selected work; anything after the 8th moves to More work automatically */
+const SELECTED_MAX = 8;
+const SELECTED = PROJECTS.slice(0, SELECTED_MAX), MORE_P = PROJECTS.slice(SELECTED_MAX);
+const workCard = (p, i) => `
+  <article class="work rv">
+    <a class="work-link" href="#${p.slug}" data-case="${p.slug}" aria-label="Read the ${p.title} case study">
+      <div class="work-media"><div class="stage">${caseVisual(p)}</div></div>
+      <div class="work-meta"><span class="n num">${pad(i+1)}</span><div><h3>${p.title}</h3><p>${p.sector} · ${p.role}</p></div><span class="view">( View <i>→</i> )</span></div>
+    </a>
+  </article>`;
+$("#workCount").textContent = "(" + pad(SELECTED.length) + ")";
+$("#workGrid").innerHTML = SELECTED.map((p, i) => workCard(p, PROJECTS.indexOf(p))).join("");
+$("#moreGrid").innerHTML = MORE_P.map((p, k) => `
+  <a class="mrow rv" href="#${p.slug}" data-case="${p.slug}" data-k="${k}" aria-label="Read the ${p.title} case study">
+    <span class="n num">${pad(PROJECTS.indexOf(p)+1)}</span>
+    <span class="t">${p.title}</span>
+    <span class="d">${p.sector}</span>
+    <span class="s">${p.proto ? p.proto.desktop.length + " pages" : (p.status || "")}</span>
+    <span class="go" aria-hidden="true">→</span>
+  </a>`).join("");
+$("#mfTrack").innerHTML = MORE_P.map(p => `<div class="mf-item">${p.proto ? liveDesk(p.proto.base, [p.title, p.proto.desktop[0][1], 900], false) : caseVisual(p)}</div>`).join("");
+if (!MORE_P.length) $(".more").hidden = true;
+$("#moreCount").textContent = "(" + pad(MORE_P.length) + ")";
+
+watchImgs($("#workGrid")); bindLive($("#workGrid"));
+/* live-frame manager: only prototypes near the viewport run; far-away ones are unloaded and reload on approach */
+const LIVE = (() => {
+  const io = "IntersectionObserver" in window;
+  const load = (f) => { const s = f.dataset.live; if (s && f.getAttribute("src") !== s) f.src = s; };
+  const unload = (f) => { const s = f.getAttribute("src"); if (s && s !== "about:blank") { f.src = "about:blank"; const v = f.closest(".shot-view"); if (v) v.classList.add("loading"); } };
+  const near = io && new IntersectionObserver((es) => es.forEach(e => { if (e.isIntersecting) load(e.target); }), { rootMargin: "700px 0px" });
+  const far = io && new IntersectionObserver((es) => es.forEach(e => { if (!e.isIntersecting) unload(e.target); }), { rootMargin: "1800px 0px" });
+  return {
+    manage(frames, eager = 0) {
+      frames.forEach((f, i) => {
+        if (f._mg) return; f._mg = 1; f.dataset.live = f.getAttribute("src");
+        if (!io) return;
+        if (i >= eager) f.removeAttribute("src");
+        near.observe(f); far.observe(f);
+      });
+    },
+    release(frames) { if (io) frames.forEach(f => { near.unobserve(f); far.unobserve(f); f._mg = 0; }); },
+  };
+})();
+LIVE.manage($$("#workGrid iframe"), 2);
+
+// more work: list rows with a live preview that follows the cursor
+(() => {
+  const list = $("#moreGrid"), fl = $("#mfloat"), track = $("#mfTrack");
+  const fine = matchMedia("(hover:hover) and (pointer:fine)").matches;
+  if (!fine) { fl.remove(); return; }
+  document.body.appendChild(fl);
+  bindLive(fl);
+  const fs = $$("iframe", fl);
+  fs.forEach(f => { f.dataset.live = f.getAttribute("src"); f.removeAttribute("src"); });
+  /* previews load on first hover of the list and sleep again once the list scrolls away */
+  const loadAll = () => fs.forEach(f => { if (f.getAttribute("src") !== f.dataset.live) f.src = f.dataset.live; });
+  const sleepAll = () => fs.forEach(f => { const s = f.getAttribute("src"); if (s && s !== "about:blank") { f.src = "about:blank"; const v = f.closest(".shot-view"); if (v) v.classList.add("loading"); } });
+  list.addEventListener("pointerenter", loadAll);
+  if ("IntersectionObserver" in window) new IntersectionObserver((e) => { if (!e[0].isIntersecting) sleepAll(); }, { rootMargin: "300px 0px" }).observe(list);
+  let x = innerWidth / 2, y = innerHeight / 2, cx = x, cy = y, sc = .82, on = false, raf = 0;
+  const tick = () => {
+    const fw = fl.offsetWidth, tx = Math.min(x + 36, innerWidth - fw - 24);
+    cx += (tx - cx) * 0.14; cy += (y - cy) * 0.14; sc += ((on ? 1 : .82) - sc) * 0.16;
+    const tilt = Math.max(-5, Math.min(5, (tx - cx) * 0.035));
+    fl.style.transform = `translate3d(${cx}px,${cy}px,0) translate(0,-50%) rotate(${tilt}deg) scale(${sc})`;
+    raf = (Math.abs(tx - cx) > .3 || Math.abs(y - cy) > .3 || Math.abs((on ? 1 : .82) - sc) > .002) ? requestAnimationFrame(tick) : 0;
+  };
+  const kick = () => { if (!raf) raf = requestAnimationFrame(tick); };
+  list.addEventListener("pointermove", (e) => { x = e.clientX; y = e.clientY; kick(); });
+  list.addEventListener("pointerover", (e) => {
+    const r = e.target.closest(".mrow"); if (!r) return;
+    if (!on) { x = e.clientX; y = e.clientY; cx = Math.min(x + 36, innerWidth - fl.offsetWidth - 24); cy = y; }
+    track.style.transform = `translateY(${-100 * +r.dataset.k}%)`;
+    on = true; fl.classList.add("on"); kick();
+  });
+  list.addEventListener("pointerleave", () => { on = false; fl.classList.remove("on"); kick(); });
+  addEventListener("scroll", () => { if (on && !list.matches(":hover")) { on = false; fl.classList.remove("on"); } }, { passive: true });
+})();
+
+// expertise
+const EXPERTISE = [
+  ["UX strategy","Direction for products and teams."],
+  ["Design leadership","Hiring and growing multidisciplinary teams."],
+  ["Enterprise UX","Complex workflows made learnable."],
+  ["AI / LLM product design","AI output people can trust."],
+  ["Design systems","Shared components that scale."],
+  ["Prototyping in code","Coded prototypes, ready to test."],
+  ["Frontend development","Responsive HTML, CSS, JS and WebGL."],
+  ["Stakeholder management","Launches across countries and teams."]
+];
+$("#expList").innerHTML = EXPERTISE.map((e, i) => `<li class="rv"><span class="n num">${pad(i+1)}</span><h3>${e[0]}</h3><p>${e[1]}</p></li>`).join("");
+
+// experience
+$("#xpList").innerHTML = XP.map(x => `
+  <div class="xp-row rv"><span class="yr num">${x.yr}</span><div><h3>${x.title} <em>· ${x.co}</em></h3><div class="where">${x.where}</div></div></div>`).join("");
+
+// stat figure: number (counts up) + unit in italic serif; words set fully in serif
+function statValue(v) {
+  const m = v.match(/^(\d[\d.,]*(?:–\d+)?[%+]?)(.*)$/);
+  if (!m) return `<div class="cs-v word">${v}</div>`;
+  const unit = m[2].replace(/^[\s-]+/, "");
+  const n = m[1], plain = /^\d+$/.test(n.replace(/[%+]$/, ""));
+  return `<div class="cs-v"><span ${plain ? `data-count="${n}"` : ""}>${n}</span>${unit ? `<em>${unit}</em>` : ""}</div>`;
+}
+function bindStats(root) {
+  const box = $(".case-stats", root); if (!box) return;
+  box.addEventListener("pointermove", (e) => { const c = e.target.closest(".cs"); if (!c) return; const r = c.getBoundingClientRect(); c.style.setProperty("--mx", (e.clientX - r.left) + "px"); c.style.setProperty("--my", (e.clientY - r.top) + "px"); });
+  const run = () => {
+    box.classList.add("in");
+    if (RM) return;
+    $$("[data-count]", box).forEach((el, k) => {
+      const raw = el.dataset.count, suf = raw.replace(/^\d+/, ""), to = parseInt(raw, 10), t0 = performance.now() + k * 120, D = 1300;
+      el.textContent = "0" + suf;
+      const f = (now) => { const t = Math.min(1, Math.max(0, (now - t0) / D)); el.textContent = Math.round(to * (1 - Math.pow(1 - t, 4))) + suf; if (t < 1) requestAnimationFrame(f); };
+      requestAnimationFrame(f);
+    });
+  };
+  if (!("IntersectionObserver" in window)) { run(); return; }
+  const o = new IntersectionObserver((ents) => { if (ents.some(e => e.isIntersecting)) { o.disconnect(); setTimeout(run, 250); } }, { threshold: .35 });
+  o.observe(box);
+}
+
+// case study
+function caseHTML(p) {
+  const i = PROJECTS.indexOf(p), next = PROJECTS[(i + 1) % PROJECTS.length];
+  return `<div class="wrap">
+    <div class="case-top" data-toc="Overview">
+      <a class="back" href="#work" data-sec="work"><span>←</span> All work</a>
+      <div class="case-top-r">${p.live ? `<a class="btn ghost" href="${p.live}" target="_blank" rel="noopener">View live prototype <span class="arr">↗</span></a>` : ""}<span class="eyebrow num"><i class="sq"></i>Case study ${pad(i+1)} / ${pad(PROJECTS.length)}</span></div>
     </div>
-    <div class="gallery g1" style="margin-top:16px;">
-      <div class="shot-tile wide"><img src="${CUSTOMER_MOMENTS_IMG.dashboard}" alt="Customer Moments dashboard — cards sent, open rate, delivery funnel, and send volume trends" loading="lazy"></div>
+    <span class="eyebrow" style="margin-bottom:22px">${p.sector}</span>
+    <h1 class="case-title">${p.title}</h1>
+    <p class="case-sum">${p.summary}</p>
+    <div class="meta">
+      ${p.client ? `<div><span class="mono">Client</span><b>${p.client}</b></div>` : `<div><span class="mono">Scope</span><b>${p.scope}</b></div>`}
+      <div><span class="mono">Role</span><b>${p.role}</b></div>
+      <div><span class="mono">Status</span><b>${p.status}</b></div>
+      <div><span class="mono">Deliverables</span><b>${p.deliverables}</b></div>
     </div>
-    <div class="gallery g1" style="margin-top:16px;">
-      <div class="shot-tile wide"><img src="${CUSTOMER_MOMENTS_IMG.team}" alt="Customer Moments team activity — leaderboard and live stream of moments sent across the workspace" loading="lazy"></div>
-    </div>
-    <div class="gallery g1" style="margin-top:16px;">
-      <div class="shot-tile wide"><img src="${CUSTOMER_MOMENTS_IMG.settings}" alt="Customer Moments settings — profile, notifications, sender branding, and connected apps" loading="lazy"></div>
-    </div>
-    <div class="gallery g1" style="margin-top:16px;">
-      <div class="shot-tile wide"><img src="${CUSTOMER_MOMENTS_IMG.mobile}" alt="Customer Moments mobile flow — browse moments, delivery funnel analytics, report templates, and team leaderboard" loading="lazy"></div>
-    </div>`;
-  }
-  if(p.gallery==='tata-motors'){
-    return `<div class="gallery g1">
-      <div class="shot-tile wide"><img src="${TATA_IMG.home}" alt="Tata Motors AI Workspace home — conversational assistant, quick commands, and recent conversations" loading="lazy"></div>
-    </div>
-    <div class="gallery g1" style="margin-top:16px;">
-      <div class="shot-tile wide"><img src="${TATA_IMG.search}" alt="Tata Motors AI Workspace search results — AI synthesis and recommendation across matching models" loading="lazy"></div>
-    </div>
-    <div class="gallery g1" style="margin-top:16px;">
-      <div class="shot-tile wide"><img src="${TATA_IMG.detail}" alt="Tata Motors AI Workspace asset detail — generated summary, related assets, and performance metrics" loading="lazy"></div>
-    </div>
-    <div class="gallery g1" style="margin-top:16px;">
-      <div class="shot-tile wide"><img src="${TATA_IMG.library}" alt="Tata Motors AI Workspace asset library — full catalog filtered by content category and status" loading="lazy"></div>
-    </div>
-    <div class="gallery g1" style="margin-top:16px;">
-      <div class="shot-tile wide"><img src="${TATA_IMG.mobile}" alt="Tata Motors AI Workspace mobile flow — home, model details, search, and asset library screens" loading="lazy"></div>
-    </div>`;
-  }
-  if(p.gallery==='on-engineers'){
-    return `<div class="gallery g1">
-      <div class="shot-tile wide"><img src="${ON_ENGINEERS_IMG.home}" alt="ON Engineers homepage — four pillars, why non-intrusive monitoring, recent field assessments, and leadership marquee" loading="lazy"></div>
-    </div>
-    <div class="gallery g1" style="margin-top:16px;">
-      <div class="shot-tile wide"><img src="${ON_ENGINEERS_IMG.about}" alt="ON Engineers About page — merger history timeline, leadership team, and staff strength across switching-voltage tiers" loading="lazy"></div>
-    </div>
-    <div class="gallery g1" style="margin-top:16px;">
-      <div class="shot-tile wide"><img src="${ON_ENGINEERS_IMG.asaServices}" alt="ON Engineers ASA Services page — diagnostic techniques and a filterable archive of field assessments" loading="lazy"></div>
-    </div>
-    <div class="gallery g1" style="margin-top:16px;">
-      <div class="shot-tile wide"><img src="${ON_ENGINEERS_IMG.mobile}" alt="ON Engineers mobile flow — home, pillars, case studies, and leadership marquee screens" loading="lazy"></div>
-    </div>`;
-  }
-  if(p.gallery==='phones'){
-    return `<div class="gallery g2">
-      ${t('📱','Home feed — placeholder','linear-gradient(160deg,rgba(255,122,69,.25),rgba(255,95,109,.12))')}
-      ${t('🧾','Checkout flow — placeholder','linear-gradient(160deg,rgba(255,95,109,.22),rgba(155,126,240,.12))')}
-    </div>`;
-  }
-  if(p.gallery==='web'){
-    return `<div class="gallery g3">
-      ${t('🖥️','Homepage rebuild — placeholder','linear-gradient(160deg,rgba(44,224,184,.22),rgba(26,168,138,.1))')}
-      ${t('🧩','Component library — placeholder','linear-gradient(160deg,rgba(44,224,184,.16),rgba(155,126,240,.12))')}
-    </div>`;
-  }
-  if(p.gallery==='steady'){
-    return `<div class="gallery g1">
-      <div class="shot-tile wide"><img src="${STEADY_IMG.dashboard}" alt="Steady dashboard — heart rate, sleep, steps, food, and hydration at a glance" loading="lazy"></div>
-    </div>
-    <div class="gallery g1">
-      <div class="shot-tile wide"><img src="${STEADY_IMG.food}" alt="Steady food and nutrition log" loading="lazy"></div>
-    </div>
-    <div class="gallery g2 real-shots">
-      <div class="shot-tile"><img src="${STEADY_IMG.morning}" alt="Steady morning routine checklist" loading="lazy"></div>
-      <div class="shot-tile"><img src="${STEADY_IMG.network}" alt="Steady wellness circle — friends, pros, and community" loading="lazy"></div>
-    </div>
-    <div class="gallery g1" style="margin-top:16px;">
-      <div class="shot-tile wide"><img src="${STEADY_IMG.mobile}" alt="Steady mobile flow — today, health, sleep, and rhythm screens" loading="lazy"></div>
-    </div>`;
-  }
-  if(p.gallery==='grab'){
-    return `<div class="gallery g1">
-      <div class="shot-tile wide"><img src="${GRAB_IMG.landing}" alt="Grab employee portal home — welcome banner, top actions, and newsroom" loading="lazy"></div>
-    </div>
-    <div class="gallery g1" style="margin-top:16px;">
-      <div class="shot-tile wide"><img src="${GRAB_IMG.analytics}" alt="Grab analytics and insights dashboard — revenue trend and regional performance" loading="lazy"></div>
-    </div>
-    <div class="gallery g1" style="margin-top:16px;">
-      <div class="shot-tile wide"><img src="${GRAB_IMG.team}" alt="Grab My Team directory page" loading="lazy"></div>
-    </div>
-    <div class="gallery g1" style="margin-top:16px;">
-      <div class="shot-tile wide"><img src="${GRAB_IMG.resources}" alt="Grab resources page — quick shortcuts and knowledge base" loading="lazy"></div>
-    </div>
-    <div class="gallery g1" style="margin-top:16px;">
-      <div class="shot-tile wide"><img src="${GRAB_IMG.mobile}" alt="Grab mobile flow — home, analytics, my team, and resources screens" loading="lazy"></div>
-    </div>`;
-  }
-  if(p.gallery==='mufg'){
-    return `<div class="gallery g1">
-      <div class="shot-tile wide"><img src="${MUFG_IMG.landing}" alt="MUFG landing page — hero banner and financial service cards" loading="lazy"></div>
-    </div>
-    <div class="gallery g1" style="margin-top:16px;">
-      <div class="shot-tile wide"><img src="${MUFG_IMG.sustainability}" alt="MUFG sustainability and ESG pillars page" loading="lazy"></div>
-    </div>
-    <div class="gallery g1" style="margin-top:16px;">
-      <div class="shot-tile wide"><img src="${MUFG_IMG.inner}" alt="MUFG inner services page — core transactional and commercial solutions" loading="lazy"></div>
-    </div>
-    <div class="gallery g1" style="margin-top:16px;">
-      <div class="shot-tile wide"><img src="${MUFG_IMG.about}" alt="MUFG about us page — company stats and leadership" loading="lazy"></div>
-    </div>
-    <div class="gallery g1" style="margin-top:16px;">
-      <div class="shot-tile wide"><img src="${MUFG_IMG.mobile}" alt="MUFG mobile flow — home, sustainability, about, and services screens" loading="lazy"></div>
-    </div>`;
-  }
-  if(p.gallery==='oracle-ad'){
-    return `<div class="gallery g1">
-      <div class="shot-tile wide"><img src="${AUTONOMOUS_IMG.vigilant}" alt="Oracle AD — Ever Vigilant, hyperattentive intrusion detection and security" loading="lazy"></div>
-    </div>
-    <div class="gallery g1" style="margin-top:16px;">
-      <div class="shot-tile wide"><img src="${AUTONOMOUS_IMG.autopilot}" alt="Oracle AD — No Human Error, zero-operation autopilot" loading="lazy"></div>
-    </div>
-    <div class="gallery g1" style="margin-top:16px;">
-      <div class="shot-tile wide"><img src="${AUTONOMOUS_IMG.features}" alt="Oracle AD — Engineered for Autonomy capabilities brief" loading="lazy"></div>
-    </div>
-    <div class="gallery g1" style="margin-top:16px;">
-      <div class="shot-tile wide"><img src="${AUTONOMOUS_IMG.cta}" alt="Oracle AD — closing call to action, It Adds Up to the Greatest Gift of All: Time" loading="lazy"></div>
-    </div>`;
-  }
-  if(p.gallery==='changi'){
-    return `<div class="gallery g1">
-      <div class="shot-tile wide"><img src="${CHANGI_IMG.pricing}" alt="Changi Cloud Optimizer pricing comparison — Oracle vs AWS, Azure, and Google Cloud" loading="lazy"></div>
-    </div>
-    <div class="gallery g1" style="margin-top:16px;">
-      <div class="shot-tile wide"><img src="${CHANGI_IMG.roi}" alt="Changi Cloud Optimizer ROI summary — annual savings, TCO reduction, and payback period" loading="lazy"></div>
-    </div>
-    <div class="gallery g1" style="margin-top:16px;">
-      <div class="shot-tile wide"><img src="${CHANGI_IMG.configure}" alt="Changi Cloud Optimizer configure your stack — compute, storage, network, and database requirements" loading="lazy"></div>
-    </div>
-    <div class="gallery g1" style="margin-top:16px;">
-      <div class="shot-tile wide"><img src="${CHANGI_IMG.dashboard}" alt="Changi Cloud Optimizer full dashboard — multi-cloud cost comparison and savings trend" loading="lazy"></div>
-    </div>
-    <div class="gallery g1" style="margin-top:16px;">
-      <div class="shot-tile wide"><img src="${CHANGI_IMG.mobile}" alt="Changi Cloud Optimizer mobile flow — dashboard, pricing, ROI, and cost breakdown screens" loading="lazy"></div>
-    </div>`;
-  }
-  if(p.gallery==='oracle-egen'){
-    return `<div class="gallery g1">
-      <div class="shot-tile wide"><img src="${ORACLE_EGEN_IMG.home}" alt="Oracle AI Email Generator home — AI prompt editor and suggested starting points" loading="lazy"></div>
-    </div>
-    <div class="gallery g1" style="margin-top:16px;">
-      <div class="shot-tile wide"><img src="${ORACLE_EGEN_IMG.editor}" alt="Oracle AI Email Generator email editor — live preview, recipients, schedule, and performance prediction" loading="lazy"></div>
-    </div>
-    <div class="gallery g1" style="margin-top:16px;">
-      <div class="shot-tile wide"><img src="${ORACLE_EGEN_IMG.templates}" alt="Oracle AI Email Generator templates gallery" loading="lazy"></div>
-    </div>
-    <div class="gallery g1" style="margin-top:16px;">
-      <div class="shot-tile wide"><img src="${ORACLE_EGEN_IMG.analytics}" alt="Oracle AI Email Generator analytics dashboard — delivery and engagement over time" loading="lazy"></div>
-    </div>
-    <div class="gallery g1" style="margin-top:16px;">
-      <div class="shot-tile wide"><img src="${ORACLE_EGEN_IMG.mobile}" alt="Oracle AI Email Generator mobile flow — home, editor, templates, and analytics screens" loading="lazy"></div>
-    </div>`;
-  }
-  if(p.gallery==='courtly'){
-    return `<div class="gallery g1">
-      <div class="shot-tile wide"><img src="${COURTLY_IMG.dashboard}" alt="Courtly dashboard — nearby courts, upcoming bookings, activity streak" loading="lazy"></div>
-    </div>
-    <div class="gallery g1">
-      <div class="shot-tile wide"><img src="${COURTLY_IMG.details}" alt="Courtly court details and booking flow" loading="lazy"></div>
-    </div>
-    <div class="gallery g2 real-shots">
-      <div class="shot-tile"><img src="${COURTLY_IMG.confirm}" alt="Courtly booking confirmation and payment screen" loading="lazy"></div>
-      <div class="shot-tile"><img src="${COURTLY_IMG.community}" alt="Courtly community games listing" loading="lazy"></div>
-    </div>
-    <div class="gallery g1" style="margin-top:16px;">
-      <div class="shot-tile wide"><img src="${COURTLY_IMG.mobile}" alt="Courtly mobile flow — home, court details, confirm booking, and community games" loading="lazy"></div>
-    </div>`;
-  }
-  if(p.gallery==='great-eastern'){
-    return `<div class="gallery g1">
-      <div class="shot-tile wide"><img src="${GE_IMG.dashboard}" alt="Great Eastern claims control room — payload totals, AI success rate, and recent submissions queue" loading="lazy"></div>
-    </div>
-    <div class="gallery g1" style="margin-top:16px;">
-      <div class="shot-tile wide"><img src="${GE_IMG.worklist}" alt="Great Eastern auto claims worklist — searchable, filterable claim cards" loading="lazy"></div>
-    </div>
-    <div class="gallery g1" style="margin-top:16px;">
-      <div class="shot-tile wide"><img src="${GE_IMG.detail}" alt="Great Eastern claim detail — claimant specifications and evidence photos" loading="lazy"></div>
-    </div>
-    <div class="gallery g1" style="margin-top:16px;">
-      <div class="shot-tile wide"><img src="${GE_IMG.report}" alt="Great Eastern final report — itemized AI findings and adjuster verification" loading="lazy"></div>
-    </div>
-    <div class="gallery g1" style="margin-top:16px;">
-      <div class="shot-tile wide"><img src="${GE_IMG.mobile}" alt="Great Eastern mobile flow — dashboard, worklist, claim detail, and final report screens" loading="lazy"></div>
-    </div>`;
-  }
-  return `<div class="gallery g2">
-    ${t('🅰️','Logotype system — placeholder','linear-gradient(160deg,rgba(240,182,103,.24),rgba(217,122,63,.12))')}
-    ${t('🖼️','Collateral suite — placeholder','linear-gradient(160deg,rgba(240,182,103,.18),rgba(155,126,240,.1))')}
+    ${(p.proto && p.proto.interactive) ? `<div class="case-hero viewer">
+      <div class="vw-bar"><div class="seg" role="group" aria-label="Device"><button type="button" id="dev-web" data-dev="web" aria-pressed="true">Web</button><button type="button" id="dev-mobile" data-dev="mobile" aria-pressed="false">Mobile</button></div><span class="mono hint">Scroll and click inside</span></div>
+      <div class="stage" data-pane="web">${liveInter(p.proto.base, p.proto.desktop[0], "web")}</div>
+      <div class="phone-stage" data-pane="mobile" hidden></div>
+    </div>` : `<div class="case-hero"><div class="stage">${caseVisual(p)}</div></div>`}
+    <div class="case-stats">${p.stats.map((s,k)=>`<div class="cs ${k===0?"ink":""}" style="--rd:${k*0.12}s">${k===0?'<span class="cs-grid" aria-hidden="true"></span>':""}<div class="cs-top"><span>${pad(k+1)} / ${pad(p.stats.length)}</span><i aria-hidden="true"></i></div><div>${statValue(s[0])}<p class="cs-d">${s[1]}</p></div></div>`).join("")}</div>
+
+    <section class="chapter" data-toc="Challenge"><div class="lbl"><span class="mono">01 — Context</span><h2>The challenge</h2></div>
+      <div class="ct"><p class="big">${p.challenge}</p><p class="insight"><span class="mono">Insight</span><span>${p.insight}</span></p></div></section>
+
+    <section class="chapter" data-toc="Approach"><div class="lbl"><span class="mono">02 — Process</span><h2>Approach</h2></div>
+      <div class="ct"><div class="proc">${p.approach.map((a,k)=>`<div><span class="mono">Step ${pad(k+1)}</span><b>${a[0]}</b><p>${a[1]}</p></div>`).join("")}</div></div></section>
+
+    <section class="chapter" data-toc="Solution"><div class="lbl"><span class="mono">03 — Product</span><h2>The solution</h2></div>
+      <div class="ct">
+        <p class="big">${p.solution}</p>
+        ${p.overview ? `<p class="ov">${p.overview}</p>` : ""}
+        <ul class="feat">${p.features.slice(0,4).map(f=>`<li><b>${f[0]}</b><span>${f[1]}</span></li>`).join("")}</ul>
+        ${(p.shots || p.proto) ? "" : `<div class="ph"><div class="mono">Image placeholder<b>Key screen, full width</b>2880 × 1620 · replace with final UI</div></div>
+        <div class="ph-row">
+          <div class="ph"><div class="mono">Image placeholder<b>Detail or flow</b>1200 × 1500</div></div>
+          <div class="ph"><div class="mono">Image placeholder<b>Mobile or component</b>1200 × 1500</div></div>
+        </div>`}
+      </div></section>
+
+    ${(p.shots || p.proto) ? `<section class="chapter gal-ch" data-toc="Screens"><div class="lbl"><span class="mono">Screens</span><h2>${((p.proto || p.shots).mobile || []).length ? "Every page, web &amp; mobile" : "Every page"}</h2></div><div class="ct">${galleryHTML(p)}</div></section>` : ""}
+
+    <section class="chapter" data-toc="Outcomes"><div class="lbl"><span class="mono">04 — Impact</span><h2>Outcomes</h2></div>
+      <div class="ct"><ul class="outc">${p.outcomes.map(o=>`<li>${o}</li>`).join("")}</ul></div></section>
+
+    <section class="chapter" data-toc="Reflection" style="border-bottom:0"><div class="lbl"><span class="mono">05 — Reflection</span><h2>What I’d carry forward</h2></div>
+      <div class="ct"><p class="big"><em>${p.reflection}</em></p></div></section>
+
+    <a class="next" href="#${next.slug}" data-case="${next.slug}"><span class="mono">Next case study · ${pad(PROJECTS.indexOf(next)+1)}</span><h2>${next.title} <span class="arr">→</span></h2></a>
   </div>`;
 }
 
-/* locks background scroll while the project overlay is open (mobile Safari
-   can visually glitch fixed-position overlays if the page underneath is
-   still scrollable, so this also prevents that class of bug) */
-let projectScrollY = 0;
-function lockBodyScroll(){
-  projectScrollY = window.scrollY || window.pageYOffset || 0;
-  document.body.style.position = 'fixed';
-  document.body.style.top = `-${projectScrollY}px`;
-  document.body.style.left = '0';
-  document.body.style.right = '0';
-  document.body.style.width = '100%';
+/* =========================================================
+   SMOOTH SCROLL
+   ========================================================= */
+let lenis = null;
+if (!RM && typeof window.Lenis === "function") {
+  try {
+    lenis = new window.Lenis({ duration: 1.15, easing: t => Math.min(1, 1.001 - Math.pow(2, -10 * t)), smoothWheel: true });
+    const raf = (t) => { lenis.raf(t); requestAnimationFrame(raf); };
+    requestAnimationFrame(raf);
+  } catch (e) { lenis = null; }
 }
-function unlockBodyScroll(){
-  document.body.style.position = '';
-  document.body.style.top = '';
-  document.body.style.left = '';
-  document.body.style.right = '';
-  document.body.style.width = '';
-  window.scrollTo(0, projectScrollY);
+const scrollToY = (y, immediate) => { if (lenis) lenis.scrollTo(y, { immediate: !!immediate, duration: 1.4 }); else window.scrollTo({ top: y, behavior: immediate || RM ? "auto" : "smooth" }); };
+const scrollToEl = (el, immediate) => { if (!el) return; const y = el.getBoundingClientRect().top + window.scrollY - (el.id === "top" ? 0 : 70); scrollToY(Math.max(0, y), immediate); };
+
+/* =========================================================
+   PAGE FADE
+   ========================================================= */
+const fade = $("#fade");
+let busy = false;
+function transition(label, mid) {
+  if (RM) { mid(); return; }
+  if (busy) return; busy = true;
+  fade.classList.add("on");
+  setTimeout(() => { Promise.resolve(mid()).then(() => requestAnimationFrame(() => { fade.classList.remove("on"); setTimeout(() => { busy = false; }, 360); })); }, 360);
 }
 
-function openProject(slug, direction){
-  const p = projects[slug];
-  if(!p) return;
-  if(isMobile()) lockBodyScroll();
-  const labels = p.metaLabels || {role:'Role', timeline:'Timeline', tools:'Tools'};
-  const extra = p.gallery==='brand' ? `
-    <div class="section">
-      <h5>Palette</h5>
-      <div class="swatch-row">
-        <div class="swatch" style="background:#f0b667;"></div>
-        <div class="swatch" style="background:#241a12;"></div>
-        <div class="swatch" style="background:#d97a3f;"></div>
-        <div class="swatch" style="background:#efe6d8;"></div>
-      </div>
-    </div>` : (p.gallery==='oracle-ad' ? `
-    <div class="section">
-      <h5>Design System</h5>
-      <p style="color:var(--text-mid); font-size:13.5px; line-height:1.8; margin:0 0 18px;">The campaign runs on a dark, near-black canvas so each section's signal color — cyan for security, magenta for self-healing, amber for autopilot — can glow against it. A consistent grid-horizon backdrop and wireframe hexagon motifs tie the "autonomous driving" concept together across every screen.</p>
-      <div class="swatch-row" style="margin-bottom:18px;">
-        <div class="swatch" style="background:#10141f;" title="Deep Space Navy — base background"></div>
-        <div class="swatch" style="background:#dd5a3f;" title="Ignition Coral — logomark & primary CTA"></div>
-        <div class="swatch" style="background:#00f2fe;" title="Sentinel Cyan — security / vigilance accent"></div>
-        <div class="swatch" style="background:#ff00ff;" title="Neural Magenta — self-healing / ML accent"></div>
-        <div class="swatch" style="background:#ff7a45;" title="Autopilot Amber — zero-ops accent"></div>
-        <div class="swatch" style="background:#181f2f;" title="Surface Panel — cards & nav pills"></div>
-      </div>
-      <div class="meta-row" style="margin-bottom:0; padding-bottom:0; border-bottom:none;">
-        <div class="meta-col"><h6>Typography</h6><div>Oracle Sans — Bold headlines, Regular body, tracked uppercase eyebrow labels</div></div>
-        <div class="meta-col"><h6>Components</h6><div class="meta-tags">${['Pill buttons','Bordered eyebrow badges','Floating tab nav','Glowing wireframe motifs','Grid-horizon backdrop','Section accent rotation'].map(t=>`<span class="tag">${t}</span>`).join('')}</div></div>
-      </div>
-    </div>` : (p.gallery==='grab' ? `
-    <div class="section">
-      <h5>Design System</h5>
-      <p style="color:var(--text-mid); font-size:13.5px; line-height:1.8; margin:0 0 18px;">The portal runs on a bright, neutral canvas so Grab's signature green can carry all primary actions and status without competing for attention. A consistent card grid organizes tasks, news, and resources into scannable modules, with generous whitespace and soft shadows keeping a dense employee tool feeling calm and approachable.</p>
-      <div class="swatch-row" style="margin-bottom:18px;">
-        <div class="swatch" style="background:#ffffff;" title="Surface White — base background & cards"></div>
-        <div class="swatch" style="background:#00B14F;" title="Grab Green — primary actions & brand accent"></div>
-        <div class="swatch" style="background:#00893a;" title="Deep Green — hover & emphasis states"></div>
-        <div class="swatch" style="background:#f4f6f5;" title="Mist Grey — section & page background"></div>
-        <div class="swatch" style="background:#1c1f1e;" title="Ink — primary text"></div>
-        <div class="swatch" style="background:#7c8683;" title="Slate — secondary text & metadata"></div>
-      </div>
-      <div class="meta-row" style="margin-bottom:0; padding-bottom:0; border-bottom:none;">
-        <div class="meta-col"><h6>Typography</h6><div>Inter — Semibold headings, Regular body, uppercase micro-labels for card categories</div></div>
-        <div class="meta-col"><h6>Components</h6><div class="meta-tags">${['Card grid layout','Task modules','Status pills','Top nav + search','Icon-led shortcuts','Responsive mobile stack'].map(t=>`<span class="tag">${t}</span>`).join('')}</div></div>
-      </div>
-    </div>` : (p.gallery==='oracle-egen' ? `
-    <div class="section">
-      <h5>Design System</h5>
-      <p style="color:var(--text-mid); font-size:13.5px; line-height:1.8; margin:0 0 18px;">The generator pairs a light, focused workspace with a warm coral accent that marks every AI-driven action — generate, customize, send — so the automation always feels visible rather than hidden behind the interface. A split-pane editor keeps the prompt, live preview, and controls in constant view, reducing context-switching during rapid iteration.</p>
-      <div class="swatch-row" style="margin-bottom:18px;">
-        <div class="swatch" style="background:#ffffff;" title="Canvas White — editor & panel background"></div>
-        <div class="swatch" style="background:#ff6b4a;" title="Prompt Coral — primary CTA & AI accent"></div>
-        <div class="swatch" style="background:#c1391f;" title="Ember — hover & active states"></div>
-        <div class="swatch" style="background:#f7f5f3;" title="Warm Grey — surrounding surface"></div>
-        <div class="swatch" style="background:#221b18;" title="Charcoal — primary text"></div>
-        <div class="swatch" style="background:#8a7f7a;" title="Taupe — secondary text & labels"></div>
-      </div>
-      <div class="meta-row" style="margin-bottom:0; padding-bottom:0; border-bottom:none;">
-        <div class="meta-col"><h6>Typography</h6><div>Oracle Sans — Semibold headings, Regular body, JetBrains Mono for the prompt input</div></div>
-        <div class="meta-col"><h6>Components</h6><div class="meta-tags">${['Split-pane editor','Live email preview','Prompt input field','Template gallery cards','Analytics charts','Mobile editor flow'].map(t=>`<span class="tag">${t}</span>`).join('')}</div></div>
-      </div>
-    </div>` : (p.gallery==='changi' ? `
-    <div class="section">
-      <h5>Design System</h5>
-      <p style="color:var(--text-mid); font-size:13.5px; line-height:1.8; margin:0 0 18px;">The dashboard leans on a cool violet accent against a light, data-dense canvas to keep multi-provider comparisons legible without visual fatigue. Consistent chart styling and color-coded provider tags let users scan cost differences at a glance, while a clear card hierarchy separates configuration from results.</p>
-      <div class="swatch-row" style="margin-bottom:18px;">
-        <div class="swatch" style="background:#ffffff;" title="Base White — dashboard background"></div>
-        <div class="swatch" style="background:#7c56e0;" title="Cloud Violet — primary CTA & highlights"></div>
-        <div class="swatch" style="background:#5a3fc0;" title="Deep Violet — hover & emphasis states"></div>
-        <div class="swatch" style="background:#f5f3fb;" title="Panel Lilac — card & section background"></div>
-        <div class="swatch" style="background:#1e1b29;" title="Ink Navy — primary text"></div>
-        <div class="swatch" style="background:#847e99;" title="Muted Violet — secondary text & metadata"></div>
-      </div>
-      <div class="meta-row" style="margin-bottom:0; padding-bottom:0; border-bottom:none;">
-        <div class="meta-col"><h6>Typography</h6><div>IBM Plex Sans — Bold headline figures for cost stats, Regular body, tabular numerals for pricing tables</div></div>
-        <div class="meta-col"><h6>Components</h6><div class="meta-tags">${['Provider comparison table','Cost calculator sliders','ROI summary cards','Multi-cloud stacked charts','Configuration form','Mobile comparison flow'].map(t=>`<span class="tag">${t}</span>`).join('')}</div></div>
-      </div>
-    </div>` : (p.gallery==='mufg' ? `
-    <div class="section">
-      <h5>Design System</h5>
-      <p style="color:var(--text-mid); font-size:13.5px; line-height:1.8; margin:0 0 18px;">The site pairs a clean white canvas with a confident red accent to project institutional trust while staying approachable. Full-bleed hero imagery and a structured card grid organize dense financial and ESG content into clear, scannable sections, with generous spacing keeping the tone professional rather than corporate-heavy.</p>
-      <div class="swatch-row" style="margin-bottom:18px;">
-        <div class="swatch" style="background:#ffffff;" title="Base White — page & card background"></div>
-        <div class="swatch" style="background:#ff5f57;" title="MUFG Red — primary accent & CTAs"></div>
-        <div class="swatch" style="background:#a30f0f;" title="Deep Red — hover & emphasis states"></div>
-        <div class="swatch" style="background:#f6f6f7;" title="Cool Grey — section background"></div>
-        <div class="swatch" style="background:#1a1a1a;" title="Near-Black — primary text"></div>
-        <div class="swatch" style="background:#767676;" title="Steel Grey — secondary text & captions"></div>
-      </div>
-      <div class="meta-row" style="margin-bottom:0; padding-bottom:0; border-bottom:none;">
-        <div class="meta-col"><h6>Typography</h6><div>Noto Sans — Bold headlines, Regular body, condensed labels for service categories</div></div>
-        <div class="meta-col"><h6>Components</h6><div class="meta-tags">${['Full-bleed hero banner','Service card grid','Icon-led navigation','ESG pillar sections','Bordered CTA buttons','Mobile stacked layout'].map(t=>`<span class="tag">${t}</span>`).join('')}</div></div>
-      </div>
-    </div>` : (p.gallery==='steady' ? `
-    <div class="section">
-      <h5>Design System</h5>
-      <p style="color:var(--text-mid); font-size:13.5px; line-height:1.8; margin:0 0 18px;">Steady leans on a warm, sunlit palette to keep health tracking feeling calming rather than clinical. A soft coral-orange accent marks progress rings and key actions, while gentle warm neutrals let dense metrics — heart rate, sleep, nutrition, hydration — stay legible without feeling like a medical chart.</p>
-      <div class="swatch-row" style="margin-bottom:18px;">
-        <div class="swatch" style="background:#fdfaf6;" title="Warm Ivory — base background & cards"></div>
-        <div class="swatch" style="background:#ff7a45;" title="Steady Orange — primary accent & progress rings"></div>
-        <div class="swatch" style="background:#e2632c;" title="Deep Amber — hover & emphasis states"></div>
-        <div class="swatch" style="background:#fff1e6;" title="Soft Peach — section background"></div>
-        <div class="swatch" style="background:#2b211c;" title="Ink — primary text"></div>
-        <div class="swatch" style="background:#8f7d72;" title="Warm Taupe — secondary text & metadata"></div>
-      </div>
-      <div class="meta-row" style="margin-bottom:0; padding-bottom:0; border-bottom:none;">
-        <div class="meta-col"><h6>Typography</h6><div>Nunito Sans — Rounded, friendly headlines, Regular body, tabular numerals for health metrics</div></div>
-        <div class="meta-col"><h6>Components</h6><div class="meta-tags">${['Progress rings','Habit streak cards','Health metric tiles','Gentle reminder toasts','Rounded pill buttons','Mobile stacked dashboard'].map(t=>`<span class="tag">${t}</span>`).join('')}</div></div>
-      </div>
-    </div>` : (p.gallery==='courtly' ? `
-    <div class="section">
-      <h5>Design System</h5>
-      <p style="color:var(--text-mid); font-size:13.5px; line-height:1.8; margin:0 0 18px;">Courtly pairs a fresh, energetic green with a clean white canvas to keep court discovery and booking fast and confident. Card-based listings and bold availability badges make open courts easy to scan at a glance, while a consistent icon system carries the sporty, community feel across web and mobile.</p>
-      <div class="swatch-row" style="margin-bottom:18px;">
-        <div class="swatch" style="background:#ffffff;" title="Surface White — base background & cards"></div>
-        <div class="swatch" style="background:#22c07a;" title="Courtly Green — primary actions & brand accent"></div>
-        <div class="swatch" style="background:#0f9d63;" title="Deep Green — hover & emphasis states"></div>
-        <div class="swatch" style="background:#f5f7f6;" title="Mist Grey — section & page background"></div>
-        <div class="swatch" style="background:#1c2420;" title="Ink — primary text"></div>
-        <div class="swatch" style="background:#7c8983;" title="Slate — secondary text & metadata"></div>
-      </div>
-      <div class="meta-row" style="margin-bottom:0; padding-bottom:0; border-bottom:none;">
-        <div class="meta-col"><h6>Typography</h6><div>Inter — Bold headlines, Regular body, uppercase micro-labels for court categories</div></div>
-        <div class="meta-col"><h6>Components</h6><div class="meta-tags">${['Court listing cards','Availability badges','Booking confirmation flow','Community match cards','Activity streak tracker','Mobile booking flow'].map(t=>`<span class="tag">${t}</span>`).join('')}</div></div>
-      </div>
-    </div>` : (p.gallery==='great-eastern' ? `
-    <div class="section">
-      <h5>Design System</h5>
-      <p style="color:var(--text-mid); font-size:13.5px; line-height:1.8; margin:0 0 18px;">The claims dashboard runs on a bright, data-dense canvas so a confident brand blue and red can anchor navigation and primary actions, while a dedicated amber/blue/green status language lets adjusters read claim states — pending, processing, resolved — at a glance across dense tables and queues.</p>
-      <div class="swatch-row" style="margin-bottom:18px;">
-        <div class="swatch" style="background:#013CA4;" title="Primary Blue — primary actions & navigation"></div>
-        <div class="swatch" style="background:#E41B25;" title="Brand Red — brand accent & critical alerts"></div>
-        <div class="swatch" style="background:#F49E0B;" title="Pending Amber — pending status indicator"></div>
-        <div class="swatch" style="background:#4F90F8;" title="Processing Blue — processing status indicator"></div>
-        <div class="swatch" style="background:#34D399;" title="Resolved Green — resolved status indicator"></div>
-        <div class="swatch" style="background:#F4F5F7;" title="Neutral Surface — card & section background"></div>
-      </div>
-      <div class="meta-row" style="margin-bottom:0; padding-bottom:0; border-bottom:none;">
-        <div class="meta-col"><h6>Typography</h6><div>IBM Plex Sans — Bold headlines, Regular body, tabular numerals for claim figures</div></div>
-        <div class="meta-col"><h6>Components</h6><div class="meta-tags">${['Status pills','Claims submission queue','AI insight cards','Priority badges','Data-dense tables','Mobile claims tracker'].map(t=>`<span class="tag">${t}</span>`).join('')}</div></div>
-      </div>
-    </div>` : (p.gallery==='tata-motors' ? `
-    <div class="section">
-      <h5>Design System</h5>
-      <p style="color:var(--text-mid); font-size:13.5px; line-height:1.8; margin:0 0 18px;">The workspace runs on a clean white canvas with a confident Tata blue anchoring every AI-driven action, so conversational search and model recommendations always read as the primary path. A consistent status-pill language — green for production, amber for review — lets engineering teams scan asset health across dense search results and library tables at a glance.</p>
-      <div class="swatch-row" style="margin-bottom:18px;">
-        <div class="swatch" style="background:#ffffff;" title="Base White — page & card background"></div>
-        <div class="swatch" style="background:#1a56db;" title="Tata Blue — primary actions & AI accent"></div>
-        <div class="swatch" style="background:#173fa8;" title="Deep Blue — hover & emphasis states"></div>
-        <div class="swatch" style="background:#f4f6fb;" title="Cool Grey — section & page background"></div>
-        <div class="swatch" style="background:#0f9d58;" title="Production Green — deployed/completed status"></div>
-        <div class="swatch" style="background:#e2a03f;" title="Review Amber — in-progress/pending status"></div>
-      </div>
-      <div class="meta-row" style="margin-bottom:0; padding-bottom:0; border-bottom:none;">
-        <div class="meta-col"><h6>Typography</h6><div>Inter — Bold headlines, Regular body, tabular numerals for match scores and metrics</div></div>
-        <div class="meta-col"><h6>Components</h6><div class="meta-tags">${['Conversational AI input','Quick command chips','AI synthesis cards','Status pills','Data table library view','Mobile assistant flow'].map(t=>`<span class="tag">${t}</span>`).join('')}</div></div>
-      </div>
-    </div>` : (p.gallery==='on-engineers' ? `
-    <div class="section">
-      <h5>Design System</h5>
-      <p style="color:var(--text-mid); font-size:13.5px; line-height:1.8; margin:0 0 18px;">The site pairs a warm, off-white canvas with deep navy sections and a live-wire orange accent, so it reads as a working field practice rather than a polished tech brand. Numbered pillar rows, a licensed-engineer bar chart, and severity-tagged case cards keep dense technical content — voltage tiers, diagnostic methods, field findings — scannable at a glance.</p>
-      <div class="swatch-row" style="margin-bottom:18px;">
-        <div class="swatch" style="background:#f7f5ef;" title="Warm Ivory — page background"></div>
-        <div class="swatch" style="background:#f5821f;" title="ON Orange — primary accent & CTAs"></div>
-        <div class="swatch" style="background:#c25a0f;" title="Burnt Orange — hover & emphasis states"></div>
-        <div class="swatch" style="background:#0a1628;" title="Deep Navy — dark section background"></div>
-        <div class="swatch" style="background:#1a1a1a;" title="Ink — primary text on light"></div>
-        <div class="swatch" style="background:#2fae66;" title="Normal-Range Green — field-assessment status tag"></div>
-      </div>
-      <div class="meta-row" style="margin-bottom:0; padding-bottom:0; border-bottom:none;">
-        <div class="meta-col"><h6>Typography</h6><div>Inter — Bold display headlines, Regular body, monospace-style ticker and report IDs</div></div>
-        <div class="meta-col"><h6>Components</h6><div class="meta-tags">${['Scrolling news ticker','Numbered pillar rows','Licensing bar chart','Leadership bio cards','Severity-tagged case cards','Dark CTA band'].map(t=>`<span class="tag">${t}</span>`).join('')}</div></div>
-      </div>
-    </div>` : ''))))))))));
-  const statRow = p.stats ? `
-    <div class="stat-row">
-      ${p.stats.map(s=>`<div class="stat-card"><b style="color:${p.accent};">${s[0]}</b><span>${s[1]}</span></div>`).join('')}
-    </div>` : '';
-
-  const nav = getPrevNextProjects(slug);
-  const prevNextHTML = nav ? `
-    <div class="proj-prevnext">
-      <a class="proj-prevnext-link prev" href="#" data-nav-project="${nav.prev.slug}" data-nav-dir="prev">
-        <span class="dir-label">← Previous</span>
-        <span class="proj-name">${nav.prev.name}</span>
-      </a>
-      <a class="proj-prevnext-link next" href="#" data-nav-project="${nav.next.slug}" data-nav-dir="next">
-        <span class="dir-label">Next →</span>
-        <span class="proj-name">${nav.next.name}</span>
-      </a>
-    </div>` : '';
-
-  const bodyEl = document.getElementById('proj-body');
-  const windowEl = document.querySelector('.proj-window');
-
-  function applyChrome(){
-    bodyEl.className = 'proj-body' + (slug==='courtly' ? ' proj-courtly' : '');
-    document.getElementById('proj-url').textContent = `🔒 featured-work/${p.slug}`;
-    document.getElementById('proj-wtitle').innerHTML = `${p.name} <span class="app">Safari</span>`;
-    const prototypePill = document.getElementById('proj-prototype-pill');
-    if(prototypePill){
-      if(p.prototypeUrl){
-        prototypePill.href = p.prototypeUrl;
-        prototypePill.style.display = 'inline-flex';
-      } else {
-        prototypePill.style.display = 'none';
-      }
-    }
-  }
-
-  function renderBody(){
-    bodyEl.innerHTML = `
-    <div class="back-btn" id="proj-back">← Back to desktop</div>
-    <div class="proj-hero-eyebrow" style="color:${p.accent};">${p.category}</div>
-    <h1>${p.pageTitle || p.name}</h1>
-    <p class="lead">${p.lead}</p>
-    <div class="section">
-      <h5>Approach</h5>
-      <p style="color:var(--text-mid); font-size:13.5px; line-height:1.8;">${p.detail}</p>
-    </div>
-    <div class="meta-row">
-      <div class="meta-col"><h6>${labels.role}</h6><div>${p.role}</div></div>
-      <div class="meta-col"><h6>${labels.timeline}</h6><div>${p.timeline}</div></div>
-      <div class="meta-col"><h6>${labels.tools}</h6><div class="meta-tags">${p.tools.map(t=>`<span class="tag">${t}</span>`).join('')}</div></div>
-    </div>
-    ${galleryHTML(p)}
-    ${statRow}
-    ${extra}
-    ${prevNextHTML}
-  `;
-    document.getElementById('proj-back').addEventListener('click', closeProject);
-    bodyEl.querySelectorAll('.proj-prevnext-link').forEach(link=>{
-      link.addEventListener('click', (e)=>{
-        e.preventDefault();
-        openProject(link.dataset.navProject, link.dataset.navDir);
-      });
-    });
-    document.getElementById('project-overlay').classList.add('open');
-    initShotPreloaders();
-  }
-
-  if((direction === 'next' || direction === 'prev') && windowEl){
-    /* directional slide, TikTok-style: the whole browser window (title
-       bar, URL bar, prototype button, and body) moves together as one
-       card — Next exits/enters upward, Previous exits/enters downward */
-    const outClass = direction === 'next' ? 'proj-slide-out-up' : 'proj-slide-out-down';
-    const inClass = direction === 'next' ? 'proj-slide-in-up' : 'proj-slide-in-down';
-    windowEl.classList.remove('proj-slide-in-up', 'proj-slide-in-down');
-    windowEl.classList.add(outClass);
-    setTimeout(()=>{
-      windowEl.classList.remove(outClass);
-      applyChrome();
-      renderBody();
-      bodyEl.scrollTop = 0;
-      windowEl.classList.add(inClass);
-      setTimeout(()=>{ windowEl.classList.remove(inClass); }, 420);
-    }, 260);
-  } else {
-    applyChrome();
-    renderBody();
-    bodyEl.scrollTop = 0; /* always land on the top of the case study, even when switching straight from another project */
-    bodyEl.classList.remove('proj-anim-in');
-    void bodyEl.offsetWidth; /* force reflow so the entrance animation replays every open */
-    bodyEl.classList.add('proj-anim-in');
-  }
-}
-function initShotPreloaders(){
-  document.querySelectorAll('#proj-body .shot-tile img').forEach(img=>{
-    const tile = img.closest('.shot-tile');
-    const markLoaded = ()=> tile.classList.add('loaded');
-    if(img.complete && img.naturalWidth > 0){
-      markLoaded();
-    } else {
-      img.addEventListener('load', markLoaded, {once:true});
-      img.addEventListener('error', markLoaded, {once:true});
-    }
+/* case study preloader: same loader as the intro, waits for the page's live prototype */
+function runLoader(name, cap, work, minMs = 900) {
+  const L = $("#loader"), root = document.documentElement;
+  return new Promise(res => {
+    const end = () => { root.classList.add("ready"); L && L.classList.add("done"); res(); };
+    if (!L || RM) { Promise.resolve(work()).then(end, end); return; }
+    $(".ld-name", L).innerHTML = name; $(".ld-cap", L).textContent = cap;
+    const num = $("#ldNum"), bar = $("#ldBar"); num.textContent = "0"; bar.style.width = "0%";
+    root.classList.remove("ready"); L.classList.remove("done");
+    let done = false, shown = 0, last = performance.now(); const t0 = last;
+    setTimeout(() => Promise.resolve(work()).then(() => { done = true; }, () => { done = true; }), 380);
+    setTimeout(() => { done = true; }, 6000);
+    const step = () => {
+      const now = performance.now(), dt = Math.min(250, now - last); last = now;
+      const target = Math.min(done ? 100 : 90, (now - t0) / minMs * 100);
+      shown = Math.min(target, shown + Math.max((target - shown) * Math.min(1, dt / 120), dt * .06));
+      num.textContent = Math.round(shown); bar.style.width = shown + "%";
+      if (shown >= 100 && performance.now() - t0 > minMs) { setTimeout(end, 150); return; }
+      requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
   });
 }
-function closeProject(){
-  document.getElementById('project-overlay').classList.remove('open');
-  if(isMobile()) unlockBodyScroll();
+
+/* =========================================================
+   ROUTER (#slug opens a case study; section links scroll)
+   ========================================================= */
+const home = $("#home"), caseEl = $("#case");
+let view = "home";
+/* ---------- SEO: keep title / description / share URL in step with the current view ---------- */
+const SITE = { title: document.title, description: (document.querySelector('meta[name="description"]') || {}).content || "", url: (document.querySelector('link[rel="canonical"]') || {}).href || location.href };
+function setMeta(desc, url) {
+  const set = (sel, attr, val) => { const el = document.querySelector(sel); if (el && val) el.setAttribute(attr, val); };
+  set('meta[name="description"]', "content", desc); set('meta[property="og:description"]', "content", desc); set('meta[name="twitter:description"]', "content", desc);
+  set('meta[property="og:title"]', "content", document.title); set('meta[name="twitter:title"]', "content", document.title);
+  set('meta[property="og:url"]', "content", url);
 }
-document.getElementById('proj-close-dot').addEventListener('click', closeProject);
-document.getElementById('project-overlay').addEventListener('click', (e)=>{
-  if(e.target.id==='project-overlay') closeProject();
-});
-document.addEventListener('keydown', e=>{
-  if(e.key === 'Escape' && document.getElementById('project-overlay').classList.contains('open')) closeProject();
-});
 
-document.body.addEventListener('click', (e)=>{
-  const t = e.target.closest('[data-open-project]');
-  if(t) openProject(t.dataset.openProject);
-});
+function showCase(p, immediate) {
+  const go = () => {
+    LIVE.release($$("iframe", caseEl));
+    caseEl.innerHTML = caseHTML(p);
+    /* gallery screens load as they approach, so the hero gets the bandwidth first */
+    LIVE.manage($$(".gal-ch iframe", caseEl), 0);
+    home.hidden = true; caseEl.hidden = false; view = p.slug;
+    document.title = p.title + " · Case study · Robert Azucena";
+    setMeta(p.summary, location.href);
+    scrollToY(0, true); observeReveals(); bindCursorTargets(); watchImgs(caseEl); bindScrollers(caseEl); bindLive(caseEl); bindViewer(caseEl, p); bindStats(caseEl); TOC.build(caseEl); lenis && lenis.resize();
+    const hero = $(".case-hero iframe, .case-hero img", caseEl);
+    if (!hero) return null;
+    if (hero.tagName === "IFRAME") return Promise.race([new Promise(r => hero.addEventListener("load", r, { once: true })), new Promise(r => setTimeout(r, 2500))]);
+    return whenLoaded([hero], 2500);
+  };
+  if (immediate) { go(); return; }
+  const i = PROJECTS.indexOf(p);
+  runLoader(p.short, `Case study ${pad(i + 1)} / ${pad(PROJECTS.length)}`, go, 2000);
+}
 
-/* keyboard accessibility: activate any custom [role="button"] element
-   (dock icons, Finder items, project folders, traffic-light dots, etc.)
-   with Enter or Space, same as a native button would respond to */
-document.addEventListener('keydown', e=>{
-  if(e.key !== 'Enter' && e.key !== ' ') return;
-  const target = e.target.closest('[role="button"]');
-  if(!target) return;
+
+/* ---------- playful headline: letters repel on hover, shatter on click, spring back ---------- */
+(() => {
+  const h1 = $(".intro .intro-h"); if (!h1 || RM) return;
+  h1.setAttribute("aria-label", h1.textContent.replace(/\s+/g, " ").trim());
+  // split every text node into words (no mid-word breaks) and letters
+  const chars = [];
+  const split = (node) => {
+    [...node.childNodes].forEach(n => {
+      if (n.nodeType === 3) {
+        const frag = document.createDocumentFragment();
+        n.textContent.split(/(\s+)/).forEach(part => {
+          if (!part) return;
+          if (/^\s+$/.test(part)) { frag.appendChild(document.createTextNode(" ")); return; }
+          const w = document.createElement("span"); w.className = "w"; w.setAttribute("aria-hidden", "true");
+          [...part].forEach(c => { const e = document.createElement("span"); e.className = "lt"; e.textContent = c; w.appendChild(e); chars.push({ e, x: 0, y: 0, vx: 0, vy: 0, r: 0, vr: 0, s: 1, vs: 0, bx: 0, by: 0 }); });
+          frag.appendChild(w);
+        });
+        n.replaceWith(frag);
+      } else if (n.nodeType === 1) split(n);
+    });
+  };
+  split(h1);
+  h1.classList.add("play");
+  // release the rise-animation clip once the lines have risen, so letters can fly freely
+  let risen = 0; const free = () => h1.classList.add("free");
+  h1.addEventListener("animationend", () => { if (++risen >= $$(".ln>span", h1).length) free(); });
+  setTimeout(free, 4500);
+
+  const hint = $("#playHint");
+  if (hint && !matchMedia("(hover:hover) and (pointer:fine)").matches) $("span", hint).textContent = "Tap the words to shatter";
+  setTimeout(() => hint && hint.classList.add("on"), 2600);
+  let px = -9999, py = -9999, inside = false, raf = 0, last = performance.now(), used = false;
+  const R = 120;
+  const measure = () => { // letter centres in page space, minus current offsets
+    chars.forEach(c => { const r = c.e.getBoundingClientRect(); c.bx = r.left + r.width / 2 - c.x + scrollX; c.by = r.top + r.height / 2 - c.y + scrollY; });
+  };
+  const step = (now) => {
+    raf = 0;
+    let dt = Math.min(48, now - last) / 16.67; last = now;
+    let moving = false;
+    const sub = Math.ceil(dt), h = dt / sub;
+    for (let k = 0; k < sub; k++) chars.forEach(c => {
+      let tx = 0, ty = 0, ts = 1;
+      if (inside) {
+        const dx = c.bx - scrollX - px, dy = c.by - scrollY - py, d = Math.hypot(dx, dy);
+        if (d < R) { const f = Math.pow(1 - d / R, 2); tx = dx / (d || 1) * f * 30; ty = dy / (d || 1) * f * 24; ts = 1 + f * .22; }
+      }
+      // springs: a little under-damped so letters wobble back like jelly
+      c.vx += ((tx - c.x) * .14 - c.vx * .16) * h; c.vy += ((ty - c.y) * .14 - c.vy * .16) * h;
+      c.vr += ((0 - c.r) * .1 - c.vr * .14) * h;   c.vs += ((ts - c.s) * .2 - c.vs * .22) * h;
+      c.x += c.vx * h; c.y += c.vy * h; c.r += c.vr * h; c.s += c.vs * h;
+    });
+    chars.forEach(c => {
+      if (Math.abs(c.vx) + Math.abs(c.vy) + Math.abs(c.vr) + Math.abs(c.vs) > .02 || Math.abs(c.x) + Math.abs(c.y) + Math.abs(c.r) > .05 || Math.abs(c.s - 1) > .002) moving = true;
+      c.e.style.transform = `translate3d(${c.x.toFixed(2)}px,${c.y.toFixed(2)}px,0) rotate(${c.r.toFixed(2)}deg) scale(${c.s.toFixed(3)})`;
+    });
+    if (moving || inside) raf = requestAnimationFrame(step);
+  };
+  const kick = () => { if (!raf) { last = performance.now(); raf = requestAnimationFrame(step); } };
+  const shatter = (x, y) => {
+    measure();
+    chars.forEach(c => {
+      const dx = c.bx - scrollX - x, dy = c.by - scrollY - y, d = Math.hypot(dx, dy) || 1;
+      const p = 26 * Math.min(1.6, 260 / (d + 80));
+      c.vx += dx / d * p + (Math.random() - .5) * 10; c.vy += dy / d * p - Math.random() * 8;
+      c.vr += (Math.random() - .5) * 46; c.vs += .25;
+    });
+    if (hint && !used) { used = true; hint.classList.remove("on"); }
+    kick();
+  };
+  h1.addEventListener("pointerenter", (e) => { if (e.pointerType !== "mouse") return; measure(); inside = true; kick(); });
+  h1.addEventListener("pointermove", (e) => { if (e.pointerType !== "mouse") return; px = e.clientX; py = e.clientY; if (!inside) { measure(); inside = true; } kick(); });
+  h1.addEventListener("pointerleave", () => { inside = false; px = py = -9999; kick(); });
+  h1.addEventListener("click", (e) => shatter(e.clientX, e.clientY));
+  addEventListener("scroll", () => { if (inside) measure(); }, { passive: true });
+  addEventListener("resize", () => { inside = false; });
+})();
+
+/* ---------- hero text parallax: each line moves at its own pace ---------- */
+(() => {
+  const intro = $("#top"); if (!intro || RM) return;
+  const L = [
+    [$(".intro .hello"),            -.17, 6, 3],
+    [$(".intro .intro-h .ln:nth-child(1)"), -.12, 10, 5],
+    [$(".intro .intro-h .ln:nth-child(2)"), -.07, 18, 8],
+    [$(".intro .intro-h .it"),      0,   14, 0],
+    [$(".intro .facts"),            0, 0, 0],
+    [$(".intro .intro-cta"),        -.035, 0, 0],
+  ].filter(x => x[0]);
+  const fine = matchMedia("(hover:hover) and (pointer:fine)").matches;
+  let mx = 0, my = 0, cx = 0, cy = 0, sy = scrollY, csy = scrollY, last = performance.now(), vis = true, raf = 0;
+  const frame = (now) => {
+    raf = 0; if (!vis || view !== "home") return;
+    const dt = Math.min(100, now - last); last = now;
+    const a1 = 1 - Math.exp(-dt / 260), a2 = 1 - Math.exp(-dt / 110);
+    cx += (mx - cx) * a1; cy += (my - cy) * a1; csy += (sy - csy) * a2;
+    L.forEach(([el, sp, ax, ay]) => { el.style.transform = `translate3d(${(-cx * ax).toFixed(2)}px,${(csy * sp - cy * ay).toFixed(2)}px,0)`; });
+    if (Math.abs(sy - csy) > .2 || Math.abs(mx - cx) > .0005 || Math.abs(my - cy) > .0005) kick();
+  };
+  const kick = () => { if (!raf && vis) raf = requestAnimationFrame(frame); };
+  if (fine) addEventListener("pointermove", (e) => { mx = e.clientX / innerWidth - .5; my = e.clientY / innerHeight - .5; kick(); }, { passive: true });
+  addEventListener("scroll", () => { sy = scrollY; kick(); }, { passive: true });
+  if ("IntersectionObserver" in window) new IntersectionObserver(([e]) => { vis = e.isIntersecting; kick(); }).observe(intro);
+  addEventListener("hashchange", () => setTimeout(() => { last = performance.now(); kick(); }, 60));
+  kick();
+})();
+
+
+/* ---------- case table of contents: rail on desktop, floating pill on smaller screens ---------- */
+const TOC = (() => {
+  let nav = null, secs = [], cur = -1, onS = null, onK = null, onDoc = null;
+  const destroy = () => {
+    if (onS) removeEventListener("scroll", onS); if (onK) removeEventListener("keydown", onK); if (onDoc) document.removeEventListener("click", onDoc);
+    nav && nav.remove(); nav = null; secs = []; cur = -1;
+  };
+  const build = (root) => {
+    destroy();
+    secs = $$("[data-toc]", root); if (secs.length < 3) return;
+    nav = document.createElement("nav"); nav.className = "toc"; nav.setAttribute("aria-label", "Case study sections");
+    nav.innerHTML = `<button type="button" class="toc-pill" aria-expanded="false"><span class="tn"></span><span class="lb"></span><span class="bar"><b></b></span><span class="cv" aria-hidden="true">▾</span></button>
+      <ol class="toc-list">${secs.map((el, i) => `<li><button type="button" data-i="${i}"><span class="tl">${el.dataset.toc}</span><span class="tn">${pad(i + 1)}</span><i aria-hidden="true"></i></button></li>`).join("")}</ol>`;
+    document.body.appendChild(nav);
+    const pill = $(".toc-pill", nav), btns = $$(".toc-list button", nav);
+    const setOpen = (o) => { nav.classList.toggle("open", o); pill.setAttribute("aria-expanded", String(o)); };
+    pill.addEventListener("click", (e) => { e.stopPropagation(); setOpen(!nav.classList.contains("open")); });
+    btns.forEach(b => b.addEventListener("click", (e) => { e.stopPropagation(); setOpen(false); const k = +b.dataset.i; if (k === 0) scrollToY(0); else scrollToEl(secs[k]); }));
+    onDoc = () => setOpen(false); document.addEventListener("click", onDoc);
+    onK = (e) => { if (e.key === "Escape") setOpen(false); }; addEventListener("keydown", onK);
+    let ticking = false;
+    const update = () => {
+      ticking = false; if (!nav) return;
+      const line = innerHeight * .38; let i = 0;
+      secs.forEach((el, k) => { if (el.getBoundingClientRect().top <= line) i = k; });
+      const doc = document.documentElement, max = doc.scrollHeight - innerHeight;
+      if (scrollY >= max - 4) i = secs.length - 1;
+      nav.classList.toggle("show", scrollY > Math.min(420, innerHeight * .45));
+      if (i !== cur) {
+        cur = i; btns.forEach((b, k) => { b.classList.toggle("on", k === i); if (k === i) b.setAttribute("aria-current", "true"); else b.removeAttribute("aria-current"); });
+        $(".tn", pill).textContent = `${pad(i + 1)}/${pad(secs.length)}`; $(".lb", pill).textContent = secs[i].dataset.toc;
+      }
+      $(".bar", pill).style.setProperty("--p", (Math.min(1, scrollY / Math.max(1, max)) * 100).toFixed(1) + "%");
+    };
+    onS = () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } };
+    addEventListener("scroll", onS, { passive: true });
+    update();
+  };
+  return { build, destroy };
+})();
+
+function showHome(sec, immediate) {
+  const target = () => document.getElementById(sec || "top");
+  if (view === "home") { scrollToEl(target(), immediate); return; }
+  const go = () => {
+    TOC.destroy(); LIVE.release($$("iframe", caseEl));
+    home.hidden = false; caseEl.hidden = true; caseEl.innerHTML = ""; view = "home";
+    requestAnimationFrame(() => dispatchEvent(new Event("resize")));
+    document.title = SITE.title;
+    setMeta(SITE.description, SITE.url);
+    lenis && lenis.resize(); scrollToEl(target(), true); bindCursorTargets(); observeReveals();
+  };
+  immediate ? go() : transition(`Robert <em>Azucena</em>`, go);
+}
+function setHash(h) { try { history.pushState(null, "", "#" + h); } catch (e) { try { location.hash = h; } catch (_) {} } }
+function route(immediate) {
+  let h = ""; try { h = decodeURIComponent(location.hash.slice(1)); } catch (e) {}
+  const p = PROJECTS.find(x => x.slug === h);
+  if (p) { if (view !== p.slug) showCase(p, immediate); }
+  else showHome(h && document.getElementById(h) ? h : "top", immediate || view === "home");
+}
+document.addEventListener("click", (e) => {
+  const a = e.target.closest("a[href^='#']"); if (!a) return;
   e.preventDefault();
-  target.click();
+  document.body.classList.remove("menu-open"); $("#menuBtn").setAttribute("aria-expanded", "false");
+  if (a.dataset.case) { const p = PROJECTS.find(x => x.slug === a.dataset.case); setHash(p.slug); showCase(p); }
+  else { const s = a.dataset.sec || a.getAttribute("href").slice(1); setHash(s); showHome(s); }
+});
+addEventListener("popstate", () => route(false));
+addEventListener("hashchange", () => route(false));
+
+/* =========================================================
+   MOBILE MENU
+   ========================================================= */
+$("#menuBtn").addEventListener("click", () => {
+  const open = document.body.classList.toggle("menu-open");
+  $("#menuBtn").setAttribute("aria-expanded", String(open));
 });
 
-/* ---------------- Dock actions ---------------- */
-document.querySelectorAll('.dockitem').forEach(d=>{
-  d.addEventListener('click', ()=>{
-    document.querySelectorAll('.dockitem').forEach(x=>x.classList.remove('active'));
-    d.classList.add('active');
-    const action = d.dataset.dock;
-    /* on mobile, windows stack vertically in normal document flow, so
-       opening a window from the dock (which sits fixed at the bottom)
-       needs to also scroll that window into view, wherever it lives
-       in the stacked page */
-    function anchorToWindow(win){
-      if(!win || !isMobile()) return;
-      requestAnimationFrame(()=>{
-        win.scrollIntoView({behavior:'smooth', block:'start'});
-      });
-    }
-    if(action==='about'){
-      const w=document.getElementById('win-about'); openWin(w); renderFinderPane('about');
-      anchorToWindow(w);
-    } else if(action==='safari'){
-      const w=document.getElementById('win-about'); openWin(w); renderFinderPane('projects');
-      anchorToWindow(w);
-    } else if(action==='documents'){
-      const w=document.getElementById('win-about'); openWin(w); renderFinderPane('documents');
-      anchorToWindow(w);
-    } else if(action==='mail'){
-      openMailWindow();
-    } else if(action==='linkedin'){
-      window.open('https://www.linkedin.com/in/robertazucena/','_blank');
-    }
-  });
+/* =========================================================
+   REVEALS (transform only)
+   ========================================================= */
+let io;
+function observeReveals() {
+  $$("#case .case-top, #case .case-title, #case .case-sum, #case .meta, #case .case-hero, #case .cs, #case .chapter .lbl, #case .chapter:not(.gal-ch) .ct > *, #case .scr, #case .next").forEach(el => el.classList.add("rv"));
+  if (!("IntersectionObserver" in window)) { $$(".rv").forEach(el => el.classList.add("in")); return; }
+  io && io.disconnect();
+  io = new IntersectionObserver((ents) => {
+    let k = 0;
+    ents.forEach(en => { if (en.isIntersecting) { en.target.style.setProperty("--rd", Math.min(k++, 6) * 0.08 + "s"); en.target.classList.add("in"); io.unobserve(en.target); } });
+  }, { rootMargin: "0px 0px -6% 0px" });
+  $$(".rv:not(.in)").forEach(el => io.observe(el));
+}
+observeReveals();
+
+/* =========================================================
+   CLOCK
+   ========================================================= */
+function tick() {
+  let t = "";
+  try { t = new Intl.DateTimeFormat("en-GB", { hour: "2-digit", minute: "2-digit", timeZone: "Asia/Singapore" }).format(new Date()); } catch (e) { t = ""; }
+  $$(".clock").forEach(c => c.textContent = t);
+}
+tick(); setInterval(tick, 20000);
+
+/* =========================================================
+   COPY EMAIL
+   ========================================================= */
+$("#copyEmail").addEventListener("click", () => {
+  const b = $("#copyEmail"), v = $("#emailV").textContent.trim();
+  const done = (msg) => { b.textContent = msg; setTimeout(() => b.textContent = "Copy", 1800); };
+  const fallback = () => { const r = document.createRange(); r.selectNodeContents($("#emailV")); const s = getSelection(); s.removeAllRanges(); s.addRange(r); done("Selected"); };
+  try { navigator.clipboard.writeText(v).then(() => done("Copied"), fallback); } catch (e) { fallback(); }
 });
 
+/* =========================================================
+   SCROLL PROGRESS + NAV STATE
+   ========================================================= */
+const prog = $("#progress");
+const navLinks = $$(".pill a");
+function onScroll() {
+  const max = document.documentElement.scrollHeight - innerHeight;
+  prog.style.width = (view === "home" ? 0 : Math.min(100, (scrollY / Math.max(1, max)) * 100)) + "%";
+  if (view === "home") {
+    let cur = "";
+    ["work","leadership","expertise","process","experience"].forEach(id => { const el = document.getElementById(id); if (el && el.getBoundingClientRect().top < innerHeight * .4) cur = id; });
+    navLinks.forEach(a => a.classList.toggle("on", a.dataset.sec === cur));
+  } else navLinks.forEach(a => a.classList.remove("on"));
+  SH.scroll = scrollY;
+}
+addEventListener("scroll", onScroll, { passive: true });
 
-/* ---------------- 3D interactive background ---------------- */
-(function initBG3D(){
-  try{
-    if(!window.THREE) throw new Error('three.js failed to load');
+function bindCursorTargets() {}
 
-    const canvas = document.getElementById('bg3d');
-    const renderer = new THREE.WebGLRenderer({canvas, alpha:true, antialias:true});
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
-    renderer.setSize(window.innerWidth, window.innerHeight);
+/* =========================================================
+   GRADIENT GRID SHADER (fixed background)
+   ========================================================= */
+(function shader() {
+  const cv = $("#bg");
+  let gl = null;
+  try { gl = cv.getContext("webgl", { antialias: false, alpha: false, premultipliedAlpha: false, powerPreference: "low-power" }); } catch (e) {}
+  if (!gl) { cv.remove(); const f = document.createElement("div"); f.className = "bg-fallback"; document.body.prepend(f); return; }
 
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(58, window.innerWidth/window.innerHeight, 1, 3000);
-    camera.position.z = 560;
+  const vs = `attribute vec2 p;void main(){gl_Position=vec4(p,0.,1.);}`;
+  const fs = `
+precision highp float;
+uniform vec2 uRes; uniform float uTime; uniform vec2 uMouse; uniform float uHover;
+uniform float uDpr; uniform float uScroll; uniform vec3 uRip;
 
-    const group = new THREE.Group();
-    scene.add(group);
+float hash(vec2 p){ p=fract(p*vec2(123.34,456.21)); p+=dot(p,p+45.32); return fract(p.x*p.y); }
+float noise(vec2 p){ vec2 i=floor(p), f=fract(p); vec2 u=f*f*(3.-2.*f);
+  return mix(mix(hash(i),hash(i+vec2(1.,0.)),u.x), mix(hash(i+vec2(0.,1.)),hash(i+vec2(1.,1.)),u.x), u.y); }
+float fbm(vec2 p){ float v=0., a=.5; mat2 r=mat2(.8,.6,-.6,.8);
+  for(int i=0;i<5;i++){ v+=a*noise(p); p=r*p*2.03; a*=.5; } return v; }
+float field(vec2 uv, float t){
+  vec2 q = vec2(fbm(uv*1.1 + vec2(0., t)), fbm(uv*1.1 + vec2(5.2, -t*.8)));
+  vec2 r = vec2(fbm(uv*1.3 + q*1.6 + vec2(1.7, 9.2) + t*.5), fbm(uv*1.3 + q*1.6 + vec2(8.3, 2.8) - t*.4));
+  return fbm(uv*.9 + r*1.4);
+}
+vec3 grey(float v){
+  vec3 a=vec3(.993,.994,.996), b=vec3(.895,.902,.913), c=vec3(.785,.795,.812);
+  vec3 col=mix(a,b,smoothstep(0.,.55,v)); return mix(col,c,smoothstep(.55,1.,v));
+}
+float ringAt(vec2 p){
+  float age=uTime-uRip.z; if(age<=0. || age>=2.4) return 0.;
+  float d=distance(p,uRip.xy*uDpr)/uRes.y; return exp(-pow((d-age*.55)*14.,2.))*(1.-age/2.4);
+}
 
-    function isLightTheme(){ return document.documentElement.getAttribute('data-theme') === 'light'; }
+void main(){
+  vec2 px = vec2(gl_FragCoord.x, uRes.y - gl_FragCoord.y);
+  float D = uDpr; float t = uTime*.04;
+  vec2 off = vec2(0., uScroll*D*.00035);
+  vec2 uv = px/uRes.y;
+  float dm = distance(px, uMouse*D)/uRes.y;
+  float glow = exp(-dm*dm*9.)*uHover;
+  float ring = ringAt(px);
+  // the cursor gently pushes the gradient
+  vec2 push = (uv - uMouse*D/uRes.y) * exp(-dm*dm*6.) * .12 * uHover;
+  float v = smoothstep(.2,.8,field(uv + off + push, t));
+  vec3 col = grey(v);
+  col = mix(col, vec3(1.), glow*.4 + ring*.25);
+  float top = 1.-smoothstep(0., .22, px.y/uRes.y);
+  col = mix(col, vec3(.993,.994,.996), top*.3);
+  col += (hash(px + fract(uTime)*91.) - .5)*.01;
+  gl_FragColor = vec4(col,1.);
+}`;
+  const sh = (type, src) => { const s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s); if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) { console.warn(gl.getShaderInfoLog(s)); return null; } return s; };
+  const v = sh(gl.VERTEX_SHADER, vs), f = sh(gl.FRAGMENT_SHADER, fs);
+  if (!v || !f) { cv.remove(); const d = document.createElement("div"); d.className = "bg-fallback"; document.body.prepend(d); return; }
+  const pr = gl.createProgram(); gl.attachShader(pr, v); gl.attachShader(pr, f); gl.linkProgram(pr); gl.useProgram(pr);
+  const buf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1,1,-1,-1,1,-1,1,1,-1,1,1]), gl.STATIC_DRAW);
+  const loc = gl.getAttribLocation(pr, "p"); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+  const U = {}; ["uRes","uTime","uMouse","uHover","uDpr","uScroll","uRip"].forEach(k => U[k] = gl.getUniformLocation(pr, k));
 
-    const PALETTES = {
-      dark:  [[155,126,240],[240,130,196],[57,213,242],[255,122,69],[240,182,103]],
-      light: [[103,62,214],[196,42,132],[8,132,104],[6,118,152],[163,98,4]]
-    };
-    const pick = ()=> {
-      const p = isLightTheme() ? PALETTES.light : PALETTES.dark;
-      return p[(Math.random()*p.length)|0];
-    };
+  let dpr = 1, W = 0, H = 0;
+  const resize = () => {
+    dpr = .5; /* soft gradient: render at half resolution and let the browser upscale */
+    W = Math.floor(innerWidth * dpr); H = Math.floor(innerHeight * dpr);
+    cv.width = W; cv.height = H; gl.viewport(0, 0, W, H);
+    gl.uniform2f(U.uRes, W, H); gl.uniform1f(U.uDpr, dpr);
+    if (RM) draw(performance.now());
+  };
+  let tx = innerWidth * .7, ty = innerHeight * .35, sx = tx, sy = ty, hover = FINE ? 0 : .0, hT = FINE ? 0 : 0;
+  let rip = [-999, -999, -999];
+  const t0 = performance.now();
+  addEventListener("pointermove", (e) => { tx = e.clientX; ty = e.clientY; hT = 1; if (RM) draw(performance.now()); }, { passive: true });
+  document.addEventListener("pointerleave", () => { hT = 0; });
+  addEventListener("pointerdown", (e) => { rip = [e.clientX, e.clientY, (performance.now() - t0) / 1000]; }, { passive: true });
 
-    /* ambient particle field, spread in a soft sphere behind the desktop */
-    const COUNT = 1500;
-    const positions = new Float32Array(COUNT*3);
-    const colors = new Float32Array(COUNT*3);
-    for(let i=0;i<COUNT;i++){
-      const r = 260 + Math.random()*950;
-      const theta = Math.random()*Math.PI*2;
-      const phi = Math.acos(Math.random()*2-1);
-      positions[i*3]   = r*Math.sin(phi)*Math.cos(theta);
-      positions[i*3+1] = r*Math.sin(phi)*Math.sin(theta)*0.62;
-      positions[i*3+2] = r*Math.cos(phi) - 380;
-      const c = pick();
-      colors[i*3]=c[0]/255; colors[i*3+1]=c[1]/255; colors[i*3+2]=c[2]/255;
-    }
-    const fieldGeo = new THREE.BufferGeometry();
-    fieldGeo.setAttribute('position', new THREE.BufferAttribute(positions,3));
-    fieldGeo.setAttribute('color', new THREE.BufferAttribute(colors,3));
-    const fieldMat = new THREE.PointsMaterial({
-      size: isLightTheme() ? 3.6 : 2.4,
-      vertexColors:true, transparent:true, opacity: isLightTheme() ? 0.92 : 0.8,
-      depthWrite:false, blending: isLightTheme() ? THREE.NormalBlending : THREE.AdditiveBlending
-    });
-    const field = new THREE.Points(fieldGeo, fieldMat);
-    group.add(field);
-
-    /* re-tint and re-blend the field whenever the light/dark theme is toggled */
-    function applyThemeToField(){
-      const light = isLightTheme();
-      fieldMat.blending = light ? THREE.NormalBlending : THREE.AdditiveBlending;
-      fieldMat.opacity = light ? 0.92 : 0.8;
-      fieldMat.size = light ? 3.6 : 2.4;
-      fieldMat.needsUpdate = true;
-      const colorArr = fieldGeo.attributes.color.array;
-      for(let i=0;i<COUNT;i++){
-        const c = pick();
-        colorArr[i*3]=c[0]/255; colorArr[i*3+1]=c[1]/255; colorArr[i*3+2]=c[2]/255;
-      }
-      fieldGeo.attributes.color.needsUpdate = true;
-    }
-    const themeObserver = new MutationObserver(applyThemeToField);
-    themeObserver.observe(document.documentElement, {attributes:true, attributeFilter:['data-theme']});
-
-    /* pointer parallax: the whole scene tilts gently toward the cursor/finger */
-    let mouseX=0, mouseY=0, tiltX=0, tiltY=0;
-    window.addEventListener('pointermove', e=>{
-      mouseX = (e.clientX/window.innerWidth) - 0.5;
-      mouseY = (e.clientY/window.innerHeight) - 0.5;
-    }, {passive:true});
-
-    /* click / tap on empty desktop space spawns a particle burst */
-    const bursts = [];
-    function spawnBurst(clientX, clientY){
-      const ndcX = (clientX/window.innerWidth)*2-1;
-      const ndcY = -(clientY/window.innerHeight)*2+1;
-      const dir = new THREE.Vector3(ndcX, ndcY, 0.5).unproject(camera).sub(camera.position).normalize();
-      const dist = (-300 - camera.position.z)/dir.z;
-      const origin = camera.position.clone().add(dir.multiplyScalar(dist));
-
-      const n = 30;
-      const bpos = new Float32Array(n*3);
-      const bcol = new Float32Array(n*3);
-      const vel = [];
-      const c = pick();
-      for(let i=0;i<n;i++){
-        bpos[i*3]=origin.x; bpos[i*3+1]=origin.y; bpos[i*3+2]=origin.z;
-        bcol[i*3]=c[0]/255; bcol[i*3+1]=c[1]/255; bcol[i*3+2]=c[2]/255;
-        const a = Math.random()*Math.PI*2, sp = 1.2+Math.random()*3.2;
-        vel.push([Math.cos(a)*sp, Math.sin(a)*sp, (Math.random()-0.5)*sp]);
-      }
-      const bgeo = new THREE.BufferGeometry();
-      bgeo.setAttribute('position', new THREE.BufferAttribute(bpos,3));
-      bgeo.setAttribute('color', new THREE.BufferAttribute(bcol,3));
-      const bmat = new THREE.PointsMaterial({size: isLightTheme() ? 5.5 : 5.5, vertexColors:true, transparent:true, opacity: isLightTheme() ? 0.95 : 1, depthWrite:false, blending: isLightTheme() ? THREE.NormalBlending : THREE.AdditiveBlending});
-      const points = new THREE.Points(bgeo, bmat);
-      scene.add(points);
-      bursts.push({obj:points, vel, life:0});
-    }
-    window.addEventListener('pointerdown', e=>{
-      if(e.target.closest('.win, #dock, #shortcuts, #project-overlay, #menubar')) return;
-      spawnBurst(e.clientX, e.clientY);
-    });
-
-    function onResize(){
-      camera.aspect = window.innerWidth/window.innerHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(window.innerWidth, window.innerHeight);
-    }
-    window.addEventListener('resize', onResize);
-
-    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    let t = 0;
-    function animate(){
-      requestAnimationFrame(animate);
-      t += 0.01;
-      tiltX += (mouseX-tiltX)*0.045;
-      tiltY += (mouseY-tiltY)*0.045;
-
-      if(!reduceMotion){
-        group.rotation.y = tiltX*0.6;
-        group.rotation.x = tiltY*0.35;
-        field.rotation.y += 0.0007;
-      } else {
-        group.rotation.y = tiltX*0.25;
-      }
-
-      for(let i=bursts.length-1;i>=0;i--){
-        const b = bursts[i];
-        b.life++;
-        const arr = b.obj.geometry.attributes.position.array;
-        for(let j=0;j<b.vel.length;j++){
-          arr[j*3]   += b.vel[j][0];
-          arr[j*3+1] += b.vel[j][1];
-          arr[j*3+2] += b.vel[j][2];
-        }
-        b.obj.geometry.attributes.position.needsUpdate = true;
-        b.obj.material.opacity = Math.max(0, 1 - b.life/52);
-        if(b.life > 52){
-          scene.remove(b.obj);
-          b.obj.geometry.dispose();
-          b.obj.material.dispose();
-          bursts.splice(i,1);
-        }
-      }
-
-      renderer.render(scene, camera);
-    }
-    animate();
-  }catch(err){
-    document.body.classList.add('no-webgl');
+  function draw(now) {
+    const time = (now - t0) / 1000;
+    sx += (tx - sx) * .08; sy += (ty - sy) * .08; hover += (hT - hover) * .05;
+    gl.uniform1f(U.uTime, RM ? 12.0 : time);
+    gl.uniform2f(U.uMouse, sx, sy);
+    gl.uniform1f(U.uHover, hover);
+    gl.uniform1f(U.uScroll, SH.scroll || 0);
+    gl.uniform3f(U.uRip, rip[0], rip[1], RM ? -999 : rip[2]);
+    gl.drawArrays(gl.TRIANGLES, 0, 6);
   }
+  let running = true;
+  let lastDraw = 0;
+  const loop = (now) => { if (running && now - lastDraw > 31) { draw(now); lastDraw = now; } requestAnimationFrame(loop); };
+  document.addEventListener("visibilitychange", () => { running = !document.hidden; });
+  addEventListener("resize", resize);
+  resize();
+  if (RM) { hover = 0; draw(performance.now()); } else requestAnimationFrame(loop);
+})();
+/* intro loader: waits for fonts and project images (max 3s) */
+route(true);
+(function boot() {
+  const L = $("#loader"); if (!L) return;
+  const finish = () => { document.documentElement.classList.add("ready"); L.classList.add("done"); };
+  if (RM) { finish(); return; }
+  const bootCase = PROJECTS.find(p => p.slug === decodeURIComponent(location.hash.slice(1)));
+  const minMs = bootCase ? 2000 : 900;
+  if (bootCase) { $(".ld-name", L).innerHTML = bootCase.short; $(".ld-cap", L).textContent = `Case study ${pad(PROJECTS.indexOf(bootCase) + 1)} / ${pad(PROJECTS.length)}`; }
+  const imgs = bootCase ? $$("#case .case-hero iframe") : $$("#workGrid img, #workGrid iframe[src]");
+  const total = imgs.length + 1; let done = 0, shown = 0, last = performance.now(); const t0 = last;
+  const tick = () => { done = Math.min(total, done + 1); };
+  imgs.forEach(i => (i.tagName === "IMG" && i.complete && i.naturalWidth) ? tick() : (i.addEventListener("load", tick, { once: true }), i.addEventListener("error", tick, { once: true })));
+  (document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve()).then(tick, tick);
+  setTimeout(() => { done = total; }, 3000);
+  const num = $("#ldNum"), bar = $("#ldBar");
+  const step = () => {
+    const now = performance.now(), dt = Math.min(250, now - last); last = now;
+    const target = Math.min(done / total * 100, (now - t0) / minMs * 100);
+    shown = Math.min(target, shown + Math.max((target - shown) * Math.min(1, dt / 120), dt * .06));
+    num.textContent = Math.round(shown); bar.style.width = shown + "%";
+    if (shown >= 100 && performance.now() - t0 > minMs) { setTimeout(finish, 150); return; }
+    requestAnimationFrame(step);
+  };
+  requestAnimationFrame(step);
+})();
+onScroll();
 })();

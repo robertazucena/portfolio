@@ -1,13 +1,89 @@
 <!doctype html>
 <html lang="en">
 <head>
+<!--
+====================================================================================================
+G CLUB PROTOTYPE · PAGE NOTES (developer handoff)   [GENT-P1]
+====================================================================================================
+Page ID   : GENT-P1
+File      : gent-profile.html
+Name      : Gentleman account
+Group     : Gentleman account
+Audience  : Registered Gentleman (demo: Daniel Reyes)
+Journey   : After login or after applying. Hub for bookings, messages, wallet and feedback. Links to
+            GENT-A5 (plan) and GENT-P2 (rate a session).
+Purpose   : The Gentleman account home: stats, credit balance, bookings, messages, transactions,
+            feedback.
+
+What it does:
+  - Stats row (bookings, spent, feedback, membership with a Change plan link) and a credit balance
+    (1 credit = ₱1). Top up modal: ₱500, ₱1,000 or custom, paid by Visa, G-Cash or a linked bank
+    account. Bank account linking is optional. The balance includes plan credit, the membership
+    card shows what the next renewal adds, and ?topup=1 opens the top-up modal.
+  - Tabs: Bookings, Messages, Transactions, Feedback. On mobile the tabs become a sticky dropdown
+    (profile-nav-toggle).
+  - Bookings: Confirmed bookings have Mark as complete. Completion needs both people (Gentleman
+    here, G Girl on GIRL-P1). Each side confirms once; when both have, the booking becomes
+    Completed and the chat closes.
+  - Messages: conversation list and chat. Sending is filtered: phone numbers, meeting at private
+    homes or condos, and social media names or @handles are blocked with an inline warning.
+    Notification bell shows booking updates.
+  - Free plan limits in chat: 20 messages and 14 days. At the limit or after expiry the composer
+    is disabled with an upgrade link.
+  - A closed chat shows "Did you enjoy the experience?" with Book her again
+    (index.html?profile=Name) and Rate your session (gent-feedback.html).
+  - Log out clears identity and plan state but keeps session-complete confirmations.
+
+Reached from:
+  - GENT-A5 gent-plan.html
+  - login.html (Daniel)
+  - script.js (Log out, signup confirmation buttons)
+Goes to:
+  - gent-plan.html?from=profile
+  - index.html?profile=Name
+  - gent-feedback.html
+  - index.html via the header logo and terms.html via the footer (all pages)
+
+Session state read:
+  - gclubMembershipActive
+  - gclubPlanName
+  - gclubCredit
+  - gclubFreePlan
+  - gclubFreeStart
+  - gclubFreeMsgCount
+  - gclubDeal_<girl>_daniel
+Session state written:
+  - gclubFreeMsgCount
+  - gclubFreeStart (only if missing)
+  - gclubCredit (after a top-up)
+  - gclubDeal_<girl>_daniel
+  - gclubTransition
+
+Backend this page needs:
+  - Wallet and credit ledger: plan credit at purchase and renewal, top-ups (₱500, ₱1,000 or
+    custom) and refunds
+  - Booking list and status machine
+  - Messaging service with server-side moderation
+  - Two-party completion state per booking
+  - Notifications
+  - Plan and trial status
+
+Notes:
+  - Content shown is static demo data for one user (Daniel Reyes, Manila).
+  - The wallet shows one credit balance (1 credit = ₱1). Plan credit and top-up credit are the
+    same balance.
+  - Messaging and moderation logic is in this file's second inline script.
+
+Shared code: script.js (loaded once per page) and style.css. Full documentation: G Club Developer Handoff.
+====================================================================================================
+-->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>My Profile — Daniel Reyes — G Club</title>
 <meta name="description" content="View your booking history, transactions, and feedback on G Club.">
 <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body data-page-id="GENT-P1">
 <svg xmlns="http://www.w3.org/2000/svg" style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true" focusable="false">
   <symbol id="g-crown-logo" viewBox="0 0 1222 1287">
     <g fill="#c9a24e" fill-rule="evenodd"><path d="m594.3 380.2-3.3.4q-3.4.4-6.7.4h-6.8q-3.4 0-6.7.3l-6.5.5q-3.3.3-6.7.2t-6.6.4-6.6.6-6.5.5l-6.4 1q-3.1.6-6.5.8-3.3.1-6.5.5-3.3.3-6.5.8l-6.4.9q-3.2.4-6.2 1.2l-6.2 1.5-6.2 1.4-6.1 1.5q-3 .8-6.2 1.4t-6.2 1.5l-6 1.7-6.1 1.7-6 1.8-6 2-6 2-5.9 2-5.8 2.4q-3 1-5.8 2.2l-5.8 2.5q-2.8 1.4-5.7 2.5t-5.8 2.4-5.7 2.6-5.7 2.6-5.7 2.6-5.5 3-5.6 3l-5.6 2.8q-2.8 1.4-5.5 3l-5.4 3.3-5.5 3.2-5.5 3.1-5.5 3q-2.8 1.5-5.4 3.3l-5.3 3.5-5.3 3.6q-2.7 1.7-5.3 3.6t-5.2 3.7l-5.3 3.7-5.2 3.7-5.2 4-5.1 3.8-5.2 4-5 4-5.2 4.1-5 4.2-5 4.4q-2.4 2.3-4.9 4.4l-4.9 4.6q-2.4 2.3-5 4.4-2.5 2.1-4.8 4.5l-4.8 4.8-4.8 4.8-4.7 4.8q-2.4 2.5-4.5 5-2 2.5-4.4 5-2.3 2.4-4.4 4.9l-4.2 5-4.3 5-4.2 5-4 5.2-3.8 5.1-4 5.2-3.9 5.1-3.7 5.3-3.7 5.2-3.6 5.3q-2 2.6-3.6 5.3l-3.2 5.4-3.3 5.5-3.3 5.4-3.1 5.4q-1.5 2.8-3.2 5.5-1.6 2.7-3 5.5l-2.8 5.7-2.8 5.6-2.8 5.6-2.7 5.6-2.6 5.8-2.5 5.7q-1.3 2.8-2.4 5.8l-2.2 5.8-2.1 6q-1.2 2.8-2.2 5.8l-2.1 5.9-2.1 5.9-1.8 6-1.7 6.1-1.8 6-1.6 6.1-1.7 6.1q-1 3-1.6 6.1l-1.3 6.3-1.2 6.2q-.6 3.2-1.4 6.3t-1.4 6.1l-1.1 6.4q-.5 3.1-.8 6.4-.4 3.2-.5 6.6t-.7 6.5-.6 6.5-.5 6.6q-.4 3.2-.4 6.6v6.7q0 3.4-.4 6.7-.4 3.2-.5 6.5 0 3.4.3 6.6.4 3.2.5 6.6v6.7q.1 3.4.5 6.6t.4 6.6.7 6.5q.5 3.2.7 6.5t.5 6.5q.4 3.3 1 6.4l1 6.4q.6 3 1.5 6.1l1.4 6.2q.6 3.2 1.4 6.2l1.6 6.1 1.5 6.2 1.7 6q.8 3.1 1.8 6l2 6 2.1 6 2.3 5.8q1 3 2.2 5.8l2.4 5.8 2.4 5.8q1.2 2.9 2.6 5.7l2.8 5.6 2.8 5.6 2.8 5.6q1.4 2.9 3 5.5l3.3 5.5 3.1 5.5 3.3 5.4 3.4 5.3 3.7 5.3 3.6 5.3 3.8 5.2 4 5.1 4 5.1 4 5.1 4 5.1 4.3 5 4.5 5q2.4 2.4 4.5 4.9 2 2.5 4.3 5l4.8 4.8 4.8 4.8q2.3 2.4 4.8 4.7 2.4 2.3 5 4.4 2.5 2 5 4.3l4.9 4.4 5 4.2 5 4.2 5.1 4q2.6 2.2 5.2 4l5.2 3.7 5.2 3.8q2.6 1.9 5.3 3.6l5.3 3.6 5.3 3.5 5.4 3.5 5.4 3.2 5.5 3.1 5.5 3.1q2.7 1.7 5.5 3l5.6 3 5.5 3q2.8 1.5 5.6 2.7 3 1.1 5.7 2.6 2.8 1.4 5.7 2.6 3 1.1 5.8 2.4l5.7 2.5 5.8 2.4q3 1 5.9 2.2l5.8 2.3 6 2 5.9 2q2.9 1.2 6 2l6 1.8 5.9 2 6 2 6 1.7 6.2 1.5 6.1 1.5 6.2 1.5 6.2 1.5 6.1 1.4q3.1.8 6.3 1.2 3.3.4 6.4 1l6.4 1 6.3 1 6.4 1 6.4 1q3.1.6 6.3 1l6.4 1q3.1.6 6.4.8l6.6.4q3.3.2 6.5.8 3.1.5 6.5.5t6.6.5 6.6.5h13.5q3.4 0 6.6.5t6.6.5h27.1q3.3 0 6.5-.5t6.6-.5h6.8q3.4 0 6.6-.5t6.5-.5 6.6-.4 6.6-.5q3.4 0 6.5-.6t6.4-1l6.6-.4q3.3-.2 6.5-.7l6.4-.8 6.4-1 6.3-1.1 6.4-1 6.2-1.2q3.1-.7 6.3-1.1 3.3-.5 6.3-1.3l6.2-1.3 6.3-1.2q3.2-.6 6.2-1.5t6.2-1.4q3.1-.6 6.1-1.4l6.2-1.5q3.1-.7 6.1-1.7l6-1.6 6.2-1.7 6-1.7q3.1-.8 6-1.8l6-1.9 6.1-1.7 6.1-1.7 6-1.8 6-2 6-2q3-1 6-1.7l6-1.7 6-1.9 6-1.8 6.1-1.9 6-1.8 6-1.8 6-1.9 6.1-1.6 6-1.9q3-1 6.2-1.5 3.1-.5 6.1-1.5t6.2-1.6l6.2-1.4 6.2-1.3q3.1-.7 6.3-1.2t6.3-1l6.4-1 6.3-1q3.2-.5 6.6-.5t6.6-.5 6.5-.5h6.8q3.4 0 6.6.4l6.4 1q3.2.3 6.4.9 3.2.5 6.2 1.3l6 1.9 6 2.1 5.6 2.6 5.6 3q2.7 1.6 5.3 3.5l5.2 3.8 5 4q2.6 2 5 4.5 2.4 2.4 4.7 5 2.2 2.4 3.3 1.4t1-4.4V945.8q0-3.4.5-6.6t1-6.3l1.2-6.3 1.4-6.2q.8-3 2-6l2.7-5.6q1.4-2.8 3.3-5.4l3.6-5.3 3.8-5.2q2-2.5 4.5-4.9l4.8-4.8q2.4-2.3 5-4.4l5-3.9 5.3-3.7 5.4-3.4q2.7-1.6 5.5-3l5.6-2.9q2.8-1.4 5.7-2.6t6-2.1l5.9-2q3-1 6-1.6l6.3-1.2q3.2-.5 6.3-1.2 3.1-.8 6.4-1t6.5-.7 6.5-.6 3.6-3.1-.7-6-4.2-2.8h-305q-3.4 0-6.7.2l-6.5.5q-3.3.3-6.7.3H657.4q-3.4 0-4.9 1.9T651 845t1.5 5.6 4.8 2.3h47.4q3.4 0 6.6.5t6.4.8l6.6.4q3.3.3 6.5.8l6.3 1 6.3 1.3 6.1 1.5 6.2 1.5 6 1.6 6.1 1.9 5.9 2 5.8 2.4 5.8 2.4 5.6 2.8q2.7 1.6 5.5 3 2.8 1.5 5.4 3.3l5.3 3.7q2.6 1.8 5.1 3.9 2.6 2 5 4.4l4.8 4.8 4.7 4.8q2.2 2.5 4.1 5 2 2.7 3.4 5.5l3 5.5q1.4 2.8 2.5 5.7t2.1 6 1.7 6 1.2 6.3l.9 6.4q.3 3.3.9 6.4t.5 6.5v54.3q0 3.4-.5 6.6t-.5 6.5-.5 6.6-1 6.3-1 6.4l-1 6.3q-.6 3.2-1.5 6.2l-1.9 6-1.9 6q-1 3-2.2 5.8l-2.6 5.8-2.6 5.6q-1.4 2.9-3 5.6l-3.3 5.4-3.4 5.4-3.8 5.2-4 5q-2 2.7-4.3 5l-4.4 5q-2.2 2.5-4.7 4.7l-4.9 4.5q-2.4 2.3-5 4.3l-5.1 3.9-5.2 3.9q-2.6 2-5.3 3.7t-5.4 3.3l-5.5 3-5.6 2.8q-2.8 1.4-5.5 3.1t-5.6 2.8l-5.8 2.5-5.7 2.5q-3 1-5.9 2.2-2.9 1.1-6 2l-6 1.9-5.9 2-6 1.8q-3 .9-6.1 1.4-3.2.6-6.2 1.4-3.1.8-6.3 1.4l-6.3 1-6.5.7-6.5.7q-3.2.3-6.4.9-3.2.5-6.5.6-3.4 0-6.6.5t-6.6.4h-20.3q-3.4 0-6.6-.4t-6.6-.5-6.6-.4l-6.4-1q-3.2-.5-6.5-.7t-6.5-.6l-6.4-1-6.2-1.2-6.2-1.5-6.2-1.4q-3.1-.6-6.1-1.5l-6-1.7q-3.1-.8-6.1-1.8l-6-1.8-6-2.1-5.8-2.3q-3-1-5.8-2.4t-5.7-2.4l-5.8-2.4-5.7-2.7q-2.7-1.5-5.6-2.8t-5.5-3l-5.5-3.2-5.5-3.1-5.4-3.3q-2.7-1.6-5.3-3.5-2.6-2-5.3-3.6t-5.3-3.6l-5.2-3.9q-2.5-2-5.1-3.8-2.7-1.9-5.1-4l-5-4.5q-2.4-2.2-5-4.3l-5-4.4-4.7-4.7-4.8-4.8-4.8-4.8q-2.4-2.4-4.4-5l-4-5-4.1-5.2-4.1-5-4-5.2-3.9-5.1-3.8-5.2-3.7-5.3-3.4-5.3-3.4-5.4q-1.7-2.7-3-5.5-1.5-2.8-3.2-5.5-1.8-2.6-3.4-5.4-1.7-2.7-3-5.5l-2.6-5.7-2.7-5.7-2.8-5.6-2.7-5.6-2.7-5.7-2.4-5.7-2.4-5.9q-1.1-2.9-2-5.9-1-3-2.2-5.9-1.1-2.9-2-5.9l-2-6-2-5.9-1.9-6-1.7-6-1.7-6.1-1.5-6.2-1.4-6.2q-.8-3-1.4-6.2l-1.4-6-1.4-6.2-1.3-6.3-1-6.3-1-6.4-.9-6.4-1-6.3q-.5-3.2-.8-6.5l-.4-6.6q-.2-3.3-.7-6.4-.6-3.2-1-6.5-.3-3.2-.4-6.5l-.2-6.7q0-3.4-.4-6.7l-.5-6.5V812l-.1-6.8v-33.9q0-3.4.5-6.6t.5-6.5l.1-6.7.5-6.6.8-6.5q.5-3.2.6-6.5 0-3.4.5-6.6l1-6.3 1-6.4q.4-3.2.6-6.5l.7-6.5q.4-3.2 1.1-6.3t1.1-6.3 1.1-6.4 1.4-6.2 1.4-6.2l1.5-6.1 1.4-6.2 1.5-6.2 1.8-6 1.8-6 1.9-6 2-6 2-5.9q1-3 2.3-5.9 1.2-2.8 2.2-5.8t2.3-5.8l2.6-5.7 2.5-5.8q1.2-2.9 2.6-5.7l2.8-5.6 2.8-5.6 2.7-5.6 3-5.6 3.3-5.4 3.1-5.5 3.3-5.4q1.6-2.7 3.4-5.3l3.6-5.4 3.8-5.2 3.9-5.1 3.9-5.2 4.2-5 4.2-5 4.2-5q2-2.6 4.3-5l4.4-5q2.2-2.5 4.6-4.9l4.8-4.8q2.4-2.4 4.9-4.5l5-4.4 5-4.3q2.4-2.2 5-4.1l5.1-4 5.2-4 5.1-3.9 5.3-3.6 5.3-3.5 5.4-3.2 5.5-3.3 5.5-3.1 5.5-3.1q2.7-1.6 5.6-2.8t5.6-2.7l5.7-2.8q2.8-1.4 5.7-2.5l5.8-2.5 5.8-2.3 6-2 5.8-2.1 6-2 6.1-1.4 6.1-1.7 6.2-1.5 6.2-1.4q3-.8 6.2-1.2 3.2-.5 6.3-1.3 3-.7 6.4-1 3.3-.2 6.4-.7l6.4-1q3.2-.5 6.5-.6 3.4 0 6.6-.4t6.6-.5h27.1l6.7.1q3.4.1 6.6.5t6.5.6l6.6.5 6.5.7 6.3 1 6.3 1.2q3.2.5 6.3 1.2l6.2 1.3 6.2 1.4 6.2 1.6 6.1 1.5 6 1.8 6 1.8 6 1.8 6 2.1 5.8 2.3 5.8 2.4 5.8 2.4 5.7 2.5 5.7 2.6q2.9 1.3 5.6 3 2.7 1.5 5.6 2.8l5.6 2.8 5.5 3.1 5.4 3.3 5.4 3.3 5.4 3.3 5.3 3.6 5.2 3.7 5.2 4 5.2 3.8 5.1 3.9 5.1 4 5.1 4q2.6 2.1 5 4.5t4.9 4.4 5 4.5l4.7 4.8 4.8 4.8 4.8 4.8 4.8 4.8q2.4 2.4 4.4 5 2 2.5 4.3 5l4.5 4.9q2.3 2.4 4.3 5l4 5 4.2 5.1 4 5.1 4 5.1 3.9 5.2 3.8 5.2 3.8 5.2 3.8 5.2q1.9 2.6 3.6 5.3l3.5 5.3q1.6 2.7 3.5 5.3t3.6 5.3l3.4 5.4q1.6 2.7 3 5.5 1.5 2.8 3.3 5.4l3.3 5.4 3.2 5.5 3.2 5.4 3 5.6 2.8 5.6q1.4 2.8 3 5.5t3.1 5.5l2.8 5.6 2.8 5.6 2.8 5.6 2.6 5.7 2.6 5.8 2.5 5.7 2.7 5.6q1.4 2.8 2.6 5.8l2.2 5.8q1 3 4.4 3.1 3.3.3 6.7.2h13.5q3.3 0 3.6-3.2.2-3.2.2-6.6V425.1q.1-3.4-1.7-4.2t-4.8.3l-5.7 2.5q-2.8 1.3-5.8 2.3t-6 1.7-6.3 1.4q-3 .7-6.3 1t-6.5.6-6.5.8q-3.1.6-6.6.5h-13.5l-6.7-.1q-3.4-.1-6.6-.5t-6.6-.6-6.5-.4q-3.3-.4-6.4-1l-6.4-1-6.4-.8-6.4-1-6.2-1.3q-3.2-.6-6.2-1.4l-6.3-1.3q-3.1-.6-6.3-1t-6.3-1.2l-6.2-1.5-6.2-1.3-6.1-1.6q-3-.9-6.1-1.5-3.2-.7-6.2-1.6l-6.1-1.5-6.2-1.5q-3-.8-6.1-1.4-3.2-.7-6.2-1.6t-6.1-1.6l-6.1-1.6q-3-.9-6.1-1.6l-6.2-1.5-6.2-1.3q-3.1-.6-6.2-1.5-3-.8-6.2-1.4l-6.3-1.1q-3.2-.5-6.2-1.3t-6.2-1.4l-6.3-1-6.4-1-6.4-1.1q-3.1-.6-6.3-1l-6.4-1-6.3-1-6.4-1q-3.1-.6-6.5-.7t-6.6-.4-6.4-1q-3.1-.5-6.5-.6l-6.6-.5q-3.2-.3-6.6-.3t-6.7-.3l-6.5-.5q-3.3-.2-6.7-.2h-6.8q-3.4 0-6.6-.5t-6.5-.5h-27.1l-7.2.1Zm-31.1-228-1.7.5-3.3 1q-1.6.6-3 1.6-1.5 1-2.8 2.3-1.4 1.2-2.5 2.4l-2.4 2.4q-1.3 1.3-2.2 2.8l-1.7 3-1.5 3-1.3 3.2q-.5 1.7-.6 3.5-.2 1.8 1 .9 1.3-.9 3-1.5l3.2-1q1.6-.4 3.5-.3h7.4q1.9 0 3.5.5l3.3 1 3.2 1.1q1.6.6 3 1.6l2.9 2.1 2.7 2.5 2.6 2.7q1.3 1.3 2.3 2.7t2.2 2.8 2.4 2.7 1.7 3l1.5 3 1.6 3.1q.8 1.5 1.3 3.2l1.1 3.2q.6 1.6 1 3.3t1 3.3q.5 1.6.4 3.5t.5 3.5.5 3.5v7.4q-.1 1.8-.6 3.4-.5 1.7-.5 3.5t-.5 3.5l-.9 3.4-1 3.3q-.5 1.6-1.2 3.1l-1.5 3.1-1.4 3.2-1.3 3.1-1.7 3q-.9 1.5-2 2.9-1 1.4-2.3 2.7l-2.6 2.6q-1.4 1.3-2.4 2.7t-2.3 2.4-2.8 2.4-2.7 2.3l-3 1.9-2.9 1.8-3 1.6-3 1.5q-1.6.8-3.3 1-1.8.3-3.4 1-1.6.5-3.3.8-1.8.2-3.6.1-2 0-3.5.5-1.7.6-3.4.2l-3.5-.5q-1.8-.1-3.5-.5t-3.3-1l-3.2-1q-1.7-.6-3.2-1.4l-3-1.5q-1.6-.7-3-1.8l-2.7-2.5-2.6-2.6q-1.3-1.3-2.3-2.7l-2-3q-1-1.4-1.7-3-.8-1.5-1.3-3l-1-3.3q-.6-1.7-.6-3.5v-3.7q0-1.9.4-3.5l1.1-3.3q.6-1.6 1.4-3.1.7-1.6 1.7-3l2-2.9q.9-1.4 2.4-2.4l2.9-2q1.4-1 3-1.5t3.4-.7 3.4-.8 3.4-.4q1.9 0 3.6.5 1.6.4 2.1-.4t-.5-2.3-2.3-2.8-2.6-2.7l-2.6-2.6-2.6-2.6-2.6-2.6-2.6-2.6q-1.3-1.3-2.4-2.7l-2.2-2.8-2-2.9q-1-1.4-2.4-2.7t-2.2-2.8-1.7-3-1.8-3l-1.7-3q-1-1.4-1.8-2.9-.7-1.5-1.7-3-1-1.4-1.7-3l-1.6-3q-.8-1.5-1.4-3.1l-1.3-3.2q-.8-1.6-1.5-.3l-1.5 2.7-1.5 3q-.8 1.5-1.4 3.2-.5 1.6-1.3 3.1l-1.5 3q-.8 1.6-1.8 3l-1.8 3-1.8 3-2 2.8-1.9 3-2 2.8q-1.2 1.3-2.1 2.8t-2 2.9-2.3 2.7-2.2 2.8q-1.2 1.4-2.6 2.7l-2.6 2.6q-1.3 1.3-2.4 2.7l-2.2 2.8q-1.3 1.3-2.2 2.8t-2.3 2.4.2 1l3.3-.2 3.6-.2q1.8 0 3.6.3l3.4.6q1.7.3 3.4.9 1.6.5 3 1.4l3 1.9q1.5.9 2.4 2.4.8 1.6 2 3l1.9 2.8q.8 1.6 1.3 3.2t.9 3.3l.5 3.5q.3 1.8.3 3.6v3.7q0 1.8-.5 3.5l-1 3.3-.7 3.4q-.3 1.7-1 3.3l-1.5 3-1.5 3.1-1.8 3-2.2 2.8-2 2.8q-1 1.4-2.3 2.8l-2.7 2.6-2.7 2.3q-1.4 1.1-2.9 2l-2.9 1.9q-1.4 1-3 1.7l-3 1.6q-1.5.8-3.2 1.3-1.6.6-3.3.8l-3.4.7q-1.7.4-3.3 1-1.7.5-3.5.5h-11.1q-1.9 0-3.5-.5t-3.4-.7-3.4-.7-3.3-1-3.1-1.4q-1.6-.8-3-1.8t-3-1.8q-1.4-.8-2.8-2l-2.8-2.2q-1.4-1-2.7-2.4t-2.3-2.8l-2-2.8-1.5-3-1.6-3.1-1.4-3.2q-.7-1.5-1-3.2t-.6-3.5-.1-3.6v-3.8q0-1.8.3-3.5l.7-3.4q.3-1.8.8-3.4t1.5-3l1.9-3 2-2.9q1-1.4 2.3-2.7l2.6-2.6q1.3-1.3 2.7-2.3l2.9-2q1.4-1 3-1.8l3-1.5 2.8-1.6q1.3-.7-.4-1.3-1.6-.6-3.1-1.4-1.6-.8-3.2-1.3l-3.2-1.1-3.2-1.2q-1.7-.5-3.2-1.2t-3-1.6-3.1-1.5-3.2-1.4-3.1-1.3l-3.2-1.4-3-1.8q-1.4-1-2.9-1.7-1.5-.8-3.2-1.2-1.6-.6-3-1.6l-3-1.8-3-1.6q-1.6-.7-3-1.7-1.5-1-3-1.7l-3-1.5-3.1-1.7-3-1.7-3-1.8q-1.4-1-3-1.7l-3-1.7q-1.4-1-2.9-1.8l-3-1.8-2.8-2-3-1.6q-1.6-.8-3-1.8l-2.9-2-2.8-2-3-2q-1.4-.9-2.5-1.2-1.2-.4-.4 1.3.8 1.6 1.8 3l1.9 3 1.7 3q1 1.4 1.7 3l1.6 3 1.8 3q1 1.4 1.6 3 .7 1.5 1.7 3 1 1.3 1.8 2.9l1.5 3 1.6 3.1 1.5 3 1.7 3 1.8 3q.7 1.6 1.6 3l1.8 3 1.6 3q.7 1.6 1.7 3 1 1.5 1.7 3l1.6 3 1.5 3.2 1.6 3 1.5 3 1.5 3.1 1.6 3.1 1.5 3 1.5 3.1 1.6 3.1 1.5 3 1.5 3.1q.8 1.5 1.4 3.2.5 1.6 1.3 3.1l1.5 3.1 1.5 3 1.6 3.1 1.2 3.2 1.3 3.1 1.5 3.2 1.3 3.1 1.5 3.1 1.3 3.2 1 3.2q.6 1.6 1.4 3.1 1 1.5 1.4 3.2l1.1 3.2q.6 1.6 1.4 3.1l1.2 3.2 1.1 3.3 1.1 3.2q.6 1.6 1 3.3l1.1 3.2 1 3.3 1.2 3.3 1 3.2 1 3.3q.6 1.7 2 1l2.9-1.6 3-1.5 3.2-1.4 3.1-1.4 3.2-1.2 3.2-1.3q1.5-.8 3.1-1.4t3.3-1q1.7-.3 3.2-1 1.6-.8 3.2-1.3l3.3-1.2q1.5-.5 3.3-.8l3.4-.7 3.3-.9 3.3-1 3.3-1q1.6-.5 3.4-.6 1.9 0 3.6-.4t3.3-1l3.3-1q1.6-.4 3.5-.5t3.4-.6 3.4-.7l3.5-.5 3.4-.8q1.6-.5 3.3-.7l3.6-.4q1.8-.2 3.4-.7 1.6-.6 3.5-.5t3.5-.6q1.6-.5 3.4-.5 1.9 0 3.6-.3l3.5-.4q1.8-.3 3.6-.3t3.6-.2l3.5-.5 3.6-.4q1.8 0 3.5-.5t3.5-.4 3.5-.5 3.5-.5h3.7q1.8 0 3.5-.5t3.5-.5h7.3q1.9 0 3.5-.5t3.5-.5h3.8l3.6-.1q1.8-.2 3.4-.6 1.7-.4 3.6-.3h11.1q2 .1 3.6-.2t3.5-.6l3.6-.2h74q1.9 0 3.5.5t3.5.5h7.4q1.8 0 3.5.4t3.5.5h3.7l3.6.2q1.9 0 3.5.5t3.5.4h7.4q1.9 0 3.5.5t3.5.5 3.5.4 3.5.6h3.7q1.9-.1 3.5.4t3.5.6 3.5.3 3.5.6l3.6.2q1.8.2 3.5.6t3.5.3 3.5.6 3.5.5 3.5.4 3.5.6 3.5.5 3.4.6l3.5.5 3.4.8 3.2 1q1.7.6 3.4.8l3.5.4q1.8.3 3.4.9 1.6.5 3.3.8l3.5.6 3.4.6q1.8.3 3.4.8l3.3 1q1.6.6 3.4.9 1.7.2 3.3.8t3.3.9 3.4.8 3.1 1.3l3.2 1.4 3.3 1q1.6.5 3.1 1.3 1.6.7 3.3 1.1l3.2 1.2q1.5.8 3.1 1.3l3.3 1.1q1.6.7 3 1.6 1.5 1 2.5-.2t1.5-2.8l1-3.3 1.1-3.2q.6-1.6 1-3.3t1.2-3.2q.8-1.6 1.3-3.2l1.2-3.2 1.3-3.2q.5-1.6 1.2-3.1.7-1.6 1.1-3.3t1.3-3.2l1.6-3 1.6-3q.8-1.6 1.3-3.2t1.3-3.2l1.4-3 1.3-3.2 1.5-3.1 1.5-3 1.5-3.1 1.5-3.1 1.7-3 1.8-3 1.6-3 1.5-3 1.5-3.2 1.6-3 1.6-3 1.7-3 1.8-3q1-1.4 1.8-3 .7-1.5 1.8-3 1-1.4 1.8-2.9.7-1.5 1.7-3 1-1.4 1.7-3l1.7-3 2-2.8 1.8-3 1.8-3 1.9-2.8 1.9-3 1.9-2.9 2-2.8 1.7-3 1.8-3 2-2.8 2-3 1.9-2.8 2-2.9q1.2-1.4 2.1-2.8l2-3 1.9-2.8 2-3q.8-1.4 1.9-2.8l2-2.8q1.2-1.4 2.1-3 1-1.5-.2-1.2l-2.6 1.1-3 1.7-3 1.7-3 1.6-3 1.5-3.2 1.5-3 1.8q-1.4 1-3 1.7l-3 1.6-3 1.5-3.1 1.5-3 1.6q-1.6.7-3 1.6l-3 1.8-3 1.6-3.1 1.5q-1.6.8-3.2 1.3t-3 1.6-3.1 1.5l-3.2 1.3-3 1.6-3.1 1.5-3 1.5-3.1 1.6q-1.5.8-3.2 1.3l-3.2 1.2-3.2 1.1-3.2 1.3-3 1.5-3.1 1.5-3.1 1.5-3.2 1.3-3.2 1.2q-1.6.6-3.1 1.4t-3.2 1.3-1.8 1.2q-.2.6 1.4 1.1 1.7.5 3.2 1.3l3 1.7q1.5.8 3 1.9l2.7 2.2q1.4 1 2.7 2.4t2.5 2.7 2 2.8l1.9 3q.8 1.4 1 3.2.3 1.7.9 3.4l1 3.2q.4 1.7.4 3.5v3.8l-.1 3.6-.5 3.5q-.4 1.7-1 3.3t-1.3 3.1l-1.5 3.1-1.7 3-1.9 3q-1 1.4-2.2 2.7l-2.6 2.6q-1.3 1.3-2.8 2.3l-2.9 1.9-3 1.9-3 1.6-3 1.5q-1.5.8-3.2 1.4l-3.2 1q-1.6.6-3.4.7-1.9.1-3.5.5t-3.6.4h-7.4q-1.8 0-3.5-.5t-3.5-.5-3.4-.5l-3.3-1.1q-1.6-.6-3.1-1.4l-3-1.6-3.1-1.5q-1.5-.7-3-1.7l-2.9-2q-1.4-1.1-2.7-2.4l-2.6-2.7-2.6-2.6q-1.4-1.3-2.3-2.7t-2-2.9-2-2.9l-1.8-3q-1-1.4-1.5-3l-1.1-3.2-.8-3.4-.6-3.5-.8-3.3q-.4-1.7-.5-3.5t.5-3.5.7-3.3.7-3.4 1.3-3.2l1.7-3q.9-1.5 2.1-2.8 1.3-1.4 2.7-2.6 1.4-1.1 2.9-1.9l3-1.5q1.6-.7 3.4-.8l3.7-.1h7.4q1.9 0 1.8-1.1t-1.5-2.4-2.5-2.7l-2.2-2.8q-1-1.4-2.5-2.7-1.3-1.2-2.2-2.7t-2.3-2.8q-1.4-1.2-2.5-2.7l-2.2-2.7-2-2.9-2-2.8-2.4-2.8q-1.2-1.3-2.1-2.8t-1.7-3l-1.8-3q-1-1.4-1.8-3l-1.6-3q-1-1.4-1.8-3l-1.6-3-1.5-3-1.5-3-1.5-3.1q-.8-1.6-1.6-2.5-.7-1-1.5.6t-1.3 3.2-1.3 3.2l-1.8 3q-1 1.4-1.7 3l-1.7 3-1.7 3-2 2.8-1.8 3-2.2 2.8-2.3 2.7q-1.1 1.4-2 2.9-1 1.4-2.3 2.7-1.4 1.3-2.5 2.7l-2.2 2.8-2.4 2.7-2.6 2.6-2.7 2.6-2.6 2.6-2.6 2.6-2.6 2.7q-1.2 1.3-.7 1.8t2.2.3l3.5-.6q1.8-.2 3.4.4 1.6.5 3.4.6t3.5.6 3.1 1.3 3 1.8l2.8 2q1.4 1.1 2.4 2.6l2.1 2.8q1.2 1.4 1.7 3l1 3.3.9 3.3q.3 1.8.3 3.6v3.7q0 1.9-.5 3.5l-1 3.3q-.5 1.6-1.3 3.1l-1.6 3q-.7 1.6-1.7 3l-2 3-2.6 2.6q-1.3 1.3-2.7 2.4l-2.8 2q-1.5 1-3 1.7l-3.1 1.5-3.2 1.2-3.3 1q-1.6.6-3.5.5h-11.1q-1.8 0-3.5-.5l-3.2-1q-1.7-.5-3.3-1.2l-3.1-1.3-3-1.5-3.2-1.5-3-1.8-2.8-2q-1.4-1-2.7-2.4l-2.6-2.6-2.7-2.6q-1.3-1.3-2.4-2.7l-2.2-2.8-2-2.9-1.8-3q-1-1.4-1.5-3t-1.4-3.1l-1.4-3.2q-.7-1.5-1.2-3.1l-1.1-3.3-1-3.3-.9-3.3q-.4-1.7-.5-3.5l-.1-3.7v-11q0-2 .5-3.5.6-1.6 1-3.4l.5-3.4q.2-1.8 1-3.3 1-1.4 1.5-3l1.1-3.3 1.3-3.2 1.8-3q1-1.4 1.7-3 .7-1.5 2-2.8l2.5-2.7 2.6-2.6 2.6-2.6 2.6-2.7q1.3-1.3 2.8-2.2t3-1.8q1.4-.9 3-1.5t3.3-1 3.4-.7h7.4l3.6.1q1.8.2 3.4.7l3.3 1.1q1.7.7 2.4-.1.8-.7.2-2.4l-1.3-3.2-1.5-3.1-1.5-3q-.8-1.6-2-3l-2.6-2.5-2.7-2.6q-1.3-1.3-2.8-2.1l-3-1.6q-1.6-.8-3.2-1.3t-3.4-.8-3.6-.2h-3.7q-1.8 0-3.5.3-1.7.4-3.3 1l-3.1 1.4q-1.6.7-3 1.6-1.6.9-2.9 2.2t-2.7 2.2-2.5 2.5l-2 2.9-1.9 2.9q-1 1.4-1.8 3-1 1.4-1.7 3-.7 1.5-1.7 2.9t-1.6 3l-1.3 3.2q-.8 1.5-1.4 3.2l-1 3.2-1.2 3.2-.9 3.4-.7 3.4-.6 3.4q-.3 1.7-.9 3.3-.6 1.7-.5 3.5t-.4 3.6q-.5 1.6-.6 3.4v18.5q0 1.9.5 3.5t.5 3.5.5 3.5.4 3.5.5 3.5 1 3.3l.8 3.4 1.1 3.2 1.1 3.2 1.4 3.2 1.5 3q.7 1.6 1.7 3l1.8 3 1.7 3q1 1.4 1.8 3l1.9 2.9 2 2.8q1 1.5 2.3 2.8l2.6 2.6 2.6 2.6q1.3 1.3 2.8 2.3l3 1.8 2.8 2q1.4 1.2 2.1 2.7t-.4 2.5q-1.2 1-2.8.5l-3.3-1.1-3.2-1.1q-1.7-.6-3.1-1.4l-3-1.8q-1.5-.9-2.8-2.2t-2.6-2.7l-2.6-2.6-2.3-2.7-2.1-2.8-2-3q-1-1.4-1.8-2.9l-1.6-3-1.3-3.2q-.6-1.6-1.4-3.1t-1.3-3.2l-1-3.2q-.8-1.6-1.3-3.2l-1-3.3-1-3.3-1-3.3-.7-3.4-.5-3.4q-.2-1.7-.8-3-.5-1.2-1 .5l-.4 3.6q-.1 1.8-.6 3.4l-1 3.3-1 3.3-1 3.3-1 3.3-1 3.2-1 3.3q-.5 1.6-1.3 3.2l-1.5 3-1.5 3.1-1.7 3q-1 1.5-1.7 3-.7 1.6-2 3l-2.1 2.7q-1 1.5-2.3 2.8l-2.6 2.6-2.6 2.6q-1.3 1.3-2.8 2.1-1.5 1-3 1.7-1.6.8-3.2 1.3l-3.3 1q-1.6.6-3.3.8-1.8.3-3.4.8t-3.4 0-.8-1.6 2.4-2l3-1.7q1.5-1 3-1.7 1.6-.7 3-2l2.7-2.1q1.4-1 2.8-2.3l2.6-2.6 2.6-2.6q1.4-1.3 2.5-2.6t2-3l1.6-3 1.8-3q.9-1.4 1.6-3l1.8-3q1-1.4 1.7-3l1.5-3q.9-1.5 1.2-3.2t.8-3.3l1-3.3q.6-1.6 1-3.3t1-3.3q.5-1.7.6-3.5l.5-3.5.5-3.4.6-3.5q.2-1.7.2-3.6v-18.5q-.1-1.8-.6-3.5t-.4-3.5-.2-3.6l-.6-3.5-.7-3.4-.9-3.3-1-3.2-1.1-3.3-1.1-3.3-1-3.2q-.5-1.7-1.3-3.2-.7-1.6-1.6-3l-1.8-3q-.7-1.5-1.8-3-1-1.4-1.7-3-.8-1.5-1.8-2.9l-2.2-2.8q-1.3-1.4-2.7-2.3t-2.9-2l-2.8-2-3-2q-1.4-1-3-1.4-1.7-.5-3.5-.5h-7.8Z"/><path d="m575.4 333.2-1 .4q-1.2.4-2.2.4h-12.7l-2 .2-2 .6-2 .3h-2l-2.2-.2q-1.1 0-2 .2l-2 .5q-1 .3-2 .3l-2 .1H537q-1 0-2 .3l-2 .6q-.9.2-2 .1h-4.2q-1 0-2 .4t-2 .5-2 .1h-2.1l-2 .2-2 .5-2 .3h-4.2q-1.1 0-2 .2l-2 .6q-.9.3-2 .2h-2l-2 .5q-1 .4-2 .4h-2q-1.1 0-2 .3l-2 .6q-1 .3-2 .2h-2.1q-1 .1-2 .5l-1.9.5-1.9.5-2 .4-2 .2q-1 0-2 .3-.9.4-1.9.5l-2 .2q-1.1 0-2 .3-1 .4-2 .5t-2 .3l-1.9.5-2 .3-2 .4-1.9.5q-1 0-2 .3-1 .1-1.9.4-1 .4-2 .4t-2 .4q-.9.3-1.9.4l-2 .3-1.9.5-2 .4-1.8.6-2 .4-1.9.5-1.9.6-1.8.6-1.9.7-1.9.5-2 .5-1.9.4-1.9.5-1.8.7-1.8.8-1.9.6-1.8.6-1.9.7-1.9.6-1.8.6-1.9.7-1.8.8-1.8.7-1.7.9-1.8.9-1.9.7-1.7.8q-.9.4-1.3 1.1t-.5 1.8.3 2l.5 2 .3 2 .4 2 .5 1.8.5 2q.4.9.5 1.9t.3 2l.4 2q.3.9.4 2 0 1 .4 1.9l.4 1.9.2 2q0 1 .3 2l.6 2q.3.8 1 1 .8.1 1.8-.3l1.9-.7 1.8-.6 1.9-.6 1.8-.7 2-.5 1.9-.5 1.9-.5 1.9-.6 1.8-.7 1.9-.6 1.9-.5 2-.4 1.8-.7q.9-.4 1.9-.6l1.9-.4 2-.5 1.9-.5 1.9-.5 1.9-.4 2-.5 1.9-.5 1.9-.5q.9-.3 2-.4 1 0 2-.3l1.8-.5q1-.3 2-.3t2-.5 2-.4l2-.1 2-.4 1.9-.5 1.9-.5 1.9-.5 2-.5 1.9-.4 2-.3q1-.1 1.9-.5t2-.3l2-.2 2-.5q.9-.3 2-.4h2q1 0 2-.3l2-.5q.9-.2 2-.2 1 0 2-.3l1.9-.5q1-.3 2-.3l2.2.1q1 0 2-.3l1.9-.6q1-.2 2-.1h2.1l2-.6q.8-.4 1.9-.4h4.1l2-.6q.9-.4 2-.4h2q1.2.1 2.1-.1l2-.6q.9-.3 2-.3h2q1 0 2-.4l2-.5 2-.2h2.1l2.2.2q1 0 2-.3l2-.5q.9-.3 1.9-.3h6.4l2-.1 2-.5 2-.3 2-.1h8.5l2-.4 2-.5 2-.1h19.1q1 0 2-.4l1.9-.5 2-.1h38.2q1.1.1 2 .4 1 .4 2 .5l2 .1h19.2q1 0 2 .3l1.9.4q1 .3 2 .3h8.5l2 .2 2 .4 2 .4h4.2l2 .1 2 .6q.9.3 2 .3h6.3l2 .4q.9.4 1.9.5 1 .2 2 .1h4.3q1 0 2 .3l2 .5 2 .2h2.1l2 .2 2 .6q.9.3 2 .2h2l2 .5q1 .4 2 .5h4.1l2 .6q.9.3 2 .4h2q1 0 2 .3l2 .5q.9.3 2 .2h2l2 .6q.9.4 2 .4h2l2 .6q.9.4 2 .4l2 .1 2 .4q.8.4 1.9.4l2 .4 1.9.5 2 .3q1 0 2 .4l1.8.6 1.8.7 2 .2q1.1 0 2.1.2l2 .5q.9.3 2 .3 1 0 1.9.4t2 .5 2 .3l1.8.5 2 .3q1 0 2 .3l1.9.6 2 .4 1.9.5 1.9.5 2 .5 1.8.5 2 .5 1.9.4q1 .2 1.9.6l1.8.6 2 .5 1.9.4q1 .3 1.8.8t1.8.7l2 .4 1.9.6 1.8.6 2 .7q1 .4 1.6.3t.9-1.1l.4-2 .3-2 .4-2q.1-1 .4-1.9l.5-2 .3-2q0-1 .4-1.9t.4-2 .3-1.9l.5-2q.3-.9.3-2l.2-2 .5-1.9.4-2q0-1 .3-2 .2-.8-.3-1.5t-1.5-1.1l-1.8-1-1.7-.8-1.8-.8-1.9-.7-1.8-.7-1.8-.8-1.8-.7-2-.5-2-.4-1.8-.6-1.8-.7-2-.5q-.9-.3-1.7-.8l-1.8-.8-2-.4-1.9-.5-1.8-.7-2-.5-1.9-.5-1.9-.5-2-.3q-1 0-2-.4l-1.9-.5-1.9-.4-1.8-.7-2-.6-1.8-.4-2-.6-2-.3q-1 0-2-.4-.9-.3-1.9-.4l-2-.3q-1-.1-1.9-.5l-2-.4h-2q-1-.1-2-.6-.9-.3-1.9-.4h-2l-2-.6-2-.4h-2l-2-.6q-.9-.3-2-.4h-2l-2-.5q-.8-.4-1.9-.5h-2q-1.1 0-2.1-.3l-1.9-.5-2-.2q-1.1 0-2-.3l-2-.5-2-.2h-2.1q-1 0-2-.3l-2-.5q-.9-.3-2-.2h-2l-2-.5q-.9-.4-2-.5h-4.2l-2-.1q-1-.1-2-.5-.9-.3-2-.4H705q-1 0-2-.4l-1.9-.5-2-.2-2.2.1h-2q-1.1 0-2-.4-1-.4-2-.5-1-.2-2-.1h-8.5l-2.1-.1-2-.5q-.9-.3-1.9-.4h-14.8q-1.1 0-2-.3l-2-.4-2-.3h-76.8Zm43.8-286-.2 1q-.3 1.2-.8 2l-1 2-1 2-.7 2-.6 2.1-.6 2.2-.8 2-1 2-.8 2-.5 2.2-.8 2-1 2-1 2-1 2-1 1.9-1 2-.9 2-1 1.9-1 2-1 1.9-1 2-1 2-.9 1.9-1.1 2-1.2 1.8-1 2-1 1.9-1 2-1 2-1 1.9q-.5 1-1.2 1.9l-1.2 1.8-1 2q-.5 1-1.2 1.9l-1.3 1.8-1.1 1.9-1.3 1.8-1.3 1.9-1.1 1.9-1.4 1.8q-.7.9-1.2 1.9t-1.2 1.8l-1.2 2q-.4 1-1 1.9l-1.2 1.9q-.6 1-1.4 1.8l-1.4 1.8q-.7.9-.2 1.7t1.7.6q1.3 0 2.3.2 1.1.2 2.1.6l2.1.8 2 .7 2.2.5q1.1.3 2 1 .8.8 1.8 1.3t1.9 1.3 1.8 1.4 1.7 1.4 1.3 1.8 1.4 1.7l1.7 1.7q.9.8 1.4 1.8t1.2 1.9 1.3 1.8 1.2 1.9l1.1 2 1 1.9 1 2 1 2 1 1.9.7 2q.3 1.1.8 2l1 2q.6 1 .8 2l.7 2.2q.4 1 .5 2.1t.5 2.2.6 2.1l.5 2.2.8 2q.4 1 .5 2.2t.3 2.2q.4 1 .5 2.2l.4 2.2q.1 1.1.5 2.2.4 1 .3 2.2 0 1.2.3 2.3.4 1 .5 2.1l.4 2q.3 1 .5 0l.7-1.9q.4-1 .5-2.2 0-1.1.5-2.1t.6-2.2v-2.3q0-1.2.6-2.2t.4-2.1q0-1.3.4-2.2t.8-2.1l.5-2.1q.3-1.1.8-2.1l.8-2 .5-2.2.8-2 1-2 .7-2.1q.3-1 .9-2 .5-1 .7-2 .3-1.1.8-2.1l1-2 1-2 1-2 1-1.9 1-2q.3-1 1.1-1.8l1.4-1.8 1.3-1.8q.6-1 1.5-1.8l1.7-1.7q.8-.8 1.3-1.8t1.3-1.8l1.7-1.7q.8-1 1.7-1.7l1.8-1.3 2-1 2-1q.9-.5 2-.8 1-.2 2-.7t2.2-.6 2.1-.5 2.3-.4 2-.2.6-1.5l-.9-2q-.4-1-1.1-1.9t-1.2-1.9l-1.1-1.9q-.6-.9-1.4-1.7-.9-.9-1.3-1.9l-1-2-1.2-1.8-1.1-2-1.1-1.8-1.3-2-1-1.9q-.5-1-1.2-1.8l-1.3-1.9-1.1-1.9-1.1-1.9-1-2-1-2q-.4-1-1-1.9l-1-2-1-1.9q-.4-1-1.1-1.9l-1.2-1.9-1-2-1-1.9-1-2-1-2-1-1.9-1-2q-.5-1-.7-2l-.8-2-1-2-1-2-.6-2q-.3-1.2-.9-2.1l-1-2-1-2q-.4-1-1-1.9l-.8-2-.7-2-1-2q-.5-1-.7-2.1l-.6-2.1-.8-2.1-.7-2q-.3-1.1-.8-2l-1.1-2Z"/></g>
@@ -49,7 +125,7 @@
     </button>
     <div class="modal-scroll" id="gent-bank-modal-content">
       <h2 style="font-family:var(--font-serif); font-size:24px; font-weight:400; margin:0 0 8px;">Add a bank account</h2>
-      <p style="color:var(--muted); font-size:14px; margin:0 0 20px;">Link a bank account for a faster way to top up your G Coin balance. This is optional &mdash; you can always top up with a saved card instead.</p>
+      <p style="color:var(--muted); font-size:14px; margin:0 0 20px;">Link a bank account for a faster way to top up your credit balance. This is optional &mdash; you can always top up with a saved card instead.</p>
 
       <div class="form-field" style="margin-bottom:16px;">
         <label>Bank name</label>
@@ -77,13 +153,13 @@
 </div>
 
 <div id="topup-modal-backdrop" class="modal-backdrop">
-  <div class="modal-panel" role="dialog" aria-modal="true" aria-label="Top up G Coin" style="max-width:480px;">
+  <div class="modal-panel" role="dialog" aria-modal="true" aria-label="Top up credit" style="max-width:480px;">
     <button class="modal-close" type="button" aria-label="Close" data-modal-close-topup>
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
     </button>
     <div class="modal-scroll" id="topup-modal-content">
-      <h2 style="font-family:var(--font-serif); font-size:24px; font-weight:400; margin:0 0 8px;">Top up G Coin</h2>
-      <p style="color:var(--muted); font-size:14px; margin:0 0 20px;">1 G Coin = &#8369;1. Choose an amount to add to your balance.</p>
+      <h2 style="font-family:var(--font-serif); font-size:24px; font-weight:400; margin:0 0 8px;">Top up credit</h2>
+      <p style="color:var(--muted); font-size:14px; margin:0 0 20px;">1 credit = &#8369;1. Choose an amount to add to your credit balance.</p>
 
       <p class="field-label-standalone" style="margin-bottom:12px;">Choose an amount</p>
       <div class="choice-row" style="margin-bottom:16px;">
@@ -105,7 +181,7 @@
 
       <div class="transfer-summary">
         <div class="row"><span>You&rsquo;ll pay</span><span id="topup-pay-amount">&#8369;500</span></div>
-        <div class="row"><span>You&rsquo;ll receive</span><span id="topup-receive-amount">500 G Coin</span></div>
+        <div class="row"><span>You&rsquo;ll receive</span><span id="topup-receive-amount">500 credit</span></div>
       </div>
 
       <button type="button" class="btn btn-dark btn-block btn-lg" id="confirm-topup-btn" style="margin-top:20px;">Confirm top-up</button>
@@ -136,6 +212,7 @@
         <div class="photo-tile"><span class="initial">D</span></div>
         <span>Daniel</span>
       </a>
+      <a href="#" class="nav-logout" data-logout>Log out</a>
     </div>
   </div>
 </header>
@@ -175,21 +252,22 @@
       <div class="member-stat-card"><p class="label">Total bookings</p><p class="value">24</p></div>
       <div class="member-stat-card"><p class="label">Total spent</p><p class="value">&#8369;412,800</p></div>
       <div class="member-stat-card"><p class="label">Feedback given</p><p class="value">18</p></div>
-      <div class="member-stat-card"><p class="label">Membership</p><p class="value" style="font-size:22px;">Black</p></div>
+      <div class="member-stat-card"><p class="label">Membership</p><p class="value" style="font-size:22px;">Black</p><p class="stat-card-sub" id="membership-credit-note" style="display:none;"></p><a href="gent-plan.html?from=profile" class="stat-card-link" data-transition>Change plan &rarr;</a></div>
     </div>
 
     <div class="wallet-card">
       <div class="wallet-balance">
-        <p class="label">G Coin balance</p>
-        <p class="amount" id="gcoin-balance-amount">2,450 <span style="font-size:16px; color:var(--muted); font-weight:400;">G Coin</span></p>
-        <p class="note">&#8776; &#8369;2,450 value &middot; 1 G Coin = &#8369;1</p>
+        <p class="label">Credit balance</p>
+        <p class="amount" id="credit-balance-amount">2,450 <span style="font-size:16px; color:var(--muted); font-weight:400;">credit</span></p>
+        <p class="note">&#8776; &#8369;2,450 value &middot; 1 credit = &#8369;1</p>
+        <p class="note wallet-help">Plan credit is added here when your plan is bought and at each renewal. Top up any time.</p>
       </div>
       <div class="wallet-bank" id="gent-bank-block">
         <p class="label">Linked bank account</p>
         <p class="bank-name" id="gent-bank-name-value" style="color:var(--muted); font-weight:400;">No bank account linked</p>
         <a href="#" class="bank-link-btn" id="manage-bank-link">+ Add bank account</a>
       </div>
-      <button type="button" class="btn btn-dark" id="open-topup-btn">Top up G Coin &rarr;</button>
+      <button type="button" class="btn btn-dark" id="open-topup-btn">Top up credit &rarr;</button>
     </div>
 
       <div class="profile-tab-panel is-active" id="tab-bookings" style="padding-top:20px;">
@@ -262,6 +340,7 @@
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;"><circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="13"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
               <span id="chat-composer-warning-text"></span>
             </div>
+            <p class="chat-quota-note" id="chat-quota-note" style="display:none;"></p>
             <div class="chat-composer">
               <input type="text" id="chat-input" placeholder="Write a message&hellip;">
               <button type="button" class="chat-send-btn" id="chat-send-btn" aria-label="Send message">
@@ -278,7 +357,7 @@
                 <thead><tr><th>Date</th><th>Description</th><th>Method</th><th>Status</th><th>Amount</th></tr></thead>
                 <tbody id="gent-transactions-body">
                 <tr><td>Sep 20, 2026</td><td>Booking &mdash; Maya Santos</td><td>Visa &bull;&bull;&bull;&bull; 4821</td><td><span class="admin-badge green"><span class="dot"></span>Paid</span></td><td style="font-weight:600;">&#8369;18,500</td></tr>
-                <tr><td>Sep 15, 2026</td><td>G Coin top-up</td><td>Visa &bull;&bull;&bull;&bull; 4821</td><td><span class="admin-badge green"><span class="dot"></span>Paid</span></td><td style="font-weight:600;">&#8369;1,000</td></tr>
+                <tr><td>Sep 15, 2026</td><td>Credit top-up</td><td>Visa &bull;&bull;&bull;&bull; 4821</td><td><span class="admin-badge green"><span class="dot"></span>Paid</span></td><td style="font-weight:600;">&#8369;1,000</td></tr>
                 <tr><td>Sep 10, 2026</td><td>Booking &mdash; Sofia Lim</td><td>GCash</td><td><span class="admin-badge green"><span class="dot"></span>Paid</span></td><td style="font-weight:600;">&#8369;14,200</td></tr>
                 <tr><td>Sep 01, 2026</td><td>Monthly membership</td><td>Visa &bull;&bull;&bull;&bull; 4821</td><td><span class="admin-badge green"><span class="dot"></span>Paid</span></td><td style="font-weight:600;">&#8369;800</td></tr>
                 <tr><td>Aug 28, 2026</td><td>Booking &mdash; Isabella Cruz</td><td>Mastercard &bull;&bull;&bull;&bull; 1038</td><td><span class="admin-badge green"><span class="dot"></span>Paid</span></td><td style="font-weight:600;">&#8369;21,000</td></tr>
@@ -403,6 +482,7 @@
         input.placeholder = c.closed ? 'This conversation is closed' : 'Write a message\u2026';
       }
       if(sendBtn) sendBtn.disabled = !!c.closed;
+      afterRender(c);
     }
 
     /* Called once a booking is marked complete \u2014 the conversation
@@ -411,7 +491,8 @@
       var c = conversations[id];
       if(!c || c.closed) return;
       c.closed = true;
-      c.messages.push({from:'system', text:'This conversation is now closed.'});
+      c.messages.push({from:'system', text:'You and ' + c.name.split(' ')[0] + ' confirmed the session. This conversation is now closed.'});
+      markListItemClosed(id);
       if(activeId === id) renderThread(id);
     };
 
@@ -422,6 +503,97 @@
       item.classList.add('is-active');
       renderThread(item.getAttribute('data-conversation'));
     });
+
+    var FREE_MSG_LIMIT = 20;
+    var FREE_DAYS = 14;
+    function onFreePlan(){
+      return sessionStorage.getItem('gclubMembershipActive') !== 'true' && sessionStorage.getItem('gclubFreePlan') === 'true';
+    }
+    function freeInfo(){
+      var demoDay = new URLSearchParams(window.location.search).get('freeDay');
+      if(demoDay !== null && /^\d+$/.test(demoDay)){
+        sessionStorage.setItem('gclubFreeStart', String(Date.now() - parseInt(demoDay, 10) * 86400000));
+      }
+      var start = parseInt(sessionStorage.getItem('gclubFreeStart'), 10);
+      if(!start){ start = Date.now(); sessionStorage.setItem('gclubFreeStart', String(start)); }
+      var msLeft = start + FREE_DAYS * 86400000 - Date.now();
+      return { expired: msLeft <= 0, daysLeft: Math.max(0, Math.ceil(msLeft / 86400000)) };
+    }
+    function freeMsgCount(){ return parseInt(sessionStorage.getItem('gclubFreeMsgCount'), 10) || 0; }
+    function freeLimitReached(){
+      return onFreePlan() && (freeInfo().expired || freeMsgCount() >= FREE_MSG_LIMIT);
+    }
+
+    var quotaNote = document.getElementById('chat-quota-note');
+    function updateQuotaUI(c){
+      if(!quotaNote) return;
+      if(!onFreePlan() || (c && c.closed)){ quotaNote.style.display = 'none'; return; }
+      var info = freeInfo();
+      var used = freeMsgCount();
+      quotaNote.style.display = 'block';
+      if(info.expired){
+        quotaNote.className = 'chat-quota-note is-limit';
+        quotaNote.innerHTML = 'Your free 14 days have ended. <a href="gent-plan.html?from=profile" data-transition>Choose Starter or Monthly</a> to keep chatting.';
+        if(input){ input.disabled = true; input.placeholder = 'Free period ended'; }
+        if(sendBtn) sendBtn.disabled = true;
+      } else if(used >= FREE_MSG_LIMIT){
+        quotaNote.className = 'chat-quota-note is-limit';
+        quotaNote.innerHTML = 'You\u2019ve used all 20 free messages. <a href="gent-plan.html?from=profile" data-transition>Upgrade</a> to Starter or Monthly to keep chatting.';
+        if(input){ input.disabled = true; input.placeholder = 'Message limit reached'; }
+        if(sendBtn) sendBtn.disabled = true;
+      } else {
+        quotaNote.className = 'chat-quota-note';
+        quotaNote.textContent = 'Free plan \u00b7 ' + used + ' of ' + FREE_MSG_LIMIT + ' messages used \u00b7 ' + info.daysLeft + (info.daysLeft === 1 ? ' day' : ' days') + ' left';
+      }
+    }
+
+    function closedCardHtml(c){
+      var first = c.name.split(' ')[0];
+      return '<div class="chat-closed-card">' +
+        '<h4>Did you enjoy the experience?</h4>' +
+        '<p>Your session with ' + first + ' is complete.</p>' +
+        '<a href="index.html?profile=' + encodeURIComponent(first) + '" class="btn btn-dark" data-transition>Book her again</a>' +
+        '<a href="gent-feedback.html" class="chat-closed-link" data-transition>Rate your session</a>' +
+        '</div>';
+    }
+    function afterRender(c){
+      if(c.closed){
+        messagesEl.insertAdjacentHTML('beforeend', closedCardHtml(c));
+        messagesEl.scrollTop = messagesEl.scrollHeight;
+      }
+      updateQuotaUI(c);
+    }
+    function markListItemClosed(id){
+      var item = list.querySelector('.conversation-item[data-conversation="' + id + '"]');
+      if(!item) return;
+      item.classList.add('is-closed');
+      var p = item.querySelector('.convo-meta p');
+      if(p) p.textContent = 'Session complete';
+      var t = item.querySelector('.convo-time');
+      if(t) t.textContent = 'Closed';
+    }
+    function bindTransitionLinks(container){
+      if(!container) return;
+      container.addEventListener('click', function(e){
+        var a = e.target.closest('a[data-transition]');
+        var veil = document.getElementById('page-veil');
+        if(!a || !veil) return;
+        e.preventDefault();
+        sessionStorage.setItem('gclubTransition', '1');
+        veil.classList.add('is-active');
+        setTimeout(function(){ window.location.href = a.getAttribute('href'); }, 460);
+      });
+    }
+    bindTransitionLinks(messagesEl);
+    bindTransitionLinks(quotaNote);
+    updateQuotaUI(conversations[activeId]);
+    // The thread renders while the Messages tab is hidden, so jump to the
+    // latest message (and the closing prompt, once closed) when it opens.
+    if(messagesTab){
+      messagesTab.addEventListener('click', function(){
+        setTimeout(function(){ messagesEl.scrollTop = messagesEl.scrollHeight; }, 60);
+      });
+    }
 
     var composerWarning = document.getElementById('chat-composer-warning');
     var composerWarningText = document.getElementById('chat-composer-warning-text');
@@ -482,10 +654,12 @@
         showComposerWarning('Social media accounts and handles can\u2019t be shared in chat \u2014 please keep communication on G Club.');
         return;
       }
+      if(freeLimitReached()){ updateQuotaUI(conversations[activeId]); return; }
       hideComposerWarning();
       var now = new Date();
       var time = now.toLocaleTimeString([], {hour:'numeric', minute:'2-digit'});
       conversations[activeId].messages.push({from:'me', text: text, time: 'Today, ' + time});
+      if(onFreePlan()) sessionStorage.setItem('gclubFreeMsgCount', String(freeMsgCount() + 1));
       renderThread(activeId);
       var preview = list.querySelector('.conversation-item[data-conversation="' + activeId + '"] .convo-meta p');
       if(preview) preview.textContent = text;
@@ -560,21 +734,55 @@
       }
     });
 
-    /* Completing a booking swaps its badge and closes out the
-       matching conversation over in Messages. */
-    document.querySelectorAll('[data-mark-complete]').forEach(function(btn){
-      btn.addEventListener('click', function(){
-        var row = btn.closest('.booking-item');
+    /* Completing a session takes both people. Each side confirms from their
+       own Bookings tab; the booking only completes (and its chat closes)
+       once both have. State is kept per booking in sessionStorage so the
+       other side's page picks it up. */
+    var DEAL_ME = 'gent', DEAL_OTHER = 'girl';
+    function dealKey(id){ return 'gclubDeal_' + id + '_daniel'; }
+    function readDeal(id){ try{ return JSON.parse(sessionStorage.getItem(dealKey(id))) || {}; }catch(e){ return {}; } }
+    function writeDeal(id, d){ sessionStorage.setItem(dealKey(id), JSON.stringify(d)); }
+
+    function applyDealState(btn){
+      var id = btn.getAttribute('data-mark-complete');
+      var row = btn.closest('.booking-item');
+      var actions = row ? row.querySelector('.actions') : null;
+      if(!actions) return;
+      var otherName = ((row.querySelector('.info h4') || {}).textContent || '').split(' ')[0];
+      var deal = readDeal(id);
+      var oldNote = actions.querySelector('.deal-note');
+      if(oldNote) oldNote.remove();
+      if(deal.gent && deal.girl){
         var badge = row.querySelector('.admin-badge');
         if(badge){
           badge.classList.remove('green');
           badge.classList.add('blue');
           badge.innerHTML = '<span class="dot"></span>Completed';
         }
-        var actions = row.querySelector('.actions');
-        if(actions) actions.remove();
-        closeConversation(btn.getAttribute('data-mark-complete'));
+        actions.remove();
+        if(window.closeConversation) window.closeConversation(id);
+      } else if(deal[DEAL_ME]){
+        btn.disabled = true;
+        btn.textContent = 'Waiting for ' + otherName + ' to confirm';
+      } else if(deal[DEAL_OTHER]){
+        var note = document.createElement('span');
+        note.className = 'deal-note';
+        note.textContent = otherName + ' confirmed the session';
+        actions.insertBefore(note, btn);
+        btn.textContent = 'Confirm session complete';
+      }
+    }
+    document.querySelectorAll('[data-mark-complete]').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        var id = btn.getAttribute('data-mark-complete');
+        var deal = readDeal(id);
+        deal[DEAL_ME] = true;
+        writeDeal(id, deal);
+        applyDealState(btn);
       });
+    });
+    document.addEventListener('DOMContentLoaded', function(){
+      document.querySelectorAll('[data-mark-complete]').forEach(applyDealState);
     });
   })();
 </script>

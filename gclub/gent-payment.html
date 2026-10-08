@@ -56,19 +56,39 @@
   <div class="container">
     <div class="app-content">
         <div class="app-progress">
-          <p class="eyebrow">Optional upgrade</p>
-          <div class="progress-step is-filled" aria-label="Step 1: Choose your plan">
+          <p class="eyebrow">Gentleman application</p>
+          <div class="progress-step is-filled" aria-label="Step 1: Welcome">
             <span class="marker">1</span>
+            <span class="label-text" aria-hidden="true">Welcome</span>
+          </div>
+          <div class="progress-step is-filled" aria-label="Step 2: Your details">
+            <span class="marker">2</span>
+            <span class="label-text" aria-hidden="true">Your details</span>
+          </div>
+          <div class="progress-step is-filled" aria-label="Step 3: Preferences">
+            <span class="marker">3</span>
+            <span class="label-text" aria-hidden="true">Preferences</span>
+          </div>
+          <div class="progress-step is-filled" aria-label="Step 4: Verification">
+            <span class="marker">4</span>
+            <span class="label-text" aria-hidden="true">Verification</span>
+          </div>
+          <div class="progress-step is-filled" aria-label="Step 5: Choose your plan">
+            <span class="marker">5</span>
             <span class="label-text" aria-hidden="true">Choose your plan</span>
           </div>
-          <div class="progress-step is-filled is-current" aria-label="Step 2: Payment (current)">
-            <span class="marker">2</span>
+          <div class="progress-step is-filled is-current" aria-label="Step 6: Payment (current)">
+            <span class="marker">6</span>
             <span class="label-text" aria-hidden="true">Payment</span>
+          </div>
+          <div class="progress-step" aria-label="Step 7: Review & submit">
+            <span class="marker">7</span>
+            <span class="label-text" aria-hidden="true">Review & submit</span>
           </div>
         </div>
         <div class="form-column">
           <div class="form-heading" id="pay-heading">
-            <p class="eyebrow">Optional &middot; Step 2 of 2</p>
+            <p class="eyebrow">Step 6 of 7</p>
             <h1 id="pay-title">Complete your payment</h1>
             <p id="pay-desc">Your payment is secure and encrypted. You can cancel anytime.</p>
           </div>
@@ -119,6 +139,7 @@
                 </div>
               </div>
 
+              <p class="field-note" id="pay-card-error" style="display:none; color:#b8564f; margin:0 0 16px;">Please fill in all card details to continue.</p>
               <div class="billing-note" id="pay-billing-note" style="margin-bottom:24px;">
                 Your billing details are never shared with companions or shown on your profile.
               </div>
@@ -149,7 +170,7 @@
                   <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20 6 9 17l-5-5"/></svg>
                 </div>
                 <div>
-                  <h2>Payment confirmed</h2>
+                  <h2 id="pay-success-title">Payment confirmed</h2>
                   <p class="sub" id="pay-success-sub">Your G-Cash payment was successful.</p>
                 </div>
                 <div class="transaction-details">
@@ -166,13 +187,13 @@
                     <span class="val" id="pay-date-value">September 13, 2026</span>
                   </div>
                 </div>
-                <a href="gent-review.html" class="btn btn-dark" data-transition>Back to review <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
+                <a href="gent-review.html" class="btn btn-dark" data-transition id="pay-done-link">Continue to review <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
               </div>
             </div>
           </div>
         </div>
         <div class="step-explain">
-          <p class="label">Optional &middot; Step 2 of 2</p>
+          <p class="label">Step 6 of 7</p>
           <h2>Secure payment</h2>
           <p>Payments are encrypted and processed securely. Cancel anytime, with no hidden fees. Billing is discreet and never visible to companions or on your profile.</p>
         </div>

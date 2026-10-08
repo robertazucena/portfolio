@@ -1,13 +1,85 @@
 <!doctype html>
 <html lang="en">
 <head>
+<!--
+====================================================================================================
+G CLUB PROTOTYPE · PAGE NOTES (developer handoff)   [PUB-01]
+====================================================================================================
+Page ID   : PUB-01
+File      : index.html
+Name      : Marketplace (home)
+Group     : Public and shared
+Audience  : Everyone: visitors, Gentlemen, G Girls
+Journey   : Entry point of the whole site. Also where a new Gentleman lands after applying and where
+            "Book her again" returns.
+Purpose   : Browse verified G Girl profiles, open one in a modal, configure a booking and send a
+            booking request.
+
+What it does:
+  - Card grid of 16 profiles, 12 per page, filtered by category pills and a location select (data-
+    category and data-location on each card). Code: script.js filteredCards, renderGrid.
+  - Clicking a card opens the profile modal (openProfileModal), filled from the card data-name,
+    data-age, data-tag, data-rate, data-rating. One modal serves every profile.
+  - Gallery: one main photo plus 5 thumbnails (selectGalleryPhoto). Non-members see the thumbnails
+    blurred and not clickable.
+  - Booking card: day pills, time pills, hour stepper (minimum 3, maximum 12 hours) and a live
+    price with a 10% service fee (updateBookingSummary).
+  - Request to book opens an in-modal payment view (card, or G-Cash authorize simulation) and then
+    a Request sent view. The inline script at the bottom of this file drives these views.
+  - Access rules (applyMembershipGate): visitor or signed-in non-member = reviews locked and
+    photos blurred; Free plan = 1 booking within 14 days; paid member = everything. A visitor who
+    tries to book is sent to GENT-A1.
+  - Nav shows Become a G / Log in for guests, or a profile chip and Log out when signed in. A
+    banner under the nav tells signed-in non-members what is locked.
+  - ?profile=Name opens that profile on load (used by Book her again).
+
+Reached from:
+  - every page (header logo)
+  - gent-profile.html (closed chat card: Book her again, ?profile=Name)
+  - script.js completeGentApplication, clearSessionForLogout (redirects)
+Goes to:
+  - PUB-02 join.html
+  - PUB-03 login.html
+  - gent-plan.html?from=market (locked cards, banner)
+  - gent-welcome.html (visitor tries to book or join)
+  - index.html via the header logo and terms.html via the footer (all pages)
+
+Session state read:
+  - gclubRegistered
+  - gclubMembershipActive
+  - gclubFreePlan
+  - gclubFreeStart
+  - gclubFreeBookingsUsed
+  - gclubLoggedInName
+  - gclubLoggedInInitial
+  - gclubLoggedInProfile
+Session state written:
+  - gclubFreeBookingsUsed (when a Free-plan booking succeeds)
+  - gclubTransition
+
+Backend this page needs:
+  - Profile search, filter and pagination
+  - Profile detail: bio, reviews, gallery, availability, rate
+  - Booking request with payment authorization (hold now, capture when the G Girl accepts)
+  - Membership and trial status per Gentleman
+  - Server-side access control: locked photos and reviews must never be sent to non-members (the
+    blur here is CSS only)
+
+Notes:
+  - Photos are expected in assets/images/ (not included).
+  - All money is in pesos. Demo rates are the former dollar rates converted at ₱55 per $1 and
+    rounded to the nearest ₱100 (for example $38 became ₱2,100). Set real rates.
+
+Shared code: script.js (loaded once per page) and style.css. Full documentation: G Club Developer Handoff.
+====================================================================================================
+-->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>G Club — Find your kind of company</title>
 <meta name="description" content="Meet verified people for games, good food, local adventures, and easy conversation.">
 <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body data-page-id="PUB-01">
 <svg xmlns="http://www.w3.org/2000/svg" style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true" focusable="false">
   <symbol id="g-crown-logo" viewBox="0 0 1222 1287">
     <g fill="#c9a24e" fill-rule="evenodd"><path d="m594.3 380.2-3.3.4q-3.4.4-6.7.4h-6.8q-3.4 0-6.7.3l-6.5.5q-3.3.3-6.7.2t-6.6.4-6.6.6-6.5.5l-6.4 1q-3.1.6-6.5.8-3.3.1-6.5.5-3.3.3-6.5.8l-6.4.9q-3.2.4-6.2 1.2l-6.2 1.5-6.2 1.4-6.1 1.5q-3 .8-6.2 1.4t-6.2 1.5l-6 1.7-6.1 1.7-6 1.8-6 2-6 2-5.9 2-5.8 2.4q-3 1-5.8 2.2l-5.8 2.5q-2.8 1.4-5.7 2.5t-5.8 2.4-5.7 2.6-5.7 2.6-5.7 2.6-5.5 3-5.6 3l-5.6 2.8q-2.8 1.4-5.5 3l-5.4 3.3-5.5 3.2-5.5 3.1-5.5 3q-2.8 1.5-5.4 3.3l-5.3 3.5-5.3 3.6q-2.7 1.7-5.3 3.6t-5.2 3.7l-5.3 3.7-5.2 3.7-5.2 4-5.1 3.8-5.2 4-5 4-5.2 4.1-5 4.2-5 4.4q-2.4 2.3-4.9 4.4l-4.9 4.6q-2.4 2.3-5 4.4-2.5 2.1-4.8 4.5l-4.8 4.8-4.8 4.8-4.7 4.8q-2.4 2.5-4.5 5-2 2.5-4.4 5-2.3 2.4-4.4 4.9l-4.2 5-4.3 5-4.2 5-4 5.2-3.8 5.1-4 5.2-3.9 5.1-3.7 5.3-3.7 5.2-3.6 5.3q-2 2.6-3.6 5.3l-3.2 5.4-3.3 5.5-3.3 5.4-3.1 5.4q-1.5 2.8-3.2 5.5-1.6 2.7-3 5.5l-2.8 5.7-2.8 5.6-2.8 5.6-2.7 5.6-2.6 5.8-2.5 5.7q-1.3 2.8-2.4 5.8l-2.2 5.8-2.1 6q-1.2 2.8-2.2 5.8l-2.1 5.9-2.1 5.9-1.8 6-1.7 6.1-1.8 6-1.6 6.1-1.7 6.1q-1 3-1.6 6.1l-1.3 6.3-1.2 6.2q-.6 3.2-1.4 6.3t-1.4 6.1l-1.1 6.4q-.5 3.1-.8 6.4-.4 3.2-.5 6.6t-.7 6.5-.6 6.5-.5 6.6q-.4 3.2-.4 6.6v6.7q0 3.4-.4 6.7-.4 3.2-.5 6.5 0 3.4.3 6.6.4 3.2.5 6.6v6.7q.1 3.4.5 6.6t.4 6.6.7 6.5q.5 3.2.7 6.5t.5 6.5q.4 3.3 1 6.4l1 6.4q.6 3 1.5 6.1l1.4 6.2q.6 3.2 1.4 6.2l1.6 6.1 1.5 6.2 1.7 6q.8 3.1 1.8 6l2 6 2.1 6 2.3 5.8q1 3 2.2 5.8l2.4 5.8 2.4 5.8q1.2 2.9 2.6 5.7l2.8 5.6 2.8 5.6 2.8 5.6q1.4 2.9 3 5.5l3.3 5.5 3.1 5.5 3.3 5.4 3.4 5.3 3.7 5.3 3.6 5.3 3.8 5.2 4 5.1 4 5.1 4 5.1 4 5.1 4.3 5 4.5 5q2.4 2.4 4.5 4.9 2 2.5 4.3 5l4.8 4.8 4.8 4.8q2.3 2.4 4.8 4.7 2.4 2.3 5 4.4 2.5 2 5 4.3l4.9 4.4 5 4.2 5 4.2 5.1 4q2.6 2.2 5.2 4l5.2 3.7 5.2 3.8q2.6 1.9 5.3 3.6l5.3 3.6 5.3 3.5 5.4 3.5 5.4 3.2 5.5 3.1 5.5 3.1q2.7 1.7 5.5 3l5.6 3 5.5 3q2.8 1.5 5.6 2.7 3 1.1 5.7 2.6 2.8 1.4 5.7 2.6 3 1.1 5.8 2.4l5.7 2.5 5.8 2.4q3 1 5.9 2.2l5.8 2.3 6 2 5.9 2q2.9 1.2 6 2l6 1.8 5.9 2 6 2 6 1.7 6.2 1.5 6.1 1.5 6.2 1.5 6.2 1.5 6.1 1.4q3.1.8 6.3 1.2 3.3.4 6.4 1l6.4 1 6.3 1 6.4 1 6.4 1q3.1.6 6.3 1l6.4 1q3.1.6 6.4.8l6.6.4q3.3.2 6.5.8 3.1.5 6.5.5t6.6.5 6.6.5h13.5q3.4 0 6.6.5t6.6.5h27.1q3.3 0 6.5-.5t6.6-.5h6.8q3.4 0 6.6-.5t6.5-.5 6.6-.4 6.6-.5q3.4 0 6.5-.6t6.4-1l6.6-.4q3.3-.2 6.5-.7l6.4-.8 6.4-1 6.3-1.1 6.4-1 6.2-1.2q3.1-.7 6.3-1.1 3.3-.5 6.3-1.3l6.2-1.3 6.3-1.2q3.2-.6 6.2-1.5t6.2-1.4q3.1-.6 6.1-1.4l6.2-1.5q3.1-.7 6.1-1.7l6-1.6 6.2-1.7 6-1.7q3.1-.8 6-1.8l6-1.9 6.1-1.7 6.1-1.7 6-1.8 6-2 6-2q3-1 6-1.7l6-1.7 6-1.9 6-1.8 6.1-1.9 6-1.8 6-1.8 6-1.9 6.1-1.6 6-1.9q3-1 6.2-1.5 3.1-.5 6.1-1.5t6.2-1.6l6.2-1.4 6.2-1.3q3.1-.7 6.3-1.2t6.3-1l6.4-1 6.3-1q3.2-.5 6.6-.5t6.6-.5 6.5-.5h6.8q3.4 0 6.6.4l6.4 1q3.2.3 6.4.9 3.2.5 6.2 1.3l6 1.9 6 2.1 5.6 2.6 5.6 3q2.7 1.6 5.3 3.5l5.2 3.8 5 4q2.6 2 5 4.5 2.4 2.4 4.7 5 2.2 2.4 3.3 1.4t1-4.4V945.8q0-3.4.5-6.6t1-6.3l1.2-6.3 1.4-6.2q.8-3 2-6l2.7-5.6q1.4-2.8 3.3-5.4l3.6-5.3 3.8-5.2q2-2.5 4.5-4.9l4.8-4.8q2.4-2.3 5-4.4l5-3.9 5.3-3.7 5.4-3.4q2.7-1.6 5.5-3l5.6-2.9q2.8-1.4 5.7-2.6t6-2.1l5.9-2q3-1 6-1.6l6.3-1.2q3.2-.5 6.3-1.2 3.1-.8 6.4-1t6.5-.7 6.5-.6 3.6-3.1-.7-6-4.2-2.8h-305q-3.4 0-6.7.2l-6.5.5q-3.3.3-6.7.3H657.4q-3.4 0-4.9 1.9T651 845t1.5 5.6 4.8 2.3h47.4q3.4 0 6.6.5t6.4.8l6.6.4q3.3.3 6.5.8l6.3 1 6.3 1.3 6.1 1.5 6.2 1.5 6 1.6 6.1 1.9 5.9 2 5.8 2.4 5.8 2.4 5.6 2.8q2.7 1.6 5.5 3 2.8 1.5 5.4 3.3l5.3 3.7q2.6 1.8 5.1 3.9 2.6 2 5 4.4l4.8 4.8 4.7 4.8q2.2 2.5 4.1 5 2 2.7 3.4 5.5l3 5.5q1.4 2.8 2.5 5.7t2.1 6 1.7 6 1.2 6.3l.9 6.4q.3 3.3.9 6.4t.5 6.5v54.3q0 3.4-.5 6.6t-.5 6.5-.5 6.6-1 6.3-1 6.4l-1 6.3q-.6 3.2-1.5 6.2l-1.9 6-1.9 6q-1 3-2.2 5.8l-2.6 5.8-2.6 5.6q-1.4 2.9-3 5.6l-3.3 5.4-3.4 5.4-3.8 5.2-4 5q-2 2.7-4.3 5l-4.4 5q-2.2 2.5-4.7 4.7l-4.9 4.5q-2.4 2.3-5 4.3l-5.1 3.9-5.2 3.9q-2.6 2-5.3 3.7t-5.4 3.3l-5.5 3-5.6 2.8q-2.8 1.4-5.5 3.1t-5.6 2.8l-5.8 2.5-5.7 2.5q-3 1-5.9 2.2-2.9 1.1-6 2l-6 1.9-5.9 2-6 1.8q-3 .9-6.1 1.4-3.2.6-6.2 1.4-3.1.8-6.3 1.4l-6.3 1-6.5.7-6.5.7q-3.2.3-6.4.9-3.2.5-6.5.6-3.4 0-6.6.5t-6.6.4h-20.3q-3.4 0-6.6-.4t-6.6-.5-6.6-.4l-6.4-1q-3.2-.5-6.5-.7t-6.5-.6l-6.4-1-6.2-1.2-6.2-1.5-6.2-1.4q-3.1-.6-6.1-1.5l-6-1.7q-3.1-.8-6.1-1.8l-6-1.8-6-2.1-5.8-2.3q-3-1-5.8-2.4t-5.7-2.4l-5.8-2.4-5.7-2.7q-2.7-1.5-5.6-2.8t-5.5-3l-5.5-3.2-5.5-3.1-5.4-3.3q-2.7-1.6-5.3-3.5-2.6-2-5.3-3.6t-5.3-3.6l-5.2-3.9q-2.5-2-5.1-3.8-2.7-1.9-5.1-4l-5-4.5q-2.4-2.2-5-4.3l-5-4.4-4.7-4.7-4.8-4.8-4.8-4.8q-2.4-2.4-4.4-5l-4-5-4.1-5.2-4.1-5-4-5.2-3.9-5.1-3.8-5.2-3.7-5.3-3.4-5.3-3.4-5.4q-1.7-2.7-3-5.5-1.5-2.8-3.2-5.5-1.8-2.6-3.4-5.4-1.7-2.7-3-5.5l-2.6-5.7-2.7-5.7-2.8-5.6-2.7-5.6-2.7-5.7-2.4-5.7-2.4-5.9q-1.1-2.9-2-5.9-1-3-2.2-5.9-1.1-2.9-2-5.9l-2-6-2-5.9-1.9-6-1.7-6-1.7-6.1-1.5-6.2-1.4-6.2q-.8-3-1.4-6.2l-1.4-6-1.4-6.2-1.3-6.3-1-6.3-1-6.4-.9-6.4-1-6.3q-.5-3.2-.8-6.5l-.4-6.6q-.2-3.3-.7-6.4-.6-3.2-1-6.5-.3-3.2-.4-6.5l-.2-6.7q0-3.4-.4-6.7l-.5-6.5V812l-.1-6.8v-33.9q0-3.4.5-6.6t.5-6.5l.1-6.7.5-6.6.8-6.5q.5-3.2.6-6.5 0-3.4.5-6.6l1-6.3 1-6.4q.4-3.2.6-6.5l.7-6.5q.4-3.2 1.1-6.3t1.1-6.3 1.1-6.4 1.4-6.2 1.4-6.2l1.5-6.1 1.4-6.2 1.5-6.2 1.8-6 1.8-6 1.9-6 2-6 2-5.9q1-3 2.3-5.9 1.2-2.8 2.2-5.8t2.3-5.8l2.6-5.7 2.5-5.8q1.2-2.9 2.6-5.7l2.8-5.6 2.8-5.6 2.7-5.6 3-5.6 3.3-5.4 3.1-5.5 3.3-5.4q1.6-2.7 3.4-5.3l3.6-5.4 3.8-5.2 3.9-5.1 3.9-5.2 4.2-5 4.2-5 4.2-5q2-2.6 4.3-5l4.4-5q2.2-2.5 4.6-4.9l4.8-4.8q2.4-2.4 4.9-4.5l5-4.4 5-4.3q2.4-2.2 5-4.1l5.1-4 5.2-4 5.1-3.9 5.3-3.6 5.3-3.5 5.4-3.2 5.5-3.3 5.5-3.1 5.5-3.1q2.7-1.6 5.6-2.8t5.6-2.7l5.7-2.8q2.8-1.4 5.7-2.5l5.8-2.5 5.8-2.3 6-2 5.8-2.1 6-2 6.1-1.4 6.1-1.7 6.2-1.5 6.2-1.4q3-.8 6.2-1.2 3.2-.5 6.3-1.3 3-.7 6.4-1 3.3-.2 6.4-.7l6.4-1q3.2-.5 6.5-.6 3.4 0 6.6-.4t6.6-.5h27.1l6.7.1q3.4.1 6.6.5t6.5.6l6.6.5 6.5.7 6.3 1 6.3 1.2q3.2.5 6.3 1.2l6.2 1.3 6.2 1.4 6.2 1.6 6.1 1.5 6 1.8 6 1.8 6 1.8 6 2.1 5.8 2.3 5.8 2.4 5.8 2.4 5.7 2.5 5.7 2.6q2.9 1.3 5.6 3 2.7 1.5 5.6 2.8l5.6 2.8 5.5 3.1 5.4 3.3 5.4 3.3 5.4 3.3 5.3 3.6 5.2 3.7 5.2 4 5.2 3.8 5.1 3.9 5.1 4 5.1 4q2.6 2.1 5 4.5t4.9 4.4 5 4.5l4.7 4.8 4.8 4.8 4.8 4.8 4.8 4.8q2.4 2.4 4.4 5 2 2.5 4.3 5l4.5 4.9q2.3 2.4 4.3 5l4 5 4.2 5.1 4 5.1 4 5.1 3.9 5.2 3.8 5.2 3.8 5.2 3.8 5.2q1.9 2.6 3.6 5.3l3.5 5.3q1.6 2.7 3.5 5.3t3.6 5.3l3.4 5.4q1.6 2.7 3 5.5 1.5 2.8 3.3 5.4l3.3 5.4 3.2 5.5 3.2 5.4 3 5.6 2.8 5.6q1.4 2.8 3 5.5t3.1 5.5l2.8 5.6 2.8 5.6 2.8 5.6 2.6 5.7 2.6 5.8 2.5 5.7 2.7 5.6q1.4 2.8 2.6 5.8l2.2 5.8q1 3 4.4 3.1 3.3.3 6.7.2h13.5q3.3 0 3.6-3.2.2-3.2.2-6.6V425.1q.1-3.4-1.7-4.2t-4.8.3l-5.7 2.5q-2.8 1.3-5.8 2.3t-6 1.7-6.3 1.4q-3 .7-6.3 1t-6.5.6-6.5.8q-3.1.6-6.6.5h-13.5l-6.7-.1q-3.4-.1-6.6-.5t-6.6-.6-6.5-.4q-3.3-.4-6.4-1l-6.4-1-6.4-.8-6.4-1-6.2-1.3q-3.2-.6-6.2-1.4l-6.3-1.3q-3.1-.6-6.3-1t-6.3-1.2l-6.2-1.5-6.2-1.3-6.1-1.6q-3-.9-6.1-1.5-3.2-.7-6.2-1.6l-6.1-1.5-6.2-1.5q-3-.8-6.1-1.4-3.2-.7-6.2-1.6t-6.1-1.6l-6.1-1.6q-3-.9-6.1-1.6l-6.2-1.5-6.2-1.3q-3.1-.6-6.2-1.5-3-.8-6.2-1.4l-6.3-1.1q-3.2-.5-6.2-1.3t-6.2-1.4l-6.3-1-6.4-1-6.4-1.1q-3.1-.6-6.3-1l-6.4-1-6.3-1-6.4-1q-3.1-.6-6.5-.7t-6.6-.4-6.4-1q-3.1-.5-6.5-.6l-6.6-.5q-3.2-.3-6.6-.3t-6.7-.3l-6.5-.5q-3.3-.2-6.7-.2h-6.8q-3.4 0-6.6-.5t-6.5-.5h-27.1l-7.2.1Zm-31.1-228-1.7.5-3.3 1q-1.6.6-3 1.6-1.5 1-2.8 2.3-1.4 1.2-2.5 2.4l-2.4 2.4q-1.3 1.3-2.2 2.8l-1.7 3-1.5 3-1.3 3.2q-.5 1.7-.6 3.5-.2 1.8 1 .9 1.3-.9 3-1.5l3.2-1q1.6-.4 3.5-.3h7.4q1.9 0 3.5.5l3.3 1 3.2 1.1q1.6.6 3 1.6l2.9 2.1 2.7 2.5 2.6 2.7q1.3 1.3 2.3 2.7t2.2 2.8 2.4 2.7 1.7 3l1.5 3 1.6 3.1q.8 1.5 1.3 3.2l1.1 3.2q.6 1.6 1 3.3t1 3.3q.5 1.6.4 3.5t.5 3.5.5 3.5v7.4q-.1 1.8-.6 3.4-.5 1.7-.5 3.5t-.5 3.5l-.9 3.4-1 3.3q-.5 1.6-1.2 3.1l-1.5 3.1-1.4 3.2-1.3 3.1-1.7 3q-.9 1.5-2 2.9-1 1.4-2.3 2.7l-2.6 2.6q-1.4 1.3-2.4 2.7t-2.3 2.4-2.8 2.4-2.7 2.3l-3 1.9-2.9 1.8-3 1.6-3 1.5q-1.6.8-3.3 1-1.8.3-3.4 1-1.6.5-3.3.8-1.8.2-3.6.1-2 0-3.5.5-1.7.6-3.4.2l-3.5-.5q-1.8-.1-3.5-.5t-3.3-1l-3.2-1q-1.7-.6-3.2-1.4l-3-1.5q-1.6-.7-3-1.8l-2.7-2.5-2.6-2.6q-1.3-1.3-2.3-2.7l-2-3q-1-1.4-1.7-3-.8-1.5-1.3-3l-1-3.3q-.6-1.7-.6-3.5v-3.7q0-1.9.4-3.5l1.1-3.3q.6-1.6 1.4-3.1.7-1.6 1.7-3l2-2.9q.9-1.4 2.4-2.4l2.9-2q1.4-1 3-1.5t3.4-.7 3.4-.8 3.4-.4q1.9 0 3.6.5 1.6.4 2.1-.4t-.5-2.3-2.3-2.8-2.6-2.7l-2.6-2.6-2.6-2.6-2.6-2.6-2.6-2.6q-1.3-1.3-2.4-2.7l-2.2-2.8-2-2.9q-1-1.4-2.4-2.7t-2.2-2.8-1.7-3-1.8-3l-1.7-3q-1-1.4-1.8-2.9-.7-1.5-1.7-3-1-1.4-1.7-3l-1.6-3q-.8-1.5-1.4-3.1l-1.3-3.2q-.8-1.6-1.5-.3l-1.5 2.7-1.5 3q-.8 1.5-1.4 3.2-.5 1.6-1.3 3.1l-1.5 3q-.8 1.6-1.8 3l-1.8 3-1.8 3-2 2.8-1.9 3-2 2.8q-1.2 1.3-2.1 2.8t-2 2.9-2.3 2.7-2.2 2.8q-1.2 1.4-2.6 2.7l-2.6 2.6q-1.3 1.3-2.4 2.7l-2.2 2.8q-1.3 1.3-2.2 2.8t-2.3 2.4.2 1l3.3-.2 3.6-.2q1.8 0 3.6.3l3.4.6q1.7.3 3.4.9 1.6.5 3 1.4l3 1.9q1.5.9 2.4 2.4.8 1.6 2 3l1.9 2.8q.8 1.6 1.3 3.2t.9 3.3l.5 3.5q.3 1.8.3 3.6v3.7q0 1.8-.5 3.5l-1 3.3-.7 3.4q-.3 1.7-1 3.3l-1.5 3-1.5 3.1-1.8 3-2.2 2.8-2 2.8q-1 1.4-2.3 2.8l-2.7 2.6-2.7 2.3q-1.4 1.1-2.9 2l-2.9 1.9q-1.4 1-3 1.7l-3 1.6q-1.5.8-3.2 1.3-1.6.6-3.3.8l-3.4.7q-1.7.4-3.3 1-1.7.5-3.5.5h-11.1q-1.9 0-3.5-.5t-3.4-.7-3.4-.7-3.3-1-3.1-1.4q-1.6-.8-3-1.8t-3-1.8q-1.4-.8-2.8-2l-2.8-2.2q-1.4-1-2.7-2.4t-2.3-2.8l-2-2.8-1.5-3-1.6-3.1-1.4-3.2q-.7-1.5-1-3.2t-.6-3.5-.1-3.6v-3.8q0-1.8.3-3.5l.7-3.4q.3-1.8.8-3.4t1.5-3l1.9-3 2-2.9q1-1.4 2.3-2.7l2.6-2.6q1.3-1.3 2.7-2.3l2.9-2q1.4-1 3-1.8l3-1.5 2.8-1.6q1.3-.7-.4-1.3-1.6-.6-3.1-1.4-1.6-.8-3.2-1.3l-3.2-1.1-3.2-1.2q-1.7-.5-3.2-1.2t-3-1.6-3.1-1.5-3.2-1.4-3.1-1.3l-3.2-1.4-3-1.8q-1.4-1-2.9-1.7-1.5-.8-3.2-1.2-1.6-.6-3-1.6l-3-1.8-3-1.6q-1.6-.7-3-1.7-1.5-1-3-1.7l-3-1.5-3.1-1.7-3-1.7-3-1.8q-1.4-1-3-1.7l-3-1.7q-1.4-1-2.9-1.8l-3-1.8-2.8-2-3-1.6q-1.6-.8-3-1.8l-2.9-2-2.8-2-3-2q-1.4-.9-2.5-1.2-1.2-.4-.4 1.3.8 1.6 1.8 3l1.9 3 1.7 3q1 1.4 1.7 3l1.6 3 1.8 3q1 1.4 1.6 3 .7 1.5 1.7 3 1 1.3 1.8 2.9l1.5 3 1.6 3.1 1.5 3 1.7 3 1.8 3q.7 1.6 1.6 3l1.8 3 1.6 3q.7 1.6 1.7 3 1 1.5 1.7 3l1.6 3 1.5 3.2 1.6 3 1.5 3 1.5 3.1 1.6 3.1 1.5 3 1.5 3.1 1.6 3.1 1.5 3 1.5 3.1q.8 1.5 1.4 3.2.5 1.6 1.3 3.1l1.5 3.1 1.5 3 1.6 3.1 1.2 3.2 1.3 3.1 1.5 3.2 1.3 3.1 1.5 3.1 1.3 3.2 1 3.2q.6 1.6 1.4 3.1 1 1.5 1.4 3.2l1.1 3.2q.6 1.6 1.4 3.1l1.2 3.2 1.1 3.3 1.1 3.2q.6 1.6 1 3.3l1.1 3.2 1 3.3 1.2 3.3 1 3.2 1 3.3q.6 1.7 2 1l2.9-1.6 3-1.5 3.2-1.4 3.1-1.4 3.2-1.2 3.2-1.3q1.5-.8 3.1-1.4t3.3-1q1.7-.3 3.2-1 1.6-.8 3.2-1.3l3.3-1.2q1.5-.5 3.3-.8l3.4-.7 3.3-.9 3.3-1 3.3-1q1.6-.5 3.4-.6 1.9 0 3.6-.4t3.3-1l3.3-1q1.6-.4 3.5-.5t3.4-.6 3.4-.7l3.5-.5 3.4-.8q1.6-.5 3.3-.7l3.6-.4q1.8-.2 3.4-.7 1.6-.6 3.5-.5t3.5-.6q1.6-.5 3.4-.5 1.9 0 3.6-.3l3.5-.4q1.8-.3 3.6-.3t3.6-.2l3.5-.5 3.6-.4q1.8 0 3.5-.5t3.5-.4 3.5-.5 3.5-.5h3.7q1.8 0 3.5-.5t3.5-.5h7.3q1.9 0 3.5-.5t3.5-.5h3.8l3.6-.1q1.8-.2 3.4-.6 1.7-.4 3.6-.3h11.1q2 .1 3.6-.2t3.5-.6l3.6-.2h74q1.9 0 3.5.5t3.5.5h7.4q1.8 0 3.5.4t3.5.5h3.7l3.6.2q1.9 0 3.5.5t3.5.4h7.4q1.9 0 3.5.5t3.5.5 3.5.4 3.5.6h3.7q1.9-.1 3.5.4t3.5.6 3.5.3 3.5.6l3.6.2q1.8.2 3.5.6t3.5.3 3.5.6 3.5.5 3.5.4 3.5.6 3.5.5 3.4.6l3.5.5 3.4.8 3.2 1q1.7.6 3.4.8l3.5.4q1.8.3 3.4.9 1.6.5 3.3.8l3.5.6 3.4.6q1.8.3 3.4.8l3.3 1q1.6.6 3.4.9 1.7.2 3.3.8t3.3.9 3.4.8 3.1 1.3l3.2 1.4 3.3 1q1.6.5 3.1 1.3 1.6.7 3.3 1.1l3.2 1.2q1.5.8 3.1 1.3l3.3 1.1q1.6.7 3 1.6 1.5 1 2.5-.2t1.5-2.8l1-3.3 1.1-3.2q.6-1.6 1-3.3t1.2-3.2q.8-1.6 1.3-3.2l1.2-3.2 1.3-3.2q.5-1.6 1.2-3.1.7-1.6 1.1-3.3t1.3-3.2l1.6-3 1.6-3q.8-1.6 1.3-3.2t1.3-3.2l1.4-3 1.3-3.2 1.5-3.1 1.5-3 1.5-3.1 1.5-3.1 1.7-3 1.8-3 1.6-3 1.5-3 1.5-3.2 1.6-3 1.6-3 1.7-3 1.8-3q1-1.4 1.8-3 .7-1.5 1.8-3 1-1.4 1.8-2.9.7-1.5 1.7-3 1-1.4 1.7-3l1.7-3 2-2.8 1.8-3 1.8-3 1.9-2.8 1.9-3 1.9-2.9 2-2.8 1.7-3 1.8-3 2-2.8 2-3 1.9-2.8 2-2.9q1.2-1.4 2.1-2.8l2-3 1.9-2.8 2-3q.8-1.4 1.9-2.8l2-2.8q1.2-1.4 2.1-3 1-1.5-.2-1.2l-2.6 1.1-3 1.7-3 1.7-3 1.6-3 1.5-3.2 1.5-3 1.8q-1.4 1-3 1.7l-3 1.6-3 1.5-3.1 1.5-3 1.6q-1.6.7-3 1.6l-3 1.8-3 1.6-3.1 1.5q-1.6.8-3.2 1.3t-3 1.6-3.1 1.5l-3.2 1.3-3 1.6-3.1 1.5-3 1.5-3.1 1.6q-1.5.8-3.2 1.3l-3.2 1.2-3.2 1.1-3.2 1.3-3 1.5-3.1 1.5-3.1 1.5-3.2 1.3-3.2 1.2q-1.6.6-3.1 1.4t-3.2 1.3-1.8 1.2q-.2.6 1.4 1.1 1.7.5 3.2 1.3l3 1.7q1.5.8 3 1.9l2.7 2.2q1.4 1 2.7 2.4t2.5 2.7 2 2.8l1.9 3q.8 1.4 1 3.2.3 1.7.9 3.4l1 3.2q.4 1.7.4 3.5v3.8l-.1 3.6-.5 3.5q-.4 1.7-1 3.3t-1.3 3.1l-1.5 3.1-1.7 3-1.9 3q-1 1.4-2.2 2.7l-2.6 2.6q-1.3 1.3-2.8 2.3l-2.9 1.9-3 1.9-3 1.6-3 1.5q-1.5.8-3.2 1.4l-3.2 1q-1.6.6-3.4.7-1.9.1-3.5.5t-3.6.4h-7.4q-1.8 0-3.5-.5t-3.5-.5-3.4-.5l-3.3-1.1q-1.6-.6-3.1-1.4l-3-1.6-3.1-1.5q-1.5-.7-3-1.7l-2.9-2q-1.4-1.1-2.7-2.4l-2.6-2.7-2.6-2.6q-1.4-1.3-2.3-2.7t-2-2.9-2-2.9l-1.8-3q-1-1.4-1.5-3l-1.1-3.2-.8-3.4-.6-3.5-.8-3.3q-.4-1.7-.5-3.5t.5-3.5.7-3.3.7-3.4 1.3-3.2l1.7-3q.9-1.5 2.1-2.8 1.3-1.4 2.7-2.6 1.4-1.1 2.9-1.9l3-1.5q1.6-.7 3.4-.8l3.7-.1h7.4q1.9 0 1.8-1.1t-1.5-2.4-2.5-2.7l-2.2-2.8q-1-1.4-2.5-2.7-1.3-1.2-2.2-2.7t-2.3-2.8q-1.4-1.2-2.5-2.7l-2.2-2.7-2-2.9-2-2.8-2.4-2.8q-1.2-1.3-2.1-2.8t-1.7-3l-1.8-3q-1-1.4-1.8-3l-1.6-3q-1-1.4-1.8-3l-1.6-3-1.5-3-1.5-3-1.5-3.1q-.8-1.6-1.6-2.5-.7-1-1.5.6t-1.3 3.2-1.3 3.2l-1.8 3q-1 1.4-1.7 3l-1.7 3-1.7 3-2 2.8-1.8 3-2.2 2.8-2.3 2.7q-1.1 1.4-2 2.9-1 1.4-2.3 2.7-1.4 1.3-2.5 2.7l-2.2 2.8-2.4 2.7-2.6 2.6-2.7 2.6-2.6 2.6-2.6 2.6-2.6 2.7q-1.2 1.3-.7 1.8t2.2.3l3.5-.6q1.8-.2 3.4.4 1.6.5 3.4.6t3.5.6 3.1 1.3 3 1.8l2.8 2q1.4 1.1 2.4 2.6l2.1 2.8q1.2 1.4 1.7 3l1 3.3.9 3.3q.3 1.8.3 3.6v3.7q0 1.9-.5 3.5l-1 3.3q-.5 1.6-1.3 3.1l-1.6 3q-.7 1.6-1.7 3l-2 3-2.6 2.6q-1.3 1.3-2.7 2.4l-2.8 2q-1.5 1-3 1.7l-3.1 1.5-3.2 1.2-3.3 1q-1.6.6-3.5.5h-11.1q-1.8 0-3.5-.5l-3.2-1q-1.7-.5-3.3-1.2l-3.1-1.3-3-1.5-3.2-1.5-3-1.8-2.8-2q-1.4-1-2.7-2.4l-2.6-2.6-2.7-2.6q-1.3-1.3-2.4-2.7l-2.2-2.8-2-2.9-1.8-3q-1-1.4-1.5-3t-1.4-3.1l-1.4-3.2q-.7-1.5-1.2-3.1l-1.1-3.3-1-3.3-.9-3.3q-.4-1.7-.5-3.5l-.1-3.7v-11q0-2 .5-3.5.6-1.6 1-3.4l.5-3.4q.2-1.8 1-3.3 1-1.4 1.5-3l1.1-3.3 1.3-3.2 1.8-3q1-1.4 1.7-3 .7-1.5 2-2.8l2.5-2.7 2.6-2.6 2.6-2.6 2.6-2.7q1.3-1.3 2.8-2.2t3-1.8q1.4-.9 3-1.5t3.3-1 3.4-.7h7.4l3.6.1q1.8.2 3.4.7l3.3 1.1q1.7.7 2.4-.1.8-.7.2-2.4l-1.3-3.2-1.5-3.1-1.5-3q-.8-1.6-2-3l-2.6-2.5-2.7-2.6q-1.3-1.3-2.8-2.1l-3-1.6q-1.6-.8-3.2-1.3t-3.4-.8-3.6-.2h-3.7q-1.8 0-3.5.3-1.7.4-3.3 1l-3.1 1.4q-1.6.7-3 1.6-1.6.9-2.9 2.2t-2.7 2.2-2.5 2.5l-2 2.9-1.9 2.9q-1 1.4-1.8 3-1 1.4-1.7 3-.7 1.5-1.7 2.9t-1.6 3l-1.3 3.2q-.8 1.5-1.4 3.2l-1 3.2-1.2 3.2-.9 3.4-.7 3.4-.6 3.4q-.3 1.7-.9 3.3-.6 1.7-.5 3.5t-.4 3.6q-.5 1.6-.6 3.4v18.5q0 1.9.5 3.5t.5 3.5.5 3.5.4 3.5.5 3.5 1 3.3l.8 3.4 1.1 3.2 1.1 3.2 1.4 3.2 1.5 3q.7 1.6 1.7 3l1.8 3 1.7 3q1 1.4 1.8 3l1.9 2.9 2 2.8q1 1.5 2.3 2.8l2.6 2.6 2.6 2.6q1.3 1.3 2.8 2.3l3 1.8 2.8 2q1.4 1.2 2.1 2.7t-.4 2.5q-1.2 1-2.8.5l-3.3-1.1-3.2-1.1q-1.7-.6-3.1-1.4l-3-1.8q-1.5-.9-2.8-2.2t-2.6-2.7l-2.6-2.6-2.3-2.7-2.1-2.8-2-3q-1-1.4-1.8-2.9l-1.6-3-1.3-3.2q-.6-1.6-1.4-3.1t-1.3-3.2l-1-3.2q-.8-1.6-1.3-3.2l-1-3.3-1-3.3-1-3.3-.7-3.4-.5-3.4q-.2-1.7-.8-3-.5-1.2-1 .5l-.4 3.6q-.1 1.8-.6 3.4l-1 3.3-1 3.3-1 3.3-1 3.3-1 3.2-1 3.3q-.5 1.6-1.3 3.2l-1.5 3-1.5 3.1-1.7 3q-1 1.5-1.7 3-.7 1.6-2 3l-2.1 2.7q-1 1.5-2.3 2.8l-2.6 2.6-2.6 2.6q-1.3 1.3-2.8 2.1-1.5 1-3 1.7-1.6.8-3.2 1.3l-3.3 1q-1.6.6-3.3.8-1.8.3-3.4.8t-3.4 0-.8-1.6 2.4-2l3-1.7q1.5-1 3-1.7 1.6-.7 3-2l2.7-2.1q1.4-1 2.8-2.3l2.6-2.6 2.6-2.6q1.4-1.3 2.5-2.6t2-3l1.6-3 1.8-3q.9-1.4 1.6-3l1.8-3q1-1.4 1.7-3l1.5-3q.9-1.5 1.2-3.2t.8-3.3l1-3.3q.6-1.6 1-3.3t1-3.3q.5-1.7.6-3.5l.5-3.5.5-3.4.6-3.5q.2-1.7.2-3.6v-18.5q-.1-1.8-.6-3.5t-.4-3.5-.2-3.6l-.6-3.5-.7-3.4-.9-3.3-1-3.2-1.1-3.3-1.1-3.3-1-3.2q-.5-1.7-1.3-3.2-.7-1.6-1.6-3l-1.8-3q-.7-1.5-1.8-3-1-1.4-1.7-3-.8-1.5-1.8-2.9l-2.2-2.8q-1.3-1.4-2.7-2.3t-2.9-2l-2.8-2-3-2q-1.4-1-3-1.4-1.7-.5-3.5-.5h-7.8Z"/><path d="m575.4 333.2-1 .4q-1.2.4-2.2.4h-12.7l-2 .2-2 .6-2 .3h-2l-2.2-.2q-1.1 0-2 .2l-2 .5q-1 .3-2 .3l-2 .1H537q-1 0-2 .3l-2 .6q-.9.2-2 .1h-4.2q-1 0-2 .4t-2 .5-2 .1h-2.1l-2 .2-2 .5-2 .3h-4.2q-1.1 0-2 .2l-2 .6q-.9.3-2 .2h-2l-2 .5q-1 .4-2 .4h-2q-1.1 0-2 .3l-2 .6q-1 .3-2 .2h-2.1q-1 .1-2 .5l-1.9.5-1.9.5-2 .4-2 .2q-1 0-2 .3-.9.4-1.9.5l-2 .2q-1.1 0-2 .3-1 .4-2 .5t-2 .3l-1.9.5-2 .3-2 .4-1.9.5q-1 0-2 .3-1 .1-1.9.4-1 .4-2 .4t-2 .4q-.9.3-1.9.4l-2 .3-1.9.5-2 .4-1.8.6-2 .4-1.9.5-1.9.6-1.8.6-1.9.7-1.9.5-2 .5-1.9.4-1.9.5-1.8.7-1.8.8-1.9.6-1.8.6-1.9.7-1.9.6-1.8.6-1.9.7-1.8.8-1.8.7-1.7.9-1.8.9-1.9.7-1.7.8q-.9.4-1.3 1.1t-.5 1.8.3 2l.5 2 .3 2 .4 2 .5 1.8.5 2q.4.9.5 1.9t.3 2l.4 2q.3.9.4 2 0 1 .4 1.9l.4 1.9.2 2q0 1 .3 2l.6 2q.3.8 1 1 .8.1 1.8-.3l1.9-.7 1.8-.6 1.9-.6 1.8-.7 2-.5 1.9-.5 1.9-.5 1.9-.6 1.8-.7 1.9-.6 1.9-.5 2-.4 1.8-.7q.9-.4 1.9-.6l1.9-.4 2-.5 1.9-.5 1.9-.5 1.9-.4 2-.5 1.9-.5 1.9-.5q.9-.3 2-.4 1 0 2-.3l1.8-.5q1-.3 2-.3t2-.5 2-.4l2-.1 2-.4 1.9-.5 1.9-.5 1.9-.5 2-.5 1.9-.4 2-.3q1-.1 1.9-.5t2-.3l2-.2 2-.5q.9-.3 2-.4h2q1 0 2-.3l2-.5q.9-.2 2-.2 1 0 2-.3l1.9-.5q1-.3 2-.3l2.2.1q1 0 2-.3l1.9-.6q1-.2 2-.1h2.1l2-.6q.8-.4 1.9-.4h4.1l2-.6q.9-.4 2-.4h2q1.2.1 2.1-.1l2-.6q.9-.3 2-.3h2q1 0 2-.4l2-.5 2-.2h2.1l2.2.2q1 0 2-.3l2-.5q.9-.3 1.9-.3h6.4l2-.1 2-.5 2-.3 2-.1h8.5l2-.4 2-.5 2-.1h19.1q1 0 2-.4l1.9-.5 2-.1h38.2q1.1.1 2 .4 1 .4 2 .5l2 .1h19.2q1 0 2 .3l1.9.4q1 .3 2 .3h8.5l2 .2 2 .4 2 .4h4.2l2 .1 2 .6q.9.3 2 .3h6.3l2 .4q.9.4 1.9.5 1 .2 2 .1h4.3q1 0 2 .3l2 .5 2 .2h2.1l2 .2 2 .6q.9.3 2 .2h2l2 .5q1 .4 2 .5h4.1l2 .6q.9.3 2 .4h2q1 0 2 .3l2 .5q.9.3 2 .2h2l2 .6q.9.4 2 .4h2l2 .6q.9.4 2 .4l2 .1 2 .4q.8.4 1.9.4l2 .4 1.9.5 2 .3q1 0 2 .4l1.8.6 1.8.7 2 .2q1.1 0 2.1.2l2 .5q.9.3 2 .3 1 0 1.9.4t2 .5 2 .3l1.8.5 2 .3q1 0 2 .3l1.9.6 2 .4 1.9.5 1.9.5 2 .5 1.8.5 2 .5 1.9.4q1 .2 1.9.6l1.8.6 2 .5 1.9.4q1 .3 1.8.8t1.8.7l2 .4 1.9.6 1.8.6 2 .7q1 .4 1.6.3t.9-1.1l.4-2 .3-2 .4-2q.1-1 .4-1.9l.5-2 .3-2q0-1 .4-1.9t.4-2 .3-1.9l.5-2q.3-.9.3-2l.2-2 .5-1.9.4-2q0-1 .3-2 .2-.8-.3-1.5t-1.5-1.1l-1.8-1-1.7-.8-1.8-.8-1.9-.7-1.8-.7-1.8-.8-1.8-.7-2-.5-2-.4-1.8-.6-1.8-.7-2-.5q-.9-.3-1.7-.8l-1.8-.8-2-.4-1.9-.5-1.8-.7-2-.5-1.9-.5-1.9-.5-2-.3q-1 0-2-.4l-1.9-.5-1.9-.4-1.8-.7-2-.6-1.8-.4-2-.6-2-.3q-1 0-2-.4-.9-.3-1.9-.4l-2-.3q-1-.1-1.9-.5l-2-.4h-2q-1-.1-2-.6-.9-.3-1.9-.4h-2l-2-.6-2-.4h-2l-2-.6q-.9-.3-2-.4h-2l-2-.5q-.8-.4-1.9-.5h-2q-1.1 0-2.1-.3l-1.9-.5-2-.2q-1.1 0-2-.3l-2-.5-2-.2h-2.1q-1 0-2-.3l-2-.5q-.9-.3-2-.2h-2l-2-.5q-.9-.4-2-.5h-4.2l-2-.1q-1-.1-2-.5-.9-.3-2-.4H705q-1 0-2-.4l-1.9-.5-2-.2-2.2.1h-2q-1.1 0-2-.4-1-.4-2-.5-1-.2-2-.1h-8.5l-2.1-.1-2-.5q-.9-.3-1.9-.4h-14.8q-1.1 0-2-.3l-2-.4-2-.3h-76.8Zm43.8-286-.2 1q-.3 1.2-.8 2l-1 2-1 2-.7 2-.6 2.1-.6 2.2-.8 2-1 2-.8 2-.5 2.2-.8 2-1 2-1 2-1 2-1 1.9-1 2-.9 2-1 1.9-1 2-1 1.9-1 2-1 2-.9 1.9-1.1 2-1.2 1.8-1 2-1 1.9-1 2-1 2-1 1.9q-.5 1-1.2 1.9l-1.2 1.8-1 2q-.5 1-1.2 1.9l-1.3 1.8-1.1 1.9-1.3 1.8-1.3 1.9-1.1 1.9-1.4 1.8q-.7.9-1.2 1.9t-1.2 1.8l-1.2 2q-.4 1-1 1.9l-1.2 1.9q-.6 1-1.4 1.8l-1.4 1.8q-.7.9-.2 1.7t1.7.6q1.3 0 2.3.2 1.1.2 2.1.6l2.1.8 2 .7 2.2.5q1.1.3 2 1 .8.8 1.8 1.3t1.9 1.3 1.8 1.4 1.7 1.4 1.3 1.8 1.4 1.7l1.7 1.7q.9.8 1.4 1.8t1.2 1.9 1.3 1.8 1.2 1.9l1.1 2 1 1.9 1 2 1 2 1 1.9.7 2q.3 1.1.8 2l1 2q.6 1 .8 2l.7 2.2q.4 1 .5 2.1t.5 2.2.6 2.1l.5 2.2.8 2q.4 1 .5 2.2t.3 2.2q.4 1 .5 2.2l.4 2.2q.1 1.1.5 2.2.4 1 .3 2.2 0 1.2.3 2.3.4 1 .5 2.1l.4 2q.3 1 .5 0l.7-1.9q.4-1 .5-2.2 0-1.1.5-2.1t.6-2.2v-2.3q0-1.2.6-2.2t.4-2.1q0-1.3.4-2.2t.8-2.1l.5-2.1q.3-1.1.8-2.1l.8-2 .5-2.2.8-2 1-2 .7-2.1q.3-1 .9-2 .5-1 .7-2 .3-1.1.8-2.1l1-2 1-2 1-2 1-1.9 1-2q.3-1 1.1-1.8l1.4-1.8 1.3-1.8q.6-1 1.5-1.8l1.7-1.7q.8-.8 1.3-1.8t1.3-1.8l1.7-1.7q.8-1 1.7-1.7l1.8-1.3 2-1 2-1q.9-.5 2-.8 1-.2 2-.7t2.2-.6 2.1-.5 2.3-.4 2-.2.6-1.5l-.9-2q-.4-1-1.1-1.9t-1.2-1.9l-1.1-1.9q-.6-.9-1.4-1.7-.9-.9-1.3-1.9l-1-2-1.2-1.8-1.1-2-1.1-1.8-1.3-2-1-1.9q-.5-1-1.2-1.8l-1.3-1.9-1.1-1.9-1.1-1.9-1-2-1-2q-.4-1-1-1.9l-1-2-1-1.9q-.4-1-1.1-1.9l-1.2-1.9-1-2-1-1.9-1-2-1-2-1-1.9-1-2q-.5-1-.7-2l-.8-2-1-2-1-2-.6-2q-.3-1.2-.9-2.1l-1-2-1-2q-.4-1-1-1.9l-.8-2-.7-2-1-2q-.5-1-.7-2.1l-.6-2.1-.8-2.1-.7-2q-.3-1.1-.8-2l-1.1-2Z"/></g>
@@ -86,7 +158,7 @@
               </button>
             </div>
             <p class="gallery-locked-note" id="gallery-locked-note" style="display:none;">
-              + 5 more photos for members &middot; <a href="gent-plan.html" data-transition>Become a member &rarr;</a>
+              + 5 more photos for members &middot; <a href="gent-plan.html?from=market" data-transition>Become a member &rarr;</a>
             </p>
           </div>
           <div class="identity-row">
@@ -145,14 +217,14 @@
             <div class="lock-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></div>
             <h3>Reviews are for members</h3>
             <p>Become a G Club member to read what others say before you book.</p>
-            <a href="gent-plan.html" class="btn btn-dark" data-transition>Become a member &rarr;</a>
+            <a href="gent-plan.html?from=market" class="btn btn-dark" data-transition>Become a member &rarr;</a>
           </div>
         </div>
 
         <aside class="booking-card">
           <div id="booking-form-view">
             <div class="booking-price">
-              <span class="rate">$<span id="modal-rate">42</span> <small>/ hour</small></span>
+              <span class="rate">&#8369;<span id="modal-rate">2,300</span> <small>/ hour</small></span>
               <span class="rating">★ <span id="modal-rating2">4.9</span> <small style="color:var(--muted); font-size:12px;">(48)</small></span>
             </div>
             <hr class="divider">
@@ -180,12 +252,13 @@
               <button type="button" class="hours-btn" id="hours-plus" aria-label="Increase hours">+</button>
             </div>
             <div class="booking-summary">
-              <div class="summary-row"><span class="lbl" id="summary-hours-label">3 hours &times; $42</span><span id="summary-subtotal">$126</span></div>
-              <div class="summary-row"><span class="lbl">Service fee</span><span id="summary-fee">$13</span></div>
+              <div class="summary-row"><span class="lbl" id="summary-hours-label">3 hours &times; &#8369;2,300</span><span id="summary-subtotal">&#8369;6,900</span></div>
+              <div class="summary-row"><span class="lbl">Service fee</span><span id="summary-fee">&#8369;690</span></div>
               <hr class="divider">
-              <div class="summary-row total"><span class="lbl">Total</span><span id="summary-total">$139</span></div>
+              <div class="summary-row total"><span class="lbl">Total</span><span id="summary-total">&#8369;7,590</span></div>
             </div>
             <button class="btn btn-dark btn-block btn-lg" type="button" id="request-to-book-btn">Request to book</button>
+            <p class="free-booking-note" id="free-booking-note" style="display:none;">Free plan &middot; 1 booking included</p>
             <div class="booking-safety">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;margin-top:1px;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/></svg>
               <span>You won't be charged until <span id="modal-name2">Maya</span> accepts.</span>
@@ -202,10 +275,10 @@
               <div class="booking-summary">
                 <div class="summary-row"><span class="lbl">Date</span><span id="booking-pay-day" style="font-weight:600;">Tue 15</span></div>
                 <div class="summary-row"><span class="lbl">Time</span><span id="booking-pay-time" style="font-weight:600;">4:30 PM</span></div>
-                <div class="summary-row"><span class="lbl" id="booking-pay-hours-label">3 hours &times; $42</span><span id="booking-pay-subtotal">$126</span></div>
-                <div class="summary-row"><span class="lbl">Service fee</span><span id="booking-pay-fee">$13</span></div>
+                <div class="summary-row"><span class="lbl" id="booking-pay-hours-label">3 hours &times; &#8369;2,300</span><span id="booking-pay-subtotal">&#8369;6,900</span></div>
+                <div class="summary-row"><span class="lbl">Service fee</span><span id="booking-pay-fee">&#8369;690</span></div>
                 <hr class="divider">
-                <div class="summary-row total"><span class="lbl">Total</span><span id="booking-pay-total">$139</span></div>
+                <div class="summary-row total"><span class="lbl">Total</span><span id="booking-pay-total">&#8369;7,590</span></div>
               </div>
 
               <p class="field-label-standalone" style="margin:16px 0 10px;">Payment method</p>
@@ -268,7 +341,7 @@
                 <div class="transaction-details" style="padding:14px; gap:10px;">
                   <div class="transaction-detail">
                     <span class="lbl">Amount held</span>
-                    <span class="val" id="booking-pay-success-amount">$139</span>
+                    <span class="val" id="booking-pay-success-amount">&#8369;7,590</span>
                   </div>
                   <div class="transaction-detail">
                     <span class="lbl" id="booking-pay-success-ref-label">Reference</span>
@@ -283,7 +356,7 @@
             <div class="lock-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></div>
             <h3>Booking is for members</h3>
             <p>You have a G Club account, but booking is a member benefit. Choose a plan to unlock requests, rates, and availability.</p>
-            <a href="gent-plan.html" class="btn btn-dark btn-block" data-transition>Become a member &rarr;</a>
+            <a href="gent-plan.html?from=market" class="btn btn-dark btn-block" data-transition>Become a member &rarr;</a>
           </div>
         </aside>
 
@@ -311,9 +384,19 @@
         <div class="photo-tile"><span class="initial" id="nav-logged-in-initial">D</span></div>
         <span id="nav-logged-in-name">Daniel</span>
       </a>
+      <a href="#" class="nav-logout" id="nav-logout-btn" data-logout style="display:none;">Log out</a>
     </div>
   </div>
 </header>
+
+<div class="member-banner" id="member-banner" style="display:none;">
+  <div class="container">
+    <div class="member-banner-inner">
+      <p id="member-banner-text"></p>
+      <a href="gent-plan.html?from=market" class="btn btn-dark" id="member-banner-cta" data-transition>Choose a plan &rarr;</a>
+    </div>
+  </div>
+</div>
 
 <main>
   <div class="container">
@@ -377,7 +460,7 @@
         <div class="profile-grid">
 
           <article class="profile-card" data-category="gaming" data-location="makati all-manila">
-            <a class="card-link" href="#" data-open-profile data-name="Maya" data-age="25" data-tag="Gaming" data-rate="38" data-rating="4.9">
+            <a class="card-link" href="#" data-open-profile data-name="Maya" data-age="25" data-tag="Gaming" data-rate="2100" data-rating="4.9">
               <div class="photo-area">
                 <div class="photo-tile">
                   <img src="assets/images/01.jpg">
@@ -388,7 +471,7 @@
                 <div class="card-identity"><span class="name">Maya, 25</span>
                   <span class="card-rating">★ 4.9</span>
                 </div>
-                <div class="card-meta"><span class="tag">Gaming</span><span class="price">$38 / hr</span></div>
+                <div class="card-meta"><span class="tag">Gaming</span><span class="price">&#8369;2,100 / hr</span></div>
               </div>
             </a>
             <button class="save-btn" aria-label="Save profile" type="button">
@@ -397,7 +480,7 @@
           </article>
 
           <article class="profile-card" data-category="local-guides" data-location="quezon-city all-manila">
-            <a class="card-link" href="#" data-open-profile data-name="Sofia" data-age="27" data-tag="Museums" data-rate="42" data-rating="4.9">
+            <a class="card-link" href="#" data-open-profile data-name="Sofia" data-age="27" data-tag="Museums" data-rate="2300" data-rating="4.9">
               <div class="photo-area">
                 <div class="photo-tile">
                   <img src="assets/images/02.jpg">
@@ -406,7 +489,7 @@
               </div>
               <div class="card-details">
                 <div class="card-identity"><span class="name">Sofia, 27</span><span class="card-rating">★ 4.9</span></div>
-                <div class="card-meta"><span class="tag">Museums</span><span class="price">$42 / hr</span></div>
+                <div class="card-meta"><span class="tag">Museums</span><span class="price">&#8369;2,300 / hr</span></div>
               </div>
             </a>
             <button class="save-btn" aria-label="Save profile" type="button">
@@ -415,7 +498,7 @@
           </article>
 
           <article class="profile-card" data-category="e-sports" data-location="taguig makati">
-            <a class="card-link" href="#" data-open-profile data-name="Amelia" data-age="24" data-tag="E-Sports" data-rate="46" data-rating="4.9">
+            <a class="card-link" href="#" data-open-profile data-name="Amelia" data-age="24" data-tag="E-Sports" data-rate="2500" data-rating="4.9">
               <div class="photo-area">
                 <div class="photo-tile">
                   <img src="assets/images/03.jpg">
@@ -424,7 +507,7 @@
               </div>
               <div class="card-details">
                 <div class="card-identity"><span class="name">Amelia, 24</span><span class="card-rating">★ 4.9</span></div>
-                <div class="card-meta"><span class="tag">E-Sports</span><span class="price">$46 / hr</span></div>
+                <div class="card-meta"><span class="tag">E-Sports</span><span class="price">&#8369;2,500 / hr</span></div>
               </div>
             </a>
             <button class="save-btn" aria-label="Save profile" type="button">
@@ -433,7 +516,7 @@
           </article>
 
           <article class="profile-card" data-category="dining" data-location="makati mandaluyong">
-            <a class="card-link" href="#" data-open-profile data-name="Hana" data-age="26" data-tag="Dining" data-rate="50" data-rating="4.9">
+            <a class="card-link" href="#" data-open-profile data-name="Hana" data-age="26" data-tag="Dining" data-rate="2800" data-rating="4.9">
               <div class="photo-area">
                 <div class="photo-tile">
                   <img src="assets/images/04.jpg">
@@ -442,7 +525,7 @@
               </div>
               <div class="card-details">
                 <div class="card-identity"><span class="name">Hana, 26</span><span class="card-rating">★ 4.9</span></div>
-                <div class="card-meta"><span class="tag">Dining</span><span class="price">$50 / hr</span></div>
+                <div class="card-meta"><span class="tag">Dining</span><span class="price">&#8369;2,800 / hr</span></div>
               </div>
             </a>
             <button class="save-btn" aria-label="Save profile" type="button">
@@ -451,7 +534,7 @@
           </article>
 
           <article class="profile-card" data-category="rent-a-friend" data-location="pasig all-manila">
-            <a class="card-link" href="#" data-open-profile data-name="Elise" data-age="28" data-tag="Rent a Friend" data-rate="54" data-rating="4.9">
+            <a class="card-link" href="#" data-open-profile data-name="Elise" data-age="28" data-tag="Rent a Friend" data-rate="3000" data-rating="4.9">
               <div class="photo-area">
                 <div class="photo-tile">
                   <img src="assets/images/05.jpg">
@@ -460,7 +543,7 @@
               </div>
               <div class="card-details">
                 <div class="card-identity"><span class="name">Elise, 28</span><span class="card-rating">★ 4.9</span></div>
-                <div class="card-meta"><span class="tag">Rent a Friend</span><span class="price">$54 / hr</span></div>
+                <div class="card-meta"><span class="tag">Rent a Friend</span><span class="price">&#8369;3,000 / hr</span></div>
               </div>
             </a>
             <button class="save-btn" aria-label="Save profile" type="button">
@@ -469,7 +552,7 @@
           </article>
 
           <article class="profile-card" data-category="dating" data-location="makati taguig">
-            <a class="card-link" href="#" data-open-profile data-name="Nadia" data-age="25" data-tag="Nightlife" data-rate="58" data-rating="4.9">
+            <a class="card-link" href="#" data-open-profile data-name="Nadia" data-age="25" data-tag="Nightlife" data-rate="3200" data-rating="4.9">
               <div class="photo-area">
                 <div class="photo-tile">
                   <img src="assets/images/06.jpg">
@@ -478,7 +561,7 @@
               </div>
               <div class="card-details">
                 <div class="card-identity"><span class="name">Nadia, 25</span><span class="card-rating">★ 4.9</span></div>
-                <div class="card-meta"><span class="tag">Nightlife</span><span class="price">$58 / hr</span></div>
+                <div class="card-meta"><span class="tag">Nightlife</span><span class="price">&#8369;3,200 / hr</span></div>
               </div>
             </a>
             <button class="save-btn" aria-label="Save profile" type="button">
@@ -487,7 +570,7 @@
           </article>
 
           <article class="profile-card" data-category="gaming" data-location="mandaluyong all-manila">
-            <a class="card-link" href="#" data-open-profile data-name="Chloe" data-age="23" data-tag="Gaming" data-rate="62" data-rating="4.9">
+            <a class="card-link" href="#" data-open-profile data-name="Chloe" data-age="23" data-tag="Gaming" data-rate="3400" data-rating="4.9">
               <div class="photo-area">
                 <div class="photo-tile">
                   <img src="assets/images/07.jpg">
@@ -496,7 +579,7 @@
               </div>
               <div class="card-details">
                 <div class="card-identity"><span class="name">Chloe, 23</span><span class="card-rating">★ 4.9</span></div>
-                <div class="card-meta"><span class="tag">Gaming</span><span class="price">$62 / hr</span></div>
+                <div class="card-meta"><span class="tag">Gaming</span><span class="price">&#8369;3,400 / hr</span></div>
               </div>
             </a>
             <button class="save-btn" aria-label="Save profile" type="button">
@@ -505,7 +588,7 @@
           </article>
 
           <article class="profile-card" data-category="local-guides" data-location="quezon-city">
-            <a class="card-link" href="#" data-open-profile data-name="Ari" data-age="29" data-tag="Book club" data-rate="66" data-rating="4.9">
+            <a class="card-link" href="#" data-open-profile data-name="Ari" data-age="29" data-tag="Book club" data-rate="3600" data-rating="4.9">
               <div class="photo-area">
                 <div class="photo-tile">
                   <img src="assets/images/08.jpg">
@@ -514,7 +597,7 @@
               </div>
               <div class="card-details">
                 <div class="card-identity"><span class="name">Ari, 29</span><span class="card-rating">★ 4.9</span></div>
-                <div class="card-meta"><span class="tag">Book club</span><span class="price">$66 / hr</span></div>
+                <div class="card-meta"><span class="tag">Book club</span><span class="price">&#8369;3,600 / hr</span></div>
               </div>
             </a>
             <button class="save-btn" aria-label="Save profile" type="button">
@@ -523,7 +606,7 @@
           </article>
 
           <article class="profile-card" data-category="wellness" data-location="pampanga">
-            <a class="card-link" href="#" data-open-profile data-name="Luna" data-age="22" data-tag="Yoga" data-rate="35" data-rating="4.8">
+            <a class="card-link" href="#" data-open-profile data-name="Luna" data-age="22" data-tag="Yoga" data-rate="1900" data-rating="4.8">
               <div class="photo-area">
                 <div class="photo-tile">
                   <img src="assets/images/09.jpg">
@@ -532,7 +615,7 @@
               </div>
               <div class="card-details">
                 <div class="card-identity"><span class="name">Luna, 22</span><span class="card-rating">★ 4.8</span></div>
-                <div class="card-meta"><span class="tag">Yoga</span><span class="price">$35 / hr</span></div>
+                <div class="card-meta"><span class="tag">Yoga</span><span class="price">&#8369;1,900 / hr</span></div>
               </div>
             </a>
             <button class="save-btn" aria-label="Save profile" type="button">
@@ -541,7 +624,7 @@
           </article>
 
           <article class="profile-card" data-category="local-guides" data-location="cavite laguna">
-            <a class="card-link" href="#" data-open-profile data-name="Jade" data-age="26" data-tag="Hiking" data-rate="40" data-rating="5.0">
+            <a class="card-link" href="#" data-open-profile data-name="Jade" data-age="26" data-tag="Hiking" data-rate="2200" data-rating="5.0">
               <div class="photo-area">
                 <div class="photo-tile">
                   <img src="assets/images/10.jpg">
@@ -550,7 +633,7 @@
               </div>
               <div class="card-details">
                 <div class="card-identity"><span class="name">Jade, 26</span><span class="card-rating">★ 5.0</span></div>
-                <div class="card-meta"><span class="tag">Hiking</span><span class="price">$40 / hr</span></div>
+                <div class="card-meta"><span class="tag">Hiking</span><span class="price">&#8369;2,200 / hr</span></div>
               </div>
             </a>
             <button class="save-btn" aria-label="Save profile" type="button">
@@ -559,7 +642,7 @@
           </article>
 
           <article class="profile-card" data-category="local-guides" data-location="makati">
-            <a class="card-link" href="#" data-open-profile data-name="Zara" data-age="24" data-tag="Art Tours" data-rate="44" data-rating="4.7">
+            <a class="card-link" href="#" data-open-profile data-name="Zara" data-age="24" data-tag="Art Tours" data-rate="2400" data-rating="4.7">
               <div class="photo-area">
                 <div class="photo-tile">
                   <img src="assets/images/11.jpg">
@@ -568,7 +651,7 @@
               </div>
               <div class="card-details">
                 <div class="card-identity"><span class="name">Zara, 24</span><span class="card-rating">★ 4.7</span></div>
-                <div class="card-meta"><span class="tag">Art Tours</span><span class="price">$44 / hr</span></div>
+                <div class="card-meta"><span class="tag">Art Tours</span><span class="price">&#8369;2,400 / hr</span></div>
               </div>
             </a>
             <button class="save-btn" aria-label="Save profile" type="button">
@@ -577,7 +660,7 @@
           </article>
 
           <article class="profile-card" data-category="local-guides" data-location="pasig quezon-city">
-            <a class="card-link" href="#" data-open-profile data-name="Iris" data-age="27" data-tag="Coffee Tasting" data-rate="48" data-rating="4.9">
+            <a class="card-link" href="#" data-open-profile data-name="Iris" data-age="27" data-tag="Coffee Tasting" data-rate="2600" data-rating="4.9">
               <div class="photo-area">
                 <div class="photo-tile">
                   <img src="assets/images/12.jpg">
@@ -586,7 +669,7 @@
               </div>
               <div class="card-details">
                 <div class="card-identity"><span class="name">Iris, 27</span><span class="card-rating">★ 4.9</span></div>
-                <div class="card-meta"><span class="tag">Coffee Tasting</span><span class="price">$48 / hr</span></div>
+                <div class="card-meta"><span class="tag">Coffee Tasting</span><span class="price">&#8369;2,600 / hr</span></div>
               </div>
             </a>
             <button class="save-btn" aria-label="Save profile" type="button">
@@ -595,7 +678,7 @@
           </article>
 
           <article class="profile-card" data-category="local-guides" data-location="taguig">
-            <a class="card-link" href="#" data-open-profile data-name="Mila" data-age="23" data-tag="Photography" data-rate="52" data-rating="4.8">
+            <a class="card-link" href="#" data-open-profile data-name="Mila" data-age="23" data-tag="Photography" data-rate="2900" data-rating="4.8">
               <div class="photo-area">
                 <div class="photo-tile">
                   <img src="assets/images/13.jpg">
@@ -604,7 +687,7 @@
               </div>
               <div class="card-details">
                 <div class="card-identity"><span class="name">Mila, 23</span><span class="card-rating">★ 4.8</span></div>
-                <div class="card-meta"><span class="tag">Photography</span><span class="price">$52 / hr</span></div>
+                <div class="card-meta"><span class="tag">Photography</span><span class="price">&#8369;2,900 / hr</span></div>
               </div>
             </a>
             <button class="save-btn" aria-label="Save profile" type="button">
@@ -613,7 +696,7 @@
           </article>
 
           <article class="profile-card" data-category="local-guides" data-location="cavite">
-            <a class="card-link" href="#" data-open-profile data-name="Nina" data-age="25" data-tag="Cooking" data-rate="56" data-rating="5.0">
+            <a class="card-link" href="#" data-open-profile data-name="Nina" data-age="25" data-tag="Cooking" data-rate="3100" data-rating="5.0">
               <div class="photo-area">
                 <div class="photo-tile">
                   <img src="assets/images/14.jpg">
@@ -622,7 +705,7 @@
               </div>
               <div class="card-details">
                 <div class="card-identity"><span class="name">Nina, 25</span><span class="card-rating">★ 5.0</span></div>
-                <div class="card-meta"><span class="tag">Cooking</span><span class="price">$56 / hr</span></div>
+                <div class="card-meta"><span class="tag">Cooking</span><span class="price">&#8369;3,100 / hr</span></div>
               </div>
             </a>
             <button class="save-btn" aria-label="Save profile" type="button">
@@ -631,7 +714,7 @@
           </article>
 
           <article class="profile-card" data-category="local-guides" data-location="laguna pampanga">
-            <a class="card-link" href="#" data-open-profile data-name="Lena" data-age="28" data-tag="Travel Buddy" data-rate="60" data-rating="4.9">
+            <a class="card-link" href="#" data-open-profile data-name="Lena" data-age="28" data-tag="Travel Buddy" data-rate="3300" data-rating="4.9">
               <div class="photo-area">
                 <div class="photo-tile">
                   <img src="assets/images/15.jpg">
@@ -640,7 +723,7 @@
               </div>
               <div class="card-details">
                 <div class="card-identity"><span class="name">Lena, 28</span><span class="card-rating">★ 4.9</span></div>
-                <div class="card-meta"><span class="tag">Travel Buddy</span><span class="price">$60 / hr</span></div>
+                <div class="card-meta"><span class="tag">Travel Buddy</span><span class="price">&#8369;3,300 / hr</span></div>
               </div>
             </a>
             <button class="save-btn" aria-label="Save profile" type="button">
@@ -649,7 +732,7 @@
           </article>
 
           <article class="profile-card" data-category="wellness" data-location="las-pinas mandaluyong">
-            <a class="card-link" href="#" data-open-profile data-name="Kai" data-age="24" data-tag="Fitness" data-rate="45" data-rating="4.7">
+            <a class="card-link" href="#" data-open-profile data-name="Kai" data-age="24" data-tag="Fitness" data-rate="2500" data-rating="4.7">
               <div class="photo-area">
                 <div class="photo-tile">
                   <img src="assets/images/16.jpg">
@@ -658,7 +741,7 @@
               </div>
               <div class="card-details">
                 <div class="card-identity"><span class="name">Kai, 24</span><span class="card-rating">★ 4.7</span></div>
-                <div class="card-meta"><span class="tag">Fitness</span><span class="price">$45 / hr</span></div>
+                <div class="card-meta"><span class="tag">Fitness</span><span class="price">&#8369;2,500 / hr</span></div>
               </div>
             </a>
             <button class="save-btn" aria-label="Save profile" type="button">
@@ -751,15 +834,21 @@
       // Browsing and configuring a booking is open to everyone with
       // an account, but actually requesting one is a member benefit.
       // Send non-members into the membership flow at this point.
-      var isMember = sessionStorage.getItem('gclubMembershipActive') === 'true';
-      if(!isMember){
+      // Only registered gents can have a membership; visitors sign up first.
+      var registered = sessionStorage.getItem('gclubRegistered') === 'true';
+      var isMember = registered && sessionStorage.getItem('gclubMembershipActive') === 'true';
+      var freeNow = (registered && !isMember && window.gclubFreeStatus) ? window.gclubFreeStatus() : null;
+      var onFree = !!freeNow && !freeNow.expired;
+      var freeUsed = parseInt(sessionStorage.getItem('gclubFreeBookingsUsed'), 10) || 0;
+      if(!isMember && !(onFree && freeUsed < 1)){
+        var target = registered ? 'gent-plan.html?from=market' : 'gent-welcome.html';
         var veil = document.getElementById('page-veil');
         if(veil){
           sessionStorage.setItem('gclubTransition', '1');
           veil.classList.add('is-active');
-          setTimeout(function(){ window.location.href = 'gent-plan.html'; }, 460);
+          setTimeout(function(){ window.location.href = target; }, 460);
         } else {
-          window.location.href = 'gent-plan.html';
+          window.location.href = target;
         }
         return;
       }
@@ -819,6 +908,10 @@
       return prefix + '-' + n() + '-' + n();
     }
     function showSuccess(isGcash){
+      // Free plan: this was their one booking.
+      if(sessionStorage.getItem('gclubMembershipActive') !== 'true' && sessionStorage.getItem('gclubFreePlan') === 'true'){
+        sessionStorage.setItem('gclubFreeBookingsUsed', '1');
+      }
       var name = document.getElementById('booking-pay-name1').textContent;
       document.getElementById('booking-pay-success-sub').textContent = 'You won\u2019t be charged until ' + name + ' accepts \u2014 we\u2019ll notify you as soon as she responds.';
       document.getElementById('booking-pay-success-ref-label').textContent = isGcash ? 'G-Cash reference' : 'Reference';
@@ -848,6 +941,7 @@
       doneBtn.addEventListener('click', function(){
         payView.style.display = 'none';
         formView.style.display = 'block';
+        if(window.gclubApplyMembershipGate) window.gclubApplyMembershipGate();
         resetPayView();
         var closeBtn = document.querySelector('[data-modal-close]');
         if(closeBtn) closeBtn.click();

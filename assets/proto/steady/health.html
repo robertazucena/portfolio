@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta name="robots" content="noindex, nofollow">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Health · Nourish Log · Steady</title>
+<meta name="description" content="Track calories, macros and meals for the day with Steady's mindful nourish log." />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 36 36'%3E%3Crect width='36' height='36' rx='10' fill='%23ea580c'/%3E%3Cpath d='M18 9v18M9 18h18' stroke='white' stroke-width='3.4' stroke-linecap='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400;0,500;0,600;0,700;1,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div id="preloader" aria-hidden="true">
+    <div class="pre-stage">
+      <div class="pre-word" aria-label="Steady">
+        <span style="animation-delay:.05s">S</span><span style="animation-delay:.10s">t</span><span style="animation-delay:.15s">e</span><span style="animation-delay:.20s">a</span><span style="animation-delay:.25s">d</span><span style="animation-delay:.30s">y</span>
+      </div>
+      <div class="pre-ekg-wrap">
+        <svg class="pre-ekg" viewBox="0 0 220 64" aria-hidden="true">
+          <path d="M0 32 H60 L72 8 L86 56 L98 32 H124 L132 20 L140 44 L148 32 H220" />
+        </svg>
+        <div class="pre-mark">
+          <div class="pre-ring"></div>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </div>
+      </div>
+      <p class="pre-caption">Translating into health</p>
+    </div>
+  </div>
+<div class="app-shell">
+  <header class="top-nav">
+    <a class="nav-left" href="index.html" data-transition="page" aria-label="Steady home">
+      <span class="logo-mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span>
+      <span class="brand">Steady</span>
+    </a>
+    <nav class="nav-center" aria-label="Primary">
+      <div class="mobile-account-row">
+        <div class="avatar-circle">SJ</div>
+        <div class="user-info">
+          <p class="u-name">Sarah Jenkins</p>
+          <p class="u-email">Sarah@steady.co</p>
+        </div>
+      </div>
+      <div class="search-pill mobile-search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <span>Search health logs</span>
+      </div>
+          <a class="nav-item" href="index.html" data-transition="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span>Today</span></a>
+          <a class="nav-item active" href="health.html" data-transition="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 2v7a2 2 0 0 0 2 2h1v11"/><path d="M7 2v9"/><path d="M4 2v9"/><path d="M17 2c-1.66 0-3 2.91-3 6.5S15.34 15 17 15s3-2.91 3-6.5S18.66 2 17 2z"/><path d="M17 15v7"/></svg><span>Health</span></a>
+          <a class="nav-item" href="sleep.html" data-transition="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z"/></svg><span>Sleep</span></a>
+          <a class="nav-item" href="circle.html" data-transition="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg><span>Circle</span></a>
+    </nav>
+    <div class="nav-right">
+      <div class="search-pill">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <span>Search health logs</span>
+      </div>
+      <div class="user-brief">
+        <div class="avatar-circle">SJ</div>
+        <div class="user-info">
+          <p class="u-name">Sarah Jenkins</p>
+          <p class="u-email">Sarah@steady.co</p>
+        </div>
+      </div>
+      <button class="nav-toggle" aria-label="Toggle menu" aria-expanded="false">
+        <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+      </button>
+    </div>
+  </header>
+  <main class="main-canvas">
+    <div class="header-row reveal">
+      <div>
+        <p class="eyebrow">Nourish Log</p>
+        <h1 class="page-title">Mindful eating, steady energy.</h1>
+      </div>
+      <div class="view-switcher">
+        <button class="active">Today, Oct 24</button>
+        <button data-toast="Weekly view coming soon.">Weekly</button>
+      </div>
+    </div>
+
+    <div class="pill-row reveal" style="animation-delay:.05s">
+      <a class="metric-pill" href="index.html" data-transition="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> Today</a>
+      <span class="metric-pill active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 2v7a2 2 0 0 0 2 2h1v11"/><path d="M7 2v9"/><path d="M4 2v9"/><path d="M17 2c-1.66 0-3 2.91-3 6.5S15.34 15 17 15s3-2.91 3-6.5S18.66 2 17 2z"/><path d="M17 15v7"/></svg> Nourish Log</span>
+      <a class="metric-pill" href="health.html#heart-rate-trend" data-transition="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 1 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg> Heart Rate</a>
+      <a class="metric-pill" href="rhythm.html" data-transition="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg> Rhythm</a>
+      <a class="metric-pill" href="index.html#hydration" data-transition="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.7s6 6.06 6 10.44a6 6 0 0 1-12 0C6 8.76 12 2.7 12 2.7z"/></svg> Water</a>
+    </div>
+
+    <div class="trio-row reveal" style="animation-delay:.07s">
+      <div class="card trend-card compact" id="heart-rate-trend">
+        <div class="trend-header-row">
+          <div>
+            <p class="card-title">Heart rate trend</p>
+            <p class="card-desc">Resting average today</p>
+          </div>
+          <p class="trend-value">68<span>bpm</span></p>
+        </div>
+        <svg class="trend-svg" viewBox="0 0 640 130" preserveAspectRatio="none">
+              <line class="grid" x1="0" y1="20" x2="640" y2="20"/>
+            <line class="grid" x1="0" y1="65" x2="640" y2="65"/>
+            <line class="grid" x1="0" y1="110" x2="640" y2="110"/>
+          <path class="trend-line" d="M 0.0,81.2 L 106.7,97.5 L 213.3,105.6 L 320.0,73.1 L 426.7,24.4 L 533.3,40.6 L 640.0,65.0"/>
+        </svg>
+        <div class="trend-axis">
+                <span>12am</span>
+              <span>8am</span>
+              <span>4pm</span>
+              <span>12am</span>
+        </div>
+      </div>
+
+      <div class="card mini-ring-card">
+        <p class="mini-ring-title">Nutrition</p>
+        <p class="mini-ring-sub">Macro breakdown</p>
+        <div class="donut-wrap" style="width:120px;height:120px">
+          <svg viewBox="0 0 160 160">
+            <circle cx="80" cy="80" r="70" fill="none" stroke="#fff1e6" stroke-width="18"/>
+              <circle cx="80" cy="80" r="70" fill="none" stroke="#ea580c" stroke-width="18" stroke-dasharray="197.92 439.82" stroke-dashoffset="0.00" stroke-linecap="round"/>
+              <circle cx="80" cy="80" r="70" fill="none" stroke="#f59e0b" stroke-width="18" stroke-dasharray="131.95 439.82" stroke-dashoffset="-197.92" stroke-linecap="round"/>
+              <circle cx="80" cy="80" r="70" fill="none" stroke="#fbbf24" stroke-width="18" stroke-dasharray="109.96 439.82" stroke-dashoffset="-329.87" stroke-linecap="round"/>
+          </svg>
+          <div class="donut-center"><b style="font-size:16px">1,640</b><span style="font-size:9px">KCAL</span></div>
+        </div>
+        <div class="macro-group" style="justify-content:center">
+          <div class="macro-item"><span class="dot" style="background:#ea580c"></span>Carb</div>
+          <div class="macro-item"><span class="dot" style="background:#f59e0b"></span>Protein</div>
+          <div class="macro-item"><span class="dot" style="background:#fbbf24"></span>Sugar</div>
+        </div>
+      </div>
+      <div class="card mini-ring-card">
+        <p class="mini-ring-title">Daily movement</p>
+        <p class="mini-ring-sub">Concentric progress</p>
+        <div class="donut-wrap" style="width:120px;height:120px">
+          <svg viewBox="0 0 160 160">
+            <circle cx="80" cy="80" r="70" fill="none" stroke="#fff1e6" stroke-width="18"/>
+            <circle cx="80" cy="80" r="70" fill="none" stroke="#ea580c" stroke-width="18"
+              stroke-dasharray="360.65 439.82" stroke-linecap="round"/>
+          </svg>
+          <div class="donut-center"><b style="font-size:16px">8.4k</b><span style="font-size:9px">STEPS</span></div>
+        </div>
+        <p class="mini-ring-caption"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg> 340 kcal burned</p>
+      </div>
+    </div>
+
+    <section class="food-grid reveal" style="animation-delay:.1s">
+      <div class="food-left">
+        <div class="card calorie-card">
+          <div class="card-title-row">
+            <div>
+              <p class="card-title">Daily Calories</p>
+              <p class="card-desc">Mindful fuel calculation based on logged meals</p>
+            </div>
+            <span class="badge" style="color:var(--accent)">62% Target</span>
+          </div>
+          <div class="chart-info-row">
+            <div class="donut-wrap" style="width:160px;height:160px">
+              <svg viewBox="0 0 160 160">
+                <circle cx="80" cy="80" r="70" fill="none" stroke="#fff1e6" stroke-width="16"/>
+                <circle cx="80" cy="80" r="70" fill="none" stroke="#ea580c" stroke-width="16"
+                  stroke-dasharray="109.96 439.82" stroke-linecap="round"/>
+              </svg>
+              <div class="donut-center"><b>1,240</b><span style="text-transform:none;font-weight:500">of 2,000 kcal</span></div>
+            </div>
+            <div class="legend-stack" style="min-width:260px">
+              <div>
+                <p class="remain-label">Remaining Allowance Today</p>
+                <p class="remain-value">760 kcal</p>
+              </div>
+              <div>
+                <div class="goal-row"><span>Goal Completion</span><b>62%</b></div>
+                <div class="progress-track"><div class="progress-fill" data-animate-width="62%" style="width:62%"></div></div>
+              </div>
+            </div>
+          </div>
+          <hr class="hr-line" />
+          <div class="macro-legend">
+            <div>
+              <div class="name"><span class="dot" style="background:#ea580c"></span>Carbs</div>
+              <p class="amt">145g <small>/ 250g</small></p>
+            </div>
+            <div>
+              <div class="name"><span class="dot" style="background:#f59e0b"></span>Protein</div>
+              <p class="amt">68g <small>/ 120g</small></p>
+            </div>
+            <div>
+              <div class="name"><span class="dot" style="background:#fbbf24"></span>Sugar</div>
+              <p class="amt">42g <small>/ 65g</small></p>
+            </div>
+          </div>
+        </div>
+
+        <div class="card goal-adjuster">
+          <div>
+            <h4>Daily Target Goal</h4>
+            <p>Adjust your active metabolic target</p>
+          </div>
+          <div class="stepper">
+            <button data-stepper-minus aria-label="Decrease goal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
+            <b data-stepper-value="2000">2,000 kcal</b>
+            <button data-stepper-plus aria-label="Increase goal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
+          </div>
+        </div>
+
+        <div class="footnote"><p>"Listen to your hunger. Feed your body with gentle love."</p></div>
+      </div>
+
+      <div class="food-right">
+        <button type="button" class="log-food-cta" data-open-food-modal="Breakfast">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Log food
+        </button>
+            <div class="card meal-group" data-meal-group="Breakfast">
+              <div class="meal-header">
+                <div class="name-row"><h4>Breakfast</h4><span class="meal-target">Target: 500 kcal</span></div>
+                <span class="meal-total" data-meal-total>420 kcal</span>
+              </div>
+              <div class="meal-items" data-meal-items>
+              <div class="meal-item">
+                  <div><p class="food-name">Avocado & Sourdough Toast</p><p class="food-detail">1 slice sourdough, half avocado</p></div>
+                  <span class="food-kcal">280 kcal</span>
+                </div>
+<div class="meal-item">
+                  <div><p class="food-name">Organic Poached Eggs</p><p class="food-detail">2 large eggs, pinch of salt</p></div>
+                  <span class="food-kcal">140 kcal</span>
+                </div>
+              </div>
+            </div>
+            <div class="card meal-group" data-meal-group="Lunch">
+              <div class="meal-header">
+                <div class="name-row"><h4>Lunch</h4><span class="meal-target">Target: 600 kcal</span></div>
+                <span class="meal-total" data-meal-total>585 kcal</span>
+              </div>
+              <div class="meal-items" data-meal-items>
+              <div class="meal-item">
+                  <div><p class="food-name">Quinoa Bowl with Roasted Beets</p><p class="food-detail">1.5 cups quinoa, kale, goat cheese</p></div>
+                  <span class="food-kcal">420 kcal</span>
+                </div>
+<div class="meal-item">
+                  <div><p class="food-name">Grilled Herb Chicken Breast</p><p class="food-detail">120g lean chicken breast</p></div>
+                  <span class="food-kcal">165 kcal</span>
+                </div>
+              </div>
+            </div>
+            <div class="card meal-group" data-meal-group="Dinner">
+              <div class="meal-header">
+                <div class="name-row"><h4>Dinner</h4><span class="meal-target">Target: 600 kcal</span></div>
+                <span class="meal-total" data-meal-total>235 kcal</span>
+              </div>
+              <div class="meal-items" data-meal-items>
+              <div class="meal-item">
+                  <div><p class="food-name">Wild Caught Baked Salmon</p><p class="food-detail">150g baked fillet, lemon & dill</p></div>
+                  <span class="food-kcal">235 kcal</span>
+                </div>
+              </div>
+            </div>
+            <div class="card meal-group" data-meal-group="Snacks">
+              <div class="meal-header">
+                <div class="name-row"><h4>Snacks</h4><span class="meal-target">Target: 300 kcal</span></div>
+                <span class="meal-total" data-meal-total>0 kcal</span>
+              </div>
+              <div class="meal-items" data-meal-items>
+              <p class="meal-empty">No entries logged yet</p>
+              </div>
+            </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-bg-shape" style="width:260px;height:260px;left:-130px;top:-114px;border-radius:28%;transform:rotate(-12deg);"></div>
+    <div class="footer-bg-shape" style="width:280px;height:280px;right:-126px;top:-80px;border-radius:28%;transform:rotate(18deg);"></div>
+    <div class="footer-bg-shape" style="width:220px;height:220px;left:calc(50% - 310px);bottom:-118px;border-radius:28%;transform:rotate(-8deg);"></div>
+    <div class="footer-bg-shape" style="width:240px;height:240px;left:calc(50% + 100px);bottom:-136px;border-radius:28%;transform:rotate(-10deg);"></div>
+    <div class="footer-bg-shape" style="width:200px;height:200px;right:-174px;bottom:-142px;border-radius:28%;transform:rotate(14deg);"></div>
+
+    <div class="footer-grid">
+      <div class="footer-col footer-col-brand">
+        <div class="brand-row">
+          <span class="logo-mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span>
+          <span class="brand">Steady</span>
+        </div>
+        <p>Your space for mindful health, steady habits, and a clearer mind.</p>
+        <div class="social-row">
+          <a class="social-icon" href="#" aria-label="Twitter" data-toast="Opens Twitter (demo)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 4.6c-.8.35-1.6.6-2.5.7.9-.55 1.6-1.4 1.9-2.4-.85.5-1.8.85-2.8 1.05A4.3 4.3 0 0 0 11.5 7.9 12.3 12.3 0 0 1 2.6 3.3a4.3 4.3 0 0 0 1.33 5.75c-.7 0-1.36-.2-1.94-.53v.05A4.3 4.3 0 0 0 5.4 12.6a4.3 4.3 0 0 1-1.94.07 4.3 4.3 0 0 0 4.02 3A8.63 8.63 0 0 1 2 17.5a12.2 12.2 0 0 0 6.62 1.94c7.94 0 12.29-6.58 12.29-12.29 0-.19 0-.37-.02-.56A8.8 8.8 0 0 0 22 4.6z"/></svg></a>
+          <a class="social-icon" href="#" aria-label="Instagram" data-toast="Opens Instagram (demo)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg></a>
+          <a class="social-icon" href="#" aria-label="LinkedIn" data-toast="Opens LinkedIn (demo)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5.001 2.5 2.5 0 0 1 0-5.002zM3 9h4v12H3zM10 9h3.6v1.7h.05c.5-.9 1.7-1.85 3.5-1.85 3.75 0 4.45 2.4 4.45 5.5V21h-4v-5.4c0-1.3 0-3-1.85-3-1.85 0-2.15 1.4-2.15 2.9V21h-4z"/></svg></a>
+        </div>
+      </div>
+
+      <div class="footer-col">
+        <span class="head">Explore</span>
+        <a href="index.html" data-transition="page">Today</a>
+        <a href="health.html" data-transition="page">Health</a>
+        <a href="sleep.html" data-transition="page">Sleep</a>
+        <a href="circle.html" data-transition="page">Circle</a>
+        <a href="rhythm.html" data-transition="page">Rhythm</a>
+      </div>
+
+      <div class="footer-col">
+        <span class="head">Company</span>
+        <a href="#" data-toast="About Steady — coming soon.">About</a>
+        <a href="#" data-toast="Privacy policy — coming soon.">Privacy</a>
+        <a href="#" data-toast="Terms of service — coming soon.">Terms</a>
+      </div>
+
+      <div class="footer-col footer-col-newsletter">
+        <span class="head">Stay in the loop</span>
+        <p class="newsletter-copy">Gentle reminders and wellness notes, at most twice a month.</p>
+        <form class="newsletter" onsubmit="event.preventDefault(); steadyToast('Subscribed! Welcome to Steady.');">
+          <label class="newsletter-input">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 6l-10 7L2 6"/></svg>
+            <input type="email" placeholder="Email address" required />
+          </label>
+          <button class="newsletter-cta" type="submit">Subscribe <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></button>
+        </form>
+      </div>
+    </div>
+
+
+    <div class="footer-bottom">
+      <p>© 2026 Steady. All rights reserved.</p>
+      <p>Built for mindful health.</p>
+    </div>
+  </footer>
+</div>
+  <div class="ai-widget">
+    <div class="ai-panel" id="aiPanel" role="dialog" aria-label="Steady Companion chat" aria-hidden="true">
+      <div class="ai-panel-header">
+        <span class="avatar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l1.7 4.8L19 8.4l-5.3 1.6L12 15l-1.7-5-5.3-1.6L10 6.8 12 2z"/><path d="M19 14.5l.8 2.2 2.2.8-2.2.8-.8 2.2-.8-2.2-2.2-.8 2.2-.8z"/></svg></span>
+        <div class="ai-panel-title">
+          <p class="name">Steady Companion</p>
+          <p class="status"><i></i>Usually replies instantly</p>
+        </div>
+        <button class="ai-close" id="aiCloseBtn" aria-label="Close chat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
+      </div>
+      <div class="ai-messages" id="aiMessages">
+        <div class="ai-msg bot">Hi Sarah — I'm your Steady Companion. Ask me anything about your health data, or tap a question below to get started.</div>
+      </div>
+      <div class="ai-suggest" id="aiSuggest"></div>
+      <form class="ai-input-row" id="aiForm">
+        <input id="aiInput" type="text" placeholder="Ask about your vitals or routine…" autocomplete="off" />
+        <button type="button" class="ai-input-mic" aria-label="Voice input (demo)" data-toast="Voice input isn't wired up in this demo — try typing instead."><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg></button>
+        <button type="submit" aria-label="Send"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></button>
+      </form>
+    </div>
+    <button class="fab-ai" id="aiFabBtn" aria-label="Open Steady Companion" aria-expanded="false">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l1.7 4.8L19 8.4l-5.3 1.6L12 15l-1.7-5-5.3-1.6L10 6.8 12 2z"/><path d="M19 14.5l.8 2.2 2.2.8-2.2.8-.8 2.2-.8-2.2-2.2-.8 2.2-.8z"/></svg>
+    </button>
+  </div>
+  <div class="chat-modal-backdrop" id="foodBackdrop"></div>
+  <div class="food-modal" id="foodModal" role="dialog" aria-label="Log food" aria-hidden="true">
+    <div class="food-modal-header">
+      <div>
+        <p class="food-modal-title">Log food</p>
+        <p class="food-modal-sub">Adding to <span id="foodMealLabel">Snacks</span></p>
+      </div>
+      <button class="chat-modal-close" id="foodCloseBtn" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
+    </div>
+
+    <div class="food-meal-picker">
+        <button type="button" class="food-meal-btn" data-meal="Breakfast">Breakfast</button>
+        <button type="button" class="food-meal-btn" data-meal="Lunch">Lunch</button>
+        <button type="button" class="food-meal-btn" data-meal="Dinner">Dinner</button>
+        <button type="button" class="food-meal-btn active" data-meal="Snacks">Snacks</button>
+    </div>
+
+    <div class="food-tabs">
+      <button type="button" class="food-tab active" data-tab="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg> Search</button>
+      <button type="button" class="food-tab" data-tab="scan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><line x1="14" y1="14" x2="21" y2="14"/><line x1="14" y1="21" x2="21" y2="21"/><line x1="17.5" y1="14" x2="17.5" y2="21"/></svg> Scan barcode</button>
+      <button type="button" class="food-tab" data-tab="photo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg> Photo</button>
+    </div>
+
+    <div class="food-panel" data-panel="search">
+      <input type="text" class="food-search-input" id="foodSearchInput" placeholder="Search foods, e.g. &quot;grilled chicken&quot;" autocomplete="off" />
+      <div class="food-results" id="foodResults"></div>
+    </div>
+
+    <div class="food-panel" data-panel="scan" hidden>
+      <div class="food-scan-frame" id="foodScanFrame">
+        <span class="food-scan-corner tl"></span><span class="food-scan-corner tr"></span>
+        <span class="food-scan-corner bl"></span><span class="food-scan-corner br"></span>
+        <span class="food-scan-line" id="foodScanLine"></span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><line x1="14" y1="14" x2="21" y2="14"/><line x1="14" y1="21" x2="21" y2="21"/><line x1="17.5" y1="14" x2="17.5" y2="21"/></svg>
+      </div>
+      <button type="button" class="btn btn-grad food-scan-btn" id="foodScanBtn">Scan barcode</button>
+      <div class="food-found-card" id="foodScanResult" hidden></div>
+    </div>
+
+    <div class="food-panel" data-panel="photo" hidden>
+      <label class="food-photo-drop" id="foodPhotoDrop">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+        <span>Upload or take a photo of your meal</span>
+        <input type="file" accept="image/*" id="foodPhotoInput" hidden />
+      </label>
+      <div class="food-found-card" id="foodPhotoResult" hidden></div>
+    </div>
+  </div>
+<script src="script.js"></script>
+</body>
+</html>

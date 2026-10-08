@@ -130,40 +130,123 @@
   document.addEventListener('DOMContentLoaded', function(){
     if(document.querySelector('.profile-grid')) renderGrid();
 
-    // Gentleman payment page: reflect whichever plan was actually chosen
-    var planLine = document.getElementById('pay-plan-line');
-    if(planLine){
-      var storedName = sessionStorage.getItem('gclubPlanName');
-      var storedPrice = sessionStorage.getItem('gclubPlanPrice');
-      var storedPeriod = sessionStorage.getItem('gclubPlanPeriod');
-      if(storedName && storedPrice){
-        planLine.textContent = storedName + ' plan - \u20b1' + Number(storedPrice).toLocaleString() + ' ' + storedPeriod;
-        var amt = document.getElementById('pay-amount-value');
-        var authAmt = document.getElementById('authorize-amount-value');
-        if(amt) amt.textContent = '\u20b1' + Number(storedPrice).toLocaleString();
-        if(authAmt) authAmt.textContent = '\u20b1' + Number(storedPrice).toLocaleString();
+    // "Book her again" links arrive as index.html?profile=Name \u2014 open that profile.
+    var wantedProfile = new URLSearchParams(window.location.search).get('profile');
+    if(wantedProfile){
+      var wantedTriggers = document.querySelectorAll('[data-open-profile]');
+      for(var wi = 0; wi < wantedTriggers.length; wi++){
+        if((wantedTriggers[wi].getAttribute('data-name') || '').toLowerCase() === wantedProfile.toLowerCase()){
+          openProfileModal(wantedTriggers[wi]);
+          break;
+        }
       }
     }
 
-    // Gentleman review page: only show an active membership if payment
-    // was actually completed \u2014 the fee is what makes it real.
-    var membershipRow = document.getElementById('gent-membership-value');
-    if(membershipRow){
-      var isActive = sessionStorage.getItem('gclubMembershipActive') === 'true';
-      if(isActive){
-        var name = sessionStorage.getItem('gclubPlanName') || 'Monthly';
-        var price = sessionStorage.getItem('gclubPlanPrice') || '800';
-        var period = sessionStorage.getItem('gclubPlanPeriod') || '/ month';
-        membershipRow.textContent = name + ' \u2014 \u20b1' + Number(price).toLocaleString() + ' ' + period;
-        membershipRow.style.color = '#2f9b67';
-        var upsell = document.getElementById('gent-upsell-card');
-        if(upsell){
-          upsell.innerHTML = '<div>' +
-            '<p class="ord-label">Membership active</p>' +
-            '<p class="plan-line" style="font-size:18px;">You&rsquo;re a ' + name + ' member</p>' +
-            '<p style="color:var(--muted); font-size:13px; margin:4px 0 0;">Your fee has been received. Manage or change your plan anytime from your profile.</p>' +
-          '</div>';
-        }
+    // ---- Gentleman application: remember how far they got, offer to resume ----
+    var GENT_STEP_PAGES = { 'gent-details.html': 2, 'gent-preferences.html': 3, 'gent-verify.html': 4 };
+    var thisPage = window.location.pathname.split('/').pop();
+    if(GENT_STEP_PAGES[thisPage]) rememberGentStep(GENT_STEP_PAGES[thisPage]);
+
+    var resumeBanner = document.getElementById('resume-banner');
+    if(resumeBanner && !isRegistered()){
+      var resumeStep = parseInt(sessionStorage.getItem('gclubGentProgress'), 10) || 1;
+      var RESUME = {
+        2: ['your details', 'gent-details.html'],
+        3: ['your preferences', 'gent-preferences.html'],
+        4: ['verification', 'gent-verify.html'],
+        5: ['plan & payment', 'gent-plan.html?from=application']
+      };
+      if(RESUME[resumeStep]){
+        document.getElementById('resume-step-name').textContent = RESUME[resumeStep][0];
+        document.getElementById('resume-link').setAttribute('href', RESUME[resumeStep][1]);
+        resumeBanner.style.display = 'flex';
+      }
+    }
+
+    // One-time-code autofill hint on every verification code row
+    document.querySelectorAll('.otp-row').forEach(function(row){
+      var firstBox = row.querySelector('.otp-box');
+      if(firstBox) firstBox.setAttribute('autocomplete', 'one-time-code');
+    });
+
+    // ---- Gentleman wallet: show the credit balance, and open Top up when asked ----
+    var walletBalance = document.getElementById('credit-balance-amount');
+    if(walletBalance){
+      var shownCredit = currentCredit();
+      if(walletBalance.firstChild) walletBalance.firstChild.textContent = shownCredit.toLocaleString('en-US') + ' ';
+      var walletNote = document.querySelector('.wallet-balance .note');
+      if(walletNote) walletNote.innerHTML = '\u2248 \u20b1' + shownCredit.toLocaleString('en-US') + ' value \u00b7 1 credit = \u20b11';
+      if(new URLSearchParams(window.location.search).get('topup') === '1'){
+        var topupOpenBtn = document.getElementById('open-topup-btn');
+        if(topupOpenBtn) setTimeout(function(){ topupOpenBtn.click(); }, 400);
+      }
+    }
+    var membershipCreditNote = document.getElementById('membership-credit-note');
+    if(membershipCreditNote){
+      var memPlan = sessionStorage.getItem('gclubPlanName');
+      if(sessionStorage.getItem('gclubMembershipActive') === 'true' && PLAN_CREDIT[memPlan]){
+        membershipCreditNote.textContent = 'Renews ' + PLAN_RENEWS[memPlan] + ' with +' + PLAN_CREDIT[memPlan].toLocaleString('en-US') + ' credit';
+        membershipCreditNote.style.display = 'block';
+      }
+    }
+
+    // ---- Gentleman "Plan & payment" step (also the plan-change page) ----
+    var planForm = document.getElementById('plan-form-card');
+    if(planForm){
+      var fromParam = new URLSearchParams(window.location.search).get('from');
+      if(['application', 'profile', 'market'].indexOf(fromParam) !== -1){
+        sessionStorage.setItem('gclubPlanReturn', fromParam);
+      }
+      var planReturn = sessionStorage.getItem('gclubPlanReturn');
+      if(['application', 'profile', 'market'].indexOf(planReturn) === -1){
+        // someone who is already registered is changing plans, not applying again
+        planReturn = isRegistered() ? 'profile' : 'application';
+      }
+      var upgradeMode = (planReturn === 'profile' || planReturn === 'market');
+      planForm.setAttribute('data-mode', upgradeMode ? 'upgrade' : 'application');
+      var RETURNS = {
+        application: ['gent-verify.html', 'Back'],
+        profile: ['gent-profile.html', 'Back to profile'],
+        market: ['index.html', 'Back to marketplace']
+      };
+      var planBackLink = document.getElementById('gent-plan-back');
+      if(planBackLink){
+        planBackLink.setAttribute('href', RETURNS[planReturn][0]);
+        if(planBackLink.lastChild) planBackLink.lastChild.textContent = ' ' + RETURNS[planReturn][1];
+      }
+      var payDoneLink = document.getElementById('pay-done-link');
+      if(payDoneLink){
+        payDoneLink.setAttribute('href', RETURNS[planReturn][0]);
+        if(payDoneLink.firstChild) payDoneLink.firstChild.textContent = RETURNS[planReturn][1] + ' ';
+      }
+      var startName = sessionStorage.getItem('gclubPlanName');
+      if(upgradeMode){
+        // a plan change from the profile or marketplace is not part of the application
+        var wizardProgress = document.querySelector('.app-progress');
+        if(wizardProgress) wizardProgress.style.display = 'none';
+        var headingEyebrow = document.querySelector('.form-heading .eyebrow');
+        if(headingEyebrow) headingEyebrow.textContent = 'Membership';
+        var explainLabel = document.querySelector('.step-explain .label');
+        if(explainLabel) explainLabel.textContent = 'Membership';
+        ['plan-card-limited', 'app-only-sections'].forEach(function(hideId){
+          var hideEl = document.getElementById(hideId);
+          if(hideEl) hideEl.style.display = 'none';
+        });
+        if(startName === 'Free') startName = null;
+      } else {
+        rememberGentStep(5);
+      }
+      if(!startName){
+        sessionStorage.setItem('gclubPlanName', 'Monthly');
+        sessionStorage.setItem('gclubPlanPrice', '800');
+        sessionStorage.setItem('gclubPlanPeriod', '/ month');
+      }
+      applyPlanToPayment();
+      if(upgradeMode){
+        var upgradeBtn = document.getElementById('pay-continue-btn');
+        if(upgradeBtn){ upgradeBtn.disabled = false; upgradeBtn.classList.remove('is-disabled'); }
+      } else {
+        updateGentPrimaryState();
       }
     }
   });
@@ -190,7 +273,7 @@
     setText('modal-name', fullName);
     setText('modal-name2', name);
     if(rating){ setText('modal-rating', rating); setText('modal-rating2', rating); }
-    if(rate){ setText('modal-rate', rate); }
+    if(rate){ setText('modal-rate', Number(rate).toLocaleString('en-US')); }
     setText('modal-cover-initial', initial);
     setText('modal-avatar-initial', initial);
     lastTrigger = trigger;
@@ -216,7 +299,8 @@
      flow sets once a fee is actually paid.
   --------------------------------------------------------- */
   function applyMembershipGate(){
-    var isMember = sessionStorage.getItem('gclubMembershipActive') === 'true';
+    var registered = isRegistered();
+    var isMember = registered && sessionStorage.getItem('gclubMembershipActive') === 'true';
 
     var reviewsSection = document.getElementById('reviews-section');
     var reviewsLocked = document.getElementById('reviews-locked-view');
@@ -230,10 +314,60 @@
     var galleryThumbs = document.getElementById('gallery-thumbs');
     var galleryCounter = document.querySelector('.gallery-counter');
     var galleryLockedNote = document.getElementById('gallery-locked-note');
-    if(galleryThumbs) galleryThumbs.style.display = isMember ? 'grid' : 'none';
+    if(galleryThumbs){
+      // Non-members still see the rest of the gallery, just blurred and not clickable.
+      galleryThumbs.style.display = 'grid';
+      galleryThumbs.classList.toggle('is-locked', !isMember);
+      galleryThumbs.querySelectorAll('.gallery-thumb').forEach(function(t){
+        if(isMember){ t.removeAttribute('tabindex'); t.removeAttribute('aria-disabled'); }
+        else { t.setAttribute('tabindex', '-1'); t.setAttribute('aria-disabled', 'true'); }
+      });
+    }
     if(galleryCounter) galleryCounter.style.display = isMember ? '' : 'none';
     if(galleryLockedNote) galleryLockedNote.style.display = isMember ? 'none' : 'block';
+
+    // Visitors are sent to sign up first; signed-in gents go to the plan page.
+    var ctaHref = registered ? 'gent-plan.html?from=market' : 'gent-welcome.html';
+    var ctaText = registered ? 'Become a member \u2192' : 'Join G Club \u2192';
+    ['#reviews-locked-view a.btn', '#booking-locked-view a.btn', '#gallery-locked-note a'].forEach(function(sel){
+      var link = document.querySelector(sel);
+      if(link){ link.setAttribute('href', ctaHref); link.textContent = ctaText; }
+    });
+
+    // Free plan: one booking, then booking stays locked until they upgrade.
+    var freeNow = (!isMember && registered) ? freeStatus() : null;
+    var isFree = !!freeNow;
+    var freeUsed = parseInt(sessionStorage.getItem('gclubFreeBookingsUsed'), 10) || 0;
+    var freeExpired = isFree && freeNow.expired;
+    var limitReached = isFree && (freeUsed >= 1 || freeExpired);
+    var bookingForm = document.getElementById('booking-form-view');
+    var bookingPay = document.getElementById('booking-payment-view');
+    var bookingLocked = document.getElementById('booking-locked-view');
+    var freeNote = document.getElementById('free-booking-note');
+    if(freeNote){
+      freeNote.style.display = (isFree && !limitReached) ? 'block' : 'none';
+      if(isFree && !limitReached) freeNote.textContent = 'Free plan \u00b7 1 booking included \u00b7 ' + freeNow.daysLeft + (freeNow.daysLeft === 1 ? ' day' : ' days') + ' left';
+    }
+    if(bookingLocked){
+      if(limitReached){
+        var lockHead = bookingLocked.querySelector('h3');
+        var lockText = bookingLocked.querySelector('p');
+        if(lockHead) lockHead.textContent = freeExpired ? 'Your free 14 days have ended' : 'You\u2019ve used your free booking';
+        if(lockText) lockText.textContent = freeExpired
+          ? 'Choose Starter or Monthly to keep booking companions.'
+          : 'The Free plan includes one booking. Become a member to keep booking companions.';
+        if(bookingForm) bookingForm.style.display = 'none';
+        if(bookingPay) bookingPay.style.display = 'none';
+        bookingLocked.style.display = 'flex';
+        bookingLocked.setAttribute('data-limit', '1');
+      } else if(bookingLocked.getAttribute('data-limit') === '1'){
+        bookingLocked.style.display = 'none';
+        bookingLocked.removeAttribute('data-limit');
+        if(bookingForm) bookingForm.style.display = '';
+      }
+    }
   }
+  window.gclubApplyMembershipGate = applyMembershipGate;
 
   /* ---------------------------------------------------------
      Profile modal gallery: one large main photo plus a
@@ -259,12 +393,104 @@
   /* Marketplace nav: reflect a logged-in session (set at login) by
      swapping Become a G / Log in for a profile chip, same idea as
      the chip already shown on the account pages themselves. */
+  /* The Free plan lasts 14 days from the day they sign up, with 20 messages and
+     one booking in that time. After that they need Starter or Monthly. */
+  var FREE_DAYS = 14;
+  function freeStatus(){
+    if(sessionStorage.getItem('gclubMembershipActive') === 'true' || sessionStorage.getItem('gclubFreePlan') !== 'true') return null;
+    // Demo helper: add ?freeDay=15 to any page to see the plan 15 days in.
+    var demoDay = new URLSearchParams(window.location.search).get('freeDay');
+    if(demoDay !== null && /^\d+$/.test(demoDay)){
+      sessionStorage.setItem('gclubFreeStart', String(Date.now() - parseInt(demoDay, 10) * 86400000));
+    }
+    var start = parseInt(sessionStorage.getItem('gclubFreeStart'), 10);
+    if(!start){ start = Date.now(); sessionStorage.setItem('gclubFreeStart', String(start)); }
+    var endsOn = start + FREE_DAYS * 86400000;
+    var msLeft = endsOn - Date.now();
+    return { expired: msLeft <= 0, daysLeft: Math.max(0, Math.ceil(msLeft / 86400000)), endsOn: endsOn };
+  }
+  window.gclubFreeStatus = freeStatus;
+  function formatDay(ms){
+    var months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    var d = new Date(ms);
+    return months[d.getMonth()] + ' ' + d.getDate();
+  }
+
+  /* Money is always pesos. Plans add credit (1 credit = 1 peso): when a
+     plan is bought and again at every renewal. Top-ups add more. */
+  function peso(n){ return '\u20b1' + Number(n).toLocaleString('en-US'); }
+  var PLAN_CREDIT = { Starter: 300, Monthly: 800 };
+  var PLAN_RENEWS = { Starter: 'every 2 weeks', Monthly: 'every month' };
+  function currentCredit(){
+    var saved = parseInt(sessionStorage.getItem('gclubCredit'), 10);
+    if(!isNaN(saved)) return saved;
+    // demo wallets: Daniel (and anyone not yet signed in) shows the page's own balance
+    var who = sessionStorage.getItem('gclubLoggedInName');
+    return (who && who !== 'Daniel') ? 0 : 2450;
+  }
+  function addCredit(n, freshAccount){
+    var base = (freshAccount && sessionStorage.getItem('gclubCredit') === null) ? 0 : currentCredit();
+    sessionStorage.setItem('gclubCredit', String(base + n));
+  }
+  function creditNoteHtml(planName){
+    var c = PLAN_CREDIT[planName] || 0;
+    if(!c) return '';
+    return '<strong>' + c.toLocaleString('en-US') + ' credit</strong> added to your balance. It renews ' + PLAN_RENEWS[planName] + ' with ' + c.toLocaleString('en-US') + ' more. ' +
+      'Need more? <a href="gent-profile.html?topup=1" data-transition>Top up</a> with \u20b1500, \u20b11,000 or any amount.';
+  }
+
+  function isRegistered(){ return sessionStorage.getItem('gclubRegistered') === 'true'; }
+
+  /* Banner under the marketplace nav for signed-in gents who aren't paid
+     members yet: says what is locked and puts the plan page one click away. */
+  function applyMemberBanner(){
+    var banner = document.getElementById('member-banner');
+    if(!banner) return;
+    var isGent = sessionStorage.getItem('gclubLoggedInProfile') === 'gent-profile.html';
+    var paid = sessionStorage.getItem('gclubMembershipActive') === 'true';
+    if(!(isRegistered() && isGent && !paid)){ banner.style.display = 'none'; return; }
+    var freeNow = freeStatus();
+    var used = parseInt(sessionStorage.getItem('gclubFreeBookingsUsed'), 10) || 0;
+    var text, cta;
+    if(freeNow && freeNow.expired){
+      text = 'Your free 14 days have ended. Choose Starter or Monthly to keep messaging and booking.';
+      cta = 'Choose a plan \u2192';
+    } else if(freeNow && used >= 1){
+      text = 'You\u2019ve used your free booking. Become a member to keep booking companions.';
+      cta = 'Become a member \u2192';
+    } else if(freeNow){
+      text = 'You\u2019re on the Free plan \u2014 ' + freeNow.daysLeft + (freeNow.daysLeft === 1 ? ' day' : ' days') + ' left, with 1 booking and 20 messages. Upgrade for photos, reviews, and unlimited booking.';
+      cta = 'Upgrade \u2192';
+    } else {
+      text = 'You\u2019re signed in without a membership. Extra photos, reviews, and booking are for members.';
+      cta = 'Choose a plan \u2192';
+    }
+    var t = document.getElementById('member-banner-text');
+    var c = document.getElementById('member-banner-cta');
+    if(t) t.textContent = text;
+    if(c) c.textContent = cta;
+    banner.style.display = 'block';
+  }
+
+  /* Log out clears who you are and what you've bought, but keeps the
+     two-sided session confirmations so a booking can still be completed
+     from the other person's account. */
+  function clearSessionForLogout(){
+    ['gclubLoggedInName','gclubLoggedInInitial','gclubLoggedInProfile','gclubRegistered',
+     'gclubMembershipActive','gclubFreePlan','gclubFreeBookingsUsed','gclubFreeMsgCount','gclubFreeStart',
+     'gclubPlanName','gclubPlanPrice','gclubPlanPeriod','gclubPlanReturn','gclubGentProgress','gclubCredit'
+    ].forEach(function(k){ sessionStorage.removeItem(k); });
+  }
+
+  /* Marketplace nav: reflect a logged-in session (set at login or at
+     signup) by swapping Become a G / Log in for a profile chip. */
   function applyLoggedInNav(){
     var chip = document.getElementById('nav-logged-in-chip');
     if(!chip) return;
     var name = sessionStorage.getItem('gclubLoggedInName');
     var becomeBtn = document.getElementById('nav-become-g-btn');
     var loginBtn = document.getElementById('nav-login-btn');
+    var logoutBtn = document.getElementById('nav-logout-btn');
     if(name){
       var initial = sessionStorage.getItem('gclubLoggedInInitial') || name[0];
       var profileHref = sessionStorage.getItem('gclubLoggedInProfile') || 'index.html';
@@ -276,11 +502,14 @@
       chip.style.display = 'flex';
       if(becomeBtn) becomeBtn.style.display = 'none';
       if(loginBtn) loginBtn.style.display = 'none';
+      if(logoutBtn) logoutBtn.style.display = '';
     } else {
       chip.style.display = 'none';
       if(becomeBtn) becomeBtn.style.display = '';
       if(loginBtn) loginBtn.style.display = '';
+      if(logoutBtn) logoutBtn.style.display = 'none';
     }
+    applyMemberBanner();
   }
   applyLoggedInNav();
 
@@ -304,6 +533,8 @@
   }
 
   function selectGalleryPhoto(thumb){
+    var strip = thumb.closest('#gallery-thumbs');
+    if(strip && strip.classList.contains('is-locked')) return;
     var main = document.getElementById('modal-cover');
     var tile = thumb.querySelector('.photo-tile');
     var counter = document.getElementById('gallery-counter-current');
@@ -336,7 +567,7 @@
     var rateEl = document.getElementById('modal-rate');
     if(!hoursEl || !rateEl) return;
     var hours = parseInt(hoursEl.textContent, 10) || 3;
-    var rate = parseFloat(rateEl.textContent) || 0;
+    var rate = parseInt(rateEl.textContent.replace(/[^0-9]/g, ''), 10) || 0;
     var subtotal = hours * rate;
     var fee = Math.round(subtotal * 0.1);
     var total = subtotal + fee;
@@ -345,10 +576,10 @@
     if(minusBtn) minusBtn.disabled = hours <= 3;
 
     var setText = function(id, val){ var el = document.getElementById(id); if(el) el.textContent = val; };
-    setText('summary-hours-label', hours + ' hours \u00d7 $' + rate);
-    setText('summary-subtotal', '$' + subtotal);
-    setText('summary-fee', '$' + fee);
-    setText('summary-total', '$' + total);
+    setText('summary-hours-label', hours + ' hours \u00d7 ' + peso(rate));
+    setText('summary-subtotal', peso(subtotal));
+    setText('summary-fee', peso(fee));
+    setText('summary-total', peso(total));
   }
 
   function closeProfileModal(){
@@ -372,12 +603,26 @@
       }
     }
     if(e.target.id === 'terms-agree-checkbox'){
-      var submitBtn = document.getElementById('submit-application') || document.getElementById('gent-submit-application');
-      if(submitBtn){
-        submitBtn.disabled = !e.target.checked;
-        submitBtn.classList.toggle('is-disabled', !e.target.checked);
+      var girlSubmit = document.getElementById('submit-application');
+      if(girlSubmit){
+        girlSubmit.disabled = !e.target.checked;
+        girlSubmit.classList.toggle('is-disabled', !e.target.checked);
       }
+      updateGentPrimaryState();
     }
+  });
+
+  document.addEventListener('paste', function(e){
+    var pasteBox = e.target.closest ? e.target.closest('.otp-box') : null;
+    if(!pasteBox) return;
+    e.preventDefault();
+    var pasted = ((e.clipboardData || window.clipboardData).getData('text') || '').replace(/\D/g, '').slice(0, 6);
+    var otpBoxes = pasteBox.parentElement.querySelectorAll('.otp-box');
+    for(var oi = 0; oi < otpBoxes.length; oi++){
+      otpBoxes[oi].value = pasted.charAt(oi) || '';
+      otpBoxes[oi].classList.remove('is-error');
+    }
+    otpBoxes[Math.min(pasted.length, otpBoxes.length - 1)].focus();
   });
 
   document.addEventListener('keydown', function(e){
@@ -457,6 +702,7 @@
             sessionStorage.setItem('gclubLoggedInName', 'Daniel');
             sessionStorage.setItem('gclubLoggedInInitial', 'D');
             sessionStorage.setItem('gclubLoggedInProfile', 'gent-profile.html');
+            sessionStorage.setItem('gclubRegistered', 'true');
             // This is the seeded demo account for previewing the full
             // gent experience, so it logs in as an active member \u2014
             // no need to walk through the plan/payment flow each time.
@@ -464,11 +710,13 @@
             sessionStorage.setItem('gclubPlanName', 'Monthly');
             sessionStorage.setItem('gclubPlanPrice', '800');
             sessionStorage.setItem('gclubPlanPeriod', '/ month');
+            sessionStorage.removeItem('gclubFreePlan');
           } else if(entered === 'tobyazucena@gmail.com'){
             verifyBtn.setAttribute('data-next-href', 'girl-profile.html');
             sessionStorage.setItem('gclubLoggedInName', 'Maya');
             sessionStorage.setItem('gclubLoggedInInitial', 'M');
             sessionStorage.setItem('gclubLoggedInProfile', 'girl-profile.html');
+            sessionStorage.setItem('gclubRegistered', 'true');
           } else {
             verifyBtn.setAttribute('data-next-href', 'index.html');
           }
@@ -522,6 +770,19 @@
       if(hoursEl2){
         var current2 = parseInt(hoursEl2.textContent, 10) || 3;
         if(current2 > 3){ hoursEl2.textContent = current2 - 1; updateBookingSummary(); }
+      }
+    }
+
+    if(e.target.closest('[data-logout]')){
+      e.preventDefault();
+      clearSessionForLogout();
+      var logoutVeil = document.getElementById('page-veil');
+      if(logoutVeil){
+        sessionStorage.setItem('gclubTransition', '1');
+        logoutVeil.classList.add('is-active');
+        setTimeout(function(){ window.location.href = 'index.html'; }, 460);
+      } else {
+        window.location.href = 'index.html';
       }
     }
 
@@ -631,20 +892,8 @@
     }
 
     var planCardClicked = e.target.closest('.plan-card');
-    if(planCardClicked){
-      document.querySelectorAll('.plan-radio').forEach(function(r){ r.classList.remove('is-checked'); });
-      var radio = planCardClicked.querySelector('.plan-radio');
-      if(radio) radio.classList.add('is-checked');
-    }
-
-    if(e.target.closest('#gent-plan-continue')){
-      var checkedRadio = document.querySelector('.plan-radio.is-checked');
-      var chosenCard = checkedRadio ? checkedRadio.closest('.plan-card') : null;
-      if(chosenCard){
-        sessionStorage.setItem('gclubPlanName', chosenCard.getAttribute('data-plan-name'));
-        sessionStorage.setItem('gclubPlanPrice', chosenCard.getAttribute('data-plan-price'));
-        sessionStorage.setItem('gclubPlanPeriod', chosenCard.getAttribute('data-plan-period'));
-      }
+    if(planCardClicked && document.getElementById('plan-form-card')){
+      setPlan(planCardClicked.getAttribute('data-plan-name'), planCardClicked.getAttribute('data-plan-price'), planCardClicked.getAttribute('data-plan-period'));
     }
 
     var payMethodBtn = e.target.closest('.payment-badge');
@@ -655,11 +904,6 @@
     var payContinueBtn = e.target.closest('#pay-continue-btn');
     if(payContinueBtn){
       startPaymentFlow();
-    }
-
-    var gentSubmitBtn = e.target.closest('#gent-submit-application');
-    if(gentSubmitBtn){
-      submitGentApplication();
     }
 
     var openVideoBtn = e.target.closest('[data-open-video]');
@@ -701,7 +945,10 @@
       var sidePanel = profileTab.closest('.profile-side-panel');
       var toggleValue = document.getElementById('profile-nav-toggle-value');
       var toggleBtn = document.getElementById('profile-nav-toggle');
-      if(toggleValue) toggleValue.textContent = profileTab.textContent.trim();
+      if(toggleValue){
+        var labelSpan = profileTab.querySelector('span:not(.member-nav-badge)');
+        toggleValue.textContent = (labelSpan ? labelSpan.textContent : profileTab.textContent).trim();
+      }
       if(sidePanel) sidePanel.classList.remove('is-open');
       if(toggleBtn) toggleBtn.setAttribute('aria-expanded', 'false');
       if(targetPanel && window.matchMedia('(max-width: 1100px)').matches){
@@ -865,7 +1112,7 @@
     var payEl = document.getElementById('topup-pay-amount');
     var receiveEl = document.getElementById('topup-receive-amount');
     if(payEl) payEl.textContent = '\u20b1' + amount.toLocaleString();
-    if(receiveEl) receiveEl.textContent = amount.toLocaleString() + ' G Coin';
+    if(receiveEl) receiveEl.textContent = amount.toLocaleString() + ' credit';
   }
 
   function closeTopupModal(){
@@ -966,9 +1213,10 @@
     var selectedMethod = document.querySelector('#topup-modal-content .payment-badge.is-active');
     var methodLabel = selectedMethod ? selectedMethod.textContent.trim() : 'Visa \u2022\u2022\u2022\u2022 4821';
 
-    var balanceEl = document.getElementById('gcoin-balance-amount');
+    var balanceEl = document.getElementById('credit-balance-amount');
     var currentBalance = balanceEl ? parseInt(balanceEl.textContent.replace(/[^0-9]/g, ''), 10) || 0 : 0;
     var newBalance = currentBalance + amount;
+    sessionStorage.setItem('gclubCredit', String(newBalance));
 
     var content = document.getElementById('topup-modal-content');
     if(content){
@@ -976,20 +1224,20 @@
         '<div style="display:flex; flex-direction:column; align-items:center; text-align:center; gap:16px; padding:8px 0;">' +
           '<div class="success-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg></div>' +
           '<h2 style="font-family:var(--font-serif); font-size:22px; font-weight:400; margin:0;">Top-up successful</h2>' +
-          '<p style="color:var(--muted); font-size:14px; margin:0;">' + amount.toLocaleString() + ' G Coin has been added to your balance.</p>' +
+          '<p style="color:var(--muted); font-size:14px; margin:0;">' + amount.toLocaleString() + ' credit has been added to your balance.</p>' +
           '<button type="button" class="btn btn-dark" data-modal-close-topup style="margin-top:4px;">Done</button>' +
         '</div>';
     }
 
-    if(balanceEl) balanceEl.innerHTML = newBalance.toLocaleString() + ' <span style="font-size:16px; color:var(--muted); font-weight:400;">G Coin</span>';
+    if(balanceEl) balanceEl.innerHTML = newBalance.toLocaleString() + ' <span style="font-size:16px; color:var(--muted); font-weight:400;">credit</span>';
     var noteEl = document.querySelector('.wallet-balance .note');
-    if(noteEl) noteEl.innerHTML = '\u2248 \u20b1' + newBalance.toLocaleString() + ' value \u00b7 1 G Coin = \u20b11';
+    if(noteEl) noteEl.innerHTML = '\u2248 \u20b1' + newBalance.toLocaleString() + ' value \u00b7 1 credit = \u20b11';
 
     var tbody = document.getElementById('gent-transactions-body');
     if(tbody){
       var today = formatToday();
       var row = document.createElement('tr');
-      row.innerHTML = '<td>' + today + '</td><td>G Coin top-up</td><td>' + methodLabel + '</td>' +
+      row.innerHTML = '<td>' + today + '</td><td>Credit top-up</td><td>' + methodLabel + '</td>' +
         '<td><span class="admin-badge green"><span class="dot"></span>Paid</span></td>' +
         '<td style="font-weight:600;">\u20b1' + amount.toLocaleString() + '</td>';
       tbody.insertBefore(row, tbody.firstChild);
@@ -1139,29 +1387,129 @@
     return prefix + '-' + n() + '-' + n() + '-' + n();
   }
 
+  /* ---------------------------------------------------------
+     Gentleman "Plan & payment" step: one page to pick a plan (or skip
+     to the Free plan), enter payment, agree to the terms, and submit.
+     The same page doubles as the plan-change page for existing members.
+  --------------------------------------------------------- */
+  function rememberGentStep(n){
+    if(isRegistered()) return;
+    var cur = parseInt(sessionStorage.getItem('gclubGentProgress'), 10) || 1;
+    if(n > cur) sessionStorage.setItem('gclubGentProgress', String(n));
+  }
+
+  function isGentApplicationMode(){
+    var form = document.getElementById('plan-form-card');
+    return !!form && form.getAttribute('data-mode') === 'application';
+  }
+
+  function updateGentPrimaryState(){
+    var btn = document.getElementById('pay-continue-btn');
+    var terms = document.getElementById('terms-agree-checkbox');
+    if(!btn || !terms || !isGentApplicationMode()) return;
+    btn.disabled = !terms.checked;
+    btn.classList.toggle('is-disabled', !terms.checked);
+  }
+
+  function setPlan(name, price, period){
+    sessionStorage.setItem('gclubPlanName', name);
+    sessionStorage.setItem('gclubPlanPrice', price);
+    sessionStorage.setItem('gclubPlanPeriod', period);
+    applyPlanToPayment();
+  }
+
+  function applyPlanToPayment(){
+    var planLine = document.getElementById('pay-plan-line');
+    if(!planLine) return;
+    var name = sessionStorage.getItem('gclubPlanName') || 'Monthly';
+    var price = sessionStorage.getItem('gclubPlanPrice') || '800';
+    var period = sessionStorage.getItem('gclubPlanPeriod') || '/ month';
+    var limited = name === 'Free';
+    var amountText = '\u20b1' + Number(price).toLocaleString();
+
+    planLine.textContent = (limited ? 'Free plan' : name + ' plan') + ' - ' + amountText + ' ' + period;
+    var amt = document.getElementById('pay-amount-value');
+    if(amt) amt.textContent = amountText;
+    var authAmt = document.getElementById('authorize-amount-value');
+    if(authAmt) authAmt.textContent = amountText;
+    var planCredit = PLAN_CREDIT[name] || 0;
+    var creditLine = document.getElementById('pay-credit-line');
+    if(creditLine){
+      creditLine.style.display = planCredit ? 'block' : 'none';
+      creditLine.textContent = planCredit ? planCredit.toLocaleString('en-US') + ' credit added now and again at each renewal' : '';
+    }
+
+    document.querySelectorAll('.plan-card').forEach(function(card){
+      var on = card.getAttribute('data-plan-name') === name;
+      var radio = card.querySelector('.plan-radio');
+      if(radio) radio.classList.toggle('is-checked', on);
+      card.classList.toggle('is-selected', on);
+    });
+
+    // The Free plan is card-only; the paid plans also take G-Cash.
+    var gcashBadge = document.querySelector('.payment-badge[data-method="gcash"]');
+    var cardFields = document.getElementById('pay-fields-card');
+    var gcashFields = document.getElementById('pay-fields-gcash');
+    if(limited){
+      if(gcashBadge) gcashBadge.style.display = 'none';
+      document.querySelectorAll('.payment-badge').forEach(function(b){ b.classList.remove('is-active'); });
+      if(cardFields) cardFields.style.display = 'block';
+      if(gcashFields) gcashFields.style.display = 'none';
+    } else if(gcashBadge){
+      gcashBadge.style.display = '';
+    }
+    var gcashActive = !!document.querySelector('.payment-badge.is-active[data-method="gcash"]');
+    var note = document.getElementById('pay-billing-note');
+    if(note){
+      note.textContent = limited
+        ? 'No charge for 14 days. After that, choose Starter or Monthly to keep your access.'
+        : (gcashActive
+          ? 'We\u2019ll send a secure authorization request to this G-Cash account.'
+          : 'Your billing details are never shared with companions or shown on your profile.');
+    }
+
+    var btn = document.getElementById('pay-continue-btn');
+    if(btn && btn.firstChild){
+      var label = limited ? 'Save card & submit' : 'Pay ' + amountText + (isGentApplicationMode() ? ' & submit' : ' & upgrade');
+      btn.firstChild.textContent = label + ' ';
+    }
+  }
+
   function startPaymentFlow(){
+    if(sessionStorage.getItem('gclubPlanName') === 'Free'){
+      var cardInputs = document.querySelectorAll('#pay-fields-card input');
+      var missing = Array.prototype.some.call(cardInputs, function(i){ return !i.value.trim(); });
+      var cardErr = document.getElementById('pay-card-error');
+      if(missing){ if(cardErr) cardErr.style.display = 'block'; return; }
+      if(cardErr) cardErr.style.display = 'none';
+    }
+    var appMode = isGentApplicationMode();
     var isGcash = document.querySelector('.payment-badge.is-active[data-method="gcash"]');
-    var methodSection = document.getElementById('pay-method-section');
+    var mainSections = document.getElementById('plan-main-sections');
     var authorizeSection = document.getElementById('pay-authorize-section');
     var successSection = document.getElementById('pay-success-section');
     var title = document.getElementById('pay-title');
     var desc = document.getElementById('pay-desc');
 
+    // Applying: paying is the last step of the application, so it finishes the
+    // application too. Changing plans: show the receipt and head back.
+    function onPaid(viaGcash){
+      finishPaymentSuccess(viaGcash, title, desc);
+      if(appMode){ completeGentApplication(); }
+      else if(successSection){ successSection.style.display = 'block'; }
+    }
+
+    if(mainSections) mainSections.style.display = 'none';
     if(isGcash){
-      methodSection.style.display = 'none';
-      authorizeSection.style.display = 'block';
+      if(authorizeSection) authorizeSection.style.display = 'block';
       if(title) title.textContent = 'Authorize your payment';
       if(desc) desc.textContent = 'One final confirmation in your G-Cash app.';
-
       setTimeout(function(){
-        authorizeSection.style.display = 'none';
-        successSection.style.display = 'block';
-        finishPaymentSuccess(true, title, desc);
+        if(authorizeSection) authorizeSection.style.display = 'none';
+        onPaid(true);
       }, 2200);
     } else {
-      methodSection.style.display = 'none';
-      successSection.style.display = 'block';
-      finishPaymentSuccess(false, title, desc);
+      onPaid(false);
     }
   }
 
@@ -1176,50 +1524,97 @@
     if(refLabel) refLabel.textContent = isGcash ? 'G-Cash reference number' : 'Card reference number';
     if(refValue) refValue.textContent = isGcash ? randomRef('GC') : randomRef('CH');
     if(dateValue) dateValue.textContent = formatToday();
-    sessionStorage.setItem('gclubMembershipActive', 'true');
+    if(sessionStorage.getItem('gclubPlanName') === 'Free'){
+      // Free plan: card saved, nothing charged. Not a paid membership, so
+      // the member flag stays off and the Free limits apply instead.
+      sessionStorage.removeItem('gclubMembershipActive');
+      sessionStorage.setItem('gclubFreePlan', 'true');
+      sessionStorage.setItem('gclubFreeBookingsUsed', sessionStorage.getItem('gclubFreeBookingsUsed') || '0');
+      // Re-picking Free never restarts the 14 days or refills the messages.
+      sessionStorage.setItem('gclubFreeStart', sessionStorage.getItem('gclubFreeStart') || String(Date.now()));
+      sessionStorage.setItem('gclubFreeMsgCount', sessionStorage.getItem('gclubFreeMsgCount') || '0');
+      if(title) title.textContent = 'You\u2019re all set';
+      if(desc) desc.textContent = 'Your card is saved. You won\u2019t be charged for 14 days.';
+      var successTitle = document.getElementById('pay-success-title');
+      if(successTitle) successTitle.textContent = 'Card saved';
+      if(sub) sub.textContent = 'Your 14 free days start today. Pick Starter or Monthly any time to keep going.';
+      if(refLabel) refLabel.textContent = 'Card reference number';
+    } else {
+      sessionStorage.setItem('gclubMembershipActive', 'true');
+      sessionStorage.removeItem('gclubFreePlan');
+      // The plan's credit lands in the wallet now (and again at each renewal).
+      var boughtPlan = sessionStorage.getItem('gclubPlanName');
+      if(PLAN_CREDIT[boughtPlan]){
+        addCredit(PLAN_CREDIT[boughtPlan], isGentApplicationMode());
+        var creditNote = document.getElementById('pay-credit-note');
+        if(creditNote){ creditNote.innerHTML = creditNoteHtml(boughtPlan); creditNote.style.display = 'block'; }
+      }
+    }
   }
 
   /* ---------------------------------------------------------
-     Gentleman application: final submit, same in-place swap
-     pattern as the G Girl flow.
+     Gentleman application: submitting creates the account. Shows what
+     happens next (status tracker) and a receipt for what was paid.
   --------------------------------------------------------- */
-  function submitGentApplication(){
-    var card = document.getElementById('gent-review-form-card');
-    var heading = document.getElementById('gent-review-heading');
-    var progress = document.getElementById('gent-wizard-progress');
-    var explain = document.getElementById('gent-wizard-explain');
-    if(!card) return;
+  function completeGentApplication(){
+    // From here on they are registered (and signed in), with or without a paid plan.
+    sessionStorage.setItem('gclubRegistered', 'true');
+    sessionStorage.setItem('gclubLoggedInName', 'Alex');
+    sessionStorage.setItem('gclubLoggedInInitial', 'A');
+    sessionStorage.setItem('gclubLoggedInProfile', 'gent-profile.html');
+    sessionStorage.removeItem('gclubGentProgress');
+    sessionStorage.removeItem('gclubPlanReturn');
 
+    var card = document.getElementById('plan-form-card');
+    if(!card) return;
+    var heading = document.getElementById('plan-heading');
+    var progress = document.querySelector('.app-progress');
+    var explain = document.getElementById('plan-explain');
     if(heading) heading.style.display = 'none';
     if(progress) progress.style.display = 'none';
     if(explain) explain.style.display = 'none';
-
     var appContent = card.closest('.app-content');
     var formColumn = card.closest('.form-column');
     if(appContent) appContent.classList.add('is-centered');
     if(formColumn) formColumn.classList.add('is-centered');
+
+    var planName = sessionStorage.getItem('gclubPlanName') || 'Monthly';
+    var amount = (document.getElementById('pay-amount-value') || {}).textContent || '';
+    var ref = (document.getElementById('pay-ref-value') || {}).textContent || '';
+    var freeNow = planName === 'Free' ? freeStatus() : null;
+    var receipt = planName === 'Free'
+      ? 'Free for 14 days \u00b7 until ' + formatDay(freeNow ? freeNow.endsOn : Date.now() + FREE_DAYS * 86400000) + ' \u00b7 card saved'
+      : planName + ' plan \u00b7 ' + amount + ' paid \u00b7 Ref ' + ref;
 
     card.innerHTML =
       '<div class="success-panel">' +
         '<div class="success-icon">' +
           '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg>' +
         '</div>' +
-        '<h2>Your account is under review</h2>' +
+        '<h2>Your application is in</h2>' +
         '<p>Thanks for applying to G Club. Our team typically completes a discreet review within 24 hours. We\u2019ll email you as soon as you\u2019re approved.</p>' +
+        '<div class="status-tracker">' +
+          '<div class="status-step is-done"><span class="st-dot"></span><span>Submitted</span></div>' +
+          '<div class="status-line is-done"></div>' +
+          '<div class="status-step is-current"><span class="st-dot"></span><span>In review</span></div>' +
+          '<div class="status-line"></div>' +
+          '<div class="status-step"><span class="st-dot"></span><span>Approved</span></div>' +
+        '</div>' +
+        '<p class="receipt-line">' + receipt + '</p>' +
+        (PLAN_CREDIT[planName] ? '<p class="receipt-line credit-note">' + creditNoteHtml(planName) + '</p>' : '') +
         '<div style="display:flex; gap:10px; margin-top:8px; flex-wrap:wrap; justify-content:center;">' +
-          '<a href="gent-profile.html" class="btn btn-dark btn-lg" data-transition>View Profile</a>' +
-          '<a href="index.html" class="btn btn-ghost btn-lg" data-transition>Back to G Club</a>' +
+          '<a href="index.html" class="btn btn-dark btn-lg" data-transition>Browse while you wait</a>' +
+          '<a href="gent-profile.html" class="btn btn-ghost btn-lg" data-transition>View profile</a>' +
         '</div>' +
       '</div>';
 
     var veil = document.getElementById('page-veil');
-    var freshLinks = card.querySelectorAll('a[data-transition]');
-    freshLinks.forEach(function(freshLink){
+    card.querySelectorAll('a[data-transition]').forEach(function(freshLink){
       freshLink.addEventListener('click', function(e){
         var href = freshLink.getAttribute('href');
         e.preventDefault();
         sessionStorage.setItem('gclubTransition', '1');
-        veil.classList.add('is-active');
+        if(veil) veil.classList.add('is-active');
         setTimeout(function(){ window.location.href = href; }, 460);
       });
     });

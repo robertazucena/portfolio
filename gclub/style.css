@@ -1261,9 +1261,9 @@ hr.divider{ border: none; border-top: 1px solid var(--line); margin: 0; }
 /* =========================================================
    Gentlemen sign-up — plan selection & payment
    ========================================================= */
-.plan-grid{ display: flex; gap: 16px; width: 100%; }
+.plan-grid{ display: flex; flex-wrap: wrap; gap: 16px; width: 100%; }
 .plan-card{
-  flex: 1; background: var(--white); border: 1px solid var(--line);
+  flex: 1 1 calc(50% - 8px); min-width: 0; background: var(--white); border: 1px solid var(--line);
   border-radius: 24px; padding: 28px; display: flex; flex-direction: column; gap: 18px;
 }
 .plan-card.is-featured{ background: var(--gold-tint); border-color: var(--gold-deep); }
@@ -1321,7 +1321,9 @@ hr.divider{ border: none; border-top: 1px solid var(--line); margin: 0; }
 .transaction-detail .val{ color: var(--ink); font-size: 14px; font-weight: 600; }
 
 @media (max-width: 720px){
-  .plan-grid{ flex-direction: column; }
+  .plan-grid{ flex-direction: column; flex-wrap: nowrap; }
+  .plan-card, .plan-card.is-wide{ flex: 1 1 auto; }
+  .plan-card.is-wide .plan-perks{ grid-template-columns: 1fr; }
   .order-summary{ flex-direction: column; align-items: flex-start; }
   .transaction-details{ flex-direction: column; }
 }
@@ -1840,3 +1842,103 @@ button.member-nav-item{ background: none; border: none; width: 100%; text-align:
   }
   .booking-item .meta .amount{ font-size: 16px; }
 }
+
+/* =========================================================
+   Free plan, plan limits, and two-party session completion
+   ========================================================= */
+.plan-card.is-wide{ flex-basis: 100%; }
+.plan-card.is-wide .plan-perks{ display: grid; grid-template-columns: 1fr 1fr; gap: 10px 20px; }
+.plan-badge.is-soft{ background: var(--tag-bg); color: var(--muted); }
+.free-booking-note{ text-align: center; color: var(--gold-deep); font-size: 12px; font-weight: 600; margin: 10px 0 0; }
+.admin-approve-btn:disabled{ opacity: .55; pointer-events: none; }
+.deal-note{ font-size: 12px; color: var(--muted); align-self: center; margin-right: 10px; }
+.chat-quota-note{ margin: 0; padding: 8px 20px; font-size: 12px; color: var(--muted); border-top: 1px solid var(--line); background: var(--tag-bg); }
+.chat-quota-note a{ color: var(--gold-deep); font-weight: 600; text-decoration: underline; }
+.chat-quota-note.is-limit{ background: #fbeeed; color: #8a3b35; }
+.chat-closed-card{
+  align-self: center; text-align: center; background: var(--gold-tint); border-radius: 16px;
+  padding: 18px 22px; margin: 8px 0 4px; max-width: 340px;
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+}
+.chat-closed-card h4{ font-family: var(--font-serif); font-size: 19px; font-weight: 400; margin: 0; }
+.chat-closed-card p{ margin: 0; font-size: 13px; color: var(--muted); }
+.chat-closed-card .btn{ margin-top: 8px; }
+.chat-closed-card .chat-closed-link{ font-size: 12px; color: var(--gold-deep); text-decoration: underline; margin-top: 2px; }
+.conversation-item.is-closed .convo-meta p{ color: var(--gold-deep); }
+
+/* Let the chat thread shrink inside its fixed-height container on mobile so the
+   message list scrolls and the composer stays visible. */
+.chat-thread{ min-height: 0; }
+.chat-messages{ min-height: 0; }
+
+/* Log out link, signed-in membership banner, and plan link on the profile */
+.nav-logout{ font-size: 13px; color: var(--muted); text-decoration: underline; padding: 0 4px; white-space: nowrap; }
+.nav-logout:hover{ color: var(--ink); }
+.member-banner{ background: var(--gold-tint); border-bottom: 1px solid rgba(185,133,86,.25); }
+.member-banner-inner{ display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 12px 0; }
+.member-banner-inner p{ margin: 0; font-size: 14px; color: var(--ink); line-height: 1.5; }
+.member-banner-inner .btn{ white-space: nowrap; flex-shrink: 0; }
+.member-stat-card .stat-card-link{ display: inline-block; margin-top: 8px; font-size: 12px; font-weight: 600; color: var(--gold-deep); text-decoration: underline; }
+@media (max-width: 720px){
+  .member-banner-inner{ flex-direction: column; align-items: flex-start; gap: 10px; }
+}
+
+/* Non-members: the rest of the gallery shows as a blurred, locked preview. */
+.gallery-thumbs{ position: relative; }
+.gallery-thumbs.is-locked .gallery-thumb{ pointer-events: none; cursor: default; }
+.gallery-thumbs.is-locked .gallery-thumb img{ filter: blur(9px); transform: scale(1.2); }
+.gallery-thumbs.is-locked .gallery-thumb.is-active{ border-color: transparent; }
+.gallery-thumbs.is-locked .gallery-thumb.is-active .photo-tile{ opacity: 1; }
+.gallery-thumbs.is-locked::after{
+  content: 'Members only'; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+  background: rgba(23,22,19,.66); color: #fff; font-size: 12px; font-weight: 600; letter-spacing: .02em;
+  padding: 7px 14px; border-radius: 999px; pointer-events: none; white-space: nowrap;
+}
+
+/* Quiet "skip for now" under the plan cards (limited access is the default, not the pitch) */
+.plan-skip-row{ margin: 4px 0 0; text-align: center; font-size: 12px; color: var(--muted); line-height: 1.6; }
+.plan-skip-row a{ color: var(--muted); text-decoration: underline; }
+.plan-skip-row a:hover{ color: var(--ink); }
+
+/* Gentleman application: submitted-status tracker, receipt, resume banner, expectations, sticky actions */
+.status-tracker{ display: flex; align-items: center; width: 100%; max-width: 380px; margin: 6px auto 2px; }
+.status-step{ display: flex; flex-direction: column; align-items: center; gap: 6px; font-size: 12px; color: var(--muted); min-width: 72px; }
+.status-step .st-dot{ width: 14px; height: 14px; border-radius: 50%; background: var(--line); }
+.status-step.is-done .st-dot{ background: #2f9b67; }
+.status-step.is-current .st-dot{ background: var(--gold-deep); box-shadow: 0 0 0 4px var(--gold-tint); }
+.status-step.is-done, .status-step.is-current{ color: var(--ink); font-weight: 600; }
+.status-line{ flex: 1; height: 2px; background: var(--line); margin-bottom: 20px; }
+.status-line.is-done{ background: #2f9b67; }
+.receipt-line{ margin: 4px 0 0; font-size: 13px; color: var(--muted); }
+.welcome-expect{ text-align: center; color: var(--muted); font-size: 13px; margin: 14px 0 0; }
+.resume-banner{
+  max-width: 900px; margin: 28px auto 0; background: var(--white); border: 1px solid rgba(185,133,86,.35);
+  border-radius: 16px; padding: 14px 18px; display: flex; justify-content: space-between; align-items: center;
+  gap: 12px; flex-wrap: wrap; font-size: 14px;
+}
+.resume-banner a{ color: var(--gold-deep); font-weight: 600; text-decoration: underline; white-space: nowrap; }
+@media (max-width: 720px){
+  .form-actions.is-sticky-actions{
+    position: sticky; bottom: 0; z-index: 6; background: var(--white);
+    padding: 14px 0 calc(14px + env(safe-area-inset-bottom, 0px)); border-top: 1px solid var(--line);
+  }
+}
+
+/* Plan cards: the selected one is outlined; "Limited access" is the same card, just quieter until chosen */
+.plan-card.is-selected{ border-color: var(--gold-deep); }
+.plan-card.is-muted{ opacity: .66; transition: opacity .2s; }
+.plan-card.is-muted .plan-title{ font-size: 22px; }
+.plan-card.is-muted .plan-price{ flex-direction: row; align-items: baseline; gap: 8px; }
+.plan-card.is-muted .plan-price .amount{ font-size: 26px; }
+.plan-card.is-muted .plan-desc{ font-size: 13px; }
+.plan-card.is-muted:hover, .plan-card.is-muted.is-selected{ opacity: 1; }
+
+/* Plan credit: shown on the plan cards, the order summary and the confirmations */
+.plan-credit{ display: inline-flex; align-items: center; flex-wrap: wrap; gap: 6px; align-self: flex-start; margin: 0; padding: 6px 12px; border-radius: 999px; background: var(--gold-tint); color: var(--gold-deep); font-size: 13px; font-weight: 700; }
+.plan-credit span{ font-weight: 500; font-size: 12px; color: var(--muted); }
+.plan-card.is-featured .plan-credit{ background: rgba(255,255,255,.72); }
+.plan-credit-line{ margin: 6px 0 0; font-size: 13px; font-weight: 600; color: var(--gold-deep); }
+.receipt-line.credit-note{ max-width: 460px; font-size: 14px; color: var(--ink); line-height: 1.55; }
+.receipt-line a{ color: var(--gold-deep); font-weight: 600; text-decoration: underline; }
+.member-stat-card .stat-card-sub{ margin: 4px 0 0; font-size: 12px; color: var(--muted); }
+.wallet-help{ margin-top: 4px; font-size: 12px; color: var(--muted); }
