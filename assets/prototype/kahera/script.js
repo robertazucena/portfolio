@@ -347,7 +347,7 @@ function statePill(st){
 async function loadData(id){
   if(!S.data[id]){
     const d=await P.get('s_'+id);
-    S.data[id]=Object.assign({products:[],sales:[],restocks:[],daily:{}},d||{});
+    S.data[id]=Object.assign({products:[],sales:[],restocks:[],daily:{},debtors:[],utangs:[]},d||{});
     await Promise.all(S.data[id].products.filter(p=>p.hasImg&&!S.imgs[p.id]).map(async p=>{try{const r=await P.get('img_'+p.id);if(r&&r.d)S.imgs[p.id]=r.d}catch(e){}}));
     if(migrateTL(S.data[id]))saveStore(id);
     applySampleImgs(S.data[id].products);
@@ -631,7 +631,7 @@ function createStore(o){
   const st={id:rid(),code:newCode(),name:o.name,owner:o.owner,phone:o.phone,brgy:o.brgy||'',city:o.city||'',pin:o.pin,plan:o.plan,status:'active',createdAt:Date.now(),expires:Date.now()+p.days*DAY,payments:[]};
   if(p.price&&o.paid)st.payments.push({amt:p.price,method:o.method,ref:o.ref||('REF'+Date.now().toString().slice(-8)),ts:Date.now(),plan:o.plan});
   S.platform.stores.push(st);savePlatform();
-  st.avOff=!!o.avOff;st.avGv=o.avGv||0;S.data[st.id]={products:[],sales:[],restocks:[],daily:{}};saveStore(st.id);
+  st.avOff=!!o.avOff;st.avGv=o.avGv||0;S.data[st.id]={products:[],sales:[],restocks:[],daily:{},debtors:[],utangs:[]};saveStore(st.id);
   if(o.av){S.avs[st.id]=o.av;st.hasAv=true;P.save('av_'+st.id,{d:o.av});savePlatform()}
   return st;
 }
@@ -664,13 +664,13 @@ function vBlocked(){
 }
 
 /* ---------- Store app ---------- */
-const TABS=[['sell','Sell','sell'],['products','Products','box'],['restock','Restock','bag'],['reports','Dashboard','chart'],['settings','Settings','gear']];
+const TABS=[['sell','Sell','sell'],['utang','Utang','wallet'],['products','Products','box'],['restock','Restock','bag'],['reports','Dashboard','chart'],['settings','Settings','gear']];
 function lowCount(){const d=data();return d.products.filter(p=>p.stock<=p.low).length}
 function vStore(){
-  const st=store(),lc=lowCount();
-  const titles={sell:['Sell','Tap products to add them to the sale.',new Date().toLocaleDateString(LOC(),{weekday:'long',month:'long',day:'numeric'})],products:['Products','Everything on your shelves, with prices and stock.','Inventory'],restock:['Restock','Record what you bought to refill your shelves.','Restocking'],reports:['Dashboard','How your store is doing today, this month and this year.','Performance'],settings:['Settings','Store details, plan and PIN.','Account']};
+  const st=store(),lc=lowCount(),oc=utOverdue();
+  const titles={sell:['Sell','Tap products to add them to the sale.',new Date().toLocaleDateString(LOC(),{weekday:'long',month:'long',day:'numeric'})],products:['Products','Everything on your shelves, with prices and stock.','Inventory'],restock:['Restock','Record what you bought to refill your shelves.','Restocking'],reports:['Dashboard','How your store is doing today, this month and this year.','Performance'],settings:['Settings','Store details, plan and PIN.','Account'],utang:['Utang','Who owes you and how much.','Credit']};
   const [t,sub,eb]=titles[S.tab];
-  const navBtns=TABS.map(([k,l,i])=>`<button class="${S.tab===k?'on':''}" data-act="tab" data-t="${k}" ${S.tab===k?'aria-current="page"':''}>${ico(i)}<span>${l}</span>${k==='products'&&lc?`<span class="badge num">${lc}</span>`:''}</button>`).join('');
+  const navBtns=TABS.map(([k,l,i])=>`<button class="${S.tab===k?'on':''}" data-act="tab" data-t="${k}" ${S.tab===k?'aria-current="page"':''}>${ico(i)}<span>${l}</span>${k==='products'&&lc?`<span class="badge num">${lc}</span>`:''}${k==='utang'&&oc?`<span class="badge num">${oc}</span>`:''}</button>`).join('');
   return `<div class="shell">
     <aside class="side">${logo()}
       <button class="storecard sc-btn" data-act="tab" data-t="settings" title="Change store photo"><span class="av-wrap">${avatarHtml(st)}<span class="av-cam">${ico('camera',11)}</span></span><div><b>${esc(st.name)}</b><span class="num">${st.code}</span></div></button>
@@ -685,7 +685,7 @@ function vStore(){
     <nav class="bottomnav" aria-label="Store">${TABS.map(([k,l,i])=>`<button class="${S.tab===k?'on':''}" data-act="tab" data-t="${k}">${ico(i,22)}<span>${l}</span></button>`).join('')}</nav>
   </div>`;
 }
-function tabView(){return({sell:tSell,products:tProducts,restock:tRestock,reports:tReports,settings:tSettings})[S.tab]()}
+function tabView(){return({sell:tSell,utang:tUtang,products:tProducts,restock:tRestock,reports:tReports,settings:tSettings})[S.tab]()}
 
 /* ----- Sell ----- */
 function cats(){const d=data();return['All',...[...new Set(d.products.map(p=>p.cat).filter(Boolean))].sort()]}
@@ -750,7 +750,7 @@ function cartFootHtml(total){
   return `<div class="tot"><span>Total</span><b>${peso(total)}</b></div>
     ${total>0?`<div class="field"><label for="cash">Cash received</label><div class="prefix"><span>₱</span><input class="input num" id="cash" inputmode="decimal" placeholder="${total.toFixed(2)}" value="${esc(S.cash)}"></div></div>
     <div class="quick"><button class="${cash!=null&&Math.abs(cash-total)<.001?'on':''}" data-act="cashSet" data-v="${total}">Exact</button>${quicks.map(v=>`<button class="${cash===v?'on':''}" data-act="cashSet" data-v="${v}">₱${v}</button>`).join('')}</div>${ch}`:''}
-    <button class="btn primary lg block charge" data-act="checkout" ${total>0&&(cash==null||cash>=total)?'':'disabled'}><span>${total>0?'Charge':'Complete sale'}</span>${total>0?`<span class="num">${peso(total)}</span>`:''}</button>`;
+    <button class="btn primary lg block charge" data-act="checkout" ${total>0&&(cash==null||cash>=total)?'':'disabled'}><span>${total>0?'Charge':'Complete sale'}</span>${total>0?`<span class="num">${peso(total)}</span>`:''}</button>${total>0?`<button class="btn block utbtn" data-act="utangSale">${ico('wallet',18)}<span>Put on utang</span></button>`:''}`;
 }
 function cartBarHtml(){return `<span class="num">Review sale, ${cartCount()} item${cartCount()===1?'':'s'}</span><b class="num">${peso(cartTotal())}</b>`}
 function refreshSell(){
@@ -1078,7 +1078,7 @@ function tReports(){
     </div>
     <section class="panel calp" id="cal">${calHtml()}</section>
     <div class="dgrid b">
-      <section class="panel"><h3>Recent sales</h3>${d.sales.length?`<div class="feed">${d.sales.slice(0,7).map(x=>`<button class="fi" data-act="viewSale" data-id="${x.id}"><span class="fdot"></span><div class="fb"><b>${x.items.map(i=>esc(i.name)).slice(0,2).join(', ')}${x.items.length>2?` +${x.items.length-2} more`:''}</b><small>${ago(x.ts)} · ${x.items.reduce((a,i)=>a+i.qty,0)} items</small></div><span class="famt num">${peso(x.total)}</span></button>`).join('')}</div>`:`<p class="cempty">No sales yet. Head to Sell to make your first one.</p>`}</section>
+      <section class="panel"><h3>Recent sales</h3>${d.sales.length?`<div class="feed">${d.sales.slice(0,7).map(x=>`<button class="fi" data-act="viewSale" data-id="${x.id}"><span class="fdot"></span><div class="fb"><b>${x.items.map(i=>esc(i.name)).slice(0,2).join(', ')}${x.items.length>2?` +${x.items.length-2} more`:''}</b><small>${ago(x.ts)} · ${x.items.reduce((a,i)=>a+i.qty,0)} items${x.utang?' · Utang':''}</small></div><span class="famt num">${peso(x.total)}</span></button>`).join('')}</div>`:`<p class="cempty">No sales yet. Head to Sell to make your first one.</p>`}</section>
       <section class="panel"><h3>Needs restocking</h3>${low.length?`<div class="lowl">${low.map(p=>{const lvl=p.stock<=0?0:Math.max(1,Math.min(5,Math.ceil(p.stock/Math.max(1,p.low*4)*5)));return `<div class="lw">${pthumb(p)}<div class="lb"><b>${esc(p.name)}</b><span class="segs">${[0,1,2,3,4].map(i=>`<i class="${i<lvl?'on':''}"></i>`).join('')}</span></div><span class="pill ${p.stock<=0?'bad':'warn'} num"><span class="dot"></span>${p.stock<=0?'Out':p.stock+' left'}</span></div>`}).join('')}</div><button class="btn block" style="margin-top:14px" data-act="restockLow">${ico('bag',16)}Restock these</button>`:`<div class="allgood"><span>${ico('check',20)}</span><b>All stocked up</b><small>Nothing is running low right now.</small></div>`}</section>
     </div>`;
 }
@@ -1270,7 +1270,7 @@ async function makeDemo(){
       const k=dayKey(ts);const a=d.daily[k]||(d.daily[k]={t:0,p:0,n:0});a.t+=total;a.p+=profit;a.n++;
     }
   }
-  d.sales.sort((a,b)=>b.ts-a.ts);if(d.sales.length>400)d.sales.length=400;saveStore(st.id);
+  d.sales.sort((a,b)=>b.ts-a.ts);if(d.sales.length>400)d.sales.length=400;seedDemoUtang(d);saveStore(st.id);
   return st;
 }
 
@@ -1384,7 +1384,7 @@ const A={
     if(st.pin!==pin)return $('#err').textContent='That PIN is incorrect.';
     openStore(st.id);
   },
-  demo:async()=>{const ex=S.platform.stores.find(x=>x.demo||(x.name==='Tindahan ni Aling Nena'&&x.pin==='1234'));if(ex){await openStore(ex.id);toast(`Demo store opened. Code ${ex.code}, PIN 1234.`);return}const st=await makeDemo();await openStore(st.id);toast(`Demo store created. Code ${st.code}, PIN 1234.`)},
+  demo:async()=>{const ex=S.platform.stores.find(x=>x.demo||(x.name==='Tindahan ni Aling Nena'&&x.pin==='1234'));if(ex){await loadData(ex.id);seedDemoUtang(S.data[ex.id]);saveStore(ex.id);await openStore(ex.id);toast(`Demo store opened. Code ${ex.code}, PIN 1234.`);return}const st=await makeDemo();await openStore(st.id);toast(`Demo store created. Code ${st.code}, PIN 1234.`)},
   signout:()=>{const wasAdmin=S.session&&S.session.admin;setSession(null);S.view='landing';if(wasAdmin){openAdmin();return}render();window.scrollTo(0,0)},
   backAdmin:()=>openAdmin(),
   tab:a=>{S.tab=a.dataset.t;S.cartOpen=false;render();window.scrollTo(0,0)},
@@ -1414,7 +1414,7 @@ const A={
   rsRm:a=>{S.rs.supplier=val('rs-sup');S.rs.items.splice(+a.dataset.i,1);rerenderTab()},
   saveRestock,
   viewRestock:a=>{const r=data().restocks.find(x=>x.id===a.dataset.id);openModal(`<h3>${esc(r.supplier||'Restock')}</h3><p class="sub num">${fmtDT(r.ts)}</p><div class="summary">${r.items.map(i=>`<div class="rline"><span>${esc(i.name)} <span style="color:var(--ink-3)">×${i.qty}</span></span><span>${i.cost?peso(i.cost*i.qty):'—'}</span></div>`).join('')}<div class="rsep"></div><div class="rline rtotal"><span>Total</span><span>${peso(r.total)}</span></div></div>`)},
-  viewSale:a=>{const s=data().sales.find(x=>x.id===a.dataset.id);openModal(`<h3>Sale</h3><p class="sub num">${fmtDT(s.ts)}</p><div class="summary">${s.items.map(i=>`<div class="rline"><span>${esc(i.name)} <span style="color:var(--ink-3)">×${i.qty}</span></span><span>${peso(i.qty*i.price)}</span></div>`).join('')}<div class="rsep"></div><div class="rline rtotal"><span>Total</span><span>${peso(s.total)}</span></div><div class="rline"><span>Cash</span><span>${peso(s.cash)}</span></div><div class="rline"><span>Sukli</span><span>${peso(s.change)}</span></div></div>`)},
+  viewSale:a=>{const s=data().sales.find(x=>x.id===a.dataset.id);openModal(`<h3>Sale</h3><p class="sub num">${fmtDT(s.ts)}</p><div class="summary">${s.items.map(i=>`<div class="rline"><span>${esc(i.name)} <span style="color:var(--ink-3)">×${i.qty}</span></span><span>${peso(i.qty*i.price)}</span></div>`).join('')}<div class="rsep"></div><div class="rline rtotal"><span>Total</span><span>${peso(s.total)}</span></div>${s.utang?`<div class="rline"><span>Paid now</span><span>${peso(s.cash)}</span></div><div class="rline"><span>On utang</span><span>${peso(s.utang.amt)}</span></div>`:`<div class="rline"><span>Cash</span><span>${peso(s.cash)}</span></div><div class="rline"><span>Sukli</span><span>${peso(s.change)}</span></div>`}</div>`)},
   saveDetails:()=>{
     const st=store();const name=val('e-name');if(!name)return toast('Enter a store name.');
     Object.assign(st,{name,owner:val('e-owner'),phone:val('e-phone').replace(/\D/g,'').replace(/^0/,''),brgy:val('e-brgy'),city:val('e-city')});savePlatform();render();toast('Store details saved.');
@@ -1471,6 +1471,304 @@ const A={
   adminSuspend:a=>{const s=findStore(a.dataset.id);s.status=s.status==='suspended'?'active':'suspended';savePlatform();closeModal();render();toast(s.status==='suspended'?`${s.name} is paused.`:`${s.name} is back on.`)}
 };
 
+/* ================= Utang (credit / tab) ================= */
+/* Data: d.debtors = [{id,name,phone,ts}]
+         d.utangs  = [{id,did,ts,amount,note,items,due,pays:[{id,ts,amt}],sid?}]  (one customer can have many utangs) */
+const r2=n=>Math.round((+n||0)*100)/100;
+function ud(){const d=data();if(!d.debtors)d.debtors=[];if(!d.utangs)d.utangs=[];return d}
+const uPaid=u=>r2((u.pays||[]).reduce((a,p)=>a+p.amt,0));
+const uBal=u=>Math.max(0,r2(u.amount-uPaid(u)));
+const uLate=u=>!!(u.due&&u.due<Date.now()&&uBal(u)>0);
+const uIsPaid=u=>u.amount>0&&uBal(u)<=0;
+const uPaidAt=u=>(u.pays||[]).reduce((m,p)=>Math.max(m,p.ts),u.ts);
+const archCount=did=>ud().utangs.filter(u=>u.did===did&&uIsPaid(u)).length;
+const dBal=did=>r2(ud().utangs.filter(u=>u.did===did).reduce((a,u)=>a+uBal(u),0));
+const parseDue=v=>{if(!v)return null;const t=new Date(v+'T23:59:59').getTime();return isFinite(t)?t:null};
+function uSum(u){
+  if(u.items&&u.items.length)return u.items.slice(0,2).map(i=>esc(i.name)).join(', ')+(u.items.length>2?` +${u.items.length-2} more`:'');
+  return u.note?esc(u.note):'Utang';
+}
+function findDebtor(name){const k=String(name||'').trim().toLowerCase();return ud().debtors.find(b=>b.name.trim().toLowerCase()===k)}
+function getDebtor(name,phone){
+  const d=ud();let b=findDebtor(name);
+  if(!b){b={id:rid(),name:name.trim(),phone:(phone||'').trim(),ts:Date.now()};d.debtors.push(b)}
+  else if(phone&&!b.phone)b.phone=phone.trim();
+  return b;
+}
+function debtorRows(){
+  const d=ud();
+  return d.debtors.map(b=>{
+    const us=d.utangs.filter(u=>u.did===b.id),open=us.filter(u=>uBal(u)>0);
+    const bal=r2(open.reduce((a,u)=>a+uBal(u),0));
+    const last=us.reduce((m,u)=>Math.max(m,u.ts,...(u.pays||[]).map(p=>p.ts)),0);
+    return {b,us,open,bal,last,overdue:open.some(uLate)};
+  });
+}
+const utOverdue=()=>debtorRows().filter(r=>r.overdue).length;
+function utPay(did,amt,uid){
+  const d=ud();let left=r2(amt);
+  const list=uid?d.utangs.filter(u=>u.id===uid):d.utangs.filter(u=>u.did===did&&uBal(u)>0).sort((a,b)=>a.ts-b.ts);
+  for(const u of list){
+    if(left<=0)break;const bl=uBal(u);if(bl<=0)continue;
+    const x=Math.min(bl,left);(u.pays=u.pays||[]).push({id:rid(),ts:Date.now(),amt:x});left=r2(left-x);
+  }
+  saveStore(S.session.storeId);
+}
+
+/* ----- Utang tab ----- */
+function tUtang(){
+  const d=ud(),rows=debtorRows();
+  if(!d.debtors.length)return `<div class="empty"><div class="eico">${ico('wallet',28)}</div><h3>No utang recorded yet</h3><p>When a suki can't pay in full, put the sale on utang from the Sell tab, or add one here. You'll see who owes you and how much, and you can record payments as they come in.</p>
+  <div class="btns"><button class="btn primary" data-act="utangNew">${ico('plus',18)}Add an utang</button></div></div>`;
+  const tot=rows.reduce((a,r)=>a+r.bal,0),owing=rows.filter(r=>r.bal>0).length,late=rows.filter(r=>r.overdue).length;
+  const col=d.utangs.reduce((a,u)=>a+(u.pays||[]).filter(p=>p.ts>Date.now()-30*DAY).reduce((b,p)=>b+p.amt,0),0);
+  return `<div class="kpis">
+    <div class="kpi"><span>Total owed</span><b>${pesoR(tot)}</b></div>
+    <div class="kpi"><span>Customers with utang</span><b>${owing}</b></div>
+    <div class="kpi"><span>Past due</span><b style="${late?'color:var(--sili)':''}">${late}</b></div>
+    <div class="kpi"><span>Collected, 30 days</span><b>${pesoR(col)}</b></div>
+  </div>
+  <div class="toolbar">
+    <div class="searchbar">${ico('search')}<input id="utq" type="search" placeholder="Search customers" value="${esc(S.utQ||'')}" aria-label="Search customers"></div>
+    <div class="seg" role="tablist">${[['all','All'],['owing','Owing'],['arch','Archive']].map(([k,l])=>`<button class="${(S.utF||'all')===k?'on':''}" data-act="utangF" data-f="${k}">${l}</button>`).join('')}</div>
+    <button class="btn primary" data-act="utangNew">${ico('plus',18)}New utang</button>
+  </div>
+  <div class="tablewrap" id="uttable">${utTable()}</div>`;
+}
+function utTable(){
+  const q=(S.utQ||'').toLowerCase(),f=S.utF||'all';
+  if(f==='arch')return archTable(q);
+  const list=debtorRows().filter(r=>(!q||r.b.name.toLowerCase().includes(q)||(r.b.phone||'').includes(q))&&(f==='all'||(f==='owing'&&r.bal>0)||(f==='paid'&&r.bal<=0)))
+    .sort((a,b)=>(b.bal-a.bal)||(b.last-a.last)||a.b.name.localeCompare(b.b.name));
+  if(!list.length)return `<p style="padding:24px;color:var(--ink-3)">No customers here.</p>`;
+  return `<table><thead><tr><th>Customer</th><th class="hide-m">Utang</th><th class="hide-m">Last activity</th><th class="r">Balance</th><th class="r"><span class="hide-m">Actions</span></th></tr></thead><tbody>
+  ${list.map(r=>`<tr>
+    <td><button class="ucust" data-act="utangOpen" data-id="${r.b.id}"><span class="uav">${esc(initials(r.b.name)||'?')}</span><span><b>${esc(r.b.name)}</b><span class="sm num">${esc(r.b.phone||'')}</span></span></button></td>
+    <td class="hide-m">${r.open.length?`<span class="pill ${r.overdue?'bad':'warn'} num">${r.open.length} unpaid</span>`:`<span class="pill ok"><span class="dot"></span>Paid up</span>`}</td>
+    <td class="hide-m num">${r.last?fmtDate(r.last):'—'}</td>
+    <td class="r"><b class="num" style="${r.overdue?'color:var(--sili)':''}">${peso(r.bal)}</b></td>
+    <td class="r"><div class="rowacts">${r.bal>0?`<button class="btn sm hide-m" data-act="utangPay" data-id="${r.b.id}">Record payment</button>`:''}<button class="iconbtn" data-act="utangOpen" data-id="${r.b.id}" aria-label="View ${esc(r.b.name)}">${ico('receipt',18)}</button></div></td>
+  </tr>`).join('')}</tbody></table>`;
+}
+
+function archTable(q){
+  const d=ud();
+  const list=d.utangs.filter(uIsPaid).map(u=>({u,b:d.debtors.find(x=>x.id===u.did)})).filter(r=>r.b&&(!q||r.b.name.toLowerCase().includes(q)||(r.u.note||'').toLowerCase().includes(q)||(r.u.items||[]).some(i=>i.name.toLowerCase().includes(q)))).sort((a,b)=>uPaidAt(b.u)-uPaidAt(a.u));
+  if(!list.length)return `<p style="padding:24px;color:var(--ink-3)">Nothing in the archive yet. Fully paid utang goes here.</p>`;
+  return `<table><thead><tr><th>Customer</th><th class="hide-m">Utang date</th><th>Paid on</th><th class="r">Amount</th><th class="r"></th></tr></thead><tbody>
+  ${list.map(({u,b})=>`<tr>
+    <td><button class="ucust" data-act="utangView" data-id="${u.id}"><span class="uav">${esc(initials(b.name)||'?')}</span><span><b>${esc(b.name)}</b><span class="sm">${uSum(u)}</span></span></button></td>
+    <td class="hide-m num">${fmtDate(u.ts)}</td><td class="num">${fmtDate(uPaidAt(u))}</td>
+    <td class="r"><b class="num">${peso(u.amount)}</b></td>
+    <td class="r"><span class="pill ok"><span class="dot"></span>Paid</span></td>
+  </tr>`).join('')}</tbody></table>`;
+}
+
+/* ----- One customer and all their utangs ----- */
+function utangModal(did,openArch){
+  const d=ud(),b=d.debtors.find(x=>x.id===did);if(!b)return;
+  const all=d.utangs.filter(u=>u.did===did),us=all.filter(u=>!uIsPaid(u)).sort((a,c)=>c.ts-a.ts),ar=all.filter(uIsPaid).sort((a,c)=>uPaidAt(c)-uPaidAt(a));
+  const amt=r2(all.reduce((a,u)=>a+u.amount,0)),paid=r2(all.reduce((a,u)=>a+uPaid(u),0)),bal=r2(amt-paid);
+  const archHtml=ar.length?`<details class="uarch" ${openArch?'open':''}><summary><span>Archive</span><span class="num">${ar.length}</span></summary><div class="list">${ar.map(u=>`<button class="li uli" data-act="utangView" data-id="${u.id}"><div><b>${uSum(u)}</b><div class="sm num"><span>Paid on</span><span>${fmtDate(uPaidAt(u))}</span></div></div><div class="ur"><b class="num">${peso(u.amount)}</b><span class="pill ok"><span class="dot"></span>Paid</span></div></button>`).join('')}</div></details>`:'';
+  openModal(`<h3>${esc(b.name)}</h3><p class="sub num">${esc(b.phone||'')}</p>
+  <div class="summary"><div class="rline"><span>Total utang</span><b class="num">${peso(amt)}</b></div><div class="rline"><span>Paid so far</span><b class="num">${peso(paid)}</b></div><div class="rline rtotal"><span>Balance</span><b class="num" style="${bal>0?'color:var(--sili)':''}">${peso(bal)}</b></div></div>
+  <div class="ubtns">${bal>0?`<button class="btn primary" data-act="utangPay" data-id="${did}">${ico('wallet',18)}Record payment</button>`:''}<button class="btn" data-act="utangAddFor" data-id="${did}">${ico('plus',18)}Add utang</button></div>
+  ${us.length?`<div class="list" style="margin-top:14px">${us.map(u=>{const bl=uBal(u);return `<button class="li uli" data-act="utangView" data-id="${u.id}"><div><b>${uSum(u)}</b><div class="sm num"><span>${fmtDate(u.ts)}</span>${u.due&&bl>0?`<span class="udue ${uLate(u)?'bad':''}">Due ${fmtDate(u.due)}</span>`:''}</div></div><div class="ur">${bl>0?`<b class="num">${peso(bl)}</b><small class="num">of ${peso(u.amount)}</small>`:`<span class="pill ok"><span class="dot"></span>Paid up</span>`}</div></button>`}).join('')}</div>`:`<p style="color:var(--ink-3);margin-top:14px">${ar.length?'No unpaid utang.':'No utang yet.'}</p>`}
+  ${archHtml}
+  <div class="actions" style="margin-top:22px"><button class="btn danger" data-act="utangDelCust" data-id="${did}">${ico('trash',18)}Delete customer</button><button class="btn" data-act="utangEditCust" data-id="${did}">${ico('edit',18)}Edit customer</button></div>`);
+}
+
+/* ----- One utang: items, payments ----- */
+function utangView(uid){
+  const d=ud(),u=d.utangs.find(x=>x.id===uid);if(!u)return;
+  const b=d.debtors.find(x=>x.id===u.did)||{name:'?'},bl=uBal(u),pays=(u.pays||[]).slice().sort((a,c)=>c.ts-a.ts);
+  openModal(`<button class="btn ghost sm uback" data-act="utangOpen" data-id="${u.did}">${ico('back',16)}All utang</button>
+  <h3>${esc(b.name)}</h3><p class="sub num">${fmtDT(u.ts)}</p>${uIsPaid(u)?`<p class="sub" style="display:flex;gap:8px;align-items:center;margin-top:-14px"><span class="pill ok"><span class="dot"></span>Paid</span><span>Paid on</span><span class="num">${fmtDate(uPaidAt(u))}</span></p>`:''}
+  <div class="summary">${(u.items||[]).map(i=>`<div class="rline"><span>${esc(i.name)} <span style="color:var(--ink-3)">×${i.qty}</span></span><span>${peso(i.qty*i.price)}</span></div>`).join('')}
+    ${u.note?`<div class="rline"><span>${esc(u.note)}</span></div>`:''}
+    ${(u.items&&u.items.length)||u.note?'<div class="rsep"></div>':''}
+    <div class="rline"><span>Amount</span><b class="num">${peso(u.amount)}</b></div>
+    <div class="rline"><span>Paid so far</span><b class="num">${peso(uPaid(u))}</b></div>
+    <div class="rline rtotal"><span>Balance</span><b class="num" style="${uLate(u)?'color:var(--sili)':''}">${peso(bl)}</b></div>
+    ${u.due?`<div class="rline"><span>Pay by</span><b class="num" style="${uLate(u)?'color:var(--sili)':''}">${fmtDate(u.due)}</b></div>`:''}
+  </div>
+  ${pays.length?`<p class="uh">Payments</p><div class="list" style="margin-bottom:6px">${pays.map(p=>`<div class="li"><div><b class="num">${peso(p.amt)}</b><div class="sm num">${fmtDT(p.ts)}</div></div><button class="btn sm danger" data-act="utangPayDel" data-id="${u.id}" data-p="${p.id}">Remove</button></div>`).join('')}</div>`:''}
+  <div class="actions" style="margin-top:22px"><button class="btn danger" data-act="utangDel" data-id="${u.id}">${ico('trash',18)}Delete utang</button><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" data-act="utangEdit" data-id="${u.id}">${ico('edit',18)}Edit</button>${bl>0?`<button class="btn primary" data-act="utangPay" data-id="${u.did}" data-u="${u.id}">${ico('wallet',18)}Record payment</button>`:''}</div></div>`);
+}
+function utangEditForm(uid){
+  const u=ud().utangs.find(x=>x.id===uid);if(!u)return;
+  const manual=!(u.items&&u.items.length);
+  openModal(`<h3>Edit utang</h3><p class="sub">Change the date or details.</p>
+  <div class="stack" data-enter="utangEditSave">
+    ${manual?`<div class="field"><label for="ue-amt">Amount</label><div class="prefix"><span>₱</span><input class="input num" id="ue-amt" inputmode="decimal" value="${u.amount}"></div></div>`:''}
+    <div class="field"><label for="ue-note">What was it for? <span style="font-weight:400">(optional)</span></label><input class="input" id="ue-note" value="${esc(u.note||'')}"></div>
+    <div class="field"><label for="ue-due">Pay by <span style="font-weight:400">(optional)</span></label><input class="input" id="ue-due" type="date" value="${u.due?dayKey(u.due):''}">
+      <div class="quick" style="margin-top:8px"><button data-act="utangDueAdd" data-d="7">+7 days</button><button data-act="utangDueAdd" data-d="15">+15 days</button><button data-act="utangDueAdd" data-d="30">+30 days</button><button data-act="utangDueClear">No date</button></div></div>
+    <p class="err" id="ueerr"></p>
+    <div class="actions" style="margin-top:4px"><button class="btn" data-act="utangView" data-id="${u.id}">Back</button><button class="btn primary lg" data-act="utangEditSave" data-id="${u.id}">Save changes</button></div>
+  </div>`);
+}
+
+/* ----- Record a payment ----- */
+function utangPayModal(did,uid){
+  const d=ud(),b=d.debtors.find(x=>x.id===did);if(!b)return;
+  const one=uid?d.utangs.find(x=>x.id===uid):null,bal=one?uBal(one):dBal(did);
+  openModal(`<h3>Record payment</h3><p class="sub">${esc(b.name)}</p>
+  <div class="summary"><div class="rline rtotal"><span>Balance</span><b class="num">${peso(bal)}</b></div></div>
+  <div class="stack" data-enter="utangPaySave">
+    <div class="field"><label for="up-amt">Amount paid</label><div class="prefix"><span>₱</span><input class="input num" id="up-amt" inputmode="decimal" placeholder="${bal.toFixed(2)}" data-autofocus></div></div>
+    <div class="quick"><button data-act="utangPayFill" data-v="${bal}">Full balance</button>${[50,100,200,500].filter(v=>v<bal).slice(0,3).map(v=>`<button data-act="utangPayFill" data-v="${v}">₱${v}</button>`).join('')}</div>
+    ${one?'':`<p style="color:var(--ink-3);font-size:13px">Payments go to the oldest utang first.</p>`}
+    <p class="err" id="uperr"></p>
+    <div class="actions" style="margin-top:4px"><button class="btn" data-act="${one?'utangView':'utangOpen'}" data-id="${one?one.id:did}">Back</button><button class="btn primary lg" data-act="utangPaySave" data-id="${did}" data-u="${uid||''}">Save payment</button></div>
+  </div>`);
+}
+
+/* ----- Add an utang by hand ----- */
+function utangForm(did){
+  const d=ud(),b=did?d.debtors.find(x=>x.id===did):null;
+  openModal(`<h3>New utang</h3><p class="sub">Write down what a customer will pay later.</p>
+  <div class="stack" data-enter="utangSave">
+    <div class="field"><label for="ut-name">Customer</label><input class="input" id="ut-name" list="ut-names" value="${esc(b?b.name:'')}" ${b?'readonly':'data-autofocus'} placeholder="e.g. Aling Rosa" autocomplete="off"><datalist id="ut-names">${d.debtors.map(x=>`<option value="${esc(x.name)}">`).join('')}</datalist></div>
+    ${b?'':`<div class="field"><label for="ut-phone">Mobile number <span style="font-weight:400">(optional)</span></label><input class="input" id="ut-phone" inputmode="tel" placeholder="e.g. 0917 123 4567"></div>`}
+    <div class="field"><label for="ut-amt">Amount</label><div class="prefix"><span>₱</span><input class="input num" id="ut-amt" inputmode="decimal" ${b?'data-autofocus':''}></div></div>
+    <div class="field"><label for="ut-note">What was it for? <span style="font-weight:400">(optional)</span></label><input class="input" id="ut-note" placeholder="e.g. Bigas 2 kilo, sardinas"></div>
+    <div class="field"><label for="ut-due">Pay by <span style="font-weight:400">(optional)</span></label><input class="input" id="ut-due" type="date"></div>
+    <p class="err" id="uterr"></p>
+    <div class="actions" style="margin-top:4px"><span></span><button class="btn primary lg" data-act="utangSave" data-id="${did||''}">Save utang</button></div>
+  </div>`);
+}
+function utangCustForm(did){
+  const b=ud().debtors.find(x=>x.id===did);if(!b)return;
+  openModal(`<h3>Edit customer</h3><p class="sub"></p>
+  <div class="stack" data-enter="utangCustSave">
+    <div class="field"><label for="uc-name">Customer</label><input class="input" id="uc-name" value="${esc(b.name)}" data-autofocus></div>
+    <div class="field"><label for="uc-phone">Mobile number <span style="font-weight:400">(optional)</span></label><input class="input" id="uc-phone" inputmode="tel" value="${esc(b.phone||'')}"></div>
+    <p class="err" id="ucerr"></p>
+    <div class="actions" style="margin-top:4px"><button class="btn" data-act="utangOpen" data-id="${did}">Back</button><button class="btn primary lg" data-act="utangCustSave" data-id="${did}">Save changes</button></div>
+  </div>`);
+}
+
+/* ----- Sell on utang (from the cart) ----- */
+function utangSaleModal(){
+  const d=ud(),total=cartTotal();if(!S.cart.length||total<=0)return;
+  const cash=S.cash===''?null:num(S.cash),pre=cash!=null&&cash>0&&cash<total?cash:'';
+  openModal(`<h3>Put on utang</h3><p class="sub">Choose who will pay this later.</p>
+  <div class="summary"><div class="rline"><span>Sale total</span><b class="num">${peso(total)}</b></div><div class="rline rtotal"><span>Goes on utang</span><b class="num" id="us-left">${peso(total-(pre||0))}</b></div></div>
+  <div class="stack" data-enter="utangSaleSave">
+    <div class="field"><label for="us-name">Customer</label><input class="input" id="us-name" list="us-names" placeholder="e.g. Aling Rosa" autocomplete="off" data-autofocus><datalist id="us-names">${d.debtors.map(x=>`<option value="${esc(x.name)}">`).join('')}</datalist></div>
+    <div class="row2">
+      <div class="field"><label for="us-paid">Paid now <span style="font-weight:400">(optional)</span></label><div class="prefix"><span>₱</span><input class="input num" id="us-paid" inputmode="decimal" placeholder="0.00" value="${pre}"></div></div>
+      <div class="field"><label for="us-due">Pay by <span style="font-weight:400">(optional)</span></label><input class="input" id="us-due" type="date"></div>
+    </div>
+    <div class="field"><label for="us-phone">Mobile number <span style="font-weight:400">(optional)</span></label><input class="input" id="us-phone" inputmode="tel" placeholder="e.g. 0917 123 4567"></div>
+    <p class="err" id="userr"></p>
+    <div class="actions" style="margin-top:4px"><span></span><button class="btn primary lg" data-act="utangSaleSave">Save utang</button></div>
+  </div>`);
+}
+function utangSaleSave(){
+  const d=ud(),st=store(),total=cartTotal(),e=$('#userr');
+  if(!S.cart.length)return;
+  const name=val('us-name');if(!name)return e.textContent='Enter who the utang is for.';
+  const paid=Math.max(0,r2(num(val('us-paid'))));
+  if(paid>=total)return e.textContent='Paid now covers the whole total. Use Charge instead.';
+  const left=r2(total-paid),b=getDebtor(name,val('us-phone')),now=Date.now(),uid=rid();
+  const items=S.cart.map(l=>{const p=d.products.find(x=>x.id===l.id);if(p)p.stock=Math.max(0,p.stock-l.qty);return{pid:l.id,name:l.name,qty:l.qty,price:l.price,cost:p?p.cost||0:0}});
+  const profit=items.reduce((a,i)=>a+(i.price-(i.cost||i.price))*i.qty,0);
+  const sale={id:rid(),ts:now,items,total,cash:paid,change:0,utang:{did:b.id,uid,amt:left}};
+  d.sales.unshift(sale);if(d.sales.length>400)d.sales.length=400;
+  const k=dayKey();const day=d.daily[k]||(d.daily[k]={t:0,p:0,n:0});day.t+=total;day.p+=profit;day.n+=1;
+  d.utangs.unshift({id:uid,did:b.id,ts:now,amount:left,note:'',items:items.map(i=>({name:i.name,qty:i.qty,price:i.price})),due:parseDue(val('us-due')),pays:[],sid:sale.id});
+  saveStore(st.id);
+  S.cart=[];S.cash='';S.cartOpen=false;render();
+  openModal(`<div class="donebig"><div class="ring">${ico('check',30)}</div><h3>Utang saved</h3><p class="sub" style="margin:0">${esc(b.name)}</p>
+    <div style="margin-top:18px;color:var(--ink-2);font-weight:600">Total utang now</div><div class="amt">${peso(dBal(b.id))}</div>
+    <button class="btn primary lg block" style="margin-top:22px" data-act="closeModal" data-autofocus>Next customer</button></div>`);
+}
+
+/* ----- Demo data so the Utang tab isn't empty in the demo store ----- */
+function seedDemoUtang(d){
+  if(d.utangSeeded||(d.debtors&&d.debtors.length)||!d.products||!d.products.length)return;
+  d.utangSeeded=true;d.debtors=[];d.utangs=[];
+  const P_=i=>d.products[i%d.products.length],ago=n=>Date.now()-n*DAY;
+  const mk=(name,phone)=>{const b={id:rid(),name,phone,ts:ago(90)};d.debtors.push(b);return b};
+  const add=(b,days,lines,note,dueDays,pays)=>{
+    const items=lines.map(([i,q])=>({name:P_(i).name,qty:q,price:P_(i).price}));
+    const amount=items.length?items.reduce((a,i)=>a+i.qty*i.price,0):note[1];
+    d.utangs.push({id:rid(),did:b.id,ts:ago(days),amount,note:items.length?'':note[0],items,due:dueDays==null?null:Date.now()+dueDays*DAY,pays:pays.map(([pd,amt])=>({id:rid(),ts:ago(pd),amt}))});
+  };
+  const rosa=mk('Aling Rosa','0917 555 0142'),tonyo=mk('Mang Tonyo','0928 555 0187'),jun=mk('Kuya Jun',''),liza=mk('Ate Liza','0935 555 0119');
+  add(rosa,21,[[1,3],[4,2]],null,-7,[[10,50]]);
+  add(rosa,3,[],['Bigas, 2 kilo',120],4,[]);
+  add(tonyo,14,[[2,2],[6,3],[8,1]],null,-2,[]);
+  add(jun,9,[[3,4]],null,null,[[2,null]]);
+  const ju=d.utangs[d.utangs.length-1];ju.pays[0].amt=ju.amount;
+  add(rosa,45,[[7,2]],null,-30,[[30,null]]);const ro=d.utangs[d.utangs.length-1];ro.pays[0].amt=ro.amount;
+  add(liza,1,[[5,2],[0,1]],null,null,[]);
+}
+
+Object.assign(A,{
+  utangF:a=>{S.utF=a.dataset.f;rerenderTab()},
+  utangEdit:a=>utangEditForm(a.dataset.id),
+  utangDueAdd:a=>{const i=$('#ue-due');if(!i)return;let base=i.value?new Date(i.value+'T12:00:00').getTime():Date.now();if(!isFinite(base)||base<Date.now())base=Date.now();i.value=dayKey(base+(+a.dataset.d)*DAY)},
+  utangDueClear:()=>{const i=$('#ue-due');if(i)i.value=''},
+  utangEditSave:a=>{
+    const u=ud().utangs.find(x=>x.id===a.dataset.id),e=$('#ueerr');if(!u)return;
+    if($('#ue-amt')){const amt=r2(num(val('ue-amt')));if(amt<=0)return e.textContent='Enter the amount.';if(amt<uPaid(u)-.001)return e.textContent=`Amount can't be less than the ${peso(uPaid(u))} already paid.`;u.amount=amt}
+    u.note=val('ue-note');u.due=parseDue(val('ue-due'));
+    saveStore(S.session.storeId);closeModal();render();toast('Utang updated.');
+  },
+  utangNew:()=>utangForm(null),
+  utangAddFor:a=>utangForm(a.dataset.id),
+  utangOpen:a=>utangModal(a.dataset.id),
+  utangView:a=>utangView(a.dataset.id),
+  utangPay:a=>utangPayModal(a.dataset.id,a.dataset.u||null),
+  utangPayFill:a=>{const i=$('#up-amt');if(i){i.value=String(a.dataset.v);i.focus()}},
+  utangSale:()=>utangSaleModal(),
+  utangSaleSave:()=>utangSaleSave(),
+  utangSave:a=>{
+    const d=ud(),did=a.dataset.id||null,e=$('#uterr');
+    const name=val('ut-name'),amt=r2(num(val('ut-amt')));
+    if(!name)return e.textContent="Enter the customer's name.";
+    if(amt<=0)return e.textContent='Enter the amount.';
+    const b=did?d.debtors.find(x=>x.id===did):getDebtor(name,val('ut-phone'));if(!b)return;
+    d.utangs.unshift({id:rid(),did:b.id,ts:Date.now(),amount:amt,note:val('ut-note'),items:[],due:parseDue(val('ut-due')),pays:[]});
+    saveStore(S.session.storeId);closeModal();render();toast(`Utang saved for ${b.name}.`);
+  },
+  utangPaySave:a=>{
+    const d=ud(),did=a.dataset.id,uid=a.dataset.u||null,e=$('#uperr');
+    const one=uid?d.utangs.find(x=>x.id===uid):null,bal=one?uBal(one):dBal(did),amt=r2(num(val('up-amt')));
+    if(amt<=0)return e.textContent='Enter how much was paid.';
+    if(amt>bal+.001)return e.textContent=`That is more than the balance of ${peso(bal)}.`;
+    const before=archCount(did);utPay(did,amt,uid);render();
+    const moved=archCount(did)>before;
+    closeModal();
+    const left=dBal(did);toast(moved?'Paid. Moved to Archive.':left>0?`Payment saved. ${peso(left)} left.`:'Payment saved. Fully paid.');
+  },
+  utangPayDel:a=>{
+    if(a.dataset.confirm!=='1'){a.dataset.confirm='1';a.textContent='Tap again to remove';return}
+    const u=ud().utangs.find(x=>x.id===a.dataset.id);if(!u)return;
+    u.pays=(u.pays||[]).filter(p=>p.id!==a.dataset.p);saveStore(S.session.storeId);render();utangView(u.id);toast('Payment removed.');
+  },
+  utangDel:a=>{
+    if(a.dataset.confirm!=='1'){a.dataset.confirm='1';a.innerHTML=ico('trash',18)+'Tap again to delete';return}
+    const d=ud(),u=d.utangs.find(x=>x.id===a.dataset.id);if(!u)return;
+    d.utangs=d.utangs.filter(x=>x.id!==u.id);saveStore(S.session.storeId);render();utangModal(u.did);toast('Utang deleted.');
+  },
+  utangDelCust:a=>{
+    if(a.dataset.confirm!=='1'){a.dataset.confirm='1';a.innerHTML=ico('trash',18)+'Tap again to delete';return}
+    const d=ud();d.debtors=d.debtors.filter(b=>b.id!==a.dataset.id);d.utangs=d.utangs.filter(u=>u.did!==a.dataset.id);
+    saveStore(S.session.storeId);closeModal();render();toast('Customer deleted.');
+  },
+  utangEditCust:a=>utangCustForm(a.dataset.id),
+  utangCustSave:a=>{
+    const d=ud(),b=d.debtors.find(x=>x.id===a.dataset.id),e=$('#ucerr');if(!b)return;
+    const name=val('uc-name');if(!name)return e.textContent="Enter the customer's name.";
+    const dup=findDebtor(name);if(dup&&dup.id!==b.id)return e.textContent='That name is already used.';
+    b.name=name;b.phone=val('uc-phone');saveStore(S.session.storeId);closeModal();render();toast('Customer updated.');
+  }
+});
+
 document.addEventListener('click',e=>{
   const a=e.target.closest('[data-act]');if(!a)return;
   const fn=A[a.dataset.act];if(fn){e.preventDefault();fn(a,e)}
@@ -1480,6 +1778,8 @@ document.addEventListener('input',e=>{
   if(t.id==='q'){S.q=t.value;$('#grid').innerHTML=gridHtml()}
   else if(t.id==='cash'){S.cash=t.value;const f=$('#cartf');const pos=t.selectionStart;f.innerHTML=cartFootHtml();const n=$('#cash');n.focus();try{n.setSelectionRange(pos,pos)}catch(_){}}
   else if(t.id==='invq'){S.invQ=t.value;$('#invtable').innerHTML=invTable()}
+  else if(t.id==='utq'){S.utQ=t.value;$('#uttable').innerHTML=utTable()}
+  else if(t.id==='us-paid'){const el=$('#us-left');if(el)el.textContent=peso(Math.max(0,cartTotal()-num(t.value)))}
   else if(t.id==='adq'){S.adQ=t.value;S.adPage=1;$('#adtable').innerHTML=adminTable()}
   else if(t.dataset.rs!=null){S.rs.items[+t.dataset.rs][t.dataset.f]=t.value;const tot=$('#rstotal');if(tot)tot.textContent=peso(S.rs.items.reduce((a,i)=>a+num(i.qty)*num(i.cost),0))}
   else if(t.id==='rs-sup'){S.rs.supplier=t.value}
@@ -1508,7 +1808,7 @@ document.addEventListener('change',async e=>{
 });
 document.addEventListener('keydown',e=>{
   if(e.key==='Escape'&&$('#modal').classList.contains('open'))closeModal();
-  if(e.key==='/'&&!/INPUT|SELECT|TEXTAREA/.test(e.target.tagName)){const f=$('#q')||$('#invq')||$('#adq');if(f){e.preventDefault();f.focus()}}
+  if(e.key==='/'&&!/INPUT|SELECT|TEXTAREA/.test(e.target.tagName)){const f=$('#q')||$('#invq')||$('#utq')||$('#adq');if(f){e.preventDefault();f.focus()}}
   if(e.key==='Enter'&&e.target.tagName==='INPUT'){
     if(e.target.id==='q'){const first=$('#grid .tile');if(first&&!first.classList.contains('out')){addToCart(first.dataset.id,1);S.q='';e.target.value='';$('#grid').innerHTML=gridHtml()}return}
     if(e.target.id==='cash'){const b=$('[data-act="checkout"]');if(b&&!b.disabled)checkout();return}
@@ -1697,6 +1997,34 @@ const TLP=[
  [/^(\d+) min ago$/,'$1 min ang nakalipas'],[/^(\d+) hr ago$/,'$1 oras ang nakalipas'],[/^Just now$/,'Ngayon lang'],
  [/^(\d+) days? left$/,'$1 araw na lang']
 ];
+/* Utang strings */
+Object.entries({
+"Utang":"Utang","Credit":"Pautang","Who owes you and how much.":"Sino ang may utang sa iyo at magkano.",
+"Total owed":"Kabuuang utang","Customers with utang":"Mga may utang","Past due":"Lampas na sa takda","Collected, 30 days":"Nakolekta, 30 araw",
+"Search customers":"Maghanap ng customer","Owing":"May utang","Paid up":"Bayad na","New utang":"Bagong utang","Customer":"Customer",
+"Last activity":"Huling galaw","Balance":"Natitira","Record payment":"Magtala ng bayad","No customers here.":"Walang customer dito.",
+"No utang recorded yet":"Wala pang naitalang utang",
+"When a suki can't pay in full, put the sale on utang from the Sell tab, or add one here. You'll see who owes you and how much, and you can record payments as they come in.":"Kapag hindi makabayad nang buo ang suki, ilagay ang benta sa utang mula sa Sell tab, o magdagdag dito. Makikita mo kung sino ang may utang at magkano, at maitatala mo ang bayad kapag dumating.",
+"Add an utang":"Magdagdag ng utang","Add utang":"Magdagdag ng utang","Total utang":"Kabuuang utang","Paid so far":"Nabayaran na",
+"Delete customer":"Burahin ang customer","Edit customer":"I-edit ang customer","No utang yet.":"Wala pang utang.","All utang":"Lahat ng utang",
+"Amount":"Halaga","Payments":"Mga bayad","Pay by":"Bayaran bago ang","Tap again to remove":"Pindutin ulit para alisin","Delete utang":"Burahin ang utang",
+"Back":"Bumalik","Save payment":"I-save ang bayad","Amount paid":"Halagang binayaran","Full balance":"Buong natitira",
+"Payments go to the oldest utang first.":"Mauuna munang mabayaran ang pinakamatandang utang.","Enter how much was paid.":"Ilagay kung magkano ang binayad.",
+"Write down what a customer will pay later.":"Isulat ang babayaran ng customer sa susunod.","What was it for?":"Para saan ito?",
+"Save utang":"I-save ang utang","Enter the customer's name.":"Ilagay ang pangalan ng customer.","Enter the amount.":"Ilagay ang halaga.",
+"Put on utang":"Ilagay sa utang","Choose who will pay this later.":"Piliin kung sino ang magbabayad nito sa susunod.","Sale total":"Kabuuang benta",
+"Goes on utang":"Mapupunta sa utang","Paid now":"Binayaran ngayon","On utang":"Nasa utang","Utang saved":"Naitala ang utang","Total utang now":"Kabuuang utang ngayon",
+"Enter who the utang is for.":"Ilagay kung kanino ang utang.","Paid now covers the whole total. Use Charge instead.":"Sakop na ng bayad ngayon ang buong total. Gamitin na lang ang Charge.",
+"That name is already used.":"Gamit na ang pangalang iyan.","Payment saved. Fully paid.":"Nabayaran na. Bayad na lahat.",
+"Customer deleted.":"Nabura ang customer.","Customer updated.":"Na-update ang customer.","Utang deleted.":"Nabura ang utang.","Payment removed.":"Naalis ang bayad.",
+"e.g. Aling Rosa":"hal. Aling Rosa","e.g. 0917 123 4567":"hal. 0917 123 4567","e.g. Bigas 2 kilo, sardinas":"hal. Bigas 2 kilo, sardinas","Archive":"Arkibo","Paid":"Bayad","Paid on":"Binayaran noong","Utang date":"Petsa ng utang","Nothing in the archive yet. Fully paid utang goes here.":"Wala pa sa arkibo. Dito mapupunta ang utang na bayad na.","No unpaid utang.":"Walang utang na hindi pa bayad.","Paid. Moved to Archive.":"Bayad na. Inilipat sa Arkibo.","Edit utang":"I-edit ang utang","Change the date or details.":"Baguhin ang petsa o detalye.","No date":"Walang petsa","Utang updated.":"Na-update ang utang.","Edit":"I-edit"
+}).forEach(([k,v])=>{if(!Object.prototype.hasOwnProperty.call(TL,k))TL[k]=v});
+TLP.push(
+ [/^\+(\d+) days$/,'+$1 araw'],[/^Amount can't be less than the (₱[\d,.]+) already paid\.$/,'Hindi puwedeng mas mababa ang halaga sa $1 na nabayaran na.'],
+ [/^(\d+) unpaid$/,'$1 hindi pa bayad'],[/^Due (.+)$/,'Takda: $1'],[/^of (₱[\d,.]+)$/,'sa $1'],[/^View (.+)$/,'Tingnan ang $1'],
+ [/^Utang saved for (.+)\.$/,'Naitala ang utang ni $1.'],[/^Payment saved\. (₱[\d,.]+) left\.$/,'Nabayaran na. $1 na lang ang natitira.'],
+ [/^That is more than the balance of (₱[\d,.]+)\.$/,'Higit iyan sa natitirang $1.']
+);
 function tlStr(t){if(t==null)return null;const k=t.replace(/\s+/g,' ').trim();if(!k)return null;
   if(Object.prototype.hasOwnProperty.call(TL,k))return t.replace(t.trim(),TL[k]);
   for(const [re,rep] of TLP){if(re.test(k)){const out=k.replace(re,rep);return out===k?null:t.replace(t.trim(),out)}}return null}
@@ -1726,20 +2054,6 @@ addEventListener('pagehide',()=>{Object.keys(P.pending).forEach(k=>{clearTimeout
   if(sess&&sess.role==='store'&&findStore(sess.storeId)){await openStore(sess.storeId,sess.admin);return}
   if(sess&&sess.role==='admin'&&S.platform.adminPin){await openAdmin();return}
   render();
-}finally{hidePre(__t0);portfolioDeepLink()}
+}finally{hidePre(__t0)}
 })();
-/* portfolio deep links: #landing[/en|tl] or #demo[/tab][/en|tl] (used by the portfolio previews) */
-async function portfolioDeepLink(){
-  const m=location.hash.match(/^#(demo|landing)(?:\/([a-z]+))?(?:\/(en|tl))?$/);if(!m)return;
-  const [,mode,tab,lang]=m.length===4?m:[m[0],m[1],undefined,m[2]];
-  try{
-    const L=lang||((tab==='en'||tab==='tl')?tab:null);
-    if(L&&S.lang!==L){S.lang=L;document.documentElement.lang=S.lang==='tl'?'fil':'en'}
-    if(mode==='landing'){S.view='landing';render();return}
-    await A.demo();
-    if(tab&&TABS.some(t=>t[0]===tab))S.tab=tab;
-    render();
-    const t=document.getElementById('toast');if(t)t.classList.remove('show');
-  }catch(e){}
-}
 })();
