@@ -2,6 +2,8 @@
 "use strict";
 document.documentElement.classList.add("js");
 const RM = matchMedia("(prefers-reduced-motion: reduce)").matches;
+/* phones & tablets: lighter rendering so mobile browsers never run out of memory */
+const TOUCH = matchMedia("(hover:none),(pointer:coarse)").matches;
 const FINE = matchMedia("(hover:hover) and (pointer:fine)").matches;
 var SH = { scroll: 0 };
 const $ = (s, r = document) => r.querySelector(s);
@@ -471,7 +473,7 @@ function bindViewer(root, p) {
 function bindLive(root) {
   $$(".live", root).forEach(fr => {
     const view = fr.querySelector(".shot-view"), lv = fr.querySelector(".lv"), ifr = fr.querySelector("iframe");
-    const W = +ifr.dataset.vw, VH = +ifr.dataset.vh; let H = fr.classList.contains("scroll") ? +fr.dataset.h : VH;
+    const W = +ifr.dataset.vw, VH = +ifr.dataset.vh; let H = (fr.classList.contains("scroll") && !TOUCH) ? +fr.dataset.h : VH;
     const inter = fr.classList.contains("inter");
     const layout = () => {
       const s = view.clientWidth / W; if (!s) return;
@@ -483,7 +485,7 @@ function bindLive(root) {
     };
     layout();
     if (fr._bound) return; fr._bound = 1;
-    const measure = () => { if (inter) return; try { const dh = ifr.contentDocument.documentElement.scrollHeight; if (dh > 200 && fr.classList.contains("scroll")) H = dh; } catch (e) {} layout(); };
+    const measure = () => { if (inter || TOUCH) { layout(); return; } try { const dh = ifr.contentDocument.documentElement.scrollHeight; if (dh > 200 && fr.classList.contains("scroll")) H = dh; } catch (e) {} layout(); };
     /* always start each live page at its top (browsers restore old scroll positions on reload) */
     const toTop = () => { try { const w = ifr.contentWindow; if (w.history && "scrollRestoration" in w.history) w.history.scrollRestoration = "manual"; w.scrollTo(0, 0); const se = w.document.scrollingElement; if (se) se.scrollTop = 0; } catch (e) {} };
     ifr.addEventListener("load", () => { const cur = ifr.getAttribute("src"); if (!cur || cur === "about:blank") return; view.classList.remove("loading"); if (!inter) view.scrollTop = 0; toTop(); setTimeout(toTop, 300); setTimeout(() => { toTop(); measure(); }, 900); if (!inter) [1800, 3000].forEach(t => setTimeout(toTop, t)); });
@@ -568,8 +570,8 @@ const LIVE = (() => {
   const io = "IntersectionObserver" in window;
   const load = (f) => { const s = f.dataset.live; if (s && f.getAttribute("src") !== s) f.src = s; };
   const unload = (f) => { const s = f.getAttribute("src"); if (s && s !== "about:blank") { f.src = "about:blank"; const v = f.closest(".shot-view"); if (v) v.classList.add("loading"); } };
-  const near = io && new IntersectionObserver((es) => es.forEach(e => { if (e.isIntersecting) load(e.target); }), { rootMargin: "700px 0px" });
-  const far = io && new IntersectionObserver((es) => es.forEach(e => { if (!e.isIntersecting) unload(e.target); }), { rootMargin: "1800px 0px" });
+  const near = io && new IntersectionObserver((es) => es.forEach(e => { if (e.isIntersecting) load(e.target); }), { rootMargin: TOUCH ? "120px 0px" : "700px 0px" });
+  const far = io && new IntersectionObserver((es) => es.forEach(e => { if (!e.isIntersecting) unload(e.target); }), { rootMargin: TOUCH ? "350px 0px" : "1800px 0px" });
   return {
     manage(frames, eager = 0) {
       frames.forEach((f, i) => {
@@ -582,7 +584,7 @@ const LIVE = (() => {
     release(frames) { if (io) frames.forEach(f => { near.unobserve(f); far.unobserve(f); f._mg = 0; }); },
   };
 })();
-LIVE.manage($$("#workGrid iframe"), 2);
+LIVE.manage($$("#workGrid iframe"), (TOUCH || PROJECTS.some(p => "#" + p.slug === location.hash)) ? 0 : 2);
 
 // more work: list rows with a live preview that follows the cursor
 (() => {
@@ -882,6 +884,9 @@ function showCase(p, immediate) {
   addEventListener("resize", () => { inside = false; });
 })();
 
+/* ---------- touch: holding a project card must not open the browser's link menu or a new tab ---------- */
+if (TOUCH) document.addEventListener("contextmenu", (e) => { if (e.target.closest(".work-link, .mrow, .next, .case-hero, .gal, .back")) e.preventDefault(); });
+
 /* ---------- hero text parallax: each line moves at its own pace ---------- */
 (() => {
   const intro = $("#top"); if (!intro || RM) return;
@@ -1051,6 +1056,7 @@ function bindCursorTargets() {}
    ========================================================= */
 (function shader() {
   const cv = $("#bg");
+  if (TOUCH) { cv.remove(); const f0 = document.createElement("div"); f0.className = "bg-fallback"; document.body.prepend(f0); return; }
   let gl = null;
   try { gl = cv.getContext("webgl", { antialias: false, alpha: false, premultipliedAlpha: false, powerPreference: "low-power" }); } catch (e) {}
   if (!gl) { cv.remove(); const f = document.createElement("div"); f.className = "bg-fallback"; document.body.prepend(f); return; }

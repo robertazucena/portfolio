@@ -492,6 +492,11 @@ section{position:relative}
 @media (hover:hover) and (pointer:fine){
   .live.scroll:hover .lv{transform:translateY(var(--shift,0));transition:transform var(--dur,6s) cubic-bezier(.45,0,.55,1)}
 }
+/* touch screens: no long-press link preview / "open in new tab" menu on project cards */
+@media (hover:none),(pointer:coarse){
+  .work-link,.mrow,.next,.case-hero,.gal,.work-media,.work-link *,.mrow *{-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
+  .work-link,.mrow{-webkit-tap-highlight-color:transparent}
+}
 /* touch screens: gallery screens never trap a swipe (the page always scrolls) */
 @media (hover:none),(pointer:coarse){
   .live.scroll .shot-view{overflow:hidden}
