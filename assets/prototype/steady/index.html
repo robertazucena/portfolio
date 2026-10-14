@@ -308,5 +308,11 @@
   </div>
 
 <script src="script.js"></script>
+<script>
+/* portfolio deep link: #ai opens the Steady Companion so it can be shown as its own screen */
+if (location.hash === "#ai") addEventListener("load", function () {
+  setTimeout(function () { var b = document.getElementById("aiFabBtn"); if (b) b.click(); }, 600);
+});
+</script>
 </body>
 </html>
