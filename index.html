@@ -294,25 +294,43 @@
 </head>
 <body>
 <div id="loader" aria-hidden="true">
-  <div class="ld-in"><span class="ld-mask"><span class="ld-name">Robert <span class="it">Azucena</span></span></span><span class="ld-count"><span class="ld-num num" id="ldNum">0</span><span class="ld-yr num" id="ldYr">2010</span></span></div>
-  <div class="ld-bar"><i id="ldBar"></i></div>
-  <div class="ld-foot"><span class="ld-cap">Loading selected work</span><span class="ld-roles"><span>Product design</span><span>Frontend development</span><span>Design leadership</span></span></div>
+  <i class="ld-crop tl"></i><i class="ld-crop tr"></i><i class="ld-crop bl"></i><i class="ld-crop br"></i>
+  <div class="ld-top"><span class="ld-brand"><span class="mono-mark">Ra</span>Portfolio</span><span class="ld-clock">Singapore <span class="num" id="ldClock">--:--</span></span></div>
+  <div class="ld-c">
+    <span class="ld-name">Robert <span class="it">Azucena</span></span>
+    <div class="ld-row"><div class="ld-bar"><i id="ldBar"></i></div><span class="ld-pct"><span class="num" id="ldNum">0</span><small>%</small></span></div>
+    <span class="ld-cap">UX &amp; Digital Experience Leader</span>
+  </div>
 </div>
 <script>
-/* loader: the counter reads as years on the ruler (2010 to today); case-study loads keep the percentage */
+/* loader: an artboard with crop marks; the name rises word by word from a mask, the hairline fills with
+   progress. script.js drives #ldNum, #ldBar, .ld-name and .ld-cap; this only splits the name and sets the clock. */
 (function () {
   var ld = document.getElementById("loader"); if (!ld) return;
-  var num = document.getElementById("ldNum"), yr = document.getElementById("ldYr"), cap = ld.querySelector(".ld-cap");
-  var Y0 = 2010, Y1 = new Date().getFullYear();
-  ld.style.setProperty("--yrs", Y1 - Y0);
-  var sync = function () {
-    var p = Math.max(0, Math.min(100, +num.textContent || 0)), y = String(Y0 + Math.floor(p / 100 * (Y1 - Y0)));
-    if (yr.textContent !== y) yr.textContent = y;
-    ld.classList.toggle("case", /^case study/i.test(cap.textContent));
+  var name = ld.querySelector(".ld-name"), clock = document.getElementById("ldClock");
+  try { clock.textContent = new Intl.DateTimeFormat("en-GB", { hour: "2-digit", minute: "2-digit", timeZone: "Asia/Singapore" }).format(new Date()); } catch (e) {}
+  /* wrap each word in a mask so it can rise in on its own beat */
+  var split = function () {
+    if (name.querySelector(".ld-w")) return;
+    var k = 0, walk = function (el) {
+      Array.prototype.slice.call(el.childNodes).forEach(function (n) {
+        if (n.nodeType === 1) return walk(n);
+        if (n.nodeType !== 3) return;
+        var f = document.createDocumentFragment();
+        n.textContent.split(/(\s+)/).forEach(function (w) {
+          if (!w) return;
+          if (/^\s+$/.test(w)) return f.appendChild(document.createTextNode(" "));
+          var m = document.createElement("span"), s = document.createElement("span");
+          m.className = "ld-wm"; s.className = "ld-w"; s.style.setProperty("--k", k++); s.textContent = w;
+          m.appendChild(s); f.appendChild(m);
+        });
+        n.parentNode.replaceChild(f, n);
+      });
+    };
+    walk(name);
   };
-  /* watch only the counter and caption: the year label is written here, so watching it would loop */
-  try { var mo = new MutationObserver(sync), o = { childList: true, characterData: true, subtree: true }; mo.observe(num, o); mo.observe(cap, o); } catch (e) {}
-  sync();
+  try { new MutationObserver(split).observe(name, { childList: true }); } catch (e) {}
+  split();
 })();
 </script>
 <canvas id="bg" aria-hidden="true"></canvas>
