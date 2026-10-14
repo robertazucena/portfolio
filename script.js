@@ -447,7 +447,9 @@ const liveInter = (base, [l, file], dev) => dev === "web"
   : `<div class="phone-f live inter"><div class="shot-view loading" data-lenis-prevent>${liveIframe(base + file, l, 390, 844, true)}</div></div>`;
 const liveDesk = (base, [l, file, h], pan = true) => `<div class="mk shot live ${pan ? "scroll" : ""}" data-h="${h}">${chrome(l)}<div class="shot-view loading" data-lenis-prevent>${liveIframe(base + file, l, 1440, 900)}</div></div>`;
 const liveMob = (base, [l, file, h]) => `<div class="phone-f scroll live" data-h="${h}"><div class="shot-view loading" data-lenis-prevent>${liveIframe(base + file, l, 390, 844)}</div></div>`;
-const caseVisual = (p) => p.proto ? liveDesk(p.proto.base, p.proto.desktop[0], false) : visual(p);
+/* phones & tablets show still images of each page (live sites are too heavy for mobile browsers); desktop stays live */
+const posterDesk = (p, i, label) => `<div class="mk shot poster">${chrome(label)}<div class="shot-view"><img src="assets/posters/${p.slug}-${i}.webp" alt="${p.title}, ${label} page" width="1200" height="750" loading="lazy" decoding="async" draggable="false"></div></div>`;
+const caseVisual = (p) => p.proto ? (TOUCH ? posterDesk(p, 0, p.proto.desktop[0][0]) : liveDesk(p.proto.base, p.proto.desktop[0], false)) : visual(p);
 function bindViewer(root, p) {
   const v = $(".viewer", root); if (!v || !p.proto) return;
   const panes = { web: $('[data-pane="web"]', v), tablet: $('[data-pane="tablet"]', v), mobile: $('[data-pane="mobile"]', v) };
@@ -495,8 +497,8 @@ function bindLive(root) {
 
 function galleryHTML(p) {
   if (p.proto) { const g = p.proto; return `<div class="gal">
-    <div class="gal-head"><span class="mono">Desktop · 1440px · live HTML</span><span class="mono hint">Hover to scroll each page</span></div>
-    <div class="gal-desk">${g.desktop.map(d => `<figure class="scr">${liveDesk(g.base, d)}<figcaption>${d[0]}</figcaption></figure>`).join("")}</div>
+    <div class="gal-head"><span class="mono">Desktop · 1440px · ${TOUCH ? "preview" : "live HTML"}</span><span class="mono hint">${TOUCH ? "Open the live prototype to explore" : "Hover to scroll each page"}</span></div>
+    <div class="gal-desk">${g.desktop.map((d, i) => `<figure class="scr">${TOUCH ? posterDesk(p, i, d[0]) : liveDesk(g.base, d)}<figcaption>${d[0]}</figcaption></figure>`).join("")}</div>
     ${g.mobile && g.mobile.length ? `<div class="gal-head"><span class="mono">Mobile · 390px · live HTML</span></div>
     <div class="gal-mob">${g.mobile.map(m => `<figure class="scr">${liveMob(g.base, m)}<figcaption>${m[0]}</figcaption></figure>`).join("")}</div>` : ""}
   </div>`; }
