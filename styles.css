@@ -495,7 +495,7 @@ section{position:relative}
 /* touch screens: no long-press link preview / "open in new tab" menu on project cards */
 @media (hover:none),(pointer:coarse){
   .work-link,.mrow,.next,.case-hero,.gal,.work-media,.work-link *,.mrow *{-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
-  .work-link,.mrow{-webkit-tap-highlight-color:transparent}
+  .work-link,.mrow,.next{-webkit-tap-highlight-color:transparent;-webkit-user-drag:none;touch-action:manipulation}
 }
 /* touch screens: gallery screens never trap a swipe (the page always scrolls) */
 @media (hover:none),(pointer:coarse){

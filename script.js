@@ -885,7 +885,26 @@ function showCase(p, immediate) {
 })();
 
 /* ---------- touch: holding a project card must not open the browser's link menu or a new tab ---------- */
-if (TOUCH) document.addEventListener("contextmenu", (e) => { if (e.target.closest(".work-link, .mrow, .next, .case-hero, .gal, .back")) e.preventDefault(); });
+if (TOUCH) {
+  const CARD = ".work-link, .mrow, .next";
+  document.addEventListener("contextmenu", (e) => { if (e.target.closest(CARD + ", .case-hero, .gal, .back")) e.preventDefault(); });
+  /* only a quick, deliberate tap opens a project: a hold-and-release or a finger that moved (a scroll) does nothing */
+  let press = null;
+  const start = (x, y, el) => { press = el ? { t: performance.now(), x, y, moved: false, el } : null; };
+  document.addEventListener("touchstart", (e) => { const t = e.touches[0]; start(t.clientX, t.clientY, e.target.closest(CARD)); }, { passive: true, capture: true });
+  document.addEventListener("touchmove", (e) => { if (!press) return; const t = e.touches[0]; if (Math.hypot(t.clientX - press.x, t.clientY - press.y) > 10) press.moved = true; }, { passive: true, capture: true });
+  document.addEventListener("touchend", () => { if (press) press.dur = performance.now() - press.t; }, { passive: true, capture: true });
+  document.addEventListener("click", (e) => {
+    const el = e.target.closest(CARD); if (!el || !press || press.el !== el) return;
+    const held = (press.dur != null ? press.dur : performance.now() - press.t) > 450;
+    if (held || press.moved) { e.preventDefault(); e.stopPropagation(); e.stopImmediatePropagation(); }
+    press = null;
+  }, true);
+  /* no dragging cards (iOS can drop a dragged link into a new tab) */
+  const noDrag = () => $$(CARD).forEach(a => { a.setAttribute("draggable", "false"); });
+  noDrag(); addEventListener("hashchange", () => setTimeout(noDrag, 400));
+  document.addEventListener("dragstart", (e) => { if (e.target.closest && e.target.closest(CARD)) e.preventDefault(); }, true);
+}
 
 /* ---------- hero text parallax: each line moves at its own pace ---------- */
 (() => {
