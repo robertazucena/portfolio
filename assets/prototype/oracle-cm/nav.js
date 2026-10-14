@@ -1,16 +1,4 @@
-// Renders the left sidebar and wires up mobile open/close behaviour.
-// `activeSection` matches one of the keys below and controls which single
-// nav item gets the "active" (bold + brand-colored) treatment:
-//   "moments"  -> Customer Moments grid, and any individual moment page
-//   "dashboard"-> Moments Dashboard analytics
-//   "reports"  -> Reports
-//   "team"     -> Team Activity
-//   "settings" -> Settings
-//   "help"     -> Help
-function renderSidebar(activeSection) {
-  const cls = (key) => (activeSection === key ? "nav-item active" : "nav-item");
-
-  return `
+function renderSidebar(n){const a=s=>n===s?"nav-item active":"nav-item";return`
     <aside class="sidebar" id="sidebar">
       <button class="collapse-btn" id="collapse-btn" aria-label="Collapse sidebar">${ICONS.chevronRight}</button>
       <div class="sidebar-scroll">
@@ -34,11 +22,11 @@ function renderSidebar(activeSection) {
         <div class="nav-divider"></div>
 
         <nav class="nav-flat">
-          <a class="${cls("moments")}" href="index.html">
+          <a class="${a("moments")}" href="index.html">
             <span class="nav-icon">${ICONS.heart}</span>
             <span class="nav-text">Customer Moments</span>
           </a>
-          <a class="${cls("dashboard")}" href="dashboard.html">
+          <a class="${a("dashboard")}" href="dashboard.html">
             <span class="nav-icon">${ICONS.barChart}</span>
             <span class="nav-text">Moments Dashboard</span>
           </a>
@@ -68,15 +56,15 @@ function renderSidebar(activeSection) {
 
           <div class="nav-divider"></div>
 
-          <a class="${cls("reports")}" href="reports.html">
+          <a class="${a("reports")}" href="reports.html">
             <span class="nav-icon">${ICONS.barChart}</span>
             <span class="nav-text">Reports</span>
           </a>
-          <a class="${cls("team")}" href="team-activity.html">
+          <a class="${a("team")}" href="team-activity.html">
             <span class="nav-icon">${ICONS.users}</span>
             <span class="nav-text">Team Activity</span>
           </a>
-          <a class="${cls("settings")}" href="settings.html">
+          <a class="${a("settings")}" href="settings.html">
             <span class="nav-icon">${ICONS.settings}</span>
             <span class="nav-text">Settings</span>
           </a>
@@ -84,47 +72,11 @@ function renderSidebar(activeSection) {
 
         <div class="sidebar-bottom">
           <div class="nav-divider"></div>
-          <a class="${cls("help")}" href="help.html">
+          <a class="${a("help")}" href="help.html">
             <span class="nav-icon">${ICONS.helpCircle}</span>
             <span class="nav-text">Help</span>
           </a>
         </div>
       </div>
     </aside>
-  `;
-}
-
-function mountSidebar(activeSection) {
-  const mount = document.getElementById("sidebar-mount");
-  if (!mount) return;
-  mount.innerHTML = renderSidebar(activeSection);
-
-  const sidebar = document.getElementById("sidebar");
-  const openBtn = document.getElementById("sidebar-open");
-  const closeBtn = document.getElementById("sidebar-close");
-  const backdrop = document.getElementById("sidebar-backdrop");
-  const collapseBtn = document.getElementById("collapse-btn");
-
-  function open() {
-    sidebar.classList.add("open");
-    backdrop.classList.add("open");
-  }
-  function close() {
-    sidebar.classList.remove("open");
-    backdrop.classList.remove("open");
-  }
-  if (openBtn) openBtn.addEventListener("click", open);
-  if (closeBtn) closeBtn.addEventListener("click", close);
-  if (backdrop) backdrop.addEventListener("click", close);
-  sidebar.querySelectorAll("a.nav-item").forEach((a) => a.addEventListener("click", close));
-
-  // Desktop collapse-to-rail toggle (state persists across pages)
-  const collapsed = localStorage.getItem("myDash:sidebarCollapsed") === "1";
-  if (collapsed) document.body.classList.add("sidebar-collapsed");
-  if (collapseBtn) {
-    collapseBtn.addEventListener("click", () => {
-      const isCollapsed = document.body.classList.toggle("sidebar-collapsed");
-      localStorage.setItem("myDash:sidebarCollapsed", isCollapsed ? "1" : "0");
-    });
-  }
-}
+  `}function mountSidebar(n){const a=document.getElementById("sidebar-mount");if(!a)return;a.innerHTML=renderSidebar(n);const s=document.getElementById("sidebar"),i=document.getElementById("sidebar-open"),c=document.getElementById("sidebar-close"),e=document.getElementById("sidebar-backdrop"),d=document.getElementById("collapse-btn");function o(){s.classList.add("open"),e.classList.add("open")}function t(){s.classList.remove("open"),e.classList.remove("open")}i&&i.addEventListener("click",o),c&&c.addEventListener("click",t),e&&e.addEventListener("click",t),s.querySelectorAll("a.nav-item").forEach(l=>l.addEventListener("click",t)),localStorage.getItem("myDash:sidebarCollapsed")==="1"&&document.body.classList.add("sidebar-collapsed"),d&&d.addEventListener("click",()=>{const l=document.body.classList.toggle("sidebar-collapsed");localStorage.setItem("myDash:sidebarCollapsed",l?"1":"0")})}
