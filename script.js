@@ -450,6 +450,11 @@ function bindViewer(root, p) {
   const v = $(".viewer", root); if (!v || !p.proto) return;
   const panes = { web: $('[data-pane="web"]', v), tablet: $('[data-pane="tablet"]', v), mobile: $('[data-pane="mobile"]', v) };
   const page = { tablet: p.proto.heroTablet ? p.proto.heroTablet[0] : p.proto.desktop[0], mobile: p.proto.heroMobile[0] };
+  /* phones & tablets: the preview starts locked so swipes scroll the page (no accidental taps inside the prototype);
+     "Tap to interact" unlocks it, "Done" locks it again */
+  const shield = $(".vw-shield", v), done = $(".vw-done", v);
+  if (shield) shield.addEventListener("click", () => v.classList.add("on"));
+  if (done) done.addEventListener("click", () => v.classList.remove("on"));
   v.addEventListener("click", (e) => {
     const b = e.target.closest(".seg button"); if (!b) return;
     const dev = b.dataset.dev;
@@ -458,7 +463,10 @@ function bindViewer(root, p) {
     const pane = panes[dev];
     if (dev !== "web" && pane && !pane.childElementCount) pane.innerHTML = liveInter(p.proto.base, page[dev], dev);
     requestAnimationFrame(() => { bindLive(pane); dispatchEvent(new Event("resize")); lenis && lenis.resize(); });
-  });
+  });  if (innerWidth < 760) {
+    const wf = $("iframe", panes.web); if (wf) wf.src = "about:blank";   /* don't run the desktop page nobody will see */
+    const mb = $("#dev-mobile", v); if (mb) mb.click();
+  }
 }
 function bindLive(root) {
   $$(".live", root).forEach(fr => {
@@ -671,10 +679,13 @@ function caseHTML(p) {
       <div><span class="mono">Deliverables</span><b>${p.deliverables}</b></div>
     </div>
     ${(p.proto && p.proto.interactive) ? `<div class="case-hero viewer">
-      <div class="vw-bar"><div class="seg" role="group" aria-label="Device"><button type="button" id="dev-web" data-dev="web" aria-pressed="true">Web</button><button type="button" id="dev-tablet" data-dev="tablet" aria-pressed="false">iPad</button><button type="button" id="dev-mobile" data-dev="mobile" aria-pressed="false">Mobile</button></div><span class="mono hint">Scroll and click inside</span></div>
-      <div class="stage" data-pane="web">${liveInter(p.proto.base, p.proto.desktop[0], "web")}</div>
-      <div class="tablet-stage" data-pane="tablet" hidden></div>
-      <div class="phone-stage" data-pane="mobile" hidden></div>
+      <div class="vw-bar"><div class="seg" role="group" aria-label="Device"><button type="button" id="dev-web" data-dev="web" aria-pressed="true">Web</button><button type="button" id="dev-tablet" data-dev="tablet" aria-pressed="false">iPad</button><button type="button" id="dev-mobile" data-dev="mobile" aria-pressed="false">Mobile</button></div><span class="mono hint">Scroll and click inside</span><button type="button" class="vw-done">Done</button></div>
+      <div class="vw-stage">
+        <div class="stage" data-pane="web">${liveInter(p.proto.base, p.proto.desktop[0], "web")}</div>
+        <div class="tablet-stage" data-pane="tablet" hidden></div>
+        <div class="phone-stage" data-pane="mobile" hidden></div>
+        <button type="button" class="vw-shield" aria-label="Tap to interact with the live prototype"><span>Tap to interact</span></button>
+      </div>
     </div>` : `<div class="case-hero"><div class="stage">${caseVisual(p)}</div></div>`}
     <div class="case-stats">${p.stats.map((s,k)=>`<div class="cs ${k===0?"ink":""}" style="--rd:${k*0.12}s">${k===0?'<span class="cs-grid" aria-hidden="true"></span>':""}<div class="cs-top"><span>${pad(k+1)} / ${pad(p.stats.length)}</span><i aria-hidden="true"></i></div><div>${statValue(s[0])}<p class="cs-d">${s[1]}</p></div></div>`).join("")}</div>
 
