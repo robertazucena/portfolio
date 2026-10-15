@@ -1375,3 +1375,5 @@ p, li, dd, td { overflow-wrap: break-word; }
   .lg-rights { grid-template-columns: 1fr; }
   .lg-store li { grid-template-columns: 34px 1fr; } .lg-store li .btn { grid-column: 2; justify-self: start; }
 }
+
+html.still .loader { display: none; }

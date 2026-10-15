@@ -1620,6 +1620,7 @@
      Singapore; it stays until the page is ready and the sequence has played (about 3.5 s). Click or any key skips it. */
   (function () {
     var ld = $("#loader"); if (!ld) return;
+    if (document.documentElement.classList.contains("still")) { ld.remove(); return; }
     var tiles = $$(".ld-board span", ld), status = $("#ld-status"), to = $("#ld-to"), end = $(".ld-end", ld);
     var dest = D.destinations[Math.floor(Math.random() * D.destinations.length)].code;
     to.textContent = dest;
