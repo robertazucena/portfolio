@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta name="robots" content="noindex, nofollow">
+<script src="frame-top.js"></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Aurora Airlines</title>
+<meta name="description" content="Aurora Airlines, a flight booking prototype. Demonstration only: no real bookings or payments.">
+<meta name="color-scheme" content="dark light">
+<script>
+/* theme before first paint: saved choice, else the system setting; night is the house default */
+(function () { var t = null; try { t = localStorage.getItem("aurora.theme"); } catch (e) {}
+  if (!t) t = window.matchMedia && matchMedia("(prefers-color-scheme: light)").matches ? "day" : "night";
+  if (t === "day") document.documentElement.setAttribute("data-theme", "day");
+  try { var a = JSON.parse(localStorage.getItem("aurora.a11y")) || {}; ["text", "contrast", "motion", "links"].forEach(function (k) { if (a[k]) document.documentElement.setAttribute("data-a11y-" + k, ""); }); } catch (e) {}
+  document.documentElement.classList.add("loading"); })();
+</script>
+<meta name="theme-color" content="#0A0D12">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230A0D12'/%3E%3Cpath d='M11 25 17 7h5l-3 18z' fill='%235AA9FF'/%3E%3C/svg%3E">
+<link rel="preload" href="fonts/general-sans-500.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/general-sans-600.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="vendor/phosphor/style.css">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="loader" id="loader" aria-hidden="true">
+  <div class="loader-in">
+    <div class="ld-board" aria-label="Aurora"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+    <div class="ld-route">
+      <svg viewBox="0 0 320 84"><path class="ld-arc-base" d="M14 70 Q160 -2 306 70"/><path class="ld-arc" d="M14 70 Q160 -2 306 70" pathLength="1"/><circle cx="14" cy="70" r="4"/><circle class="ld-end" cx="306" cy="70" r="4"/></svg>
+      <span class="ld-plane"><svg viewBox="-11 -9 22 18"><path d="M10 0 4 -1.5 .5 -1.6 -2 -8.5 -4 -8.5 -2.6 -1.6 -7 -1.4 -9 -4.6 -10.4 -4.6 -9.4 0 -10.4 4.6 -9 4.6 -7 1.4 -2.6 1.6 -4 8.5 -2 8.5 .5 1.6 4 1.5Z"/></svg></span>
+      <span class="ld-code ld-from">SIN</span><span class="ld-code ld-to" id="ld-to">KEF</span>
+    </div>
+    <p class="ld-status" id="ld-status">Checking the skies</p>
+  </div>
+</div>
+<div class="veil" id="veil" aria-hidden="true">
+  <div class="loader-in veil-in">
+    <div class="ld-board vl-board" id="vl-board"></div>
+    <div class="ld-route">
+      <svg viewBox="0 0 320 84"><path class="ld-arc-base" d="M14 70 Q160 -2 306 70"/><path class="ld-arc" d="M14 70 Q160 -2 306 70" pathLength="1"/><circle cx="14" cy="70" r="4"/><circle class="ld-end" cx="306" cy="70" r="4"/></svg>
+      <span class="ld-plane"><svg viewBox="-11 -9 22 18"><path d="M10 0 4 -1.5 .5 -1.6 -2 -8.5 -4 -8.5 -2.6 -1.6 -7 -1.4 -9 -4.6 -10.4 -4.6 -9.4 0 -10.4 4.6 -9 4.6 -7 1.4 -2.6 1.6 -4 8.5 -2 8.5 .5 1.6 4 1.5Z"/></svg></span>
+      <span class="ld-code ld-from">SIN</span><span class="ld-code ld-to" id="vl-to">KEF</span>
+    </div>
+    <p class="ld-status vl-status"><span>Now boarding</span> <b id="vl-title"></b></p>
+  </div>
+</div>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="nav" id="nav">
+  <div class="nav-in">
+    <a class="brand" href="#/" aria-label="Aurora Airlines, home">
+      <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M11 25 17 7h5l-3 18z"/><path d="M7 25h18" class="brand-base"/></svg>
+      <span class="brand-word">Aurora</span>
+    </a>
+    <nav class="nav-links" aria-label="Primary">
+      <a href="#/book" data-nav="book">Book</a>
+      <a href="#/destinations" data-nav="destinations">Destinations</a>
+      <a href="#/experiences" data-nav="experiences">Experiences</a>
+      <a href="#/manage" data-nav="manage">Manage booking</a>
+      <a href="#/status" data-nav="status">Flight status</a>
+    </nav>
+    <div class="nav-tools">
+      <button class="icon-btn" id="themeBtn" type="button" aria-label="Switch to day theme"><i class="ph ph-sun" aria-hidden="true"></i></button>
+      <a class="nav-account" href="#/account" data-nav="account"><i class="ph ph-user-circle" aria-hidden="true"></i><span class="nav-account-label">Sign in</span></a>
+      <button class="icon-btn nav-menu" id="menuBtn" type="button" aria-expanded="false" aria-controls="drawer" aria-label="Menu"><i class="ph ph-list" aria-hidden="true"></i></button>
+    </div>
+  </div>
+  <nav class="drawer" id="drawer" aria-label="Mobile" hidden>
+    <a href="#/book" data-nav="book">Book</a>
+    <a href="#/destinations" data-nav="destinations">Destinations</a>
+    <a href="#/experiences" data-nav="experiences">Experiences</a>
+    <a href="#/checkin" data-nav="checkin">Check in</a>
+    <a href="#/manage" data-nav="manage">Manage booking</a>
+    <a href="#/status" data-nav="status">Flight status</a>
+    <a href="#/miles" data-nav="miles">Aurora Miles</a>
+    <a href="#/account" data-nav="account">Sign in</a>
+  </nav>
+</header>
+
+<main id="main" tabindex="-1"></main>
+
+<footer class="foot">
+  <div class="foot-in">
+    <div class="foot-brand">
+      <span class="brand-word">Aurora</span>
+      <p>Beyond the ordinary. Into the extraordinary.</p>
+    </div>
+    <nav class="foot-cols" aria-label="Footer">
+      <div><h2>Fly</h2><a href="#/book">Book a flight</a><a href="#/destinations">Destinations</a><a href="#/experiences">Cabins and aircraft</a></div>
+      <div><h2>Your trip</h2><a href="#/checkin">Check in</a><a href="#/manage">Manage booking</a><a href="#/status">Flight status</a><a href="#/account">My account</a></div>
+      <div><h2>Aurora</h2><a href="#/miles">Aurora Miles</a><a href="#/about">About Aurora</a><a href="#/accessibility">Accessibility</a></div>
+      <div><h2>Help</h2><a href="#/help/baggage">Baggage</a><a href="#/help/fares">Fare conditions</a><a href="#/help/contact">Contact</a></div>
+    </nav>
+  </div>
+  <nav class="foot-legal" aria-label="Legal"><a href="#/help/privacy">Privacy</a><a href="#/help/terms">Terms of use</a><a href="#/help/cookies">Cookies</a><a href="#/accessibility">Accessibility</a></nav>
+  <p class="foot-note">Aurora Airlines is a design prototype by Robert Azucena. Flights, fares and bookings are demonstration data: no tickets are issued and no payment is taken. Aircraft and destination images are AI-generated for this prototype.</p>
+</footer>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="data.js"></script>
+<script src="globe-land.js"></script>
+<script src="globe.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
