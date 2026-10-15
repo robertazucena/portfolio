@@ -3,3 +3,8 @@
 
 # Cloudflare Wrangler local cache
 .wrangler/
+
+# Local agent skills (installed with npx skills add)
+.agents/
+.claude/
+skills-lock.json
