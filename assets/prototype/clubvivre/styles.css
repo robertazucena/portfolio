@@ -299,9 +299,7 @@
 @keyframes imsDust{to{background-position:0 -520px,0 -610px,0 -700px,0 -560px,0 0}}
 /* spotlight from above onto the chef, with a pool of warm light on the floor */
 .ims-chef{position:relative}
-.ims-chef:before{content:"";position:absolute;z-index:-1;left:50%;top:-22%;width:170%;height:118%;transform:translateX(-50%);pointer-events:none;background:conic-gradient(from 180deg at 50% 0,transparent 156deg,rgba(255,236,222,.28) 180deg,transparent 204deg);-webkit-mask-image:linear-gradient(#000 20%,transparent 88%);mask-image:linear-gradient(#000 20%,transparent 88%)}
-.ims-fig:before{content:"";position:absolute;z-index:-1;left:-14%;right:-14%;bottom:-34px;height:74px;border-radius:50%;background:radial-gradient(closest-side,rgba(255,200,170,.42),transparent);filter:blur(6px);pointer-events:none}
 /* ripples around the plate */
 .ims-plate:after{content:"";position:absolute;z-index:-1;left:50%;top:50%;width:124%;aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;pointer-events:none;background:radial-gradient(closest-side,transparent 0 60%,rgba(255,226,208,.16) 60.4%,transparent 61% 76%,rgba(255,226,208,.1) 76.4%,transparent 77% 92%,rgba(255,226,208,.07) 92.4%,transparent 93%),radial-gradient(closest-side,rgba(255,200,170,.2),transparent 72%)}
-@media (max-width:860px){.ims{padding:24px 16px 20px;border-radius:26px;-webkit-backdrop-filter:blur(16px) saturate(1.3);backdrop-filter:blur(16px) saturate(1.3)}.ims-chef:before{display:none}.ims-plate:after{width:108%}}
+@media (max-width:860px){.ims{padding:24px 16px 20px;border-radius:26px;-webkit-backdrop-filter:blur(16px) saturate(1.3);backdrop-filter:blur(16px) saturate(1.3)}.ims-plate:after{width:108%}}
 @media (prefers-reduced-motion:reduce){.ims:before,.ims:after{animation:none}}
