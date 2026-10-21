@@ -27,7 +27,7 @@
       '<canvas class="compose-bg" aria-hidden="true"></canvas>' +
       '<div class="compose-inner">' +
       '<div class="compose-copy">' +
-      '<h1>Describe it. <span class="accent">Watch it become</span> a send-ready email.</h1>' +
+      '<h1>Describe the email. <span class="accent">Watch it build itself.</span></h1>' +
       '<p class="compose-lede">Every module is drawn from approved Oracle components, so what the AI writes is on brand before you touch it.</p>' +
       '<div class="prompt-box compose-prompt">' +
       '<div class="prompt-top"><label class="prompt-label" for="composeBrief">Your brief</label><span class="compose-status" aria-live="polite"></span></div>' +
@@ -53,9 +53,9 @@
       '<div class="compose-cta-row"><a href="#/editor" class="compose-cta" tabindex="-1">Read the full story →</a><span class="compose-pin" data-at="3">Tone · Warm</span></div>' +
       "</div>" +
       '<div class="compose-stats" data-at="4">' +
-      '<div>Predicted open<b data-n="41.2" data-u="%">—</b></div>' +
-      '<div>Predicted click<b data-n="12.8" data-u="%">—</b></div>' +
-      "<div>Best send time<b data-t=\"Tue 10:00\">—</b></div>" +
+      '<div>Predicted open<b data-n="41.2" data-u="%">…</b></div>' +
+      '<div>Predicted click<b data-n="12.8" data-u="%">…</b></div>' +
+      "<div>Best send time<b data-t=\"Tue 10:00\">…</b></div>" +
       "</div></div></div>"
     );
   }
@@ -124,7 +124,7 @@
     this.play = function (withBrief) {
       clear();
       typed.textContent = "";
-      mail.querySelectorAll(".compose-stats b").forEach(function (b) { b.textContent = "—"; });
+      mail.querySelectorAll(".compose-stats b").forEach(function (b) { b.textContent = "…"; });
       if (REDUCED) { if (!brief.value) brief.value = BRIEF; finish(); return; }
       go.textContent = "Generate";
       setStage(0);
@@ -151,6 +151,10 @@
       if (!userEdited && brief.value.length < BRIEF.length) { userEdited = true; brief.value = BRIEF; }
     });
     go.addEventListener("click", function () { self.play(false); });
+    root.querySelectorAll(".btn-soft.is-set").forEach(function (b) {
+      b.setAttribute("aria-pressed", "true");
+      b.addEventListener("click", function () { b.setAttribute("aria-pressed", String(b.getAttribute("aria-pressed") !== "true")); });
+    });
     this.stop = clear;
   }
 
@@ -178,9 +182,9 @@
     " vec3 c=mix(blue,violet,smoothstep(.0,.45,k));",
     " c=mix(c,orange,smoothstep(.4,.8,k+.15*sin(p.x*.8+t*.1)));",
     " c=mix(c,red,smoothstep(.78,1.,k));",
-    " c=mix(c,vec3(1.),.42)*(.62+.48*dif)+spec*.55;",
+    " c=mix(c,vec3(1.),.66)*(.84+.2*dif)+spec*.22;",
     " vec2 d=(uv-f)*vec2(r.x/r.y,1.);",
-    " float a=.22+.78*exp(-dot(d,d)*1.5);",
+    " float a=.14+.5*exp(-dot(d,d)*1.4);",
     " a*=smoothstep(0.,.32,uv.y);",
     " a=clamp(a*.9+(fract(sin(dot(gl_FragCoord.xy,vec2(12.9898,78.233)))*43758.5453)-.5)/255.,0.,1.);",
     " gl_FragColor=vec4(c*a,a);",
@@ -272,7 +276,7 @@
       row("is-brand",
         "On brand by default.",
         "Every email is composed from approved modules, brand colours and tone settings, so reviews focus on the message instead of the margins.",
-        '<a class="story-link" href="#/templates">Browse templates →</a>',
+        "",
         '<div class="vis-card vis-kit">' +
         '<span class="vis-label">Brand kit</span>' +
         '<div class="vis-swatches">' + [["#C74634", "Oracle red"], ["#FF5A3C", "Action"], ["#1A1A1A", "Ink"], ["#F8FAFC", "Paper"]].map(function (c) { return '<div><i style="background:' + c[0] + '"></i>' + c[1] + "</div>"; }).join("") + "</div>" +
@@ -301,7 +305,7 @@
       '<pre class="dev-code" tabindex="0" aria-label="Example API request"><span class="c-m">POST</span> /v1/emails/generate\n\ncurl -X POST https://api.oracle-emailgen.example/v1/emails/generate \\\n  -H <span class="c-s">"Authorization: Bearer $TOKEN"</span> \\\n  -d <span class="c-s">\'{"prompt":"Q3 cloud success newsletter",\n       "tone":"warm",\n       "context":"q3_accounts"}\'</span></pre>' +
       "</div></section>" +
       '<section class="close-band"><h2>Your next campaign starts with a sentence.</h2>' +
-      '<div class="close-actions"><button type="button" class="btn close-primary">Write a brief</button><a href="#/templates" class="btn close-secondary">Browse templates</a></div></section>'
+      '<div class="close-actions"><button type="button" class="btn close-primary">Write a brief</button><a href="#/templates" class="btn close-secondary">View all templates</a></div></section>'
     );
   }
 
@@ -322,6 +326,167 @@
     }, { rootMargin: "0px 0px -15% 0px" });
     rows.forEach(function (r) { r.classList.add("will-reveal"); io.observe(r); });
   }
+
+  /* ---------- Editor: AI refine rewrites the preview in place ---------- */
+  var VARIANTS = {
+    formal: {
+      label: "Make it formal",
+      h: "Thank you for your partnership this quarter.",
+      g: "Dear Valued Partner,",
+      b: "We are pleased to report a milestone achieved through your continued trust and collaboration. Together, we have accelerated cloud adoption, streamlined enterprise workloads and delivered measurable performance gains this quarter.",
+      c: "We appreciate your partnership and look forward to our continued work together."
+    },
+    shorter: {
+      label: "Shorter",
+      b: "Your trust made this quarter's milestone possible: faster cloud adoption, leaner workloads and measurable performance gains.",
+      c: "Thank you for being part of it."
+    },
+    promo: {
+      label: "Add promo code",
+      c: "Thank you for being an essential part of this journey. As a thank-you, use code <strong>Q3WIN15</strong> for 15% off your next OCI renewal."
+    },
+    warm: {
+      label: "Your request",
+      h: "We couldn't have done this without you.",
+      b: "This quarter's milestone is yours as much as ours. Your trust and partnership helped us speed up cloud adoption, simplify enterprise workloads and deliver real performance gains.",
+      c: "Thank you for building this with us. We can't wait to see what we achieve next."
+    }
+  };
+
+  function editor() {
+    var card = document.querySelector(".preview-card");
+    if (!card || card.dataset.ai) return;
+    card.dataset.ai = "1";
+    var content = card.querySelector(".preview-content");
+    var ps = content.querySelectorAll("p");
+    var el = { h: content.querySelector("h2"), g: ps[0], b: ps[1], c: ps[2] };
+    var original = {};
+    Object.keys(el).forEach(function (k) { original[k] = el[k].innerHTML; });
+    var label = card.querySelector(".ai-refine-label");
+    label.setAttribute("aria-live", "polite");
+    var input = card.querySelector(".ai-refine-input");
+    input.setAttribute("aria-label", "Ask AI to refine or rewrite this email");
+    var pillWrap = card.querySelector(".ai-refine-pills");
+    var pills = pillWrap.querySelectorAll(".ai-pill");
+    ["formal", "shorter", "promo"].forEach(function (k, i) { if (pills[i]) pills[i].dataset.v = k; });
+    var undo = document.createElement("button");
+    undo.type = "button";
+    undo.className = "ai-pill ai-undo";
+    undo.hidden = true;
+    undo.innerHTML = ICON.replay + " Undo";
+    pillWrap.appendChild(undo);
+    var busy = false, timers = [];
+
+    function stream(node, html, done) {
+      var text = html.replace(/<[^>]+>/g, ""), i = 0;
+      node.classList.add("ai-writing");
+      (function next() {
+        if (!card.isConnected) return;
+        i += 3;
+        node.textContent = text.slice(0, i);
+        if (i < text.length) timers.push(setTimeout(next, 16));
+        else { node.innerHTML = html; node.classList.remove("ai-writing"); done(); }
+      })();
+    }
+
+    function apply(target, name) {
+      if (busy) return;
+      busy = true;
+      var keys = Object.keys(el).filter(function (k) { return el[k].innerHTML !== target[k]; });
+      pills.forEach(function (p) { p.setAttribute("aria-pressed", String(p.textContent === name)); });
+      card.classList.add("is-rewriting");
+      label.innerHTML = '<span class="ai-live"></span>Rewriting · ' + name;
+      Object.keys(el).forEach(function (k) { el[k].classList.remove("ai-fresh"); });
+      var finish = function () {
+        busy = false;
+        card.classList.remove("is-rewriting");
+        keys.forEach(function (k) { void el[k].offsetWidth; el[k].classList.add("ai-fresh"); });
+        var reverted = target === original;
+        label.textContent = reverted ? "Restored the original draft." : "Rewritten · " + name + ". Changes are highlighted.";
+        undo.hidden = reverted;
+        if (reverted) pills.forEach(function (p) { p.setAttribute("aria-pressed", "false"); });
+      };
+      if (REDUCED) { keys.forEach(function (k) { el[k].innerHTML = target[k]; }); finish(); return; }
+      (function run(i) {
+        if (i >= keys.length) return finish();
+        stream(el[keys[i]], target[keys[i]], function () { run(i + 1); });
+      })(0);
+    }
+
+    function variant(key) {
+      var v = VARIANTS[key], t = {};
+      Object.keys(el).forEach(function (k) { t[k] = v[k] || original[k]; });
+      return t;
+    }
+
+    pills.forEach(function (p) {
+      p.setAttribute("aria-pressed", "false");
+      p.addEventListener("click", function () { apply(variant(p.dataset.v), p.textContent); });
+    });
+    undo.addEventListener("click", function () { apply(original, "Original"); });
+    input.addEventListener("keydown", function (e) {
+      if (e.key !== "Enter" || !input.value.trim()) return;
+      var q = input.value.toLowerCase();
+      var key = /formal|professional/.test(q) ? "formal" : /short|brief|concise/.test(q) ? "shorter" : /promo|code|discount|offer/.test(q) ? "promo" : "warm";
+      apply(variant(key), key === "warm" ? "“" + input.value.trim() + "”" : VARIANTS[key].label);
+      input.value = "";
+    });
+  }
+
+  /* ---------- Analytics: the data draws itself in ---------- */
+  function countUp(node) {
+    var raw = node.textContent.trim(), m = raw.match(/^([\d,]+(?:\.\d+)?)(%?)$/);
+    if (!m) return;
+    var end = parseFloat(m[1].replace(/,/g, "")), dec = (m[1].split(".")[1] || "").length, comma = m[1].indexOf(",") > -1, t0 = performance.now();
+    (function tick(now) {
+      if (!node.isConnected) return;
+      var k = Math.min(1, (now - t0) / 1200), v = end * (1 - Math.pow(1 - k, 4));
+      var s = v.toFixed(dec);
+      if (comma) s = Number(s).toLocaleString("en-US", { minimumFractionDigits: dec, maximumFractionDigits: dec });
+      node.textContent = k < 1 ? s + m[2] : raw;
+      if (k < 1) requestAnimationFrame(tick);
+    })(t0);
+  }
+
+  function drawPath(p, delay, dur) {
+    var len = p.getTotalLength();
+    p.style.strokeDasharray = len;
+    p.style.strokeDashoffset = len;
+    p.getBoundingClientRect();
+    p.style.transition = "stroke-dashoffset " + dur + "ms cubic-bezier(.16,1,.3,1) " + delay + "ms";
+    p.style.strokeDashoffset = "0";
+    setTimeout(function () { p.style.strokeDasharray = p.style.strokeDashoffset = p.style.transition = ""; }, delay + dur + 50);
+  }
+
+  function fadeIn(nodes, delay, step) {
+    nodes.forEach(function (n, i) {
+      n.style.opacity = "0";
+      n.getBoundingClientRect();
+      n.style.transition = "opacity .7s ease-out " + (delay + i * step) + "ms";
+      n.style.opacity = "";
+    });
+  }
+
+  function analytics() {
+    var chart = document.getElementById("engagementChart");
+    if (!chart || chart.dataset.ai || REDUCED) return;
+    chart.dataset.ai = "1";
+    chart.querySelectorAll(".series-line").forEach(function (p, i) { drawPath(p, 250 + i * 160, 1700); });
+    fadeIn(Array.prototype.slice.call(chart.querySelectorAll(".series-area")), 700, 160);
+    fadeIn(Array.prototype.slice.call(chart.querySelectorAll(".series-dot")), 1500, 12);
+    document.querySelectorAll(".sparkline path").forEach(function (p) {
+      if (p.getAttribute("fill") && p.getAttribute("fill") !== "none") fadeIn([p], 500, 0);
+      else drawPath(p, 150, 1100);
+    });
+    document.querySelectorAll(".stat-value").forEach(countUp);
+  }
+
+  function enhance() {
+    requestAnimationFrame(function () { editor(); analytics(); });
+  }
+  window.addEventListener("hashchange", enhance);
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", enhance);
+  else enhance();
 
   window.OEGCompose = {
     story: story,
