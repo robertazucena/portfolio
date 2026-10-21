@@ -891,7 +891,8 @@
       parent.appendChild(root);
       requestAnimationFrame(function () {
         Field(root.querySelector(".compose-bg"), root.querySelector(".compose-mail"));
-        new Timeline(root).play(true);
+        var tl = new Timeline(root);
+        (window.OEGWhenReady || function (cb) { cb(); })(function () { tl.play(true); });
       });
       return root;
     }
