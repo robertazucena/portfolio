@@ -33,9 +33,9 @@
       '<div class="prompt-top"><label class="prompt-label" for="composeBrief">Your brief</label><span class="compose-status" aria-live="polite"></span></div>' +
       '<textarea id="composeBrief" rows="3" placeholder="Describe the email you want to write"></textarea>' +
       '<div class="prompt-foot">' +
-      '<button class="btn-soft is-set" type="button">' + ICON.clip + " Data: Q3 accounts</button>" +
-      '<button class="btn-soft is-set" type="button">' + ICON.tone + " Tone: Warm</button>" +
-      '<span class="spacer"></span><button class="btn btn-primary compose-go" type="button">Generate</button>' +
+      '<button class="btn-soft is-set" type="button">' + ICON.clip + " <span><span class=\"chip-pre\">Data: </span>Q3 accounts</span></button>" +
+      '<button class="btn-soft is-set" type="button">' + ICON.tone + " <span><span class=\"chip-pre\">Tone: </span>Warm</span></button>" +
+      '<span class="spacer"></span><button class="btn btn-primary compose-go" type="button">Generate</button><a href="#/editor" class="btn btn-primary compose-open" hidden>Editor →</a>' +
       "</div></div>" +
       '<ol class="compose-steps">' +
       STEPS.map(function (s) {
@@ -44,13 +44,13 @@
       "</ol></div>" +
       '<div class="compose-mail" aria-label="Email preview">' +
       '<div class="compose-meta" data-at="1"><div><span>Subject</span>Celebrating a big win, together</div><div><span>To</span>Q3 OCI accounts · 2,418 recipients</div></div>' +
-      '<div class="compose-hero" data-at="2"><img src="images/win.jpg" alt="A team working together on laptops" /><span class="compose-pin">Approved module · Hero</span></div>' +
+      '<div class="compose-hero" data-at="2"><img src="images/win.jpg" alt="A team working together on laptops" /><span class="compose-pin">Approved module · Hero</span><span class="compose-pin compose-pin-tone" data-at="3">Tone · Warm</span></div>' +
       '<div class="compose-body">' +
       '<h2 data-at="2">We couldn\'t have done it without you.</h2>' +
       '<p data-at="3">Dear Partner,</p>' +
       '<p class="compose-typed" data-at="3"></p>' +
       '<div class="compose-sk" aria-hidden="true"><i></i><i></i></div>' +
-      '<div class="compose-cta-row"><a href="#/editor" class="compose-cta" tabindex="-1">Read the full story →</a><span class="compose-pin" data-at="3">Tone · Warm</span></div>' +
+      '<div class="compose-cta-row"><span class="compose-cta" aria-hidden="true">Read the full story →</span></div>' +
       "</div>" +
       '<div class="compose-stats" data-at="4">' +
       '<div>Predicted open<b data-n="41.2" data-u="%">…</b></div>' +
@@ -69,6 +69,14 @@
     var steps = root.querySelectorAll(".compose-steps li");
     var typed = root.querySelector(".compose-typed");
     var go = root.querySelector(".compose-go");
+    var open = root.querySelector(".compose-open");
+    function doneState(on) {
+      go.classList.toggle("is-again", on);
+      go.classList.toggle("btn-primary", !on);
+      if (on) { go.innerHTML = ICON.replay; go.setAttribute("aria-label", "Generate again"); go.title = "Generate again"; }
+      else { go.textContent = "Generate"; go.removeAttribute("aria-label"); go.removeAttribute("title"); }
+      open.hidden = !on;
+    }
     var mail = root.querySelector(".compose-mail");
     var userEdited = false;
 
@@ -118,7 +126,7 @@
       setStage(4);
       typed.textContent = BODY;
       stats(false);
-      go.innerHTML = ICON.replay + " Generate again";
+      doneState(true);
     }
 
     this.play = function (withBrief) {
@@ -126,7 +134,7 @@
       typed.textContent = "";
       mail.querySelectorAll(".compose-stats b").forEach(function (b) { b.textContent = "…"; });
       if (REDUCED) { if (!brief.value) brief.value = BRIEF; finish(); return; }
-      go.textContent = "Generate";
+      doneState(false);
       setStage(0);
       var start = function () {
         setStage(1);
@@ -134,7 +142,7 @@
         later(function () {
           setStage(3);
           typeInto(function (s) { typed.textContent = s; }, BODY, 14, function () {
-            later(function () { setStage(4); stats(true); go.innerHTML = ICON.replay + " Generate again"; }, 350);
+            later(function () { setStage(4); stats(true); doneState(true); }, 350);
           });
         }, 1500);
       };
@@ -150,7 +158,10 @@
     brief.addEventListener("focus", function () {
       if (!userEdited && brief.value.length < BRIEF.length) { userEdited = true; brief.value = BRIEF; }
     });
-    go.addEventListener("click", function () { self.play(false); });
+    go.addEventListener("click", function () {
+      if (!userEdited && brief.value.length < BRIEF.length) brief.value = BRIEF;
+      self.play(false);
+    });
     root.querySelectorAll(".btn-soft.is-set").forEach(function (b) {
       b.setAttribute("aria-pressed", "true");
       b.addEventListener("click", function () { b.setAttribute("aria-pressed", String(b.getAttribute("aria-pressed") !== "true")); });
@@ -353,10 +364,211 @@
     }
   };
 
+  /* ---------- Editor content per template (Templates and Home cards open their own) ---------- */
+  var EDIT_TPL = {
+    win: { title: "Win Story Email", campaign: "Q3 Win Story", category: "Customer Success",
+      link: { path: "customers/q3-win-story", img: "images/win.jpg", title: "How OCI customers cut batch times by 38% this quarter", excerpt: "Three customers share how they moved critical workloads to Oracle Cloud Infrastructure, and what changed for their teams." } },
+    cloud: { title: "Cloud Momentum Email", campaign: "Cloud Momentum Release", category: "Newsletter", img: "images/cloud.jpg", alt: "Earth at night from orbit",
+      subject: "Cloud momentum: what shipped this month", h: "This month on Oracle Cloud.", g: "Hi there,",
+      b: "We shipped faster provisioning in six regions, new cost controls in the console and a simpler way to move workloads between tenancies. Here is what changed and what it means for your teams.",
+      c: "Reply to this email if you'd like a walkthrough with our cloud engineers.", cta: "Read the release notes",
+      formal: { h: "Oracle Cloud release summary for this month.", b: "This month we released faster provisioning in six regions, additional cost controls in the console and improved workload migration between tenancies." },
+      short: "Faster provisioning in six regions, new cost controls and easier workload moves between tenancies.",
+      link: { path: "cloud/whats-new/cloud-momentum", img: "images/cloud.jpg", title: "What's new on Oracle Cloud", excerpt: "The full release notes for this month's infrastructure, console and migration updates." } },
+    welcome: { title: "Welcome Onboard Email", campaign: "Enterprise Welcome", category: "Customer Success", img: "images/welcome.jpg", alt: "Shoes on a welcome mat",
+      subject: "Welcome to Oracle Cloud", h: "Welcome aboard. Let's get you set up.", g: "Hi there,",
+      b: "Your tenancy is ready. Book a 30-minute kick-off with your customer success lead, and keep the console guides close for your first week.",
+      c: "We'll check in once your first workload is live.", cta: "Book your kick-off",
+      formal: { h: "Welcome to Oracle Cloud Infrastructure.", b: "Your tenancy has been provisioned. We invite you to schedule a kick-off session with your customer success lead and to review the console guides during your first week." },
+      short: "Your tenancy is ready. Book a kick-off and keep the console guides handy.",
+      link: { path: "cloud/get-started/kick-off", img: "images/welcome.jpg", title: "Book your Oracle Cloud kick-off", excerpt: "Pick a 30-minute slot with your customer success lead and get your first workload live." } },
+    promo: { title: "Summer Promo Email", campaign: "Summer Region Credits", category: "Marketing", img: "images/promo.jpg", alt: "A colourful summer pool scene",
+      subject: "Summer credits for your next region", h: "More room to grow this summer.", g: "Hi there,",
+      b: "Expand into a new region before the end of August and we'll add credits to your account for the first three months, plus discounted compute on every new tier.",
+      c: "The offer applies to every service on your current plan.", cta: "Claim your credits",
+      formal: { h: "Summer regional expansion offer.", b: "Customers who expand into an additional region before 31 August will receive account credits for the first three months and discounted compute pricing on new tiers." },
+      short: "Add a region by the end of August for three months of credits and cheaper compute.",
+      link: { path: "cloud/offers/summer-regions", img: "images/promo.jpg", title: "Summer region credits", excerpt: "Eligibility, credit amounts and how to claim them for new regions this summer." } },
+    launch: { title: "Product Launch Email", campaign: "Product Launch Digest", category: "Newsletter", img: "images/launch.jpg", alt: "Engineers reviewing a release at their desks",
+      subject: "Release digest: what changed this sprint", h: "Faster tuning, smarter scaling, still hands‑free.", g: "Hi there,",
+      b: "This release brings automatic index tuning to every workload, scaling that reacts in seconds and security patches applied with no downtime.",
+      c: "Your databases pick up the changes automatically, so there is nothing to do.", cta: "See what's new",
+      formal: { h: "Autonomous Database release summary.", b: "This release introduces automatic index tuning for all workloads, faster elastic scaling and zero-downtime security patching." },
+      short: "Automatic index tuning, faster scaling and zero-downtime patches.",
+      link: { path: "database/autonomous/release-notes", img: "images/launch.jpg", title: "Autonomous Database release notes", excerpt: "Every change in this release, with upgrade notes for administrators." } },
+    review: { title: "Enterprise Review Email", campaign: "Quarterly Enterprise Review", category: "Customer Success", img: "images/review.jpg", alt: "An executive team in a briefing",
+      subject: "Your quarterly enterprise review", h: "Your quarter on Oracle Cloud, in one page.", g: "Hi there,",
+      b: "Ahead of your briefing, here is a summary of resource use, spend against forecast and the performance projections we'll walk through together.",
+      c: "Reply with any topics you'd like us to add to the agenda.", cta: "Open the full review",
+      formal: { h: "Quarterly enterprise review summary.", b: "In preparation for your briefing, please find a summary of resource utilisation, spend against forecast and performance projections for the coming quarter." },
+      short: "Your resource use, spend and projections for the quarter, ahead of the briefing.",
+      link: { path: "cloud/reviews/q3", img: "images/review.jpg", title: "Q3 enterprise review", excerpt: "Resource allocation, spend and performance projections for your tenancy." } }
+  };
+  var TITLE_TO_TPL = { "Win Story Announcement": "win", "Cloud Momentum Release": "cloud", "Welcome Onboard": "welcome", "Summer Promo Offer": "promo", "Product Launch Digest": "launch", "Quarterly Enterprise Review": "review", "Executive Briefing": "review" };
+  var editTpl = "win";
+  document.addEventListener("click", function (e) {
+    var card = e.target.closest && e.target.closest(".tpl-card, .start-card");
+    if (card) { var h = card.querySelector("h3"); editTpl = (h && TITLE_TO_TPL[h.textContent.trim()]) || "win"; }
+    else if (e.target.closest && e.target.closest("#newDraftBtn")) editTpl = "win";
+  }, true);
+
+  function slug(s) { return s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, ""); }
+
+  function fillEditor(page, card, t) {
+    var q = function (s, r) { return (r || page).querySelector(s); };
+    q(".editor-title-row h1").textContent = t.title;
+    var crumb = q(".breadcrumb .current"); if (crumb) crumb.textContent = t.title;
+    document.title = t.title + " · Oracle AI Email Gen";
+    var camp = q(".config-stack input[type=text]"); if (camp) camp.value = t.campaign;
+    var cat = q(".config-stack select");
+    if (cat) Array.prototype.forEach.call(cat.options, function (o) { o.selected = o.textContent === t.category; });
+    if (!t.subject) return;
+    q(".preview-meta .meta-val", card).textContent = t.subject;
+    var img = q(".preview-hero img", card); img.src = t.img; img.alt = t.alt;
+    var c = q(".preview-content", card), ps = c.querySelectorAll("p");
+    c.querySelector("h2").textContent = t.h;
+    ps[0].textContent = t.g; ps[1].textContent = t.b; ps[2].textContent = t.c;
+    q(".read-btn", card).textContent = t.cta + " →";
+  }
+
+  /* Read the full story: a side panel that checks where the button goes */
+  function linkPanel(card, t, btn) {
+    var url = "https://www.oracle.com/" + t.link.path;
+    var utm = { utm_source: "email", utm_medium: "ai-email-gen", utm_campaign: slug(t.campaign) };
+    var full = url + "?" + Object.keys(utm).map(function (k) { return k + "=" + utm[k]; }).join("&");
+    var wrap = document.createElement("div");
+    wrap.className = "link-panel-wrap";
+    wrap.innerHTML =
+      '<div class="link-panel-scrim"></div>' +
+      '<aside class="link-panel" role="dialog" aria-modal="true" aria-labelledby="linkPanelTitle">' +
+      '<div class="lp-head"><h2 id="linkPanelTitle">Button destination</h2><button type="button" class="lp-close" aria-label="Close">×</button></div>' +
+      '<p class="lp-ok">' + ICON.check + " Link checked. The page loads and the tracking tags are attached.</p>" +
+      '<label class="lp-label" for="lpText">Button text</label><input id="lpText" class="lp-input" type="text" />' +
+      '<label class="lp-label" for="lpUrl">Destination</label><div class="lp-url"><input id="lpUrl" class="lp-input" type="text" readonly value="' + full + '" /><button type="button" class="btn btn-outline lp-copy">Copy</button></div>' +
+      '<span class="lp-label">Tracking tags</span><div class="lp-tags">' + Object.keys(utm).map(function (k) { return "<code>" + k + "=" + utm[k] + "</code>"; }).join("") + "</div>" +
+      '<span class="lp-label">Landing page preview</span>' +
+      '<div class="lp-page"><img src="' + t.link.img + '" alt="" /><div><span class="lp-host">oracle.com/' + t.link.path + "</span><h3>" + t.link.title + "</h3><p>" + t.link.excerpt + "</p></div></div>" +
+      '<div class="lp-foot"><button type="button" class="btn btn-primary lp-done">Done</button></div>' +
+      "</aside>";
+    document.body.appendChild(wrap);
+    var panel = wrap.querySelector(".link-panel"), text = wrap.querySelector("#lpText");
+    text.value = btn.textContent.replace(/\s*→\s*$/, "");
+    text.addEventListener("input", function () { btn.textContent = (text.value.trim() || "Read more") + " →"; });
+    wrap.querySelector(".lp-copy").addEventListener("click", function (e) {
+      var b = e.currentTarget;
+      try { navigator.clipboard.writeText(full); } catch (err) {}
+      b.textContent = "Copied";
+      setTimeout(function () { b.textContent = "Copy"; }, 1600);
+    });
+    function close() {
+      document.removeEventListener("keydown", onKey);
+      wrap.classList.remove("is-open");
+      setTimeout(function () { wrap.remove(); }, REDUCED ? 0 : 220);
+      btn.focus();
+    }
+    function onKey(e) {
+      if (e.key === "Escape") return close();
+      if (e.key !== "Tab") return;
+      var f = panel.querySelectorAll("button, input"), first = f[0], last = f[f.length - 1];
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    }
+    document.addEventListener("keydown", onKey);
+    wrap.querySelector(".lp-close").addEventListener("click", close);
+    wrap.querySelector(".lp-done").addEventListener("click", close);
+    wrap.querySelector(".link-panel-scrim").addEventListener("click", close);
+    window.addEventListener("hashchange", function h() { window.removeEventListener("hashchange", h); if (wrap.isConnected) wrap.remove(); });
+    requestAnimationFrame(function () { wrap.classList.add("is-open"); text.focus(); });
+  }
+
+  /* Edit structure: reorder and show or hide the email's modules */
+  function structure(card, tabs) {
+    var content = card.querySelector(".preview-content");
+    var ps = content.querySelectorAll("p");
+    var mods = [
+      { name: "Hero image", el: card.querySelector(".preview-hero"), fixed: true },
+      { name: "Headline", el: content.querySelector("h2") },
+      { name: "Greeting", el: ps[0] },
+      { name: "Body", el: ps[1] },
+      { name: "Closing", el: ps[2] },
+      { name: "Button", el: content.querySelector(".read-btn") }
+    ];
+    var initial = mods.slice();
+    var view = document.createElement("div");
+    view.className = "structure-view";
+    view.id = "structurePanel";
+    view.setAttribute("role", "tabpanel");
+    view.hidden = true;
+    card.querySelector(".preview-meta").after(view);
+    var live = [card.querySelector(".preview-hero"), content, card.querySelector(".ai-refine")];
+
+    function snippet(m) {
+      if (m.el.tagName === "DIV") return m.el.querySelector("img").alt;
+      var s = m.el.textContent.trim();
+      return s.length > 64 ? s.slice(0, 62) + "…" : s;
+    }
+    function render(focusSel) {
+      var movable = mods.filter(function (m) { return !m.fixed; });
+      view.innerHTML =
+        '<div class="sv-head"><p>Approved modules only. Move them or hide them, then check the result in Live Preview.</p><button type="button" class="sv-reset">Reset</button></div>' +
+        '<ol class="sv-list">' + mods.map(function (m, i) {
+          var j = movable.indexOf(m);
+          return '<li class="' + (m.el.hidden ? "is-off" : "") + '"><div class="sv-text"><b>' + m.name + "</b><span>" + snippet(m) + "</span></div>" +
+            (m.fixed ? '<span class="sv-fixed">Fixed at top</span>' :
+              '<div class="sv-move"><button type="button" data-i="' + i + '" data-d="-1" aria-label="Move ' + m.name + ' up"' + (j === 0 ? " disabled" : "") + ">↑</button>" +
+              '<button type="button" data-i="' + i + '" data-d="1" aria-label="Move ' + m.name + ' down"' + (j === movable.length - 1 ? " disabled" : "") + ">↓</button></div>") +
+            '<button type="button" class="sv-toggle" data-t="' + i + '" aria-pressed="' + !m.el.hidden + '" aria-label="Show ' + m.name + '">' + (m.el.hidden ? "Hidden" : "Shown") + "</button></li>";
+        }).join("") + "</ol>";
+      if (focusSel) { var f = view.querySelector(focusSel); if (f && !f.disabled) f.focus(); }
+    }
+    function sync() {
+      mods.filter(function (m) { return !m.fixed; }).forEach(function (m) { content.appendChild(m.el); });
+    }
+    view.addEventListener("click", function (e) {
+      var b = e.target.closest("button");
+      if (!b) return;
+      if (b.classList.contains("sv-reset")) {
+        mods = initial.slice();
+        mods.forEach(function (m) { m.el.hidden = false; });
+        sync(); render(".sv-reset"); return;
+      }
+      if (b.dataset.t) {
+        var m = mods[+b.dataset.t];
+        m.el.hidden = !m.el.hidden;
+        render('[data-t="' + b.dataset.t + '"]'); return;
+      }
+      var i = +b.dataset.i, d = +b.dataset.d, k = i + d;
+      if (k < 1 || k >= mods.length) return;
+      var tmp = mods[i]; mods[i] = mods[k]; mods[k] = tmp;
+      sync(); render('[data-i="' + k + '"][data-d="' + d + '"]');
+    });
+
+    tabs.forEach(function (tab, i) {
+      tab.setAttribute("role", "tab");
+      tab.addEventListener("click", function () {
+        var structureOn = i === 0;
+        tabs.forEach(function (t, j) { t.classList.toggle("is-active", j === i); t.setAttribute("aria-selected", String(j === i)); });
+        if (structureOn) render();
+        view.hidden = !structureOn;
+        live.forEach(function (n) { n.style.display = structureOn ? "none" : ""; });
+      });
+    });
+    tabs[0].setAttribute("aria-controls", "structurePanel");
+    tabs.forEach(function (t) { t.setAttribute("aria-selected", String(t.classList.contains("is-active"))); });
+    tabs[0].parentNode.setAttribute("role", "tablist");
+  }
+
   function editor() {
     var card = document.querySelector(".preview-card");
     if (!card || card.dataset.ai) return;
     card.dataset.ai = "1";
+    var page = card.closest(".editor-page");
+    var tpl = EDIT_TPL[editTpl] || EDIT_TPL.win;
+    fillEditor(page, card, tpl);
+    var readBtn = card.querySelector(".read-btn");
+    readBtn.setAttribute("aria-haspopup", "dialog");
+    readBtn.addEventListener("click", function () { linkPanel(card, tpl, readBtn); });
+    structure(card, Array.prototype.slice.call(page.querySelectorAll(".editor-tab")));
     var content = card.querySelector(".preview-content");
     var ps = content.querySelectorAll("p");
     var el = { h: content.querySelector("h2"), g: ps[0], b: ps[1], c: ps[2] };
@@ -415,6 +627,12 @@
 
     function variant(key) {
       var v = VARIANTS[key], t = {};
+      if (editTpl !== "win" && tpl.subject) {
+        v = key === "formal" ? { h: tpl.formal.h, g: "Dear Valued Partner,", b: tpl.formal.b, c: "We appreciate your continued partnership." }
+          : key === "shorter" ? { b: tpl.short, c: "Thank you." }
+          : key === "promo" ? { c: tpl.c + " As a thank-you, use code <strong>OCI15</strong> for 15% off your next renewal." }
+          : { b: tpl.short, c: "Thank you for building this with us." };
+      }
       Object.keys(el).forEach(function (k) { t[k] = v[k] || original[k]; });
       return t;
     }
@@ -481,14 +699,190 @@
     document.querySelectorAll(".stat-value").forEach(countUp);
   }
 
+  /* ---------- Templates: category chips + search filter the grid ---------- */
+  var CHIP_CAT = { "All": "", "Marketing": "marketing", "Newsletter": "newsletter", "Welcome": "welcome", "Promo": "promo", "Product Update": "product", "Onboarding": "onboarding" };
+
+  function templates() {
+    var page = document.querySelector(".templates-page");
+    if (!page || page.dataset.ai) return;
+    page.dataset.ai = "1";
+    var grid = page.querySelector(".tpl-grid");
+    var input = page.querySelector(".search-box input");
+    var chips = page.querySelectorAll(".tpl-filters .chip");
+    var cards = Array.prototype.slice.call(grid.querySelectorAll(".tpl-card")).map(function (c) {
+      var badge = c.querySelector(".cat-badge");
+      return { el: c, cat: badge ? badge.classList[1] : "", text: c.textContent.toLowerCase() };
+    });
+    var cat = "";
+    input.setAttribute("aria-label", "Search templates");
+    input.setAttribute("type", "search");
+
+    var status = document.createElement("p");
+    status.className = "tpl-count";
+    status.setAttribute("aria-live", "polite");
+    grid.parentNode.insertBefore(status, grid);
+
+    var empty = document.createElement("div");
+    empty.className = "tpl-empty";
+    empty.hidden = true;
+    empty.innerHTML = "<h3>No templates match</h3><p></p><button type=\"button\" class=\"btn btn-outline\">Clear filters</button>";
+    grid.parentNode.insertBefore(empty, grid.nextSibling);
+
+    function apply(fromUser) {
+      var q = input.value.trim().toLowerCase(), shown = 0;
+      if (fromUser) cards.forEach(function (c) { c.el.classList.remove("stagger-item"); c.el.style.animationDelay = ""; });
+      cards.forEach(function (c) {
+        var on = (!cat || c.cat === cat) && (!q || c.text.indexOf(q) > -1);
+        if (on && c.el.hidden && !REDUCED) {
+          c.el.classList.remove("tpl-in");
+          void c.el.offsetWidth;
+          c.el.classList.add("tpl-in");
+        }
+        c.el.hidden = !on;
+        if (on) shown++;
+      });
+      var label = "";
+      chips.forEach(function (ch) { if (ch.classList.contains("is-active") && CHIP_CAT[ch.textContent]) label = ch.textContent; });
+      status.textContent = shown + (shown === 1 ? " template" : " templates") + (label ? " in " + label : "") + (q ? " matching “" + input.value.trim() + "”" : "");
+      empty.hidden = shown > 0;
+      grid.hidden = shown === 0;
+      if (!shown) empty.querySelector("p").textContent = "Try another word, or switch to a different category.";
+    }
+
+    chips.forEach(function (ch) {
+      ch.setAttribute("aria-pressed", String(ch.classList.contains("is-active")));
+      ch.addEventListener("click", function () {
+        cat = CHIP_CAT[ch.textContent] || "";
+        chips.forEach(function (c) { c.setAttribute("aria-pressed", String(c === ch)); });
+        apply(true);
+      });
+    });
+    input.addEventListener("input", function () { apply(true); });
+    empty.querySelector("button").addEventListener("click", function () {
+      input.value = "";
+      chips[0].click();
+      input.focus();
+    });
+    apply();
+  }
+
+  /* ---------- Profile: who is sending, and the defaults the AI writes with ---------- */
+  function profile(root) {
+    var field = function (id, label, value, extra) {
+      return '<div class="field"><label for="' + id + '">' + label + '</label><input id="' + id + '" type="' + ((extra && extra.type) || "text") + '" value="' + value + '"' + (extra && extra.readonly ? " readonly" : "") + " /></div>";
+    };
+    var toggle = function (label, hint, on) {
+      return '<label class="toggle-row pf-toggle"><span><span class="t-label">' + label + '</span><small>' + hint + '</small></span><span class="switch"><input type="checkbox"' + (on ? " checked" : "") + ' /><span class="slider"></span></span></label>';
+    };
+    var drafts = [["win", "Win Story Email", "Edited 2 hours ago"], ["welcome", "Welcome Onboard Email", "Edited yesterday"], ["launch", "Product Launch Email", "Scheduled for Wed 09:00"]];
+    var page = document.createElement("div");
+    page.className = "container profile-page";
+    page.innerHTML =
+      '<div class="pf-head"><span class="pf-avatar" aria-hidden="true">JD</span><div><h1>Jamie Dela Cruz</h1><p>Senior Marketing Manager · Oracle Cloud Marketing, APAC</p></div></div>' +
+      '<div class="pf-grid"><form class="pf-main" novalidate>' +
+      '<section class="cfg-card"><h3>Profile</h3><div class="pf-two">' +
+      field("pfName", "Full name", "Jamie Dela Cruz") + field("pfTitle", "Job title", "Senior Marketing Manager") +
+      field("pfTeam", "Team", "Oracle Cloud Marketing, APAC") + field("pfEmail", "Work email", "jamie.delacruz@oracle.com", { type: "email", readonly: true }) +
+      '</div><div class="field"><label for="pfTz">Time zone</label><select id="pfTz"><option selected>Singapore (GMT+8)</option><option>Manila (GMT+8)</option><option>Sydney (GMT+11)</option><option>Tokyo (GMT+9)</option></select></div></section>' +
+      '<section class="cfg-card"><h3>Writing defaults</h3>' +
+      '<div class="field"><span class="pf-label" id="pfToneLabel">Default tone</span><div class="vis-seg pf-seg" role="radiogroup" aria-labelledby="pfToneLabel">' +
+      ["Warm", "Clear", "Formal", "Upbeat"].map(function (t, i) { return '<button type="button" role="radio" aria-checked="' + (i === 0) + '" class="' + (i === 0 ? "is-on" : "") + '">' + t + "</button>"; }).join("") +
+      "</div></div>" +
+      '<div class="field"><label for="pfSign">Sign-off</label><input id="pfSign" type="text" value="Jamie and the Oracle Cloud team" /></div>' +
+      toggle("Suggest a send time", "The AI picks the hour each audience opens most.", true) +
+      toggle("Add the unsubscribe footer", "Required for marketing email. Locked on for promo templates.", true) +
+      toggle("Ask before sending to over 5,000 people", "Large sends wait for a second approver.", false) +
+      "</section>" +
+      '<section class="cfg-card"><h3>Sending identity</h3><div class="pf-two">' +
+      field("pfFrom", "From name", "Oracle Cloud") + field("pfReply", "Reply-to address", "cloud-apac@oracle.com", { type: "email" }) +
+      '</div><p class="pf-error" id="pfReplyError" hidden>Enter an email address, like name@oracle.com.</p></section>' +
+      '<section class="cfg-card"><h3>Notifications</h3>' +
+      toggle("A campaign finishes sending", "Delivery summary by email.", true) +
+      toggle("Weekly performance digest", "Opens, clicks and the best send times, every Monday.", true) +
+      toggle("Someone asks for your approval", "Also shown in the bell menu.", true) +
+      "</section>" +
+      '<div class="pf-save"><span class="pf-status" aria-live="polite"></span><button type="submit" class="btn btn-primary" disabled>Save changes</button></div>' +
+      "</form>" +
+      '<aside class="pf-side">' +
+      '<section class="cfg-card"><h3>Recent drafts</h3><ul class="pf-drafts">' +
+      drafts.map(function (d) { return '<li><a href="#/editor" data-tpl="' + d[0] + '"><b>' + d[1] + "</b><span>" + d[2] + "</span></a></li>"; }).join("") +
+      "</ul></section>" +
+      '<section class="cfg-card"><h3>Your last 30 days</h3><dl class="pf-stats"><div><dt>Emails generated</dt><dd>46</dd></div><div><dt>Sent</dt><dd>18</dd></div><div><dt>Average open rate</dt><dd>41.2%</dd></div></dl><a class="story-link pf-link" href="#/analytics">See analytics →</a></section>' +
+      '<section class="cfg-card"><h3>API key</h3><p class="pf-note">Use this key to generate and send email from your own tools.</p>' +
+      '<div class="pf-key"><code>oeg_live_••••••••••3f9a</code><button type="button" class="btn btn-outline pf-copy">Copy</button></div>' +
+      '<div class="pf-regen"><button type="button" class="pf-text-btn pf-regen-ask">Regenerate key</button>' +
+      '<div class="pf-confirm" hidden><p>The current key stops working straight away. Regenerate it?</p><button type="button" class="btn btn-primary pf-regen-yes">Regenerate</button><button type="button" class="btn btn-outline pf-regen-no">Cancel</button></div></div>' +
+      '<a class="story-link pf-link" href="#/docs">Read the API docs →</a></section>' +
+      '<button type="button" class="btn btn-outline pf-signout">Sign out</button>' +
+      "</aside></div>";
+    root.appendChild(page);
+
+    var form = page.querySelector(".pf-main"), save = form.querySelector("[type=submit]"), status = form.querySelector(".pf-status");
+    var reply = form.querySelector("#pfReply"), replyErr = form.querySelector("#pfReplyError");
+    function dirty() { save.disabled = false; status.textContent = "Unsaved changes"; form.classList.add("is-dirty"); }
+    form.addEventListener("input", dirty);
+    form.addEventListener("change", dirty);
+    form.querySelectorAll(".pf-seg button").forEach(function (b, i, all) {
+      b.addEventListener("click", function () {
+        all.forEach(function (x) { x.classList.toggle("is-on", x === b); x.setAttribute("aria-checked", String(x === b)); });
+        dirty();
+      });
+    });
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      var ok = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(reply.value.trim());
+      replyErr.hidden = ok;
+      reply.setAttribute("aria-invalid", String(!ok));
+      if (ok) reply.removeAttribute("aria-describedby"); else reply.setAttribute("aria-describedby", "pfReplyError");
+      if (!ok) { reply.focus(); status.textContent = "Fix the highlighted field to save."; return; }
+      save.disabled = true;
+      form.classList.remove("is-dirty");
+      var now = new Date();
+      status.textContent = "Saved at " + now.getHours() + ":" + String(now.getMinutes()).padStart(2, "0");
+      page.querySelector(".pf-head h1").textContent = form.querySelector("#pfName").value.trim() || "Jamie Dela Cruz";
+      page.querySelector(".pf-head p").textContent = [form.querySelector("#pfTitle").value.trim(), form.querySelector("#pfTeam").value.trim()].filter(Boolean).join(" · ");
+    });
+
+    page.querySelectorAll(".pf-drafts a").forEach(function (a) {
+      a.addEventListener("click", function () { editTpl = a.dataset.tpl; });
+    });
+    page.querySelector(".pf-copy").addEventListener("click", function (e) {
+      var b = e.currentTarget;
+      try { navigator.clipboard.writeText(page.querySelector(".pf-key code").textContent); } catch (err) {}
+      b.textContent = "Copied";
+      setTimeout(function () { b.textContent = "Copy"; }, 1600);
+    });
+    var ask = page.querySelector(".pf-regen-ask"), confirmBox = page.querySelector(".pf-confirm");
+    ask.addEventListener("click", function () { confirmBox.hidden = false; ask.hidden = true; confirmBox.querySelector(".pf-regen-no").focus(); });
+    page.querySelector(".pf-regen-no").addEventListener("click", function () { confirmBox.hidden = true; ask.hidden = false; ask.focus(); });
+    page.querySelector(".pf-regen-yes").addEventListener("click", function () {
+      var tail = Math.random().toString(16).slice(2, 6);
+      page.querySelector(".pf-key code").textContent = "oeg_live_••••••••••" + tail;
+      confirmBox.hidden = true; ask.hidden = false;
+      ask.textContent = "Key regenerated. Regenerate again";
+      ask.focus();
+    });
+    page.querySelector(".pf-signout").addEventListener("click", function (e) {
+      e.currentTarget.textContent = "Signed out (demo)";
+      e.currentTarget.disabled = true;
+    });
+  }
+
+  function markAvatar() {
+    var a = document.querySelector(".avatar");
+    if (a) { if (location.hash === "#/profile") a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current"); }
+  }
+
   function enhance() {
-    requestAnimationFrame(function () { editor(); analytics(); });
+    markAvatar();
+    requestAnimationFrame(function () { editor(); analytics(); templates(); });
   }
   window.addEventListener("hashchange", enhance);
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", enhance);
   else enhance();
 
   window.OEGCompose = {
+    profile: profile,
     story: story,
     mount: function (parent) {
       var root = document.createElement("section");
