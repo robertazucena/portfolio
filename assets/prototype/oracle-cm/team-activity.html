@@ -10,6 +10,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="styles.css?v=2" />
+<link rel="stylesheet" href="moments.css" />
 </head>
 <body>
 
@@ -115,7 +116,7 @@
   document.getElementById("ic-trend").innerHTML = ICONS.trendingUp;
   document.getElementById("ic-award").innerHTML = ICONS.award;
 
-  const FN_AVATAR = "assets/avatar-fn.svg";
+  const FN_AVATAR = "assets/avatar-fn.jpg";
 
   const leaderboard = [
     { name: "Fatima Nguyen", you: true, role: "Marketing Ops", sent: 214, open: "94%", active: "Just now", avatar: FN_AVATAR },
@@ -146,7 +147,7 @@
 
   const feed = [
     { icon: "heart", text: `<b>Sarah Jenkins</b> sent a Team Welcome E-Card to <b>Priya Anand</b>`, time: "12 minutes ago" },
-    { icon: "eye", text: `<b>Jordan Doe</b> opened the Diwali Celebration E-Card from Fatima Nguyen`, time: "48 minutes ago" },
+    { icon: "eye", text: `<b>Priya Anand</b> opened the Diwali Celebration E-Card from Fatima Nguyen`, time: "48 minutes ago" },
     { icon: "heart", text: `<b>Marcus Lee</b> sent a Milestone Anniversary video to <b>Alex Mercer</b>`, time: "1 hour ago" },
     { icon: "trendingUp", text: `<b>Priya Shah</b> hit a 96% open rate on this week's sends`, time: "3 hours ago" },
     { icon: "heart", text: `<b>Fatima Nguyen</b> scheduled 8 Happy Easter cards for next week`, time: "Yesterday" },
@@ -162,5 +163,6 @@
     </div>
   `).join("");
 </script>
+<script src="moments.js"></script>
 </body>
 </html>

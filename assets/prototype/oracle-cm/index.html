@@ -10,6 +10,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="styles.css?v=2" />
+<link rel="stylesheet" href="moments.css" />
 </head>
 <body>
 
@@ -25,27 +26,61 @@
 
     <main class="main">
       <div class="moments-bg">
-        <div class="moments-content">
-
-          <div class="title-row">
-            <div class="title-text">
-              <h1>Customer Moments</h1>
-              <p>Send personalized e-moments or videos to thank and celebrate your customers. Powered by AI.</p>
+        <section class="mx-hero" aria-labelledby="mx-title">
+          <div class="mx-copy">
+            <p class="mx-hello" id="mx-hello">Welcome back, Fatima</p>
+            <h1 id="mx-title">Make every customer feel <em>remembered.</em></h1>
+            <p class="mx-lede">Pick a moment, add their name and a personal note. AI helps you find the right words.</p>
+            <div class="mx-ctas">
+              <a class="mx-btn" href="moment.html?id=2" id="new-moment-cta">Create a moment<span class="mx-btn-ic" data-icon="arrowRight"></span></a>
+              <a class="mx-link" href="#gallery" id="mx-browse">Browse all 8 moments</a>
             </div>
-            <button class="cta-pill" id="new-moment-cta">Got a moment?</button>
           </div>
+          <div class="mx-deck" id="mx-deck" aria-hidden="true">
+            <div class="mx-tilt">
+              <div class="mx-dcard mx-back1"><img src="assets/merry-christmas.jpg" alt="" /></div>
+              <div class="mx-dcard mx-back2"><img src="assets/deal-sealed.jpg" alt="" /></div>
+              <div class="mx-dcard mx-front">
+                <img src="assets/happy-diwali.jpg" alt="" />
+                <div class="mx-msg">
+                  <p class="mx-msg-h">Wishing you light &amp; prosperity, <span class="mx-name">Priya</span></p>
+                  <p class="mx-msg-s">From Fatima at Oracle</p>
+                </div>
+                <span class="mx-sheen"></span>
+              </div>
+              <div class="mx-chip mx-chip-ai"><span class="mx-chip-ic" data-icon="sparkles"></span><span>Message written with AI<small>Warm tone</small></span></div>
+              <div class="mx-chip mx-chip-open"><span class="mx-chip-ic" data-icon="check"></span><span>Opened by <b class="mx-chip-name">Priya Anand</b><small>2 minutes ago</small></span></div>
+            </div>
+          </div>
+        </section>
 
-          <div class="toolbar">
+        <div class="moments-content" id="gallery">
+          <div class="mx-tools">
             <div class="search-box">
               <span class="icon" id="icon-search"></span>
-              <input type="text" placeholder="Search for the right moment by using the filter or keywords. Eg. Thank you" />
+              <input type="search" id="mx-search" placeholder="Search moments, e.g. thank you" aria-label="Search moments" />
             </div>
-            <button class="chip-btn"><span class="icon" id="icon-layers"></span>All Categories</button>
-            <button class="chip-btn"><span class="icon" id="icon-filter"></span>Most recent</button>
-            <button class="icon-round-btn" id="icon-bookmark" aria-label="Saved moments"></button>
+            <div class="mx-tabs" role="group" aria-label="Filter by category">
+              <button type="button" class="mx-tab is-on" aria-pressed="true" data-cat="all">All</button>
+              <button type="button" class="mx-tab" aria-pressed="false" data-cat="holiday">Holidays</button>
+              <button type="button" class="mx-tab" aria-pressed="false" data-cat="wins">Wins &amp; deals</button>
+              <button type="button" class="mx-tab" aria-pressed="false" data-cat="ai">AI spotlight</button>
+            </div>
+            <label class="mx-sort"><span class="mx-visually-hidden">Sort moments</span>
+              <select id="mx-sort">
+                <option value="recent">Most recent</option>
+                <option value="popular">Most sent</option>
+                <option value="az">A to Z</option>
+              </select>
+            </label>
           </div>
+          <p class="mx-count" id="mx-count" aria-live="polite"></p>
 
-          <div class="moments-grid" id="moments-grid"></div>
+          <div class="mx-grid" id="moments-grid"></div>
+          <div class="mx-empty" id="mx-empty" hidden>
+            <p>No moments match <b id="mx-empty-q"></b>.</p>
+            <button type="button" class="mx-link" id="mx-clear">Clear search and filters</button>
+          </div>
 
           <div class="moments-footer">
             <span class="f-brand">Customer Moments</span>
@@ -54,7 +89,6 @@
               <span>About</span><span>Privacy</span><span>Terms</span><span>Contact</span>
             </div>
           </div>
-
         </div>
       </div>
     </main>
@@ -64,6 +98,7 @@
 <script src="icons.js"></script>
 <script src="data.js"></script>
 <script src="nav.js"></script>
+<script src="moments.js"></script>
 <script src="index-init.js"></script>
 </body>
 </html>

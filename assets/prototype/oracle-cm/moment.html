@@ -10,6 +10,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="styles.css?v=2" />
+<link rel="stylesheet" href="moments.css" />
 </head>
 <body>
 
@@ -48,13 +49,13 @@
                 <span class="badge-special" id="moment-badge">DIWALI SPECIAL</span>
               </div>
               <div class="card-art" id="card-art">
-                <img id="art-img" src="" alt="" />
+                <img id="art-img" alt="" />
                 <span class="art-play" id="art-play" style="display:none;"></span>
                 <div class="text-overlay">
                   <p class="to-title" id="ov-title"></p>
                   <p class="to-msg" id="ov-msg"></p>
                   <hr />
-                  <p class="to-sig" id="ov-sig">From your partners at myDash</p>
+                  <p class="to-sig" id="ov-sig">From Fatima and the Oracle team</p>
                 </div>
               </div>
               <div class="tips-box">
@@ -67,26 +68,26 @@
               <h2>Personalize Moment</h2>
 
               <div class="form-group">
-                <label>RECIPIENT NAME</label>
-                <input class="field-input" id="in-name" type="text" value="Jordan Doe" />
+                <label for="in-name">Recipient name</label>
+                <input class="field-input" id="in-name" type="text" value="Priya Anand" />
               </div>
 
               <div class="form-group">
-                <label>RECIPIENT EMAIL / PHONE</label>
-                <input class="field-input" id="in-email" type="text" value="jordan.doe@acme-corp.com" />
+                <label for="in-email">Email or phone</label>
+                <input class="field-input" id="in-email" type="text" value="priya.anand@meridianhealth.com" />
               </div>
 
               <div class="form-group">
                 <div class="label-row">
-                  <label>PERSONAL MESSAGE</label>
+                  <label for="in-message">Personal message</label>
                   <button class="ai-action" id="ai-rewrite" type="button"><span id="ic-sparkles"></span>Rewrite with AI</button>
                 </div>
                 <textarea class="field-textarea" id="in-message"></textarea>
               </div>
 
               <div class="form-group">
-                <label>SENDER SIGNATURE</label>
-                <input class="field-input" id="in-signature" type="text" value="From your partners at myDash" />
+                <label for="in-signature">Signature</label>
+                <input class="field-input" id="in-signature" type="text" value="From Fatima and the Oracle team" />
               </div>
 
               <hr class="form-divider" />
@@ -102,7 +103,7 @@
             <span class="f-brand" style="font-weight:700;">Customer Moments</span>
             <span class="f-sep" style="opacity:.4;">|</span>
             <div class="footer-links" style="display:flex;gap:18px;">
-              <span style="opacity:.7;">About</span><span style="opacity:.7;">Privacy</span><span style="opacity:.7;">Terms</span><span style="opacity:.7;">Contact</span>
+              <span style="opacity:.85;">About</span><span style="opacity:.85;">Privacy</span><span style="opacity:.85;">Terms</span><span style="opacity:.85;">Contact</span>
             </div>
           </div>
 
@@ -144,7 +145,7 @@
 
   document.getElementById("in-name").addEventListener("input", (e) => {
     const first = e.target.value.trim().split(" ")[0] || "there";
-    document.getElementById("ov-title").textContent = moment.heading.replace(/Jordan/g, first);
+    document.getElementById("ov-title").textContent = moment.heading.replace(/Priya/g, first);
   });
   document.getElementById("in-message").addEventListener("input", (e) => {
     document.getElementById("ov-msg").textContent = e.target.value;
@@ -155,7 +156,7 @@
 
   document.getElementById("ai-rewrite").addEventListener("click", () => {
     const ta = document.getElementById("in-message");
-    ta.value = "What a joy it's been working alongside you and your team, Jordan — here's to celebrating this moment together!";
+    ta.value = "What a joy it's been working alongside you and your team, Priya. Here's to celebrating this moment together.";
     ta.dispatchEvent(new Event("input"));
   });
 
@@ -170,5 +171,6 @@
     document.getElementById("step2").click();
   });
 </script>
+<script src="moments.js"></script>
 </body>
 </html>

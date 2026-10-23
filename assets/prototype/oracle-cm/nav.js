@@ -11,7 +11,7 @@ function renderSidebar(n){const a=s=>n===s?"nav-item active":"nav-item";return`
         </div>
 
         <a class="profile-row" href="settings.html">
-          <div class="avatar"><img src="assets/avatar-fn.svg" alt="Fatima Nguyen" /></div>
+          <div class="avatar"><img src="assets/avatar-fn.jpg" alt="Fatima Nguyen" /></div>
           <div class="profile-meta">
             <p class="profile-name">Fatima Nguyen</p>
             <p class="profile-role">Marketing Ops</p>
