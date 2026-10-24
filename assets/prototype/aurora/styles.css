@@ -349,7 +349,8 @@ body.on-hero .nav { position: fixed; inset: 0 0 auto 0; background: rgb(var(--sc
 @media (max-width: 900px) { .bento { grid-template-columns: 1fr; grid-template-rows: none; } .bento .dc:nth-child(1) { grid-row: auto; aspect-ratio: 4 / 3; } .bento > .dc { aspect-ratio: 16 / 10; } .bento-row { grid-template-columns: 1fr 1fr; } .bento-row .dc:last-child { grid-column: 1 / -1; aspect-ratio: 16 / 9; } }
 
 /* the aircraft: a full-bleed profile revealed once, then two detail plates */
-.craft-figure { position: relative; border-radius: var(--r-card); overflow: hidden; aspect-ratio: 16 / 7.2; background: var(--bg-raised); }
+.craft-figure { position: relative; border-radius: var(--r-card); overflow: hidden; aspect-ratio: 16 / 5.6; background: var(--bg-raised); }
+.exp-intro + .band { padding-top: 0; }
 .craft-figure img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 52%; }
 @media (prefers-reduced-motion: no-preference) {
   .reveal { clip-path: inset(0 0 100% 0); transition: clip-path 700ms var(--ease-in-out); }
@@ -458,7 +459,8 @@ body.on-hero .nav { position: fixed; inset: 0 0 auto 0; background: rgb(var(--sc
 .page-head p { margin-top: 8px; color: var(--ink-2); max-width: 62ch; }
 .route-line { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
 .route-line .rl-code { font-family: var(--mono); font-size: clamp(1.7rem, 3vw, 2.4rem); font-weight: 500; }
-.route-line .rl-arc { width: clamp(64px, 10vw, 140px); height: 30px; }
+.route-line .rl-arc { display: block; flex: none; width: clamp(64px, 10vw, 140px); height: 30px; }
+.route-line .rl-arc svg.route-arc { display: block; width: 100%; height: 100%; }
 .route-line .rl-meta { width: 100%; color: var(--ink-2); font-size: 15px; }
 .route-line .rl-edit { margin-left: auto; }
 .progress { list-style: none; margin: 22px 0 0; padding: 0; display: flex; gap: 6px; }
@@ -564,6 +566,9 @@ body.on-hero .nav { position: fixed; inset: 0 0 auto 0; background: rgb(var(--sc
 .empty-state p { color: var(--ink-3); max-width: 46ch; }
 
 /* route arc: the signature for every flight */
+.route-arc { overflow: visible; }
+svg.route-arc svg { width: 100%; height: 100%; }
+.route-arc path { vector-effect: non-scaling-stroke; }
 .route-arc path.base { fill: none; stroke: var(--line-2); stroke-width: 1.5; stroke-dasharray: 2 5; stroke-linecap: round; }
 .route-arc path.flown { fill: none; stroke: var(--accent); stroke-width: 1.8; stroke-linecap: round; }
 .route-arc circle.end { fill: var(--bg-raised); stroke: var(--accent); stroke-width: 1.8; }

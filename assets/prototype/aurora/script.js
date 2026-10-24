@@ -44,16 +44,19 @@
     var w = 200, h = o.h || 34, y = h - 4, lift = Math.max(7, Math.min((h - 6) / 2, (o.mins || 300) / 60 * 1.6));
     var d = "M6 " + y + " Q 100 " + (y - lift * 2) + " 194 " + y;
     function pt(t) { return [(1 - t) * (1 - t) * 6 + 2 * (1 - t) * t * 100 + t * t * 194, (1 - t) * (1 - t) * y + 2 * (1 - t) * t * (y - lift * 2) + t * t * y]; }
+    /* the path stretches with the box; dots and the plane sit in % so they stay round */
+    function px(x, yy) { return 'x="' + (x / w * 100).toFixed(2) + '%" y="' + (yy / h * 100).toFixed(2) + '%"'; }
+    function dot(c, x, yy, r) { return '<svg ' + px(x, yy) + ' overflow="visible"><circle class="' + c + '" r="' + r + '"/></svg>'; }
     var stops = "", i;
-    for (i = 1; i <= (o.stops || 0); i++) { var p = pt(i / ((o.stops || 0) + 1)); stops += '<circle class="stop" cx="' + p[0].toFixed(1) + '" cy="' + p[1].toFixed(1) + '" r="3.4"/>'; }
+    for (i = 1; i <= (o.stops || 0); i++) { var p = pt(i / ((o.stops || 0) + 1)); stops += dot("stop", p[0], p[1], 3.4); }
     var flown, plane = "";
     if (o.progress != null) {
       var pr = Math.max(0, Math.min(1, o.progress)), segs = [];
       for (i = 0; i <= 24; i++) { var q = pt(pr * i / 24); segs.push((i ? "L" : "M") + q[0].toFixed(1) + " " + q[1].toFixed(1)); }
       flown = '<path class="flown" d="' + segs.join(" ") + '"/>';
-      if (pr > 0 && pr < 1) { var a = pt(pr), b = pt(Math.min(1, pr + 0.01)), ang = Math.atan2(b[1] - a[1], b[0] - a[0]) * 180 / Math.PI; plane = '<path class="plane" transform="translate(' + a[0].toFixed(1) + " " + a[1].toFixed(1) + ") rotate(" + ang.toFixed(1) + ')" d="M7 0L-4 -4.2L-2 0L-4 4.2Z"/>'; }
+      if (pr > 0 && pr < 1) { var a = pt(pr), b = pt(Math.min(1, pr + 0.01)), ang = Math.atan2(b[1] - a[1], b[0] - a[0]) * 180 / Math.PI; plane = '<svg ' + px(a[0], a[1]) + ' overflow="visible"><path class="plane" transform="rotate(' + ang.toFixed(1) + ')" d="M7 0L-4 -4.2L-2 0L-4 4.2Z"/></svg>'; }
     } else flown = '<path class="flown" d="' + d + '"/>';
-    return '<svg class="route-arc" viewBox="0 0 ' + w + " " + h + '" preserveAspectRatio="none" aria-hidden="true"><path class="base" d="' + d + '"/>' + flown + stops + '<circle class="end" cx="6" cy="' + y + '" r="3.6"/><circle class="end" cx="194" cy="' + y + '" r="3.6"/>' + plane + "</svg>";
+    return '<svg class="route-arc" aria-hidden="true"><svg viewBox="0 0 ' + w + " " + h + '" preserveAspectRatio="none" overflow="visible"><path class="base" d="' + d + '"/>' + flown + "</svg>" + stops + dot("end", 6, y, 3.6) + dot("end", 194, y, 3.6) + plane + "</svg>";
   }
 
   /* =========================================================
@@ -1048,7 +1051,7 @@
   /* ---------- experiences ---------- */
   function experiences() {
     main.innerHTML = '<div class="page-head ph-photo ph-exp"><div class="wrap"><h1>Cabins and aircraft</h1><p>One aircraft family, one livery, and cabins designed around long nights in the air.</p></div></div>' +
-      '<section class="band" style="padding-top:40px"><div class="wrap"><figure class="craft-figure reveal" style="margin:0"><img src="media/aircraft-side.webp?v=2" alt="Side profile of an Aurora Airlines A350-1000 above bright white clouds under a clear blue sky" decoding="async"></figure>' +
+      '<section class="task exp-intro"><div class="wrap"><figure class="craft-figure reveal" style="margin:0"><img src="media/aircraft-side.webp?v=2" alt="Side profile of an Aurora Airlines A350-1000 above bright white clouds under a clear blue sky" decoding="async"></figure>' +
       '<div class="craft-grid"><dl class="craft-facts">' + [["A350-1000", "Long-haul flagship", "Three cabins, with Business suites in a 1-2-1 layout."], ["787-9", "Regional widebody", "Flies our shorter routes across Asia and Oceania."], ["9V-AUR", "Livery", "Ice white, a navy wordmark, and the aurora up the tail."]].map(function (f) { return "<div><dt>" + f[0] + "</dt><dd><b>" + f[1] + "</b>" + f[2] + "</dd></div>"; }).join("") +
       '</dl><div class="craft-plates"><figure><img src="media/aircraft-engine.webp?v=2" alt="The engine and blended winglet in daylight" loading="lazy"></figure><figure><img src="media/aircraft-tail.webp?v=2" alt="The teal to violet tail fin against a clear blue sky" loading="lazy"></figure></div></div><p class="hint" style="margin-top:16px">Aircraft images are AI-generated renders of a fictional livery. Specifications are illustrative.</p></div></section>' +
       '<section class="band"><div class="wrap"><div class="sec-head"><h2>Choose how you cross the night</h2></div><div class="tabs" role="tablist" aria-label="Cabins">' + D.cabinStories.map(function (c, i) { return '<button type="button" role="tab" id="tab-' + c.id + '" aria-controls="cabin-panel" aria-selected="' + (i === 0) + '" tabindex="' + (i === 0 ? 0 : -1) + '" data-cabin-tab="' + i + '">' + c.title + "</button>"; }).join("") + '</div><div class="cabin-panel" id="cabin-panel" role="tabpanel"></div></div></section>';
