@@ -53,6 +53,13 @@ document.getElementById("icon-search").innerHTML = ICONS.search;
       if (state.sort === "popular") return META[b.id].sent - META[a.id].sent;
       return META[a.id].order - META[b.id].order;
     });
+    tabs.forEach(function (t) {
+      var n = MOMENTS.filter(function (m) {
+        return (t.dataset.cat === "all" || META[m.id].cat === t.dataset.cat) &&
+          (!q || (m.title + " " + m.badge + " " + m.heading + " " + type(m)).toLowerCase().indexOf(q) > -1);
+      }).length;
+      t.querySelector(".mx-tab-n").textContent = n;
+    });
     var showFeature = state.cat === "all" && !q && state.sort === "recent";
     grid.innerHTML = list.map(function (m) { return showFeature && m.id === FEATURED ? feature(m) : card(m); }).join("");
     grid.classList.toggle("is-instant", !!fromUser);

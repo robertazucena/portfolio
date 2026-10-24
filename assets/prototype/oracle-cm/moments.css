@@ -14,15 +14,13 @@ input,textarea{caret-color:var(--green)}
 .nav-soon{margin-left:auto;font-size:11px;font-weight:600;color:#7a746e;background:#f1efec;border-radius:5px;padding:2px 7px}
 .sidebar-collapsed .nav-soon{display:none}
 
-/* Cross-document morph from gallery card to editor preview */
-html:active-view-transition .main{animation:none}
+/* The native crossfade is the only page entrance; a second slide-up restarted after it. */
+.main{animation:none}
 /* Page changes: the shell stays put, only the content crossfades. */
 .sidebar{view-transition-name:mx-sidebar}.mobile-topbar{view-transition-name:mx-topbar}
 ::view-transition-group(mx-sidebar),::view-transition-group(mx-topbar),::view-transition-old(mx-sidebar),::view-transition-new(mx-sidebar),::view-transition-old(mx-topbar),::view-transition-new(mx-topbar){animation:none}
 ::view-transition-old(root){animation:.14s cubic-bezier(.23,1,.32,1) both mx-vt-out}::view-transition-new(root){animation:.22s cubic-bezier(.23,1,.32,1) both mx-vt-in}
 @keyframes mx-vt-out{to{opacity:0}}@keyframes mx-vt-in{from{opacity:0}}
-::view-transition-group(moment-art){animation-duration:.48s;animation-timing-function:var(--mx-ease)}
-::view-transition-old(moment-art),::view-transition-new(moment-art){height:100%;object-fit:cover;overflow:clip;border-radius:14px}
 
 /* Calmer page surface: drop the cut-off paint blob, keep the soft wash */
 .moments-bg:before,.editor-content:before,.page-bg:before{background-image:radial-gradient(120% 60% at 100% 0%,#eddc9b40 0%,transparent 55%),radial-gradient(90% 60% at 0% 100%,#cfe0dd55 0%,transparent 60%)}
@@ -72,7 +70,7 @@ html:active-view-transition .main{animation:none}
 
 /* ---------- Toolbar ---------- */
 .moments-content#gallery{padding-top:24px}
-.mx-tools{display:flex;flex-wrap:wrap;gap:12px 16px;align-items:center;margin-bottom:10px}
+.mx-tools{display:flex;flex-wrap:wrap;gap:12px 16px;align-items:center;margin-bottom:28px}
 .mx-tools .search-box{flex:1 1 300px;max-width:420px;padding:12px 16px}
 .mx-tools .search-box input::-webkit-search-cancel-button{cursor:pointer}
 .mx-tabs{display:flex;gap:4px}
@@ -209,3 +207,10 @@ a.btn-primary,a.btn-secondary{display:block;text-align:center}
   .donut.mx-sweep{animation:none}
 }
 .badge-special,.status-delivered{color:#92400e}
+.mx-tab-n{margin-left:7px;font-size:12.5px;font-weight:500;opacity:.55;font-variant-numeric:tabular-nums}.mx-tab.is-on .mx-tab-n{opacity:.7}
+/* Hero field: the Email Gen gradient canvas as the hero background layer */
+.mx-field{position:absolute;left:0;top:0;width:100%;z-index:0;display:block;pointer-events:none;opacity:0;transition:opacity 1.2s var(--mx-ease)}
+.mx-field.is-on{opacity:1}
+.moments-bg.has-field:before,.page-bg.has-field:before,.editor-content.has-field:before{background:#f5f8f7}
+.has-field .mx-hero:before{display:none}
+.moments-bg>.moments-content{position:relative;z-index:1}

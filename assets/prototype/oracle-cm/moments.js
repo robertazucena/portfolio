@@ -5,7 +5,6 @@
   var REDUCED = matchMedia("(prefers-reduced-motion: reduce)").matches;
   var FINE = matchMedia("(hover: hover) and (pointer: fine)").matches;
   var EASE = "cubic-bezier(.23,1,.32,1)";
-  var VT = "onpagereveal" in window;
 
   function $(s, r) { return (r || document).querySelector(s); }
   function $$(s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); }
@@ -50,9 +49,15 @@
   function cards(grid) {
     var items = $$(".mx-gcard", grid);
     if (!grid.classList.contains("is-instant") && !REDUCED) {
-      items.forEach(function (c, i) {
-        c.animate([{ opacity: 0, transform: "translateY(18px)" }, { opacity: 1, transform: "none" }],
-          { duration: 520, delay: 60 * i, easing: EASE, fill: "backwards" });
+      items.forEach(function (c) { c.style.opacity = "0"; });
+      (window.MXWhenReady || function (cb) { cb(); })(function () {
+        var n = 0;
+        items.forEach(function (c) {
+          c.style.opacity = "";
+          if (c.getBoundingClientRect().top > innerHeight) return;
+          c.animate([{ opacity: 0, transform: "translateY(28px)" }, { opacity: 1, transform: "none" }],
+            { duration: 640, delay: REVEAL_AFTER + 80 * n++, easing: EASE, fill: "backwards" });
+        });
       });
     }
     if (FINE && !REDUCED) {
@@ -67,17 +72,6 @@
       });
     }
   }
-  /* Shared-element morph from the clicked card art into the editor preview. */
-  document.addEventListener("click", function (e) {
-    var a = e.target.closest && e.target.closest("a.mx-gcard, a#new-moment-cta");
-    if (!a || !VT || REDUCED || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey) return;
-    e.preventDefault();
-    e.stopPropagation();
-    var img = a.id === "new-moment-cta" ? $(".mx-front img") : $(".mx-art img", a);
-    if (img) img.style.viewTransitionName = "moment-art";
-    location.href = a.getAttribute("href");
-  }, true);
-
   /* ---------- Hero deck: a moment that personalizes itself ---------- */
   function deck() {
     var root = $("#mx-deck");
@@ -142,7 +136,6 @@
     if (!art) return;
     var col = $(".form-column"), step1 = $("#step1"), step2 = $("#step2");
     var nameIn = $("#in-name"), mailIn = $("#in-email"), msgIn = $("#in-message");
-    $("#art-img").style.viewTransitionName = "moment-art";
 
     if (FINE && !REDUCED) {
       art.addEventListener("pointermove", function (e) {
@@ -296,34 +289,173 @@
   }
 
   /* ---------- First-visit preloader (gallery only, not in preview frames) ---------- */
+  /* ---------- Page entrance: preloader over the content, then a bottom-to-top reveal ---------- */
+  var LOADER_TEXT = {
+    index: "Gathering your moments", moment: "Preparing your card", dashboard: "Loading your dashboard",
+    "team-activity": "Loading team activity", reports: "Loading reports", settings: "Loading settings", help: "Loading help"
+  };
+  var REVEAL = ".mx-copy > *, .mx-deck, .mx-tools, .editor-title-row, .preview-column, .form-column, .editor-footer," +
+    " .dash-header, .stats-row > *, .charts-row > *, .dash-content > :not(.dash-header):not(.stats-row):not(.charts-row)";
+  var HOLD = 1000, REVEAL_AFTER = 0;
+
   function preloader() {
     var q = [], ready = true;
     window.MXWhenReady = function (cb) { ready ? cb() : q.push(cb); };
-    if (!$("#mx-deck") || REDUCED) return;
+    var main = $(".main");
     var framed = false; try { framed = window.self !== window.top; } catch (e) { framed = true; }
-    var seen = false; try { seen = sessionStorage.getItem("mx-seen") === "1"; sessionStorage.setItem("mx-seen", "1"); } catch (e) {}
-    if (framed || seen) return;
+    if (!main || framed || REDUCED) return;
     ready = false;
+
+    var targets = $$(REVEAL, main);
+    targets.forEach(function (t) { t.style.opacity = "0"; });
+
+    var page = (location.pathname.split("/").pop() || "index.html").replace(".html", "") || "index";
     var el = document.createElement("div");
+    var r = main.getBoundingClientRect();
     el.className = "mx-loader";
+    el.style.left = Math.max(0, r.left) + "px";
+    el.style.top = Math.max(0, r.top) + "px";
     el.setAttribute("role", "status");
-    el.setAttribute("aria-label", "Loading Customer Moments");
+    el.setAttribute("aria-label", LOADER_TEXT[page] || "Loading");
     el.innerHTML = '<div class="mx-loader-deck" aria-hidden="true">' +
       '<span style="background-image:url(assets/merry-christmas.jpg)"></span>' +
       '<span style="background-image:url(assets/deal-sealed.jpg)"></span>' +
       '<span style="background-image:url(assets/happy-diwali.jpg)"></span></div>' +
-      '<p class="mx-loader-t" aria-hidden="true">Gathering your moments</p>';
+      '<p class="mx-loader-t" aria-hidden="true">' + (LOADER_TEXT[page] || "Loading") + "</p>";
     document.body.appendChild(el);
+
     var t0 = Date.now();
     function hide() {
       if (el.classList.contains("is-out")) return;
       el.classList.add("is-out");
+      REVEAL_AFTER = 120;
+      var n = 0;
+      targets.forEach(function (t) {
+        t.style.opacity = "";
+        if (t.getBoundingClientRect().top > innerHeight) return;
+        t.animate([{ opacity: 0, transform: "translateY(32px)" }, { opacity: 1, transform: "none" }],
+          { duration: 680, delay: REVEAL_AFTER + 90 * n++, easing: EASE, fill: "backwards" });
+      });
+      REVEAL_AFTER += 90 * n;
       ready = true; q.splice(0).forEach(function (cb) { cb(); });
       setTimeout(function () { el.remove(); }, 500);
     }
-    function onLoad() { setTimeout(hide, Math.max(0, 1500 - (Date.now() - t0))); }
+    function onLoad() { setTimeout(hide, Math.max(0, HOLD - (Date.now() - t0))); }
     document.readyState === "complete" ? onLoad() : window.addEventListener("load", onLoad);
-    setTimeout(hide, 3200);
+    setTimeout(hide, 3000);
+  }
+
+  /* ---------- Hero field: the Email Gen shape-shifting gradient, in Customer Moments colours ---------- */
+  var FIELD_FRAG = [
+    "precision mediump float;",
+    "uniform vec2 r;uniform float t;uniform vec2 f;uniform vec2 m;",
+    "float H(vec2 p){",
+    " vec2 q=p*1.35;",
+    " q+=.42*vec2(sin(q.y*1.3+t*.32),cos(q.x*1.1-t*.27));",
+    " q+=.28*vec2(sin(q.y*2.2-t*.21+1.7),cos(q.x*1.9+t*.24+.6));",
+    " return sin(q.x*1.15+t*.17)*cos(q.y*1.35-t*.13)+.35*sin(length(q)*2.1-t*.4);",
+    "}",
+    "void main(){",
+    " vec2 uv=gl_FragCoord.xy/r;",
+    " vec2 p=(gl_FragCoord.xy-.5*r)/min(r.x,r.y)*1.6+m*.25;",
+    " float h=H(p);",
+    " vec2 e=vec2(.004,0.);",
+    " vec3 n=normalize(vec3(H(p-e.xy)-H(p+e.xy),H(p-e.yx)-H(p+e.yx),.035));",
+    " vec3 L=normalize(vec3(-.45+m.x*.4,.55+m.y*.4,.75));",
+    " float dif=clamp(dot(n,L),0.,1.);",
+    " float spec=pow(clamp(dot(reflect(-L,n),vec3(0,0,1)),0.,1.),28.);",
+    /* brand green, teal, mustard, Oracle red */
+    " vec3 green=vec3(.22,.467,.325),teal=vec3(.16,.56,.63),gold=vec3(.93,.71,.18),red=vec3(.78,.275,.204);",
+    " float k=h*.5+.5;",
+    " vec3 c=mix(green,teal,smoothstep(.0,.45,k));",
+    " c=mix(c,gold,smoothstep(.4,.8,k+.15*sin(p.x*.8+t*.1)));",
+    " c=mix(c,red,smoothstep(.78,1.,k));",
+    " c=mix(c,vec3(1.),.66)*(.84+.2*dif)+spec*.22;",
+    " vec2 d=(uv-f)*vec2(r.x/r.y,1.);",
+    " float a=(.14+.5*exp(-dot(d,d)*1.4))*1.1;",
+    " a*=smoothstep(0.,.32,uv.y);",
+    " a=clamp(a*.9+(fract(sin(dot(gl_FragCoord.xy,vec2(12.9898,78.233)))*43758.5453)-.5)/255.,0.,1.);",
+    " gl_FragColor=vec4(c*a,a);",
+    "}"
+  ].join("\n");
+
+  function field(host, focusAt, heightOf) {
+    var cv = document.createElement("canvas");
+    cv.className = "mx-field";
+    cv.setAttribute("aria-hidden", "true");
+    var gl = cv.getContext("webgl", { antialias: false, alpha: true, premultipliedAlpha: true, powerPreference: "low-power" });
+    if (!gl) return;
+    function sh(type, src) { var o = gl.createShader(type); gl.shaderSource(o, src); gl.compileShader(o); return o; }
+    var pr = gl.createProgram();
+    gl.attachShader(pr, sh(gl.VERTEX_SHADER, "attribute vec2 p;void main(){gl_Position=vec4(p,0.,1.);}"));
+    gl.attachShader(pr, sh(gl.FRAGMENT_SHADER, FIELD_FRAG));
+    gl.linkProgram(pr);
+    if (!gl.getProgramParameter(pr, gl.LINK_STATUS)) return;
+    gl.useProgram(pr);
+    gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+    gl.enableVertexAttribArray(0);
+    gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
+    var U = { r: gl.getUniformLocation(pr, "r"), t: gl.getUniformLocation(pr, "t"), f: gl.getUniformLocation(pr, "f"), m: gl.getUniformLocation(pr, "m") };
+    host.insertBefore(cv, host.firstChild);
+    host.classList.add("has-field");
+
+    var scale = Math.min(window.devicePixelRatio || 1, 1.5) * 0.6;
+    var focus = [0.7, 0.5], mouse = [0, 0], target = [0, 0];
+    var visible = true, raf = 0, t0 = performance.now(), tOffset = 14;
+    function size() {
+      cv.style.height = heightOf() + "px";
+      var w = cv.clientWidth, h = cv.clientHeight;
+      cv.width = Math.max(1, Math.round(w * scale));
+      cv.height = Math.max(1, Math.round(h * scale));
+      gl.viewport(0, 0, cv.width, cv.height);
+      var a = cv.getBoundingClientRect(), b = focusAt(a);
+      focus = [(b[0] - a.left) / a.width, 1 - (b[1] - a.top) / a.height];
+      if (REDUCED) draw(tOffset);
+    }
+    function draw(t) {
+      gl.uniform2f(U.r, cv.width, cv.height);
+      gl.uniform1f(U.t, t);
+      gl.uniform2f(U.f, focus[0], focus[1]);
+      gl.uniform2f(U.m, mouse[0], mouse[1]);
+      gl.drawArrays(gl.TRIANGLES, 0, 3);
+    }
+    function loop(now) {
+      mouse[0] += (target[0] - mouse[0]) * 0.04;
+      mouse[1] += (target[1] - mouse[1]) * 0.04;
+      draw(tOffset + (now - t0) / 1000);
+      raf = requestAnimationFrame(loop);
+    }
+    function run() { if (!raf && visible && !document.hidden && !REDUCED) raf = requestAnimationFrame(loop); }
+    function pause() { cancelAnimationFrame(raf); raf = 0; }
+    new ResizeObserver(size).observe(host);
+    new IntersectionObserver(function (en) { visible = en[0].isIntersecting; visible ? run() : pause(); }).observe(cv);
+    document.addEventListener("visibilitychange", function () { document.hidden ? pause() : run(); });
+    if (FINE && !REDUCED) {
+      addEventListener("pointermove", function (e) {
+        var a = cv.getBoundingClientRect();
+        target = [(e.clientX - a.left) / a.width - 0.5, 0.5 - (e.clientY - a.top) / a.height];
+      }, { passive: true });
+    }
+    size();
+    REDUCED ? draw(tOffset) : run();
+    (window.MXWhenReady || function (cb) { cb(); })(function () { cv.classList.add("is-on"); });
+  }
+
+  /* The field replaces the hero background layer: gallery around the deck, other pages behind the header. */
+  function heroFields() {
+    var bg = $(".moments-bg"), hero = $(".mx-hero");
+    if (bg && hero) {
+      field(bg, function () {
+        var d = $(".mx-deck").getBoundingClientRect();
+        return [d.left + d.width / 2, d.top + d.height / 2];
+      }, function () { return hero.offsetHeight + 120; });
+      return;
+    }
+    var host = $(".page-bg") || $(".editor-content");
+    if (host) {
+      field(host, function (a) { return [a.left + a.width * 0.8, a.top + 40]; }, function () { return 460; });
+    }
   }
 
   window.MX = { cards: cards, toast: toast };
@@ -334,8 +466,8 @@
     soonTags();
     deck();
     editor();
-    countUps();
-    charts();
+    window.MXWhenReady(function () { countUps(); charts(); });
+    heroFields();
   }
   document.readyState === "loading" ? document.addEventListener("DOMContentLoaded", init) : init();
 })();

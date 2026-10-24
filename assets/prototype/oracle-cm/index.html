@@ -61,10 +61,10 @@
               <input type="search" id="mx-search" placeholder="Search moments, e.g. thank you" aria-label="Search moments" />
             </div>
             <div class="mx-tabs" role="group" aria-label="Filter by category">
-              <button type="button" class="mx-tab is-on" aria-pressed="true" data-cat="all">All</button>
-              <button type="button" class="mx-tab" aria-pressed="false" data-cat="holiday">Holidays</button>
-              <button type="button" class="mx-tab" aria-pressed="false" data-cat="wins">Wins &amp; deals</button>
-              <button type="button" class="mx-tab" aria-pressed="false" data-cat="ai">AI spotlight</button>
+              <button type="button" class="mx-tab is-on" aria-pressed="true" data-cat="all">All<span class="mx-tab-n" aria-hidden="true"></span></button>
+              <button type="button" class="mx-tab" aria-pressed="false" data-cat="holiday">Holidays<span class="mx-tab-n" aria-hidden="true"></span></button>
+              <button type="button" class="mx-tab" aria-pressed="false" data-cat="wins">Wins &amp; deals<span class="mx-tab-n" aria-hidden="true"></span></button>
+              <button type="button" class="mx-tab" aria-pressed="false" data-cat="ai">AI spotlight<span class="mx-tab-n" aria-hidden="true"></span></button>
             </div>
             <label class="mx-sort"><span class="mx-visually-hidden">Sort moments</span>
               <select id="mx-sort">
@@ -74,7 +74,7 @@
               </select>
             </label>
           </div>
-          <p class="mx-count" id="mx-count" aria-live="polite"></p>
+          <p class="mx-count mx-visually-hidden" id="mx-count" aria-live="polite"></p>
 
           <div class="mx-grid" id="moments-grid"></div>
           <div class="mx-empty" id="mx-empty" hidden>
