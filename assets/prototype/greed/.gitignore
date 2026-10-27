@@ -1,0 +1,11 @@
+# Only the site is published. The render pipeline (render/), its frames (renders/) and the source model (media/goblin)
+# stay on this machine: they are big, and the pages never load them.
+/*
+!/.gitignore
+!/index.html
+!/reel.html
+!/script.js
+!/styles.css
+!/frame-top.js
+!/media/
+/media/goblin/

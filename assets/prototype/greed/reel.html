@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta name="robots" content="noindex, nofollow">
+<script src="frame-top.js"></script>
+<meta charset="utf-8">
+<style>html { background: #000; color-scheme: dark; }</style>   <!-- black from the first paint: no flash between pages -->
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Greed | The reel</title>
+<meta name="description" content="The Greed reel: thirteen seconds, one car, and every light in the room.">
+<meta name="theme-color" content="#000000">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Saira:wdth,wght@125,400..800&family=Geist:wght@300..600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style>
+  /* the reel on its own page, so the main page never loads the film. Black, letterboxed, the film is the page */
+  html, body { background: #000; }
+  .rl { min-height: 100dvh; display: grid; grid-template-rows: auto 1fr auto; }
+  .rl-top { display: flex; justify-content: space-between; align-items: center; padding: clamp(16px, 3vw, 32px) var(--gutter); }
+  .rl-top .word { font: 700 15px/1 "Saira", sans-serif; font-stretch: 125%; letter-spacing: .5em; text-decoration: none; }
+  .rl-stage { display: grid; place-items: center; min-height: 0; }
+  .rl-frame { position: relative; width: min(100vw, (100dvh - 200px) * 2.39); aspect-ratio: 2.39; overflow: hidden; background: #000; }
+  .rl-frame video { width: 100%; height: 100%; object-fit: cover; cursor: pointer; }
+  .rl-end { position: absolute; inset: 0; display: grid; place-content: center; justify-items: center; gap: 18px; background: rgba(0,0,0,.55);
+    opacity: 0; pointer-events: none; transition: opacity .6s ease; text-align: center; }
+  .rl-end .h2 { font-size: clamp(26px, 3vw, 44px); }
+  .rl-end > div { display: flex; gap: 24px; align-items: center; }
+  .done .rl-end { opacity: 1; pointer-events: auto; }
+  .rl-foot { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 24px; padding: 20px var(--gutter) clamp(20px, 4vh, 36px); }
+  .rl-shot { margin: 0; font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--fog); white-space: nowrap; }
+  .rl-shot b { color: var(--white); font-weight: 600; margin-right: 14px; }
+  .rl-bar { height: 1px; background: rgba(255,255,255,.16); position: relative; }
+  .rl-bar i { position: absolute; inset: 0; background: var(--white); transform: scaleX(var(--p, 0)); transform-origin: left; }
+  .rl-bar s { position: absolute; top: -3px; width: 1px; height: 7px; background: rgba(255,255,255,.35); }   /* the cuts */
+  .rl-ctl { display: flex; align-items: center; gap: 18px; }
+  .rl-tc { font-size: 12px; letter-spacing: .14em; color: var(--fog); }
+  /* sound: the reel starts with its score; where a browser blocks that it starts muted, and this turns the score on */
+  .rl-sound { display: inline-flex; align-items: center; gap: 10px; height: 44px; padding: 0 16px; border-radius: 999px; border: 1px solid rgba(255,255,255,.2);
+    background: none; color: var(--white); font-size: 13px; cursor: pointer; transition: border-color .2s ease, background-color .2s ease; }
+  .rl-sound:hover { border-color: var(--white); }
+  .rl-sound.on { background: var(--white); color: var(--ink); border-color: var(--white); }
+  .rl-eq { display: inline-flex; align-items: flex-end; gap: 2px; height: 12px; }
+  .rl-eq i { width: 2px; height: 3px; background: currentColor; }
+  .rl-sound.on .rl-eq i { animation: rl-eq .9s ease-in-out infinite alternate; }
+  .rl-eq i:nth-child(2) { animation-delay: -.3s !important; } .rl-eq i:nth-child(3) { animation-delay: -.6s !important; }
+  @keyframes rl-eq { from { height: 3px; } to { height: 12px; } }
+  @media (prefers-reduced-motion: reduce) { .rl-sound.on .rl-eq i { animation: none; height: 8px; } }
+  @media (prefers-reduced-motion: no-preference) {
+    /* the letterbox opens like a shutter, once, when the film can play: it opens onto the film already running */
+    .rl-frame { animation: rl-in 1s var(--ease-io) both paused; }
+    .rl-top, .rl-foot { animation: rl-fade .6s .6s ease both paused; }
+    .go :is(.rl-frame, .rl-top, .rl-foot) { animation-play-state: running; }
+  }
+  @keyframes rl-in { from { clip-path: inset(50% 0); } to { clip-path: inset(0); } }
+  @keyframes rl-fade { from { opacity: 0; } }
+  @media (max-width: 760px) {
+    .rl-frame { width: 100vw; aspect-ratio: 16 / 9; }
+    .rl-foot { grid-template-columns: 1fr auto; row-gap: 14px; }
+    .rl-bar { grid-column: 1 / -1; grid-row: 1; }
+    .rl-tc { display: none; }
+  }
+</style>
+</head>
+<body>
+<div class="rl">
+  <header class="rl-top">
+    <a class="word" href="index.html" aria-label="Greed, home">GREED</a>
+    <a class="link-cta" href="index.html"><i aria-hidden="true">←</i>Back to the car</a>
+  </header>
+
+  <main class="rl-stage">
+    <h1 class="sr">The Greed reel</h1>
+    <div class="rl-frame" data-frame>
+      <video playsinline preload="auto" aria-label="The Greed reel" data-video>
+        <source src="media/reel.webm" type="video/webm">
+        <source src="media/reel.mp4" type="video/mp4">
+      </video>
+      <div class="rl-end" data-end>
+        <p class="h2">Twelve will be built.</p>
+        <div>
+          <a class="btn" href="index.html#reserve">Request a private viewing<i aria-hidden="true">→</i></a>
+          <button class="link-cta" type="button" data-again>Watch again<i aria-hidden="true">↺</i></button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="rl-foot">
+    <p class="rl-shot" aria-live="off"><b class="mono" data-n>01</b><span data-name>Corner</span></p>
+    <div class="rl-bar" aria-hidden="true" data-bar><i></i></div>
+    <div class="rl-ctl">
+      <span class="rl-tc mono" data-tc>00:00:00</span>
+      <button class="rl-sound" type="button" data-sound><span class="rl-eq" aria-hidden="true"><i></i><i></i><i></i></span><span data-sound-label>Sound on</span></button>
+      <button class="icon-btn" type="button" aria-label="Pause the reel" data-toggle><i aria-hidden="true">❙❙</i></button>
+    </div>
+  </footer>
+</div>
+
+<script>
+(function () {
+  "use strict";
+  var $ = function (s) { return document.querySelector(s); };
+  var pad = function (n) { return (n < 10 ? "0" : "") + n; };
+  // the shots: first frame of each at 24 fps (render/reel-shots.sh, render/reel.py)
+  var SHOTS = [[0, "Corner"], [29, "Wheel"], [58, "Haunch"], [87, "Rear"], [130, "Light pass"], [178, "Exit"], [238, "Reveal"]];
+  var nEl = $("[data-n]"), nameEl = $("[data-name]"), tcEl = $("[data-tc]");
+  var v = $("[data-video]"), frame = $("[data-frame]"), bar = $("[data-bar]"), btn = $("[data-toggle]");
+  var reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  function play() { var p = v.play(); if (p && p.catch) p.catch(function () { set(); }); }
+  function set() {
+    var on = !v.paused && !v.ended;
+    btn.setAttribute("aria-label", on ? "Pause the reel" : "Play the reel");
+    btn.querySelector("i").textContent = on ? "❙❙" : "▶︎";
+  }
+  function ticks() {   // a tick on the bar at every cut
+    SHOTS.slice(1).forEach(function (s) {
+      var t = document.createElement("s"); t.style.left = (s[0] / 24 / v.duration * 100) + "%"; bar.appendChild(t);
+    });
+  }
+  if (v.readyState >= 1) ticks(); else v.addEventListener("loadedmetadata", ticks, { once: true });   // the metadata may beat this script
+  (function tick() {
+    var f = Math.floor(v.currentTime * 24), i = 0;
+    while (i < SHOTS.length - 1 && f >= SHOTS[i + 1][0]) i++;
+    nEl.textContent = pad(i + 1) + " / " + pad(SHOTS.length);
+    nameEl.textContent = SHOTS[i][1];
+    tcEl.textContent = "00:" + pad(Math.floor(f / 24)) + ":" + pad(f % 24);
+    bar.style.setProperty("--p", v.duration ? v.currentTime / v.duration : 0);
+    requestAnimationFrame(tick);
+  })();
+  v.addEventListener("play", function () { frame.classList.remove("done"); set(); });
+  v.addEventListener("pause", set);
+  v.addEventListener("ended", function () { frame.classList.add("done"); set(); });
+  function toggle() { if (v.paused || v.ended) { if (v.ended) v.currentTime = 0; play(); } else v.pause(); }
+  btn.addEventListener("click", toggle);
+  v.addEventListener("click", toggle);
+  $("[data-again]").addEventListener("click", function () { v.currentTime = 0; play(); });
+  var snd = $("[data-sound]");
+  function syncSound() {
+    snd.classList.toggle("on", !v.muted);
+    $("[data-sound-label]").textContent = v.muted ? "Sound on" : "Sound off";
+  }
+  v.addEventListener("volumechange", syncSound);
+  snd.addEventListener("click", function () {
+    var on = v.muted; v.muted = !on;
+    if (on && (v.ended || v.currentTime > v.duration - 1)) v.currentTime = 0;
+    if (on && v.paused) play();
+  });
+  document.addEventListener("keydown", function (e) {
+    if (e.key === " " && e.target === document.body) { e.preventDefault(); toggle(); }
+  });
+  function start() {   // with sound: arriving from the click on "Watch reel" lets it play; if the browser still says no, muted
+    v.muted = false; syncSound();
+    var p = v.play();
+    if (p && p.catch) p.catch(function () { v.muted = true; play(); });
+  }
+  var began = false;
+  function begin() {   // the film and the shutter start together, so there is one opening, not a still and then the film
+    if (began) return; began = true;
+    document.body.classList.add("go");
+    if (!reduce) start(); else { set(); syncSound(); }
+  }
+  if (v.readyState >= 3) begin(); else { v.addEventListener("canplay", begin, { once: true }); setTimeout(begin, 2500); }
+})();
+</script>
+</body>
+</html>

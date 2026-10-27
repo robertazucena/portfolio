@@ -1,0 +1,315 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta name="robots" content="noindex, nofollow">
+<script src="frame-top.js"></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Greed | Want more</title>
+<meta name="description" content="Greed is an electric hypercar in metallic black and red. Twelve will be built. Turn it, light it, and request a private viewing.">
+<meta name="theme-color" content="#050506">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Saira:wdth,wght@125,400..800&family=Geist:wght@300..600&family=Geist+Mono:wght@500&display=swap" rel="stylesheet">
+<link rel="preload" as="image" href="media/film-poster.webp">
+<link rel="stylesheet" href="styles.css">
+<script>document.documentElement.classList.add("boot-on", /^#[a-z]/.test(location.hash) && location.hash !== "#top" ? "entered" : "gate")</script>
+</head>
+<body>
+<!-- Boot: a beam of light sweeps the car as the page loads, then the black dissolves upward -->
+<div class="boot" aria-hidden="true">
+  <div class="boot-frame"><canvas class="boot-cv" width="800" height="450"></canvas></div>
+  <div class="boot-meta">
+    <span class="boot-word"><span>G</span><span>R</span><span>E</span><span>E</span><span>D</span></span>
+    <span class="boot-bar"><i data-boot-bar></i></span>
+    <span class="boot-pct" data-boot-pct>000</span>
+  </div>
+</div>
+<p class="sr" role="status" data-boot-status>Loading Greed</p>
+<a class="skip" href="#studio">Skip to the studio</a>
+
+<header class="top">
+  <a class="word" href="#top" aria-label="Greed, back to top">GREED</a>
+  <nav class="nav hide-sm" aria-label="Sections"><a href="#studio">Studio</a><a href="#sweep">Light</a><a href="#tech">Technology</a><a href="#finish">Finish</a><a href="reel.html">Reel</a><a href="#reserve">Reserve</a></nav>
+</header>
+
+<main id="top">
+  <!-- 1. Hero: a showroom stage. The car stands mid-frame on the floor, the words hold the corners -->
+  <section class="hero stage" aria-label="Greed">
+    <div class="stage-head hero-name">
+      <h1 class="h2">Want more.</h1>
+      <p class="lede">An electric hypercar for the few who never settle. Metallic black, a thread of red, 1,480 hp. Twelve will be built.</p>
+    </div>
+    <div class="car hero-car" style="--hz: 74.5%">
+      <video class="hero-film" autoplay muted loop playsinline preload="auto" poster="media/film-poster.webp" aria-hidden="true">
+        <source src="media/film.webm" type="video/webm">
+        <source src="media/film-hevc.mp4" type='video/mp4; codecs="hvc1"'>
+      </video>
+      <!-- the film's side-profile frame: entering the studio swaps to it and it drives off, so the angle never depends on a seek -->
+      <img class="hero-profile" src="media/film-profile.webp" alt="" width="1920" height="1080" aria-hidden="true" hidden>
+    </div>
+    <div class="hero-reel">
+      <a class="link-cta" href="reel.html">Watch reel<i class="play" aria-hidden="true">▶&#xFE0E;</i></a>
+    </div>
+    <dl class="tele-row hero-stats">
+      <div class="tele"><dt>0 to 100</dt><dd><b data-count="1.9" data-dec="1">0.0</b><small>s</small></dd></div>
+      <div class="tele"><dt>Range</dt><dd><b data-count="1040" data-dec="0">0</b><small>km</small></dd></div>
+      <div class="tele"><dt>Drag</dt><dd><b data-count="0.21" data-dec="2">0.00</b><small>Cd</small></dd></div>
+    </dl>
+    <div class="hero-act">
+      <button class="icon-btn" type="button" data-film-toggle aria-pressed="false" aria-label="Pause the film"><i aria-hidden="true">❙❙</i></button>
+      <a class="link-cta" href="#studio">Enter the studio<i aria-hidden="true">→</i></a>
+    </div>
+  </section>
+
+  <!-- 2. Studio: drag to turn -->
+  <section class="studio stage" id="studio" aria-labelledby="studio-h">
+    <div class="stage-head">
+      <h2 class="h2" id="studio-h">Every angle. Yours.</h2>
+      <p class="lede">Turn it slowly, the way you will in your own garage. Choose a detail and it turns to show you.</p>
+    </div>
+    <div class="turn car" style="--hz: 73%" tabindex="0" role="slider" aria-label="Turn the car" aria-valuemin="0" aria-valuemax="355" aria-valuenow="0" aria-valuetext="0 degrees">
+      <span class="plinth" aria-hidden="true"></span>
+      <img class="turn-img" src="media/turn/tt_01.webp" alt="Greed in metallic black with red trim, turning on a mirror floor" width="1600" height="900" draggable="false">
+      <div class="hs-layer" data-hs-layer></div>
+      <div class="hs-card" data-hs-card role="dialog" aria-live="polite" hidden>
+        <button class="hs-x" type="button" aria-label="Close detail" data-hs-close>×</button>
+        <span class="mono hs-n" data-hs-n></span>
+        <h3 data-hs-t></h3>
+        <p data-hs-d></p>
+        <div class="hs-v"><b class="mono" data-hs-v></b><small data-hs-u></small></div>
+      </div>
+      <div class="turn-hud" aria-hidden="true">
+        <span class="mono" data-angle>000°</span>
+        <span class="turn-track"><i data-angle-bar></i></span>
+        <span class="turn-hint">Drag to turn</span>
+      </div>
+    </div>
+    <div class="studio-side">
+      <dl class="spec drive" aria-label="Drive test telemetry">
+        <div class="spec-view"><dt><i class="live" aria-hidden="true"></i>Drive test</dt><dd>Lap <span data-t="lap">0:00.0</span></dd></div>
+        <div class="tele-speed"><dt>Speed</dt><dd><span data-t="speed">0</span> <small>km/h</small></dd><i class="tele-bar" aria-hidden="true"><b data-t="bar"></b></i></div>
+        <div><dt>Motor</dt><dd><span data-t="rpm">0</span> <small>rpm</small></dd></div>
+        <div><dt>Lateral</dt><dd><span data-t="g">0.00</span> <small>g</small></dd></div>
+        <div><dt>Power</dt><dd><span data-t="kw">0</span> <small>kW</small></dd></div>
+        <div><dt>Battery</dt><dd><span data-t="temp">38.0</span> <small>&deg;C</small></dd></div>
+      </dl>
+      <ol class="hs-index" data-hs-index aria-label="Details"></ol>
+    </div>
+  </section>
+
+  <!-- 3. Light sweep (pinned, scroll-scrubbed) -->
+  <section class="sweep" id="sweep" aria-labelledby="sweep-h">
+    <div class="sweep-pin stage">
+      <div class="car sweep-car" style="--hz: 72%"><canvas class="sweep-canvas" width="1600" height="900" role="img" aria-label="A band of light travels along the side of the car"></canvas></div>
+      <div class="stage-head">
+        <h2 class="h2" id="sweep-h">Drawn in a single line of light.</h2>
+        <p class="lede">Scroll, and one beam travels the body. Every crease it touches was cut to catch it.</p>
+      </div>
+      <div class="lines" aria-label="The lines the beam draws">
+        <p class="label">The lines</p>
+        <ol>
+          <li data-at=".03"><span class="mono">01</span>Nose blade</li>
+          <li data-at=".17"><span class="mono">02</span>Front arch</li>
+          <li data-at=".44"><span class="mono">03</span>Door blade</li>
+          <li data-at=".61"><span class="mono">04</span>Side intake</li>
+          <li data-at=".82"><span class="mono">05</span>Rear haunch</li>
+          <li data-at=".96"><span class="mono">06</span>Diffuser</li>
+        </ol>
+        <p class="lines-note" data-line-note>Hold still. The light begins at the nose.</p>
+      </div>
+      <div class="scrub" aria-hidden="true"><span class="mono" data-sweep-pct>0%</span><i><b data-sweep-bar></b></i></div>
+    </div>
+  </section>
+
+  <!-- 4. Technologies -->
+  <section class="tech" id="tech" aria-labelledby="tech-h">
+    <div class="stage-head">
+      <h2 class="h2" id="tech-h">Indulgence, engineered.</h2>
+      <p class="lede">Four ideas beneath the paint. Open one.</p>
+    </div>
+    <div class="deck" role="list">
+      <article class="card is-open" role="listitem" tabindex="0" data-topic="shape">
+        <div class="card-in" style="--img:url(media/tech-shape.webp); --room:url(media/room-tech-shape.webp)">
+          <div class="tele card-stat"><dt><span class="pulse"></span>Morphing now</dt><dd><b class="mono" data-morph>14</b><small>mm</small></dd></div>
+          <h3>Active shape</h3>
+          <p>At speed the body reshapes itself by millimetres and rewrites its own aero. Park, and it settles back into sculpture.</p>
+        </div>
+      </article>
+      <article class="card" role="listitem" tabindex="0" data-topic="core">
+        <div class="card-in" style="--img:url(media/tech-core.webp); --room:url(media/room-tech-core.webp)">
+          <h3>Solid core</h3>
+          <p>A solid-state battery set low in the floor. 1,040 km on a single charge, 80% in ten minutes. Appetite, without the wait.</p>
+        </div>
+      </article>
+      <article class="card" role="listitem" tabindex="0" data-topic="sight">
+        <div class="card-in" style="--img:url(media/tech-sight.webp); --room:url(media/room-tech-sight.webp)">
+          <h3>Night sight</h3>
+          <p>The windscreen becomes a display that sees heat and depth, and draws what the night is hiding.</p>
+        </div>
+      </article>
+      <article class="card" role="listitem" tabindex="0" data-topic="hive">
+        <div class="card-in" style="--img:url(media/tech-hive.webp); --room:url(media/room-tech-hive.webp)">
+          <h3>Hive</h3>
+          <p>Every Greed shares what it sees. You know about the hazard long before you reach it.</p>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- 5. Finish -->
+  <section class="finish" id="finish" aria-labelledby="finish-h">
+    <div class="finish-stage stage car" style="--hz: 74%">
+      <img class="finish-img" src="media/side.webp" alt="Greed in metallic black, side view" width="2560" height="1440">
+      <img class="finish-img white" src="media/side-white.webp" alt="Greed in gloss white, side view" width="2560" height="1440">
+      <span class="finish-handle" aria-hidden="true"><span class="knob">‹ ›</span></span>
+      <input class="finish-range" type="range" min="0" max="100" value="50" aria-label="Compare metallic black and gloss white">
+      <div class="stage-head">
+        <h2 class="h2" id="finish-h">Two finishes. Choose your vice.</h2>
+        <p class="lede">Drag across the car, or pick one.</p>
+      </div>
+      <!-- the swatch chip: a one-tap answer to "show me the white one" -->
+      <div class="swatches" role="group" aria-label="Exterior finish">
+        <span class="label">Exterior</span>
+        <button type="button" class="sw black" data-finish="100" aria-pressed="true"><span class="sr">Metallic black</span></button>
+        <button type="button" class="sw white" data-finish="0" aria-pressed="false"><span class="sr">Gloss white</span></button>
+        <b data-finish-label>Metallic black</b>
+      </div>
+      <p class="finish-lbl l"><b>Metallic black</b>Deep flake, red trim</p>
+      <p class="finish-lbl r"><b>Gloss white</b>Metallic grey trim</p>
+    </div>
+  </section>
+
+  <!-- 6. Close: the cockpit. A photographed cabin; the live display is warped onto its switched-off screen
+       (script.js maps it with a matrix3d), so it reads as part of the photo but stays clickable -->
+  <section class="close stage" id="reserve" aria-labelledby="close-h">
+    <img class="cabin" src="media/cabin.webp" alt="Inside Greed: a black and white cabin with a yoke and one long display across the dash" width="2752" height="1536" data-cabin>
+    <!-- the view through the windscreen follows the city picked on the display -->
+    <div class="sky" data-sky aria-hidden="true">
+      <img class="on" src="media/sky-room.webp" alt="" width="2400" height="720">
+    </div>
+    <div class="stage-head">
+      <h2 class="h2" id="close-h">Twelve will be built. See one first.</h2>
+      <p class="lede">Private viewings in Singapore, Manila and Tokyo, by invitation.</p>
+    </div>
+    <div class="display" data-display>
+      <div class="dsp-bar"><span class="mono" data-dsp-clock>00:00</span></div>
+      <div class="dsp-cluster">
+        <p class="label">Next viewing in</p>
+        <p class="dsp-big"><b class="mono" data-dsp-days>00</b><small>days</small></p>
+        <div class="dsp-gears" role="group" aria-label="Choose a city">
+          <button type="button" data-city="sgp" aria-pressed="true">SGP</button>
+          <button type="button" data-city="mnl" aria-pressed="false">MNL</button>
+          <button type="button" data-city="tyo" aria-pressed="false">TYO</button>
+        </div>
+      </div>
+      <div class="dsp-road" aria-hidden="true">
+        <svg class="dsp-lines" viewBox="0 0 600 220" preserveAspectRatio="none">
+          <path d="M300 60L40 220M300 60L150 220M300 60L450 220M300 60L560 220"/>
+          <path class="dsp-dash" d="M300 60L300 220"/>
+        </svg>
+        <img class="dsp-car" src="media/rear.webp" alt="" width="2560" height="1440">
+      </div>
+      <div class="dsp-view">
+        <p class="label">Private viewing</p>
+        <b data-dsp-city>Singapore</b>
+        <span data-dsp-when>14 Nov, 7:00 pm</span>
+        <span class="dsp-local">Local <b class="mono" data-dsp-local>00:00</b></span>
+      </div>
+    </div>
+    <div class="close-ask">
+      <p class="label">You can ask me</p>
+      <button type="button" data-ask="Show me the white one">"Show me the white one"</button>
+      <button type="button" data-ask="How far on one charge?">"How far on one charge?"</button>
+    </div>
+    <div class="close-act"><a class="btn" href="mailto:hello@robertazucena.com?subject=Greed%20viewing%20-%20Singapore" data-dsp-cta>Request a private viewing<i aria-hidden="true">→</i></a></div>
+  </section>
+</main>
+
+<!-- the reservation console: the button opens out into it, one question at a time, and the viewing pass on the right fills in as you answer -->
+<!-- motion blur for the landing car as it drives off (script.js widens it with the speed) -->
+<svg class="sr" aria-hidden="true" focusable="false"><filter id="mblur" x="-25%" width="150%"><feGaussianBlur stdDeviation="0 0"/></filter></svg>
+
+<dialog class="rsv" aria-labelledby="rsv-h" data-rsv>
+  <header class="rsv-top">
+    <span class="word">GREED</span>
+    <ol class="rsv-steps" aria-label="Progress"><li class="on">Name</li><li>Contact</li><li>City</li><li>Time</li></ol>
+    <button type="button" class="rsv-x" data-rsv-close aria-label="Close the reservation"><i aria-hidden="true"></i></button>
+  </header>
+  <form class="rsv-form" data-rsv-form novalidate>
+    <h2 class="sr" id="rsv-h">Reserve a private viewing</h2>
+    <fieldset class="rsv-q on" data-step="0">
+      <legend><span class="mono">01</span>Who should we expect?</legend>
+      <input class="rsv-in" name="name" type="text" autocomplete="name" placeholder="Your name" required aria-describedby="rsv-err">
+    </fieldset>
+    <fieldset class="rsv-q" data-step="1">
+      <legend><span class="mono">02</span>Where should we send your pass?</legend>
+      <input class="rsv-in" name="email" type="email" autocomplete="email" inputmode="email" placeholder="you@example.com" required aria-describedby="rsv-err">
+    </fieldset>
+    <fieldset class="rsv-q" data-step="2">
+      <legend><span class="mono">03</span>Which city?</legend>
+      <div class="rsv-opts" data-rsv-cities></div>
+    </fieldset>
+    <fieldset class="rsv-q" data-step="3">
+      <legend><span class="mono">04</span>Choose your evening.</legend>
+      <div class="rsv-opts" data-rsv-times></div>
+    </fieldset>
+    <fieldset class="rsv-q rsv-done" data-step="4">
+      <legend><span class="mono">OK</span>Your place is held.</legend>
+      <p class="lede">Your pass is ready. Present it at the door, or add the evening to your calendar.</p>
+      <div class="rsv-row">
+        <a class="btn" data-rsv-ics download="greed-viewing.ics" href="#">Add to calendar<i aria-hidden="true">+</i></a>
+        <button type="button" class="rsv-ghost" data-rsv-close>Done</button>
+      </div>
+    </fieldset>
+    <p class="rsv-err" id="rsv-err" role="alert" data-rsv-err></p>
+    <div class="rsv-nav">
+      <button type="button" class="rsv-ghost" data-rsv-back>Back</button>
+      <button type="submit" class="btn" data-rsv-next>Next<i aria-hidden="true">&rarr;</i></button>
+      <span class="rsv-hint">or press Enter</span>
+    </div>
+  </form>
+  <aside class="rsv-pass" aria-label="Your viewing pass" data-rsv-pass>
+    <div class="pass-head"><span class="label">Private viewing pass</span><span class="pass-state" data-pass-state>Drafting</span></div>
+    <img class="pass-car" src="media/side.webp" alt="" width="2560" height="1440">
+    <dl class="pass-grid">
+      <div class="pass-wide"><dt>Guest</dt><dd data-pass="name">&mdash;</dd></div>
+      <div><dt>City</dt><dd data-pass="city">&mdash;</dd></div>
+      <div><dt>Date</dt><dd data-pass="date">&mdash;</dd></div>
+      <div><dt>Time</dt><dd data-pass="time">&mdash;</dd></div>
+      <div><dt>Bay</dt><dd data-pass="bay">&mdash;</dd></div>
+    </dl>
+    <div class="pass-foot"><span class="mono" data-pass="ref">GRD&ndash;&mdash;&mdash;&mdash;&ndash;0000</span><span class="pass-code" aria-hidden="true"></span></div>
+  </aside>
+</dialog>
+
+<footer class="foot">
+  <span>Greed is a design concept. Car model "Fictional supercar - V12 Goblin" by <a href="https://sketchfab.com/ollitei">ollitei</a>, <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>, repainted and rendered in Blender.</span>
+  <span><span class="mono">GRD / 2026</span><span class="foot-sep" aria-hidden="true">|</span>Conceived, designed and built by <b class="foot-by">Robert Azucena</b></span>
+</footer>
+
+<!-- Command bar: the navigation is a question -->
+<div class="cmd" role="search">
+  <div class="answer" aria-live="polite" hidden></div>
+  <div class="chips" aria-label="Suggestions">
+    <button type="button" class="chip">How far on one charge?</button>
+    <button type="button" class="chip">Show me the white one</button>
+    <button type="button" class="chip">Turn the car</button>
+  </div>
+  <form class="cmd-shell" autocomplete="off">
+    <div class="cmd-in">
+      <label class="sr" for="ask">Ask Greed</label>
+      <span class="cmd-prefix" aria-hidden="true">Ask Greed</span>
+      <input id="ask" name="q" type="text" placeholder="anything" enterkeyhint="go">
+      <kbd class="kbd hide-sm" aria-hidden="true">⌘K</kbd>
+      <button class="mic" type="button" aria-label="Ask by voice" data-mic>
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" aria-hidden="true"><rect x="5.5" y="1.5" width="5" height="8.5" rx="2.5"/><path d="M3 7.5a5 5 0 0 0 10 0M8 12.5v2"/></svg>
+      </button>
+    </div>
+  </form>
+</div>
+
+<script src="media/turn/points.js" defer></script>
+<script src="script.js" defer></script>
+</body>
+</html>
