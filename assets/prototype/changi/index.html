@@ -5,557 +5,479 @@
 <script src="frame-top.js"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Changi Airport Group + Oracle | Cloud Optimizer</title>
+<meta name="theme-color" content="#f4eef8">
+<script>try{if(localStorage.getItem("changi-theme")==="dark")document.documentElement.setAttribute("data-theme","dark")}catch(e){}</script>
+<title>Changi Airport Group + Oracle | Cloud Mission Control</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-<!-- ============================= PRELOADER ============================= -->
-<div id="preloader" role="status" aria-live="polite" aria-label="Loading">
-  <div class="radar">
-    <div class="radar-ring"></div>
-    <div class="radar-ring"></div>
-    <div class="radar-ring"></div>
-    <div class="radar-ring"></div>
-    <div class="radar-sweep"></div>
-    <div class="dot"></div>
-    <div class="plane-orbit">
-      <svg class="plane-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M22 16.5v-2l-8.5-5V4a1.5 1.5 0 0 0-3 0v5.5L2 14.5v2l8.5-2.6V19l-2.3 1.7V22l3.8-1 3.8 1v-1.3L13.5 19v-5.1l8.5 2.6z"/></svg>
-    </div>
-  </div>
-  <div class="runway">
-    <div class="runway-track">
-      <div class="runway-fill" id="preloaderFill"></div>
-      <div class="runway-dashes">
-        <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
-      </div>
-    </div>
-  </div>
-  <div>
-    <div class="caption" id="preloaderCaption">Requesting clearance</div>
-    <div class="flight-code">CAG&nbsp;·&nbsp;OCI&nbsp;001&nbsp;&nbsp;|&nbsp;&nbsp;SIN &#8594; CLOUD</div>
+<!-- Preloader: Changi logo and progress, on boot and on every view change -->
+<div id="preloader" role="status" aria-live="polite">
+  <p class="sr-only" id="bootStatus">Loading Mission Control</p>
+  <div class="boot" aria-hidden="true">
+    <img class="boot-logo logo-on-light" src="images/changi-logo-dark.webp" alt="" width="168" height="45">
+    <img class="boot-logo logo-on-dark" src="images/changi-logo.webp" alt="" width="168" height="45">
+    <div class="boot-progress"><span class="bp-track"><i id="bpFill"></i></span><span class="bp-pct" id="bpPct">0%</span></div>
   </div>
 </div>
 
-<!-- Plane wipe transition layer, used between page navigations -->
-<div id="flight-transition" aria-hidden="true">
-  <div class="contrail"></div>
-  <svg class="fplane" viewBox="0 0 24 24" fill="currentColor"><path d="M22 16.5v-2l-8.5-5V4a1.5 1.5 0 0 0-3 0v5.5L2 14.5v2l8.5-2.6V19l-2.3 1.7V22l3.8-1 3.8 1v-1.3L13.5 19v-5.1l8.5 2.6z"/></svg>
-</div>
-
-<!-- ============================= NAVBAR ============================= -->
-<header class="navbar">
-  <div class="brand">
-    <svg class="changi-logo" width="150" height="40" viewBox="0 0 184 50" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" role="img" aria-label="Changi Airport Group">
-<path d="M183.176 0H0V49.7647H183.176V0Z" fill="url(#pattern0_71_520)"/>
-<defs>
-<pattern id="pattern0_71_520" patternContentUnits="objectBoundingBox" width="1" height="1">
-<use xlink:href="#image0_71_520" transform="matrix(0.00335403 0 0 0.0123457 -0.00310426 0)"/>
-</pattern>
-<image id="image0_71_520" width="300" height="81" preserveAspectRatio="none" xlink:href="data:image/png;base64,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"/>
-</defs>
-</svg>
-    <span class="brand-plus">+</span>
-    <svg class="oracle-logo" width="112" height="14" viewBox="0 0 135 17" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Oracle">
+<header class="bar">
+  <div class="wrap bar-in">
+    <a class="brand" href="#control" data-goto="control" aria-label="Changi Airport Group and Oracle, Mission Control">
+      <img class="changi-logo logo-on-light" src="images/changi-logo-dark.webp" alt="Changi Airport Group" width="150" height="40">
+      <img class="changi-logo logo-on-dark" src="images/changi-logo.webp" alt="" width="150" height="40">
+      <span class="brand-plus" aria-hidden="true">+</span>
+      <svg class="oracle-logo" width="104" height="13" viewBox="0 0 135 17" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
       <path d="M58.0542 11.0217H66.9378L62.245 3.68477L53.6283 16.9334H49.6927L60.1825 1.03432C60.4207 0.715298 60.7278 0.455992 61.0804 0.276733C61.4329 0.0973686 61.8215 0.00270871 62.2165 6.16557e-05C62.6104 -0.00269129 63.0011 0.0867808 63.3558 0.261381C63.7105 0.435875 64.0207 0.690944 64.2632 1.00679L74.7847 16.9334H70.8607L69.0109 13.9723H60.0162L58.0542 11.0217ZM98.8157 13.9723V0.161744H95.4794V15.3297C95.4815 15.5392 95.527 15.7459 95.6117 15.9372C95.6965 16.1283 95.8182 16.2997 95.9718 16.4406C96.2968 16.7604 96.7331 16.9375 97.1852 16.9334H112.359L114.335 13.9723H98.8105M43.7188 11.504C44.4759 11.5408 45.2319 11.4215 45.9413 11.1532C46.6507 10.8849 47.2998 10.4731 47.8482 9.94294C48.3967 9.41279 48.8329 8.77527 49.1315 8.06883C49.4301 7.36249 49.5837 6.60193 49.5837 5.83344C49.5837 5.06494 49.4301 4.3045 49.1315 3.59805C48.8329 2.89171 48.3967 2.25409 47.8482 1.72393C47.2998 1.19378 46.6507 0.782005 45.9413 0.513699C45.2319 0.245393 44.4759 0.126062 43.7188 0.163015H29.1483V16.9334H32.4826V3.12529H43.5028C43.866 3.10718 44.2281 3.16404 44.568 3.29226C44.9079 3.42049 45.2192 3.61753 45.4817 3.87133C45.7443 4.12513 45.954 4.4305 46.0969 4.76879C46.2399 5.10709 46.3129 5.47132 46.3129 5.83937C46.3129 6.20741 46.2399 6.57165 46.0969 6.90994C45.954 7.24824 45.7443 7.5536 45.4817 7.8074C45.2192 8.0612 44.9079 8.25804 44.568 8.38637C44.2281 8.51459 43.866 8.57134 43.5028 8.55334L34.1121 8.54551L44.0555 16.9307H48.8848L42.2037 11.4999H43.7188M8.66118 16.9307H18.7274C19.8455 16.9837 20.9626 16.8061 22.0108 16.4087C23.0591 16.0112 24.0173 15.4021 24.8273 14.6183C25.6362 13.8344 26.2811 12.8921 26.7215 11.8483C27.162 10.8044 27.3886 9.68089 27.3886 8.54551C27.3886 7.41003 27.162 6.28651 26.7215 5.24262C26.2811 4.19883 25.6362 3.25658 24.8273 2.47273C24.0173 1.68889 23.0591 1.07974 22.0108 0.682262C20.9626 0.284886 19.8455 0.107321 18.7274 0.160474H8.66118C7.54307 0.107321 6.42599 0.284886 5.37776 0.682262C4.32952 1.07974 3.3713 1.68889 2.5613 2.47273C1.7513 3.25658 1.10753 4.19883 0.667064 5.24262C0.226593 6.28651 0 7.41003 0 8.54551C0 9.68089 0.226593 10.8044 0.667064 11.8483C1.10753 12.8921 1.7513 13.8344 2.5613 14.6183C3.3713 15.4021 4.32952 16.0112 5.37776 16.4087C6.42599 16.8061 7.54307 16.9837 8.66118 16.9307ZM18.4966 13.9802H8.88141C8.15929 14.0124 7.43717 13.8959 6.76058 13.6376C6.08399 13.3794 5.46565 12.9846 4.94365 12.4774C4.42059 11.9703 4.00554 11.361 3.72071 10.6863C3.43695 10.0117 3.29083 9.28563 3.29083 8.55197C3.29083 7.81842 3.43695 7.09249 3.72071 6.4178C4.00554 5.74323 4.42059 5.13398 4.94365 4.6268C5.46565 4.11952 6.08399 3.7249 6.76058 3.46654C7.43717 3.2083 8.15929 3.09183 8.88141 3.12402H18.4966C19.2208 3.08791 19.9461 3.20152 20.6259 3.45797C21.3057 3.71441 21.9272 4.1084 22.4534 4.616C22.9786 5.1236 23.3968 5.73423 23.6827 6.41082C23.9686 7.0874 24.1168 7.81587 24.1168 8.55197C24.1168 9.28817 23.9686 10.0166 23.6827 10.6932C23.3968 11.3698 22.9786 11.9805 22.4534 12.4881C21.9272 12.9957 21.3057 13.3897 20.6259 13.6463C19.9461 13.9027 19.2208 14.0163 18.4966 13.9802ZM81.7348 16.9307H92.0118L93.9579 13.9802H81.9635C81.2382 14.0163 80.514 13.9027 79.8332 13.6463C79.1534 13.3897 78.5319 12.9957 78.0067 12.4881C77.4805 11.9805 77.0622 11.3698 76.7764 10.6932C76.4905 10.0166 76.3433 9.28817 76.3433 8.55197C76.3433 7.81587 76.4905 7.0874 76.7764 6.41082C77.0622 5.73423 77.4805 5.1236 78.0067 4.616C78.5319 4.1084 79.1534 3.71441 79.8332 3.45797C80.514 3.20152 81.2382 3.08791 81.9635 3.12402H91.7269L93.6963 0.160474H81.7348C80.6146 0.103615 79.4943 0.278216 78.4429 0.674004C77.3915 1.06969 76.4301 1.67809 75.617 2.46236C74.8048 3.24663 74.1579 4.19025 73.7153 5.23595C73.2738 6.28164 73.0451 7.40759 73.0451 8.54551C73.0451 9.68332 73.2738 10.8093 73.7153 11.855C74.1579 12.9007 74.8048 13.8443 75.617 14.6286C76.4301 15.4128 77.3915 16.0212 78.4429 16.4169C79.4943 16.8127 80.6146 16.9875 81.7348 16.9307ZM122.46 13.9802C121.263 13.9972 120.091 13.6221 119.119 12.9107C118.147 12.1992 117.427 11.1891 117.065 10.03H131.297L133.259 7.0729H117.065C117.426 5.91317 118.146 4.90231 119.118 4.19057C120.09 3.47893 121.262 3.10443 122.46 3.12275H132.233L134.186 0.158992H122.24C121.122 0.105945 120.005 0.283509 118.957 0.680992C117.908 1.07847 116.95 1.68762 116.141 2.47146C115.331 3.25531 114.686 4.19756 114.246 5.24134C113.806 6.28524 113.579 7.40876 113.579 8.54413C113.579 9.67961 113.806 10.8031 114.246 11.847C114.686 12.8908 115.331 13.8332 116.141 14.617C116.95 15.4009 117.908 16.0099 118.957 16.4074C120.005 16.8048 121.122 16.9824 122.24 16.9294H132.517L134.471 13.9789H122.459" fill="#C74634"/>
     </svg>
-  </div>
+    </a>
 
-  <nav class="nav-tabs" role="tablist" aria-label="Sections">
-    <button class="nav-tab active" data-page="pricing" role="tab" aria-selected="true">Pricing Comparison</button>
-    <button class="nav-tab" data-page="roi" role="tab" aria-selected="false">ROI Summary</button>
-    <button class="nav-tab" data-page="configure" role="tab" aria-selected="false">Configure Stack</button>
-    <button class="nav-tab" data-page="dashboard" role="tab" aria-selected="false">Cloud Optimizer</button>
-  </nav>
+    <nav class="tabs" role="tablist" aria-label="Views">
+      <button class="tab" role="tab" data-page="control" aria-selected="true" aria-controls="page-control" id="tab-control">Mission Control</button>
+      <button class="tab" role="tab" data-page="pricing" aria-selected="false" aria-controls="page-pricing" id="tab-pricing" tabindex="-1">Pricing</button>
+      <button class="tab" role="tab" data-page="roi" aria-selected="false" aria-controls="page-roi" id="tab-roi" tabindex="-1">ROI</button>
+      <button class="tab" role="tab" data-page="configure" aria-selected="false" aria-controls="page-configure" id="tab-configure" tabindex="-1">Configure</button>
+      <button class="tab" role="tab" data-page="dashboard" aria-selected="false" aria-controls="page-dashboard" id="tab-dashboard" tabindex="-1">Optimizer</button>
+    </nav>
 
-  <div class="segment-dropdown" id="segmentDropdown" role="button" tabindex="0">
-    <span class="label">Personalized for:</span>
-    <span class="value" id="segmentValue">Tourism</span>
-    <svg viewBox="0 0 14 14" fill="none"><path d="M3 5l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <div class="bar-side">
+      <button class="theme-btn" id="themeBtn" type="button" aria-pressed="false" aria-label="Night operations theme" title="Night operations theme">
+        <svg class="i-moon" viewBox="0 0 20 20" width="18" height="18" fill="none" aria-hidden="true"><path d="M16.5 12.3A7 7 0 0 1 7.7 3.5a7 7 0 1 0 8.8 8.8Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+        <svg class="i-sun" viewBox="0 0 20 20" width="18" height="18" fill="none" aria-hidden="true"><circle cx="10" cy="10" r="3.6" stroke="currentColor" stroke-width="1.6"/><path d="M10 1.8v2M10 16.2v2M1.8 10h2M16.2 10h2M4.2 4.2l1.4 1.4M14.4 14.4l1.4 1.4M4.2 15.8l1.4-1.4M14.4 5.6l1.4-1.4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+      </button>
+      <p class="clock"><span class="live-dot" aria-hidden="true"></span><time id="sgtClock">--:--:--</time><span class="clock-tz">SGT</span></p>
+      <label class="seg">
+        <span class="seg-label">Personalised for</span>
+        <select id="segment" aria-label="Personalised for">
+          <option value="tourism">Tourism</option>
+          <option value="cargo">Aviation Cargo</option>
+          <option value="retail">Retail Concessions</option>
+          <option value="ops">Airport Operations</option>
+        </select>
+      </label>
+    </div>
   </div>
 </header>
 
-<main class="app-main" id="appMain">
+<main id="main">
 
-<!-- ============================= PAGE 1 — PRICING COMPARISON ============================= -->
-<section class="page active" id="page-pricing" data-title="Pricing Comparison">
-  <div class="bg-pattern" aria-hidden="true">
-    <svg viewBox="0 0 800 600" preserveAspectRatio="none"><g stroke="#7b2d8b" stroke-width="1" opacity="0.06">
-      <line x1="0" y1="0" x2="800" y2="600"/><line x1="80" y1="0" x2="880" y2="600"/><line x1="160" y1="0" x2="960" y2="600"/>
-      <line x1="240" y1="0" x2="1040" y2="600"/><line x1="-80" y1="0" x2="720" y2="600"/><line x1="-160" y1="0" x2="640" y2="600"/>
-    </g></svg>
-  </div>
-
-  <div class="pr-hero">
-    <div class="pr-hero-copy">
-      <h1 class="eyebrow-title">Pricing Comparison</h1>
-      <p class="eyebrow-sub">Oracle Cloud Infrastructure offers high-performance compute, storage and database resources at a fraction of hyperscaler costs — built for Changi Airport Group's scale and traffic patterns.</p>
-    </div>
-    <div class="pr-hero-graphic"><img src="images/illustration.webp" alt="Cloud platform illustration" width="420" height="240"></div>
-  </div>
-
-  <div class="pr-section-label">
-    <h2 class="section-heading">Lower product pricing across the stack</h2>
-  </div>
-
-  <div class="pr-table-wrap">
-    <div class="card pricing-card-block" id="pricingTableCard">
-      <!-- desktop table head -->
-      <div class="pt-head" role="row">
-        <div class="pt-c pt-product">Product</div>
-        <div class="pt-c pt-qty">Qty</div>
-        <div class="pt-c pt-oracle pt-oracle-head">Oracle</div>
-        <div class="pt-c pt-comp">AWS</div>
-        <div class="pt-c pt-comp">Azure</div>
-        <div class="pt-c pt-comp">Google Cloud</div>
+<!-- ============================= MISSION CONTROL ============================= -->
+<section class="page active" id="page-control" role="tabpanel" aria-labelledby="tab-control" data-title="Mission Control">
+  <div class="wrap">
+    <div class="page-head">
+      <div>
+        <h1 class="h1">Mission Control</h1>
+        <p class="lede" id="mcLede">Live cost and capacity for Changi's Oracle Cloud estate, scaling with every flight bank.</p>
       </div>
-
-      <div id="pricingRows"><!-- injected by JS --></div>
-
-      <div class="pt-total" role="row">
-        <div class="pt-total-label">Total Estimated Cost (Annualized)</div>
-        <div class="pt-total-oracle">$87,129</div>
-        <div class="pt-total-note">Others average: $234,766 (Oracle saves ~63%)</div>
-      </div>
+      <p class="status-line"><span class="pill good"><i aria-hidden="true"></i>All systems nominal</span><span class="mono" id="mcRegion">ap-singapore-1 · primary</span></p>
     </div>
 
-    <!-- Mobile card / tab layout -->
-    <div class="pr-mobile" id="pricingMobile">
-      <div class="pr-cat-tabs" id="pricingCatTabs"></div>
-      <div class="pr-cat-cards" id="pricingCatCards"></div>
-      <div class="pr-accordions" id="pricingAccordions"></div>
-      <div class="total-savings-card">
-        <div class="tsc-header">
-          <svg viewBox="0 0 14 14" fill="none" width="14" height="14"><circle cx="7" cy="7" r="6" stroke="#7b2d8b" stroke-width="1.3"/><path d="M7 4v3l2 1.5" stroke="#7b2d8b" stroke-width="1.3" stroke-linecap="round"/></svg>
-          <span>Annualized Stack Summary</span>
+    <div class="kpis">
+      <article class="kpi">
+        <p class="kpi-label">Spend today</p>
+        <p class="kpi-value mono-num" id="kSpendToday">$0.00</p>
+        <p class="kpi-note">Ticking live at <span id="kBurn">$0.00</span> an hour</p>
+      </article>
+      <article class="kpi">
+        <p class="kpi-label">Month to date</p>
+        <p class="kpi-value mono-num" id="kMtd">$0</p>
+        <div class="meter" aria-hidden="true"><i id="kMtdBar"></i><b id="kMtdMark"></b></div>
+        <p class="kpi-note"><span id="kMtdPct">0%</span> of the <span id="kBudget">$0</span> budget · forecast <span id="kForecast">$0</span></p>
+      </article>
+      <article class="kpi">
+        <p class="kpi-label">Saved vs hyperscalers this month</p>
+        <p class="kpi-value mono-num accent" id="kSaved">$0</p>
+        <p class="kpi-note">Against the AWS, Azure and Google Cloud average</p>
+      </article>
+      <article class="kpi">
+        <p class="kpi-label">Active compute nodes</p>
+        <p class="kpi-value mono-num" id="kNodes">0</p>
+        <p class="kpi-note"><span id="kAvail">99.99%</span> availability · p95 <span id="kLatency">1.8</span> ms FastConnect</p>
+      </article>
+    </div>
+
+    <div class="mc-grid">
+      <article class="panel flow-panel">
+        <header class="panel-head">
+          <div>
+            <h2 class="h3">Passengers drive compute</h2>
+            <p class="sub">Terminal throughput and the auto-scaled node count, last 24 hours to the next 6 (forecast dashed)</p>
+          </div>
+          <p class="legend"><span><i class="sw sw-pax"></i>Passengers / hour</span><span><i class="sw sw-nodes"></i>Compute nodes</span></p>
+        </header>
+        <div class="chart" id="flowPax" aria-label="Passengers per hour, last 24 hours"></div>
+        <div class="chart chart-sm" id="flowNodes" aria-label="Compute nodes, last 24 hours"></div>
+      </article>
+
+      <article class="panel terminals">
+        <header class="panel-head"><h2 class="h3">Terminal load</h2><p class="sub mono" id="termTime">now</p></header>
+        <ul class="term-list" id="termList"></ul>
+        <p class="term-hint" id="termHint"></p>
+      </article>
+    </div>
+
+    <div class="mc-grid mc-grid-b">
+      <article class="panel">
+        <header class="panel-head">
+          <div><h2 class="h3">Workloads</h2><p class="sub">Airport systems running on OCI, refreshed every 2 seconds</p></div>
+        </header>
+        <div class="table-scroll">
+          <table class="data-table wl-table">
+            <thead><tr><th scope="col">System</th><th scope="col">Scope</th><th scope="col" class="num">Nodes</th><th scope="col" class="num">CPU</th><th scope="col" class="num">Cost / hr</th><th scope="col">Status</th></tr></thead>
+            <tbody id="wlBody"></tbody>
+          </table>
         </div>
-        <p class="tsc-caption">Oracle Estimated Annual Cost:</p>
-        <div class="tsc-price-row">
-          <span class="tsc-price">$87,129</span>
-          <span class="tsc-pill">Saves ~63%</span>
+      </article>
+
+      <article class="panel log-panel">
+        <header class="panel-head"><h2 class="h3">Event log</h2><p class="pill good"><i aria-hidden="true"></i>Streaming</p></header>
+        <ol class="log" id="eventLog" aria-live="polite"></ol>
+      </article>
+    </div>
+
+    <div class="mc-grid mc-grid-c">
+      <article class="panel topo-panel">
+        <header class="panel-head">
+          <div><h2 class="h3">Airfield to cloud</h2><p class="sub">Live terminal load, carried to OCI over dedicated FastConnect</p></div>
+          <p class="sub mono">RPO 15 min · RTO 1 hr</p>
+        </header>
+        <div class="topo airmap" id="topo">
+          <svg viewBox="0 0 720 280" role="img" aria-label="Schematic of Changi's terminals and Jewel, linked over FastConnect to the ap-singapore-1 and ap-singapore-2 regions">
+            <g class="am-rwy"><rect x="20" y="20" width="520" height="16" rx="3"/><line x1="40" y1="28" x2="520" y2="28"/><text x="30" y="14">02L / 20R</text></g>
+            <g class="am-rwy"><rect x="20" y="244" width="520" height="16" rx="3"/><line x1="40" y1="252" x2="520" y2="252"/><text x="30" y="276">02C / 20C</text></g>
+            <path id="amL1" class="link" d="M262 100 C 300 100, 300 140, 330 140"/>
+            <path id="amL2" class="link" d="M262 180 C 300 180, 300 140, 330 140"/>
+            <path id="amL3" class="link" d="M124 140 C 140 140, 140 100, 150 100"/>
+            <path id="amL4" class="link" d="M390 140 L 560 140"/>
+            <path id="amL5" class="link" d="M516 92 C 540 92, 540 140, 560 140"/>
+            <path id="lnkA" class="link link-up" d="M560 140 C 590 140, 590 80, 620 80"/>
+            <path id="lnkB" class="link link-up" d="M560 140 C 590 140, 590 200, 620 200"/>
+            <path class="link link-rep" d="M660 110 L 660 170"/>
+            <circle r="3" class="pkt"><animateMotion dur="2.2s" repeatCount="indefinite"><mpath href="#amL1"/></animateMotion></circle>
+            <circle r="3" class="pkt"><animateMotion dur="2.6s" begin=".5s" repeatCount="indefinite"><mpath href="#amL2"/></animateMotion></circle>
+            <circle r="3" class="pkt"><animateMotion dur="2.4s" begin=".2s" repeatCount="indefinite"><mpath href="#amL5"/></animateMotion></circle>
+            <circle r="4" class="pkt"><animateMotion dur="1.8s" repeatCount="indefinite"><mpath href="#lnkA"/></animateMotion></circle>
+            <circle r="3" class="pkt pkt-rep"><animateMotion dur="2.8s" begin=".3s" repeatCount="indefinite"><mpath href="#lnkB"/></animateMotion></circle>
+            <g class="am-term" id="amT3"><rect class="am-box" x="150" y="72" width="112" height="56" rx="10"/><rect class="am-track" x="162" y="114" width="88" height="4" rx="2"/><rect class="am-fill" x="162" y="114" width="0" height="4" rx="2" data-w="88"/><text class="am-name" x="162" y="96">T3</text><text class="am-val" x="250" y="96">0%</text></g>
+            <g class="am-term" id="amT2"><rect class="am-box" x="150" y="152" width="112" height="56" rx="10"/><rect class="am-track" x="162" y="194" width="88" height="4" rx="2"/><rect class="am-fill" x="162" y="194" width="0" height="4" rx="2" data-w="88"/><text class="am-name" x="162" y="176">T2</text><text class="am-val" x="250" y="176">0%</text></g>
+            <g class="am-term" id="amT1"><rect class="am-box" x="404" y="64" width="112" height="56" rx="10"/><rect class="am-track" x="416" y="106" width="88" height="4" rx="2"/><rect class="am-fill" x="416" y="106" width="0" height="4" rx="2" data-w="88"/><text class="am-name" x="416" y="88">T1</text><text class="am-val" x="504" y="88">0%</text></g>
+            <g class="am-term" id="amT4"><rect class="am-box" x="40" y="112" width="84" height="56" rx="10"/><rect class="am-track" x="52" y="154" width="60" height="4" rx="2"/><rect class="am-fill" x="52" y="154" width="0" height="4" rx="2" data-w="60"/><text class="am-name" x="52" y="136">T4</text><text class="am-val" x="112" y="136">0%</text></g>
+            <g class="am-term am-jewel" id="amJewel"><circle class="am-box" cx="360" cy="140" r="30"/><circle class="am-ring-track" cx="360" cy="140" r="24"/><circle class="am-ring" cx="360" cy="140" r="24" pathLength="100" stroke-dasharray="0 100" transform="rotate(-90 360 140)"/><text class="am-jname" x="360" y="137">Jewel</text><text class="am-jval" x="360" y="152">0%</text></g>
+            <g class="am-hub"><circle cx="560" cy="140" r="7"/><text x="552" y="164">FastConnect</text></g>
+            <g class="node node-primary"><rect x="620" y="50" width="80" height="60" rx="10"/><text x="660" y="76">SG-1</text><text x="660" y="94" class="t-sub">primary</text></g>
+            <g class="node"><rect x="620" y="170" width="80" height="60" rx="10"/><text x="660" y="196">SG-2</text><text x="660" y="214" class="t-sub">standby</text></g>
+            <text x="590" y="74" class="t-link" id="latA">1.8 ms</text>
+            <text x="590" y="216" class="t-link" id="latB">2.4 ms</text>
+          </svg>
         </div>
-        <hr class="divider">
-        <p class="tsc-foot">Hyperscalers Average Cost: $234,766 for identical infrastructure.</p>
-      </div>
+        <p class="am-note">Schematic, not to scale. Terminal bars show load against design capacity; amber means pre-scaled for a peak.</p>
+        <dl class="topo-stats">
+          <div><dt>FastConnect utilisation</dt><dd class="mono-num" id="tpLink">0%</dd></div>
+          <div><dt>Throughput</dt><dd class="mono-num" id="tpThru">0 Gbps</dd></div>
+          <div><dt>Replication lag</dt><dd class="mono-num" id="tpLag">0 s</dd></div>
+        </dl>
+      </article>
+
+      <article class="panel guard-panel">
+        <header class="panel-head"><h2 class="h3">Guardrails</h2><p class="sub">Budget and policy checks</p></header>
+        <ul class="guards" id="guardList"></ul>
+      </article>
     </div>
   </div>
-
 </section>
 
-<!-- ============================= PAGE 2 — ROI SUMMARY ============================= -->
-<section class="page" id="page-roi" data-title="ROI Summary">
-  <div class="bg-pattern" aria-hidden="true">
-    <svg viewBox="0 0 800 600" preserveAspectRatio="none"><g stroke="#7b2d8b" stroke-width="1" opacity="0.05">
-      <line x1="0" y1="0" x2="800" y2="600"/><line x1="120" y1="0" x2="920" y2="600"/><line x1="240" y1="0" x2="1040" y2="600"/>
-      <line x1="-120" y1="0" x2="680" y2="600"/><line x1="-240" y1="0" x2="560" y2="600"/>
-    </g></svg>
+<!-- ============================= PRICING ============================= -->
+<section class="page" id="page-pricing" role="tabpanel" aria-labelledby="tab-pricing" data-title="Pricing Comparison">
+  <div class="wrap">
+    <div class="page-head">
+      <div>
+        <h1 class="h1">Pricing comparison</h1>
+        <p class="lede">List prices for the same shapes on four clouds. Oracle Cloud Infrastructure runs Changi's stack for <strong id="prSaveLede">less</strong> than the hyperscaler average.</p>
+      </div>
+    </div>
+
+    <div class="pr-summary">
+      <div class="pr-total">
+        <p class="kpi-label">Oracle, monthly list total</p>
+        <p class="pr-big mono-num" id="prOracleTotal">$0</p>
+      </div>
+      <div class="pr-vs" id="prVs"></div>
+    </div>
+
+    <div class="toolbar">
+      <div class="chips" role="group" aria-label="Filter by category" id="prChips"></div>
+      <label class="search"><span class="sr-only">Search products</span>
+        <svg viewBox="0 0 16 16" width="16" height="16" fill="none" aria-hidden="true"><circle cx="7" cy="7" r="5" stroke="currentColor" stroke-width="1.5"/><path d="M11 11l3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        <input type="search" id="prSearch" placeholder="Search products" autocomplete="off">
+      </label>
+    </div>
+
+    <div class="panel pr-panel">
+      <table class="data-table pr-table">
+        <thead>
+          <tr>
+            <th scope="col"><button class="sort" data-sort="name">Product</button></th>
+            <th scope="col" class="num">Qty</th>
+            <th scope="col" class="num col-oracle"><button class="sort" data-sort="oracle">Oracle</button></th>
+            <th scope="col" class="num"><button class="sort" data-sort="aws">AWS</button></th>
+            <th scope="col" class="num"><button class="sort" data-sort="azure">Azure</button></th>
+            <th scope="col" class="num"><button class="sort" data-sort="gcp">Google Cloud</button></th>
+            <th scope="col" class="col-share"><button class="sort" data-sort="save">Oracle saves</button></th>
+          </tr>
+        </thead>
+        <tbody id="prBody"></tbody>
+      </table>
+      <p class="empty" id="prEmpty" hidden>No products match that search.</p>
+    </div>
+    <p class="footnote">Monthly list prices in USD for Singapore regions. GPU rows are one 8-GPU node. Percentages show how much more each provider charges than Oracle.</p>
   </div>
-
-  <div class="std-container">
-    <div class="std-head">
-      <h1 class="eyebrow-title">ROI Summary</h1>
-      <p class="eyebrow-sub">Your estimated return on investment with Oracle Cloud Infrastructure.</p>
-    </div>
-
-    <div class="stat-row">
-      <div class="card stat-card">
-        <p class="stat-label">Total Annual Savings</p>
-        <p class="stat-value">$589,908</p>
-        <p class="stat-note">Compared to primary legacy cloud baseline</p>
-      </div>
-      <div class="card stat-card">
-        <p class="stat-label">5-Year TCO Reduction</p>
-        <p class="stat-value">63%</p>
-        <p class="stat-note">Significant reduction in capital and operational expenses</p>
-      </div>
-      <div class="card stat-card">
-        <p class="stat-label">Payback Period</p>
-        <p class="stat-value">4.2 mos</p>
-        <p class="stat-note">Rapid return on migration &amp; configuration setup</p>
-      </div>
-    </div>
-
-    <div class="card tco-card">
-      <div class="tco-head">
-        <h3 class="section-heading" style="font-size:18px;">Estimated 5-Year Total Cost of Ownership</h3>
-        <p class="eyebrow-sub" style="margin-top:2px;">Cumulative infrastructure spend comparison (lower is better)</p>
-      </div>
-      <div class="tco-bars" id="roiTcoBars"><!-- injected by JS --></div>
-    </div>
-
-    <div class="benefits-block">
-      <h3 class="section-heading">Key Benefits</h3>
-      <div class="benefit-grid" id="roiBenefitGrid"><!-- injected by JS --></div>
-    </div>
-  </div>
-
 </section>
 
-<!-- ============================= PAGE 3 — CONFIGURE STACK ============================= -->
-<section class="page" id="page-configure" data-title="Configure Your Stack">
-  <div class="bg-pattern" aria-hidden="true">
-    <svg viewBox="0 0 800 600" preserveAspectRatio="none"><g stroke="#7b2d8b" stroke-width="1" opacity="0.05">
-      <line x1="0" y1="0" x2="800" y2="600"/><line x1="150" y1="0" x2="950" y2="600"/><line x1="-150" y1="0" x2="650" y2="600"/>
-    </g></svg>
-  </div>
-
-  <div class="std-container">
-    <div class="std-head">
-      <h1 class="eyebrow-title">Configure Your Stack</h1>
-      <p class="eyebrow-sub">Customize your infrastructure requirements to get personalized pricing.</p>
+<!-- ============================= ROI ============================= -->
+<section class="page" id="page-roi" role="tabpanel" aria-labelledby="tab-roi" data-title="ROI Summary">
+  <div class="wrap">
+    <div class="page-head">
+      <div>
+        <h1 class="h1">Return on investment</h1>
+        <p class="lede">Move the assumptions and the five-year case recalculates. Every figure comes from the stack you configure.</p>
+      </div>
     </div>
 
-    <div class="configure-layout">
-      <form class="card configure-form" id="configureForm">
+    <div class="roi-layout">
+      <aside class="panel roi-controls" aria-label="Assumptions">
+        <h2 class="h3">Assumptions</h2>
+        <label class="range">
+          <span class="range-head"><span>Horizon</span><output id="roiYearsOut">5 years</output></span>
+          <input type="range" id="roiYears" min="1" max="5" step="1" value="5">
+        </label>
+        <label class="range">
+          <span class="range-head"><span>Passenger growth a year</span><output id="roiGrowthOut">6%</output></span>
+          <input type="range" id="roiGrowth" min="0" max="15" step="1" value="6">
+        </label>
+        <label class="range">
+          <span class="range-head"><span>One-time migration</span><output id="roiMigOut">$36,000</output></span>
+          <input type="range" id="roiMig" min="0" max="150000" step="2000" value="36000">
+        </label>
+        <div class="field">
+          <span class="field-label">Compare against</span>
+          <div class="seg-ctl" role="radiogroup" aria-label="Compare against" id="roiAgainst">
+            <button role="radio" aria-checked="true" data-v="avg">Average</button>
+            <button role="radio" aria-checked="false" data-v="aws">AWS</button>
+            <button role="radio" aria-checked="false" data-v="azure">Azure</button>
+            <button role="radio" aria-checked="false" data-v="gcp">Google</button>
+          </div>
+        </div>
+        <p class="footnote">Workload grows with passengers. Prices are held at today's list rates.</p>
+      </aside>
 
-        <fieldset class="cfg-group">
-          <legend>Compute Requirements</legend>
+      <div class="roi-main">
+        <div class="kpis kpis-3">
+          <article class="kpi"><p class="kpi-label">Total saved</p><p class="kpi-value mono-num accent" id="roiSaved">$0</p><p class="kpi-note" id="roiSavedNote">over 5 years</p></article>
+          <article class="kpi"><p class="kpi-label">TCO reduction</p><p class="kpi-value mono-num" id="roiPct">0%</p><p class="kpi-note">Oracle total against the comparison</p></article>
+          <article class="kpi"><p class="kpi-label">Payback</p><p class="kpi-value mono-num" id="roiPayback">0 mo</p><p class="kpi-note">Migration recovered from monthly savings</p></article>
+        </div>
+
+        <article class="panel">
+          <header class="panel-head">
+            <div><h2 class="h3">Cumulative cost of ownership</h2><p class="sub">Running total by year, lower is better</p></div>
+            <p class="legend" id="roiLegend"></p>
+          </header>
+          <div class="chart chart-lg" id="roiChart"></div>
+          <div class="sr-only"><table id="roiTable"></table></div>
+        </article>
+      </div>
+    </div>
+
+    <div class="benefits">
+      <h2 class="h2">Why the case holds</h2>
+      <div class="benefit-cols">
+        <div><p class="b-num mono-num">2×</p><h3 class="h4">Performance per dollar</h3><p>AMD EPYC shapes and a flat, non-blocking network keep check-in and baggage transactions under 20 ms at peak.</p></div>
+        <div><p class="b-num mono-num">5×</p><h3 class="h4">Cheaper data out</h3><p>Egress costs about a fifth of hyperscaler rates, so flight-data feeds to airlines and ground handlers stay cheap.</p></div>
+        <div><p class="b-num mono-num">2 min</p><h3 class="h4">Scale-out to a flight bank</h3><p>Node pools follow the passenger forecast and pre-scale before each departure wave, then release capacity overnight.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================= CONFIGURE ============================= -->
+<section class="page" id="page-configure" role="tabpanel" aria-labelledby="tab-configure" data-title="Configure Your Stack">
+  <div class="wrap">
+    <div class="page-head">
+      <div>
+        <h1 class="h1">Configure the stack</h1>
+        <p class="lede">Change any input and the estimate updates as you type. Apply it to send the new topology to Mission Control.</p>
+      </div>
+    </div>
+
+    <div class="cfg-layout">
+      <form class="cfg-form" id="cfgForm" novalidate>
+        <fieldset class="panel cfg-group">
+          <legend class="h3">Compute</legend>
           <div class="cfg-row">
-            <label class="cfg-field">
-              <span>Instance Type</span>
-              <select><option>AMD EPYC Standard</option><option>Intel Ice Lake Standard</option><option>Ampere Arm</option></select>
-            </label>
-            <label class="cfg-field">
-              <span>vCPUs</span>
-              <select><option>8 Cores</option><option>16 Cores</option><option>32 Cores</option></select>
-            </label>
+            <label class="fld"><span>Instance shape</span><select name="shape"><option value="amd">AMD EPYC Standard</option><option value="intel">Intel Ice Lake Standard</option><option value="arm">Ampere Arm</option></select></label>
+            <label class="fld"><span>vCPUs each</span><select name="vcpu"><option value="8">8 cores</option><option value="16">16 cores</option><option value="32">32 cores</option></select></label>
+            <label class="fld"><span>Memory each</span><select name="ram"><option value="32">32 GB</option><option value="64">64 GB</option><option value="128">128 GB</option></select></label>
+            <label class="fld"><span>Base instances</span><input type="number" name="instances" min="1" max="200" value="10" inputmode="numeric"></label>
           </div>
           <div class="cfg-row">
-            <label class="cfg-field">
-              <span>RAM (GB)</span>
-              <select><option>32 GB</option><option>64 GB</option><option>128 GB</option></select>
-            </label>
-            <label class="cfg-field">
-              <span>GPU Type</span>
-              <select><option>None (CPU Only)</option><option>NVIDIA A100</option><option>NVIDIA H100</option></select>
-            </label>
+            <label class="fld"><span>GPU nodes (8 GPUs each)</span><select name="gpu"><option value="none">None, CPU only</option><option value="a100">NVIDIA A100</option><option value="h100">NVIDIA H100</option></select></label>
+            <label class="fld"><span>GPU node count</span><input type="number" name="gpuCount" min="0" max="8" value="0" inputmode="numeric"></label>
           </div>
-          <label class="cfg-field full">
-            <span>Number of Instances</span>
-            <input type="number" placeholder="10" value="10">
-          </label>
         </fieldset>
 
-        <fieldset class="cfg-group">
-          <legend>Storage Requirements</legend>
+        <fieldset class="panel cfg-group">
+          <legend class="h3">Storage</legend>
           <div class="cfg-row">
-            <label class="cfg-field">
-              <span>Block Storage (TB)</span>
-              <input type="number" placeholder="5" value="5">
-            </label>
-            <label class="cfg-field">
-              <span>Object Storage (TB)</span>
-              <input type="number" placeholder="20" value="20">
-            </label>
+            <label class="fld"><span>Block storage, TB</span><input type="number" name="block" min="0" max="500" value="5" inputmode="numeric"></label>
+            <label class="fld"><span>Object storage, TB</span><input type="number" name="object" min="0" max="2000" value="20" inputmode="numeric"></label>
+            <label class="fld"><span>Backups</span><select name="backup"><option value="daily">Daily, automated</option><option value="weekly">Weekly, automated</option><option value="continuous">Continuous</option></select></label>
           </div>
-          <label class="cfg-field full">
-            <span>Backup Frequency</span>
-            <select><option>Daily Automated</option><option>Weekly Automated</option><option>Continuous</option></select>
-          </label>
         </fieldset>
 
-        <fieldset class="cfg-group">
-          <legend>Network Requirements</legend>
+        <fieldset class="panel cfg-group">
+          <legend class="h3">Network</legend>
           <div class="cfg-row">
-            <label class="cfg-field">
-              <span>Bandwidth (TB/month)</span>
-              <input type="number" placeholder="10" value="10">
-            </label>
-            <label class="cfg-field">
-              <span>Private Connections</span>
-              <select><option>1x 10Gbps FastConnect</option><option>2x 10Gbps FastConnect</option></select>
-            </label>
+            <label class="fld"><span>Egress, TB a month</span><input type="number" name="egress" min="0" max="500" value="10" inputmode="numeric"></label>
+            <label class="fld"><span>Private connection</span><select name="links"><option value="1">1 × 10 Gbps FastConnect</option><option value="2">2 × 10 Gbps FastConnect</option></select></label>
+            <label class="fld"><span>Primary region</span><select name="region"><option value="sg1">ap-singapore-1</option><option value="sg2">ap-singapore-2</option></select></label>
           </div>
-          <label class="cfg-field full">
-            <span>Primary Region</span>
-            <select><option>ap-singapore-1 (Changi Node)</option><option>ap-singapore-2</option></select>
-          </label>
         </fieldset>
 
-        <fieldset class="cfg-group">
-          <legend>Database Requirements</legend>
+        <fieldset class="panel cfg-group">
+          <legend class="h3">Database</legend>
           <div class="cfg-row">
-            <label class="cfg-field">
-              <span>Database Type</span>
-              <select><option>MySQL HeatWave</option><option>Autonomous DB</option><option>PostgreSQL</option></select>
-            </label>
-            <label class="cfg-field">
-              <span>Storage Size (TB)</span>
-              <input type="number" placeholder="1" value="1">
-            </label>
+            <label class="fld"><span>Engine</span><select name="db"><option value="heatwave">MySQL HeatWave</option><option value="adb">Autonomous Database</option><option value="pg">PostgreSQL</option></select></label>
+            <label class="fld"><span>Storage, TB</span><input type="number" name="dbStorage" min="0" max="100" value="1" inputmode="numeric"></label>
+            <label class="fld"><span>Read replicas</span><select name="replicas"><option value="2">2 replicas</option><option value="1">1 replica</option><option value="4">4 replicas</option></select></label>
           </div>
-          <label class="cfg-field full">
-            <span>Read Replicas</span>
-            <select><option>2 Replicas</option><option>1 Replica</option><option>4 Replicas</option></select>
-          </label>
         </fieldset>
-
-        <button type="submit" class="calc-btn">Calculate Pricing</button>
       </form>
 
-      <aside class="card estimate-card">
-        <div class="est-head">
-          <p class="est-label">Monthly Estimate</p>
-          <p class="est-price">$7,260.75</p>
-          <p class="est-sub">Billed in SGD equivalence (~SGD 9,780.00)</p>
+      <aside class="panel estimate" aria-live="polite">
+        <p class="kpi-label">Monthly estimate</p>
+        <p class="est-price mono-num" id="estTotal">$0</p>
+        <p class="kpi-note">About <span id="estSgd">SGD 0</span> · <span id="estYear">$0</span> a year</p>
+        <div class="stack-bar" id="estBar" aria-hidden="true"></div>
+        <ul class="est-lines" id="estLines"></ul>
+        <div class="est-vs">
+          <p>Same stack elsewhere, monthly</p>
+          <ul id="estVs"></ul>
         </div>
-        <hr class="divider">
-        <div class="est-breakdown">
-          <p class="est-breakdown-label">Cost Breakdown</p>
-          <div class="est-row"><span>AMD VM Instances (x10)</span><b>$2,740.00</b></div>
-          <div class="est-row"><span>5 TB Block Storage</span><b>$215.00</b></div>
-          <div class="est-row"><span>20 TB Object Storage</span><b>$500.00</b></div>
-          <div class="est-row"><span>FastConnect Line</span><b>$949.00</b></div>
-          <div class="est-row"><span>MySQL HeatWave Instance</span><b>$1,313.00</b></div>
-          <div class="est-row"><span>HeatWave Extra Storage</span><b>$260.00</b></div>
-          <div class="est-row"><span>Premium Support Tier</span><b>Included</b></div>
+        <div class="est-actions">
+          <button type="button" class="btn btn-primary" id="cfgApply">Apply to Mission Control</button>
+          <button type="button" class="btn btn-ghost" id="cfgReset">Reset</button>
         </div>
-        <hr class="divider">
-        <div class="discount-banner">
-          <p class="db-title">Custom Changi Discount Applied</p>
-          <p class="db-desc">Pricing includes active enterprise flight volume credits and tourism initiative rebates.</p>
-        </div>
+        <p class="footnote">Premium support and Changi enterprise credits included. SGD at an indicative 1.35.</p>
       </aside>
     </div>
   </div>
-
 </section>
 
-<!-- ============================= PAGE 4 — DASHBOARD ============================= -->
-<section class="page" id="page-dashboard" data-title="OCI Co-Branded Cloud Optimizer">
-  <div class="bg-pattern" aria-hidden="true">
-    <svg viewBox="0 0 800 600" preserveAspectRatio="none"><g stroke="#7b2d8b" stroke-width="1" opacity="0.05">
-      <line x1="0" y1="0" x2="800" y2="600"/><line x1="140" y1="0" x2="940" y2="600"/><line x1="-140" y1="0" x2="660" y2="600"/>
-    </g></svg>
-  </div>
-
-  <div class="std-container">
-    <div class="dash-head">
+<!-- ============================= OPTIMIZER ============================= -->
+<section class="page" id="page-dashboard" role="tabpanel" aria-labelledby="tab-dashboard" data-title="Cloud Optimizer">
+  <div class="wrap">
+    <div class="page-head">
       <div>
-        <h1 class="dash-title">OCI Co-Branded Cloud Optimizer</h1>
-        <p class="eyebrow-sub">Real-time commercial validation and comparison against hyperscaler footprints.</p>
+        <h1 class="h1">Cloud optimizer</h1>
+        <p class="lede" id="optLede">The executive view: what the move saves, and what the next optimisations add.</p>
       </div>
-      <button class="export-btn">Export Executive PDF</button>
+      <button class="btn btn-ghost" id="exportBtn" type="button">
+        <svg viewBox="0 0 16 16" width="16" height="16" fill="none" aria-hidden="true"><path d="M8 2v8m0 0L5 7m3 3 3-3M3 12v2h10v-2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Export PDF
+      </button>
     </div>
 
-    <div class="kpi-strip">
-      <div class="card kpi-card">
-        <div class="kpi-head"><span>Total Annual Savings</span><span class="trend-pill up">&#8599; +63%</span></div>
-        <p class="kpi-value">$589,908</p>
-        <p class="kpi-note">Compared to legacy baseline</p>
-      </div>
-      <div class="card kpi-card">
-        <div class="kpi-head"><span>5-Year TCO Reduction</span>
-          <svg viewBox="0 0 24 24" width="22" height="22"><circle cx="12" cy="12" r="9" fill="none" stroke="#e5e7eb" stroke-width="3"/><circle cx="12" cy="12" r="9" fill="none" stroke="#7b2d8b" stroke-width="3" stroke-dasharray="35.6 56.5" stroke-linecap="round" transform="rotate(-90 12 12)"/></svg>
-        </div>
-        <p class="kpi-value">63%</p>
-        <p class="kpi-note">Significant structural cost cut</p>
-      </div>
-      <div class="card kpi-card">
-        <div class="kpi-head"><span>Payback Period</span>
-          <svg viewBox="0 0 24 24" width="20" height="20" fill="none"><circle cx="12" cy="12" r="9" stroke="#f2a33c" stroke-width="1.8"/><path d="M12 7v5l3.5 2" stroke="#f2a33c" stroke-width="1.8" stroke-linecap="round"/></svg>
-        </div>
-        <p class="kpi-value">4.2 Mos</p>
-        <p class="kpi-note">Rapid migration amortization</p>
-      </div>
-      <div class="card kpi-card">
-        <div class="kpi-head"><span>Monthly OCI Spend</span><span class="active-pill">ACTIVE</span></div>
-        <p class="kpi-value accent">$7,260.75</p>
-        <p class="kpi-note">Based on current custom topology</p>
-      </div>
+    <div class="kpis">
+      <article class="kpi"><p class="kpi-label">Annual savings</p><p class="kpi-value mono-num accent" id="oAnnual">$0</p><p class="kpi-note">Against the hyperscaler average</p></article>
+      <article class="kpi"><p class="kpi-label">5-year TCO reduction</p><p class="kpi-value mono-num" id="oTco">0%</p><p class="kpi-note">Including a one-time migration</p></article>
+      <article class="kpi"><p class="kpi-label">Payback</p><p class="kpi-value mono-num" id="oPayback">0 mo</p><p class="kpi-note">From the first month on OCI</p></article>
+      <article class="kpi"><p class="kpi-label">Monthly OCI spend</p><p class="kpi-value mono-num" id="oMonthly">$0</p><p class="kpi-note" id="oMonthlyNote">Current topology</p></article>
     </div>
 
-    <div class="chart-row">
-      <div class="card cost-comparison-widget">
-        <div class="ccw-head">
-          <div>
-            <h3 class="section-heading" style="font-size:18px;">Multi-Cloud Unit Cost Comparison</h3>
-            <p class="eyebrow-sub" style="margin-top:2px;">Baseline monthly units for Compute, Storage, Network &amp; Database</p>
-          </div>
-          <div class="legend">
-            <span class="lg"><i style="background:#7b2d8b"></i>Oracle</span>
-            <span class="lg"><i style="background:#9ca3af"></i>Others avg.</span>
-          </div>
-        </div>
-        <div class="ccw-bars" id="dashCompareBars"><!-- injected --></div>
-        <div class="ccw-illustration"><img src="images/illustration.webp" alt="" width="320" height="183"></div>
-      </div>
+    <div class="opt-grid">
+      <article class="panel recs-panel">
+        <header class="panel-head">
+          <div><h2 class="h3">Recommended optimisations</h2><p class="sub">Apply one and every figure on this page updates</p></div>
+          <p class="recs-total"><span class="mono-num accent" id="recTotal">$0</span><span class="sub">a month unlocked</span></p>
+        </header>
+        <ul class="recs" id="recList"></ul>
+      </article>
 
-      <div class="card tco-breakdown-widget">
-        <div class="tco-head">
-          <h3 class="section-heading" style="font-size:18px;">5-Year Cumulative TCO</h3>
-          <p class="eyebrow-sub" style="margin-top:2px;">Projected structural savings (lower is better)</p>
+      <article class="panel">
+        <header class="panel-head"><div><h2 class="h3">Where the money goes</h2><p class="sub">Monthly Oracle spend by service</p></div></header>
+        <div class="donut-wrap">
+          <div class="donut" id="donut"></div>
+          <ul class="donut-legend" id="donutLegend"></ul>
         </div>
-        <div class="tco-bars dark" id="dashTcoBars"><!-- injected --></div>
-        <div class="insight-box">
-          <p class="ib-title">Oracle Value Proposition</p>
-          <p class="ib-desc">Oracle Cloud delivers a total saving of up to $776,465 over 5 years compared to standard hyperscalers.</p>
+        <div class="units">
+          <p class="sub">Unit cost on Oracle, against the hyperscaler average</p>
+          <ul id="unitList"></ul>
         </div>
-      </div>
+      </article>
     </div>
 
-    <div class="details-grid">
-      <div class="card stack-config-card">
-        <div class="config-header">
-          <h3 class="section-heading" style="font-size:18px;">Configuration</h3>
-          <button class="edit-badge" data-goto="configure">Edit Config</button>
-        </div>
-        <div class="config-details">
-          <div class="spec-row"><span>Compute Engine</span><b>AMD EPYC Standard (8 vCPU, 32GB RAM)</b></div>
-          <div class="spec-row"><span>Primary Storage</span><b>5 TB High-Performance Block Storage</b></div>
-          <div class="spec-row"><span>Object Storage</span><b>20 TB Highly Available Archive</b></div>
-          <div class="spec-row"><span>Database Cluster</span><b>MySQL HeatWave Dedicated Instance</b></div>
-          <div class="spec-row"><span>Private Connection</span><b>CAG Custom 10Gbps FastConnect</b></div>
-        </div>
-      </div>
-
-      <div class="card monthly-cost-breakdown-card">
-        <h3 class="section-heading" style="font-size:18px;">Monthly Cost Breakdown</h3>
-        <div class="breakdown-body">
-          <svg class="donut" viewBox="0 0 100 100" width="88" height="88">
-            <circle cx="50" cy="50" r="40" fill="none" stroke="#f3f4f6" stroke-width="14"/>
-            <circle cx="50" cy="50" r="40" fill="none" stroke="#7b2d8b" stroke-width="14" stroke-dasharray="141.4 251.3" stroke-dashoffset="0" transform="rotate(-90 50 50)"/>
-            <circle cx="50" cy="50" r="40" fill="none" stroke="#a855f7" stroke-width="14" stroke-dasharray="36.9 251.3" stroke-dashoffset="-141.4" transform="rotate(-90 50 50)"/>
-            <circle cx="50" cy="50" r="40" fill="none" stroke="#ec4899" stroke-width="14" stroke-dasharray="67.8 251.3" stroke-dashoffset="-178.3" transform="rotate(-90 50 50)"/>
-            <circle cx="50" cy="50" r="40" fill="none" stroke="#d1d5db" stroke-width="14" stroke-dasharray="5.2 251.3" stroke-dashoffset="-246.1" transform="rotate(-90 50 50)"/>
-          </svg>
-          <div class="breakdown-legend">
-            <div class="leg-item"><span><i style="background:#7b2d8b"></i>Compute VM Instances</span><b>$2,740</b></div>
-            <div class="leg-item"><span><i style="background:#a855f7"></i>Storage (Block &amp; Obj)</span><b>$715</b></div>
-            <div class="leg-item"><span><i style="background:#ec4899"></i>MySQL HeatWave DB</span><b>$1,313</b></div>
-            <div class="leg-item"><span><i style="background:#d1d5db"></i>Enterprise Support</span><b>Included</b></div>
-          </div>
-        </div>
-        <svg class="wave" viewBox="0 0 380 40" preserveAspectRatio="none" width="100%" height="40"><path d="M0 20 C60 0 100 40 160 20 C220 0 260 40 320 20 C350 10 365 15 380 20 V40 H0 Z" fill="#f8f2fa"/></svg>
-      </div>
-
-      <div class="card savings-trend-card">
-        <h3 class="section-heading" style="font-size:18px;">Savings Trend Projection</h3>
-        <svg class="sparkline" viewBox="0 0 300 100" width="100%" height="100">
-          <line x1="0" y1="25" x2="300" y2="25" stroke="#f3f4f6" stroke-width="1"/>
-          <line x1="0" y1="50" x2="300" y2="50" stroke="#f3f4f6" stroke-width="1"/>
-          <line x1="0" y1="75" x2="300" y2="75" stroke="#f3f4f6" stroke-width="1"/>
-          <polyline points="0,90 75,70 150,50 225,30 300,10" fill="none" stroke="#7b2d8b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-          <circle cx="0" cy="90" r="3.5" fill="#7b2d8b"/><circle cx="75" cy="70" r="3.5" fill="#7b2d8b"/>
-          <circle cx="150" cy="50" r="3.5" fill="#7b2d8b"/><circle cx="225" cy="30" r="3.5" fill="#7b2d8b"/>
-          <circle cx="300" cy="10" r="3.5" fill="#7b2d8b"/>
-        </svg>
-        <div class="sparkline-labels">
-          <span>Year 1</span><span>Year 2</span><span>Year 3</span><span>Year 4</span><b>Year 5 ($2.9M saved)</b>
-        </div>
-      </div>
+    <div class="opt-grid opt-grid-b">
+      <article class="panel">
+        <header class="panel-head"><div><h2 class="h3">Five-year cost of ownership</h2><p class="sub">Cumulative spend, lower is better</p></div></header>
+        <div class="hbars" id="tcoBars"></div>
+      </article>
+      <article class="panel">
+        <header class="panel-head"><div><h2 class="h3">Savings build-up</h2><p class="sub">Cumulative savings against the hyperscaler average</p></div></header>
+        <div class="chart" id="saveChart"></div>
+      </article>
     </div>
 
-    <div class="card key-value-strip">
-      <p class="kv-eyebrow">Key Value Drivers</p>
-      <div class="kv-item">
-        <div class="kv-icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="none"><path d="M3 17l6-6 4 4 8-8" stroke="#7b2d8b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M15 7h6v6" stroke="#7b2d8b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-        <p class="kv-title">2x Compute Performance</p>
-        <p class="kv-desc">AMD EPYC processors guarantee low-latency transaction throughput</p>
-      </div>
-      <div class="kv-item">
-        <div class="kv-icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="none"><path d="M12 2l8 4v6c0 5-3.4 8.4-8 10-4.6-1.6-8-5-8-10V6l8-4Z" stroke="#7b2d8b" stroke-width="2" stroke-linejoin="round"/></svg></div>
-        <p class="kv-title">Zero-Trust Core Security</p>
-        <p class="kv-desc">Isolated virtual network segmentation native to the tenancy fabric</p>
-      </div>
-      <div class="kv-item">
-        <div class="kv-icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="none"><path d="M3 12a9 9 0 0 1 15-6.7L21 8" stroke="#7b2d8b" stroke-width="2" stroke-linecap="round"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16" stroke="#7b2d8b" stroke-width="2" stroke-linecap="round"/><path d="M21 4v4h-4M3 20v-4h4" stroke="#7b2d8b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-        <p class="kv-title">Auto-Scaling Orchestration</p>
-        <p class="kv-desc">Dynamically adjust instance clusters mapped to airport flow volume</p>
-      </div>
+    <div class="drivers">
+      <div><h3 class="h4">AMD EPYC compute</h3><p>Twice the transaction throughput per dollar for check-in, baggage and flight-information systems.</p></div>
+      <div><h3 class="h4">Zero-trust by default</h3><p>Isolated network virtualisation keeps every airport tenant segmented at the fabric, with no performance penalty.</p></div>
+      <div><h3 class="h4">Scaling that follows flights</h3><p>Node pools track the passenger forecast, pre-scaling before each departure bank and releasing overnight.</p></div>
     </div>
   </div>
-
 </section>
 
 </main>
 
-<!-- ============================= GLOBAL SITE FOOTER (replicates changiairport.com) ============================= -->
 <footer class="cag-footer">
-  <div class="cag-footer-top">
-    <div class="cag-footer-brand"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASwAAABRCAYAAABotpveAAAnMUlEQVR4nO2dd7wU5fW4n3d2b6F3pIOKEXsDY4sCFhAV1Mi1RWMN1gQQbNEfoFGJBYxECWJsxJhcSyIqTQRFEzWoKLEXQAQpSpV27+7O+f1xZnfn7t2dbXPvhW/m+XzW8c68+77vLLtnznvOec8xIkJDsaGidQuEo6gKH2JH6UDEtJYIrSVqtSJi2kjEtJZq2hCxtku1/Eg09KNdJVtMNLTJruJjK2IWVRN6r3v1l+832E0EBATUG6Y+Bdaa0R2alG2uOtFEzMlEzM/siNmHqEEioMf4C4hYSDUQMUi10evVzvVqo+cjhhghIiZEzAovjJrQjBjhFw/Y+t579XZTAQEB9YafAms34ACgC9ADaOKcj6578lfNw5/PP8Js/OFQFU5WQkjZ1WCiFnZCaJEUVlELu5q0wst2hFaUEDETVqFlwkRNiKgJfxszoelRws8c+eOC1/26wYCAgIbFD4HVG7geGJp6Yf1TF1Hy+SzYtr2GBkUExPk7KaRM/NxSqs1yiRqoBokYSyKmhVRbzSRCMyKmbULDqjbETCgupGocE0LMCr8Xs0Jj+66f+1KxNxoQENCwFCOw2gNPAEcCzwJvAYu3/L5RIysWulkiZgAx1aBIFU5RCzvcHLtF95Vs3jgntHbV/GjE/mTL1qYf95i/dEe2gVe06NqaWPhwK8Lh1YR721b4iCihdlErTBSLmFVCpMYxTJTwomjIuu3kH2b8s9AbDggIaFgKFVgHAguAfwE/B3ZU399sn5gdmyRR6/iETSpqIIpqVlHzo92o4xfRfQe3b3vB77um9PcXYCTwfaE38lXZ/vtWW6EhMSt8RsSE+sSsMBFCjrAKEbUSmtf87VbZeUPXVq4udKyAgICGoRCBdRzwInADMPnHh5u3LYnGfi8RuYSYo0HF1CZlVGj9XSLyx2b3bn7T1Ud/YAJwkOvcJqfPKYXfjvJh46M6V4U4I2aFrokQ2jtmlRDFUqGlQmxjxJjLh6597tlixwoICKg/8hVY7YHvgBuBe7c/1vinJirPEzGdxNGkiBmIsEOi5mGL2D2Nxmxb4dHfvcB1KefmA+cCa/KZWCYWtOxfETPm1qgp2V81rJDLxmX9JSRy5dC1lVv8GCsgIKBuyVdgvY8KrS5VT5ZfS8w8IG7vXszaIBGZFLNDDzS7afO6HPvsD0wDOrnOfQ/8ApiTz+S8mNN6wMm2VXJ7RKzDYlaYqLGwTZgIoc+rw2UnXrzy0W/9GisgIKBuyEdg7Qd8BIyr+mvZESZmBkjc2xc1G4jx+0ZV2//IKNlawDzaA7OBg1PO340uE33jpTZDRkYt675YwpsYIkpodYTSEy9d/chHfo4VEBDgL/kIrKnABVWVpZtNzGonEXFsVfJ8o22NLmX4ho1FzqUZ8ALQL+X8POBs4Ici+0/wXPuz9gKejJrwEVETwjZholibYyZ86mXfTX3Dr3ECAgL8JVeBVY4axUsilWVGokDU7LCj5tfll2yf6vOcnkU9j26+AwagGp5v/G23s0fZJnxPNBF0ahG1rEFXfvvwTD/HCQgI8Acrl0br3x1zJVCKI+AMZr5tm33qQFgBnAU8l3KuE6pp7eXnQOes+fu9trH7GdgiCAYDtnlmcuer9vZznICAAH/IqmHFZoUHb21xyQvNj3wYgKrK8tFlFTvuzWeQbde1OiQmHGhXywEmanrZUdPcRGki1VZTidJUIqYJUbODiNkuUbNdImyVjnvtaTdr20o6dke67knHy68FWAUcDSwt7HbTM63ThftECc+JmlAX9SJaX0p5uPe1Xz6w2c9xAgICisNTYEXnlhxDtbyxtd1IWvS5O366O7Dcq9OtdzY9nignEzPHS8QcTNQ4ewUtangVo84ewViaPYWu7TfxPYdELOw9flJlvl37pL1m0yuY2LzOm1fk6o305PH2F3eIlITnRo21n+M9fHn4tw+c6kffAQEB/pBZYL1mesSqrf9KzDT9sf2t1a0OG1PqXKm9ZHvUNNuxpfx0iVmnE2WARE0T9R6S3JYTcf6OZ2RIydJQa09htet9ruwM+jeIsyFabGtx1IRei1L66pZGJQsO3rBoY6EfxkPtr25qlcVejhI6NqYexHEjv5k4ttD+AgIC/CWjwIq9ar1FzDpComwLD4o+BVzuXHoaOA8g8njpwbGIdRVRc55ETZNEpHtCWCUj3vWYkpUhrmGlu16dFE61szYksznEoiax/cY5vlBtwlMO2bqwIMP5pDa/bm4a2+/EjNXLNiFsQvtd9829nxTSV0BAgL+kNbrbr5nhBnMECIgZArjzS51R9UK3AdV/KXvbxloE5nKgiQEQAKMHDCAYo6eNMahhO9kOET2kuW6MM5oxTrPEiUQDdQDg6kcQwxCDzHiv2ZHfvN3s6DFvNT6+cz4fyLXrHtgcJnYCmJU6M5mcz/sDAgLqjtoC69+mO8a60xE6F4VPicwFlrhalFc3P75ChJ/WEB6Jy463TYS4NDKAOH/HZVVCKrmuG9f1hOKXaOY64TQw8XHjUjE+njGI2N2MMWPtcGTF6y2Pr5zfvH/Onr8rvp28MhSzT8CYzYIce/ceo87K9b0BAQF1Ry2BJTHzBCKNjGFi6KToEwDb3htRI/6pWb/HBmDM2rjQoMay0i3EXBpUXOOC7BoWNbtLaljOeG4Ny/nTkXoJTcvdDmSoHQp/Nrv1wCdebDl491w+mGtWTvrMtuU0YwxGmDCx68hGubwvICCg7qgpsN4y5wpynBjetPrHRgJEZpYeUbZq0r+AT10tO+/oeM6CuNBIrN+S0oi4piVxDYqaGlSqhoVbw3IjktCwtL8UDSshrEgIT3c7calqxpgLrZC95MV2p099pm1F1qXidcvvXyDCb8B03REO35jLBxoQEFB31DC6y7+txRLjACsmu9NXlkXnhG4nZm4hCpu7Tnyz9cHXHuN67/YdT7b8L1VVhxP3BjrGds2DleIldHsBHU9gxsyjcW9g/OXyEur/u7yEMUszjVqujKNxA3y6DKSubA0xyxp71ppnxmX7kO7uMeoN27IOrGrcpPOYj8Y0VGaHfdBo/5OAjkAroCXQAlgNfIvGqa0EPgEqgbVFjnkEusshHR8AG4vouxlwWIZr24D/FNF3Otqh+2HdVAP/9nmccvRzc/MBxX1WbvYAumW4tpya5pti6AScjn7fuqLftVbO63t098lKYAXwBfAMWcKd/CApsN42J4ttZogtY60of4jFzBxiVh+JArYhatqtLj/luw4p7/9s+yON25kobWp6B5N5sRK5232Kw/LyErryXSUyjkaNVSPne8SEsJ3regx9KZY17LxVT83P9CGN3/2mHmB/bBtz481Lxk/y9V/Am5bAr4FLyfwl9WIeKrj+CvxYwPu/RXP0p6Mf8FoBfcY5HHgnw7Wv8HlXA+rdPifDPBb6OM4ewNcp5xaPvnDAUfc8ObuQxACpjCdzQoB7gdFF9F0OXAFcRm3hngvvoN+3J/Fx76+bxJJQDKMQWWuFeMTGvAamT9IiDqHI9x2o/QXr1eiybV/VtmGRkw1L4jYnSW/DqmnqMk63edqwXF7LZLMay9W9bDHznuh40dOPt784VSADcOPSu5YZZBSYWnnr64g2wET0CTaOwoQVaOqePzn9XOXP1HZJ9ia9sAL9kdc1B97z5Oy5wM5qBy1Hc9wtR793hQgrgJ8C96Ea2FhfZpaCCqxFpjtCfzHW3+wIczHGyQRqksIA2Dard7N0k9yx1zUL483zsWGZTF5CcHUnNbyEuduwtIcaNqzE7BzhWOP25JxYifXJlC6XHZ/ug7ph6d2TjSEyaa9fl+XwuRZDf3ST93CgsU99NgMeBN5AU/n8r3Gnx7VjgbT/5j5zBDALqOvvT74cgC5Z70KXzX4xBv0e9/Spv18Av1aBFeF8MBiR8zCmF/H4pqQ0wQAlWxfvi+atqkHLE+7pU7XH+V/sDHFYNTSvhKaVnFf8vmoK08R8Whmx5k7uekValds2oYvWW23SCW2/uB14FUir6fnAMcAiaqamLpS8c2s3EAcCZ2Zp4yXQ/ORY4KVhw3qX1NN42bgcWIxqoHXBfsC7FPdA6Aq8jCb57K82rIXWIonJwdgGiQG2Y4uKOUfX37Y03VJ21vqNpLFtrJ93x6dliyc+zvYdq0xM1tkxaxs7gGgYNcxD1DlSTQsTDfWyq2VPYlZPu5q9TNTq4rsNK57LPbMNCztRbcd1NKHKsljk4l+tnLKtiA87H7xsE36zCfgZ8N8s7bxsWH2B14uYQ33ZsF4EctkTeir6wyiWdDasVGaMG2dOGzNG7AL698uGdT5a/KU+qEYN+DnvPhk2rHfJlCnv3gDcQlIrnW7kQ5rIDraosBKwDcRAYq5j1BFkMQMx89629hf/rUXfP92TYaz3UG9WQZuS1/fvuJ9tyx52ldmHqNnTVPETO2L1JaUitGsvIVHCRK1QanWcjPUK44b4mjneXd7DxP9bH0ZC5QNHL727rivsXAk8lGPbL9Ef+mLUU/MDsCf6lDwQFSS5sB7NfPGZR5tdXWD1IXdv44fUznhbCLkILIC/o7UL8tVU/RBYA8ldeKxBq2O9i37fVqE21V6oBjUwx34gd0fN8cDD6Gfp5qUwOzgwsRxLGMrjtngDIoswZrZl5I2QHV1AhWxpoRe3oXaRVA5DhdYpwMd53AwAreet+th534vxc6t6d25sbaC/wTrVFhkCVge1YVnYglriBIzltm0ll4dJm1ncFpZiw0r4CeLLzcTfB4VikTfu7zHi2OHLJq7K915y5KfkJqxmArdSc5tUOtqjez2vBH7i0a418OKNFSf2Hl/5yqZcJprCrrAk/F0ebQ9CE0em5mKrK85GNY8L62m8OF3I7R4XotqNZ12Fqyv6NX2wcv7PgWvQospePA8cCizzaHOmx/xsC4ueCUM24AipdQbui1mxfcODYoeGT43cFBoSncFQcccgPQQ8lqHj7ugNn53lBnKi47srt+329YqXdvtm+RUdVy3vaGwGYczfRWRHZhuWOzKeGjarWjashIHedYwH8Bt6RrDenNh1ZF57EvPgD1mub0YzZAwiu7ACjb26HzgEyFbtuuf4ylceyaHPXZE+aAxRPvyO5A+hPrgA1STqkzvJ7sy5DtWAsxaBebBy/ha0oHIfst9LK+AfWdp4ecQtC0OXZAgAL4iR06y+dlvr+Nio0hPkU483A1wCvJLhWiPgb2T/QeZNh/XLZnbatPScqkZWB4GrDObd2nsJk+7DpJcyxcCfolkZlybmNvwb2CMSDv3rjq63+C20KlANKxObr/vlKX0o7Km/DTgNFV6ZmEftMmu5srNrWIWEK/TCyURSj1wO1Fds36GokPSiL1oztBCGAb/xuP5hDuN7YgFhkKlGGGiOsk8PHSPZnsqpnIGubzPxa+BNVOvylT3Wf72pa/XXk7tXfd4n+pPuR2075oBIvnFYQCL0IbmdJ36+xnDdrXDkjXs7jG7i4y38vyzXz73viZe/KHKMEWjgqJtt6JfreOohOrkB6Id65DLh9ZQf6+9UcuIa1ENc19yS5fpwirNLAjwA3Jbm/K2ojbCougwWh8nt9JFfcaTUClfIka2oVPaqNnM0uhfx+gLHyEqvxTPfOnTOU3fuv3URPx67XwFxWKmaFgmNy3k7xpjdqxqH7/dpyj3xDtB7HJjh01gXo+EMoEbPvan/pUh9Mt7j2lR050CmqPOezvX65hYK13ZzoRy1K2diIf6thsYA/3T+/2PUPpiPPTEjhZSqz0Qj1KiWzWvwIRr676WVFUpLNN97S4AFPzmZ0JptKV7CUA0vYs2/Xd5DK0SMELaxar6wkJJQl99+/ruVRc71ZuCODNe2A7vjU/Vrhz2BE4ApebxnORoHk47HKE4764x+D9LxJd4OAy+8PGAR9HNdiWoBt2Zo9+2wYb33nDLl3UgB4+fqJczENaR3ZsUp1Es4FN02k4mD0d+mLzjG+OHkL6iGo9H26XgpXMykUtgOnAw8gvcT6iBUmk9CvzCFeKgysRFdf98GcOwXM3lh8CW0XLAMMtiw4n+7U9ckbFiuXBbiuBMFkKh9CPqlLwavp90s/BVWoD+ifH9IXgboi4uYSzHjZsNLu3qI5L/beNRc0SJNu65Tprw7DPhjAeN7aQA/ouaRkz3a/BH1HhZSkcorrssrFu2/+CisIGGM90WrcpNTma88uQz4bQ7trkXjba70efwHURsNAEOmP8pxG+cRaxzeFN/TmLKXsJYNizQ2LBOP+Nd1YinFk0lzARVYAfkzmMxR/FtHVgx021a24f2D+i3+b6OJoDbfBVnaTUEdMvni9XvOFE8HeQR0NjR1IbBAXadDyK49tUWfep/i336u9aQJtzhp5UwMZnJ+cVjgtmEl4rr8wWv7zWK/Bvkf4/ce1/4woXLW+pRzk8isyXZAH6p+U4UuW71CVAzqKBni47htPK7lq129VszrxooT02m1OeHnkjCV6Wjk9TNoTIcXvYC5aNzQdWh+nWKYAFydcq7FSetnzJ3RZvD7IFMTGpZxLffcRyt5HkgGn2IQ46l650JjwGs/WZ2k5vg/zlD0e5SOTaQXZlWogfhPGd53I/pAzWd7ltdyNn5tO7rJ/Q30N5KOEFoFfTD+aEBeG5vz2ZUSAo4rZiLjK18peIVSVxpWnOVonFGmbTypnAp8DkymuJ3jS4AX0py/dNC66Y8YI31BNucahwWu4FLAxhRrd8v2D1ZdZP//axjSu9Lj3I0G4NZi3DgzlcyFedsAI4ubWkY2o971Lz3ahFFvmx+rDy/lJJ/vW6zYiVBEDJ91/+4jWvowgWxcj3qocjUkX4GG7/+WwnMIpQt+GwR0Ou376a/bxuoroq7tXOKw3DascIwNBc4pzkbUnpGJjkX27xdemuQHaMxOoa/3Cxw3HeeRWbtah+ZoSouzAdnL5joKaJ7nfHJlAxovlklggj7cXkI3qxeD137YTnn0EypyHlCEUyUctc3P7u8x4ofhyya+5cNEvHgVTfM7EfhlDu0bo0bRq1C1Pd8tJAtQo35qPp5zgAk/X/vsomc6VAwW4dVc47Cw1IYVRTbmOZd0rEBd7OnoRuaNwfWJlwY+nLrb/Jyv5j/W45qQJiVSCl7aRws0VCBTCESxrEaXWO+Q+UFVjjpivIJhs7GSzMvPfBJENqyGJUZW2iJecR9+sgG4CF2/e6nCbjqhLt7P0PV8PkxLcy4RTjB0deU8C/lFIpjUrWGZ5DKQxEFDI8otKVbDAs2EkAkvt3cxdAJ61FHfDcXFeCeJa4sKBK/X0VnGGDGyYmDrHOfjpR1muvbtdb88pS+aqTMTjdGH/v4ebbyESUN833zHiliy0mAOeaDLNUXt8cmT+Whg4JXkbmDeG7VL/QfN5ZML6fL99AcS22vOXvO3pwzckTYOK60Ny6y/4evxfsSOzfe4lq9gzpW70K0RDRHJ7TvjxhkLTSFd1zSZUDnr5hzbemmHGa85W7COxduz3gLv+D2v5dqrHtd+NuKCgfmYIfrl8KoTrJuX3L9GELDMxIc7D2tbVwNl4E/oE/8mcg8g7YMKolWoodUr5e8SNJdPKie6/zh/9V9uAWbmFofFvBznmY3nPa61wX+X+mloKpMm6PL6eXT3/C7LmDFyOd7xbH5yNbBbHY/xGfpArYvKTJ6xfROnzbopj75ey+FVJ1gABjMPoY1trPpaGrrZikYdd0PtBLlWd+ngtF+DZoXI5GpNtywclHqicWx7Bcb6Ooc4rGI3h8ZZjHdeoJvxjp3Jh57U1jbPwN/4t3rFSTM8th6HLCf7ZnU/eB91UO3wud/NeIdHXIt/qZJ7+NRPLVRFFXnVUSwqHulyeUOVZd+MGtm7oTvX8ylLdTYq1T9Cn4TuvOvpUrOcnnpi6NrKLQa5KJsNyw6J11IuXzLtmQIVyDMpshCFo+q/THpP125o/NvpxYzREEyZ8u4V1F3u+0xchnfEuF+8g4b4+B3ekm1z8xyKL1LSAbKuQgr2EjoCy5qb+JHa8sTjnS/O5CKuDzaiT7IeqHcwNTrZi/3QvVirgT+j2sMPQKoHtB1pDLWXrPzzm4JM8rBhrbj1y/F5Z1H14AG8C1/2QfeeZfImZmPPidNmLcB7I/HX7HpbgcpRDTQTE8nNzpLplSkFSin6nawPXkUfJH545eLMxluYdEOTEvQpsP/9UNus1/d1HZkzZWTFAhjx7YT/AGudH2ljbHn5mdYVBYfP+8R61EbVBvgVGlCaK43R5IJzUXduOu9M2uj7bVazG0T4DmrbsER4NI855Eq2lDuHoDFP15NfTNq16JaLbGWWLsD/5UddcxWZtauNqFB5rYiXVxWdy/CvdFU2ZqIxZsXurHAzIsv1rqhj695cPaOOFj8VFfTZlJ1fkN/OgRokvRZGpiUqbxn2qC4tqa/c1rkwFf0gTiP/2J9OpHdbn5jmHCO+nbAdw12QJh+WbZ7Ic+xceA6yCsLm6NaSpc7x0NQGoy8c0AQ4CrXrLEG1t2zJBq+gtva5s9MYb+1qPIVVuXbzN7wfkPXhmYxTSW5xi7mymNwKVVw3oXLWMnRr0jEp19qh2tRpwHMTp836jsypgtz8jiK1+UQ+rD/ufm2vUCT6aYlECNsRSiVKiR35w9C1lcOLGaCO6IV6vC6gOJvCKvQHuxBNcLcQZwk6qes138dMqG0yF1boP9cvvdsrnXGxzKB+42Gy5V2CnbNqzk1k1oDWoXm2qoqYV5zBpN/eBarx7Et6oeaVD2sDWvyjEK4me7qbfMp8TUFXLvXFNHIruDEcj3xYCQ3rmqWTPsOYd5Jl4wFjfvOPNmfWZd6jQvkMfcp2Rb2DfybDXrEsdESrdNyFSv516P7HWTv2ii1z27AwUqcZOkdfOGAodegOTuFSsgurnQ5Hixzl0WQc/ggr0M37mZJMWtRf8dU4D+Kvl3IYWjyiPpiIT9WBagSyiW3f4c6wIiIYi0dntB3sZ5oLv1mAqqMt0HQcj0BRe/26AgNGz5vc27ZU+7RLYnL9kntqpazxk3uenL0VNfjWpet8PfoZ1YUtrs6558nZo8isoawY16/fZJ+HvNHj2plk3upSV9xOYcU1MnGR8yrYCJ4Dl+LjBvIaAuuqlX96UYSPa5SPFxD455zWJ5/j16B1yHS0CklrdLPoBIpIV1u1ewQQdrTf8Sb+Gj69uB2d+6JsDfPkT2ia5Ok+91tfNMd7uXPbmPnzoz6P+SreEeJ3+TxeLoymsGykmXgCrSVaaE2HTLyCegt9fTjW2ipgGW7SjJy44pEE4OnXWp3wGz8Hr2PeRHNr9QQOQPec5fWFvnHeZCQEgqnv2LQ3UcP6SRRfxeR1dNP5lagHbVflBjI7EZbg7484ddxMDAKOrKNxvfgVWjnaLz5HkwoeijqBislSOQcNJzoJ78DogkhbhOKJThe9Ho5Fji0lmjDAh+1qSiVKqV1929GbFtRXLIrfvE7NHe/PolpYC/QJ7hbgYXR5OB94u74mmIE9UIP8QHTrhlcw6Q40m+VMNJdSMXFjI0if85xR55/y2L1PvfxNEX13RrXhdKyjdq2+0WQWWPPInna4GK4ic0Dlh9QsG9aKzLX5tuOdFTVfRgFNXX//i8x1QvNhN1QYD0C96ZmW4RvQ79o7wMKRFQPfSJPVNV+OIHMhm8/TCqzHOl6yb5lUfZwUVgmvIaUSocSunnz4j29dVeTEGoJ7qGm0nceuuTWlpevVgmTk8HqC9MoB/tMMFcQt0Qf7hpEVA1f5IJzyJmOZr6d2O+/eUmLXhWMRVNOqpiwhvCKU2tVPtdy67rIesnRXCjq8BPUoxllG4VHkAQEB9UzGdBfnr/nrKIGP4jYsd5UZJ+bh/G2NWnzwVdl+XsVAdza+Svm7R0NMIiAgoDA8MzuGJHYmsC1exy/pPdSjGLO3bfHRsvJew+tjsj6QzmNYaArmgICAesZTYP187bNfGuSyuIaVjM+Ka1riHO2JK0t3f/W7xj3rKzdRoaxEDZ9u/K49FxAQUEdkzZ19+vf/eNpg7kvU8RO3pmVcpbBMf1MS++i79t0uqfNZF0eqllXeILMICAjIm5yS/Z+ybvoojHk1vm2nRiS8S+USobnB/HlVt25vrt27y0F1O/WCSXXFBxpWQMAuQs7VSUyJPcQY5sdz2jl7DRPH5DoRDBxt23zw/QGdH1lzUIdiE4L5TWrRyEBgBQTsIuQssE5aPXtr3w1z+xvD89SwYSVz0iQL+hH3Kl5qlVhf/3BMx1tXHNV1ZzFu78oCayC6QXpX8swGBPhG3pWfj974+s8N3J+0YUnSbZg4QjxlpyBNgdvKy6uXrB/UIVNkc33irtKzCjXE7yoMRrNT9G/oiWTBUH/FIQL+h8gYOJqND5ocfnmJVD+ske8RSohiymxMuWDKRI/lNqZMoNzGKgNKbUyZLLfK7Edj5eaRNk/80BDC4gpgMpoMbyDwRQPMoVCaodkWnsbf1Ll+0ggNyH0DaKj6AAH/R8lbw4pz8Nb/TBXLnASsSdqwkkYscVQt/a9xDPQGoBuYsSFbVmy6rPWMTVe2rPDhPvLhB7SCzKHsZMLKqQSzN5ocL92y70d07l7C6kAyL3PbAD+9uqJf0wzX43M40pnD4WQvTd7IPderK/qF0H13+RQaCKF7yA4b16+fVxVmN13RzJcJnPs6lsyfXzGUAb0JNMeGRUSKen3Mfk2Xlu01cUXp7rKyWXf5rl03WdWlq6zu2UXW7N9J1h7WUdYevZv80L+9/DCwnawb0lbWV7SRDb9oLRsvbSWbrmwpm4c3//7HG5rfv+XWJgcUO59d+HWLiGyRmkwZOxbL1Wakc/5017kpIrJeRHqJyFLn+jHOtS9EZJaI9BeRD1P6vjOlb0RkiIisTmm3RET2SWlni8h4ERktIjtE5DPn/H2SnkM97vswZ55xtorIPSLykIhsdrW70LneW0TmO/8/2rkWEpGbnbm4mTPqgpOauPo40zk/Is081onIp66/73Da7i0i/xSRKle//xaRTh73FLzq6FWwhhVnX/loS48dX4xAONhg3hC3DQuNkDdxTcvUfuiKXmkrIr8Ba/HW25t+s/3upn/dNrHJpVUPlddXsv+dgSbA/Wi9wIvRQgC/GjNGrsjyviqgBM1uUIpmd1zuXNsBdEeLpr6LLtGuQUM7bnIKkcY5C83uUIJmaTgFuAWtpDIXzRgRZztaiedudKd+PHvpbJI5oj5FM4COG3HBwFUZ5t4TzbLQE01MN9iZ/yVoxRh3sYL4ntVbgJ+iiRr/7ZybANzhjHkpyUSOJ97z5OyZFBZrFx/vcbTc/XCgAi2ZdiTwTAF9BhRJrup3VjpXL/kQOHZ1++5niTDRYLqA7QgrGwuDiO3ai6gkrjvbf4wx3UTsbsZwrohF1dTyTZTwnlXKR5TYi01YPgmXRJdzquxKxvJcSK28+wLwPfrje8jjfVVoipEW6DJoo+taBM0F9v/QxIAAjLhg4PMTp81aAtw0bpyZCjBmjNznXB5EMtf6DNSrOhkVFPGg4CgqWK9HM2DEmXN1Rb9/P1g5/yZUeIwFmDgtY92Bm9BUOVeiCQYBXkTtX7OAFSn3CVoQ4RCS+dS7oRWCVqMFSONe4OlohoGfA+cC+WaMjdcELEWXxvFl+DOoAD8eTbT4Rp79BhSBbwIrToe13zwLPLuqZ5dhIbhBYPe4sLKc/Ms16v0hCWFmQcIWJmI7TkfTwjLSX5D+xhjECFEThtkhrBK+kbC93AqbTWLJZquETcBmDNsR7uQwifh9f/XAAajg6YSmrs1mM4lnQr2f2gn6IoA9smLggxMqk0Jj4rRZq9Af3gVjxkh3NN9RN1RDSi0M8SiqNZ3iOifO3CbkckMZMKgwWTeuX79HxsyvUZ92NpqUz60Zxe8ztaLNGU5fD1I7ZOUuZ4xB5C+w4gLqYWrbDB9ABVY/AoFVrxS9JMxEx69WTGn/35V7YLhQYGZiWw8p9f4c22xyg7Vxx3HhpJhPbmJ0OnCWmd0N5mfAqcZwHvqE3YLh8V1QWB2HLtsWozm7BqPG6FzjxFIzUYB+alsy5C36wDnugwpHSF/FphpdnranppH7K4rwVF5d0a8JqhV+kiG1ceqeT/e4bjo7x3Rzfx+dfzEG+KVpzn3gHL0K1AbUAb5rWKm0X/jdNGDaqsGdG5fGYicaoscbY44GORRwbFw4BjUDYicj5k3yeiLOKxHfpRqZiLyGMMeymcVh4nce9PriGHSZ8RpaPupT5/wH1MwomY64vppvzvl4vxtIfg9KMrSNl7l3V6QpKsf9g5Xzt6BCqVWGJiFqehrjD9dUIRkvOJLOm2mhS7r4wyv+qEznwRRyv6d45tONObYP8Ik6F1hxOk5fuQ21yyRqvf14WeujwfQU7D0tY/YUsTsZY1ohdisM7UTYYTAbwd5ojNkA9ncGlgmyzGAtsRpF3+ZIyfQk3pU4Df23uJ6ksALVrvIJD0hH05EVA1un0bKOArix4sRPAMZXvgKwf5r3t0RDJT4nh1JqjctLvYRCKotR+1BXtAZinGZorrJcMlr+1znuT+0incc5x7j2Fa8Ok7pdLOSMuSZN/93TnIvncc9U0j6grmhoN2XwEkTkMVH2c50b6Jz72nUuXVjD3c653mn6fce59mDK+ROd89Nd56aLhivsm9L2Qaftb1znNorI+x73UyUiH+Rw3xVO37NEpLFzrlREnnbOr3S1HeKcuzalj3Kn3TeuPhCRZiLytvOeeFhFB+fvj8b27Rt2tb3BOe8OaxjlnFtyw9ATWrjOtxORL0Vkm4jslsM9Bi8fX3VmwwrIi7nO8WngfNRFX4mmwilmr6Ogy7hz0YIbt6EhDrOArdf98hR3fvsbnLYL0GpDZ6NFO64C5g4b1tvLU5nK28BBqMfvn+iyLB2VqAF7ABrQ+xZaJLcbuhzOxUa2Ay1Q0Q0twnApWlVmERr+cDtqywL1JP4d2G/M/PkfogUhnkDv8UPSLytLxle+shD1eE5FtcKewK2k18gC6pKGlpjBS3ACOMeKPrk3iMhzolrB9SIyx9V2qIi8JsnAUERkmHNu7zR9vy2qDR0oIv8Q5XsReVlE9kzTfg9RTWuF876nReTcNAGmL4nIwx73tJeIvCKqaW0S1Xa8PoOficgfRaRSRC4WkTIR+Vw02DXe5ijnPs/I0Ed/EfmXaADoUhGZ5PSb2m43EZkqyUDQRSMvHPQTERknIs+42sU1rLNF5HeiQalVIvKeqGbY4N+b/8VXwXsJA3YJFqJbfZpna7iT0QjYgoYwnN9AcxiNBsYOQkumBewEBEvCgIYmXb6036PfzefqeS4BOzmBwApoMG6sOLEF6h1cgEbTj0VtXtc6x39keGvA/yj1FtYQ0CC8C6xt6ElkYnzlK5vRysJnoql+StF9jpege/ga0l6xHHU6pEbPBzQg/x8rTW9vX834FQAAAABJRU5ErkJggg==" alt="Changi Airport Group" class="cag-footer-logo-img"></div>
-    <div class="cag-footer-sites">
-      <span class="cag-sites-label">Changi Sites:</span>
-      <nav class="cag-sites-nav">
-        <a href="#">Airport</a>
-        <a href="#" class="active">Corporate</a>
-        <a href="#">Careers</a>
-        <a href="#">CAI</a>
-        <a href="#">Jewel</a>
-        <a href="#">Now Boarding</a>
-      </nav>
-    </div>
-  </div>
-
-  <div class="cag-footer-grid">
-    <div class="cag-footer-col">
-      <p class="cag-col-title">About Us</p>
-      <a href="#">The Changi Airport Story</a>
-      <a href="#">Future Developments</a>
-      <a href="#">Accolades</a>
-      <a href="#">Leadership</a>
-      <a href="#">Business Expertise</a>
-      <a href="#">Air Traffic Statistics</a>
-      <a href="#">Subsidiaries</a>
-      <a href="#">Learning Journeys</a>
-    </div>
-    <div class="cag-footer-col">
-      <p class="cag-col-title">Sustainability</p>
-      <a href="#">Environment</a>
-      <a href="#">Social</a>
-    </div>
-    <div class="cag-footer-col">
-      <p class="cag-col-title">Partnering Us</p>
-      <a href="#">Opportunities</a>
-      <a href="#">Contact Information</a>
-    </div>
-    <div class="cag-footer-col">
-      <p class="cag-col-title">Media Hub</p>
-      <a href="#">Newsroom</a>
-      <a href="#">Publications</a>
-      <a href="#">Image Gallery</a>
-    </div>
-    <div class="cag-footer-col">
-      <p class="cag-col-title">Airport Community</p>
-      <a href="#">ONE Changi Newsletter</a>
-      <a href="#">Changi Service G.E.M</a>
-      <a href="#">Extra Mile Award</a>
-      <a href="#">Annual Airport Celebration</a>
-      <a href="#">Forms and Manuals</a>
-      <a href="#">Hazard Reporting</a>
-    </div>
-    <div class="cag-footer-col">
-      <p class="cag-col-title">Follow Us</p>
-      <div class="cag-social-row">
-        <a href="#" aria-label="Facebook" class="cag-social"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M22 12a10 10 0 1 0-11.6 9.9v-7H7.9V12h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.4h-1.2c-1.2 0-1.6.8-1.6 1.6V12h2.8l-.4 2.9h-2.4v7A10 10 0 0 0 22 12Z"/></svg></a>
-        <a href="#" aria-label="Instagram" class="cag-social"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg></a>
-        <a href="#" aria-label="LinkedIn" class="cag-social"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5ZM3 9h4v12H3V9Zm7 0h3.8v1.7h.05c.53-1 1.83-2 3.76-2 4 0 4.74 2.6 4.74 6V21H18v-5.6c0-1.35-.02-3.1-1.9-3.1-1.9 0-2.2 1.48-2.2 3v5.7H10V9Z"/></svg></a>
-        <a href="#" aria-label="YouTube" class="cag-social"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M22 12s0-3.2-.4-4.6c-.24-.85-.9-1.5-1.75-1.75C18.4 5.2 12 5.2 12 5.2s-6.4 0-7.85.4c-.85.25-1.5.9-1.75 1.75C2 8.8 2 12 2 12s0 3.2.4 4.6c.25.85.9 1.5 1.75 1.75 1.45.45 7.85.45 7.85.45s6.4 0 7.85-.45c.85-.25 1.5-.9 1.75-1.75.4-1.4.4-4.6.4-4.6ZM10 15V9l5.2 3-5.2 3Z"/></svg></a>
-        <a href="#" aria-label="X" class="cag-social"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M3 3h4.6l4 5.6L16.4 3H21l-6.9 8.4L21.4 21h-4.6l-4.3-6-5.1 6H3l7.3-8.7L3 3Z"/></svg></a>
+  <div class="wrap">
+    <div class="cag-footer-top">
+      <img src="images/changi-logo.webp" alt="Changi Airport Group" class="cag-footer-logo" width="126" height="34" loading="lazy">
+      <div class="cag-footer-sites">
+        <span class="cag-sites-label">Changi sites</span>
+        <nav class="cag-sites-nav" aria-label="Changi sites">
+          <a href="#">Airport</a><a href="#" class="active">Corporate</a><a href="#">Careers</a><a href="#">CAI</a><a href="#">Jewel</a><a href="#">Now Boarding</a>
+        </nav>
       </div>
     </div>
-  </div>
 
-  <div class="cag-footer-bottom">
-    <div class="cag-footer-bottom-sites">
-      <a href="#">Airport</a>
-      <a href="#">Corporate</a>
-      <a href="#">Careers</a>
-      <a href="#">CAI</a>
-      <a href="#">Jewel</a>
-      <a href="#">Now Boarding</a>
+    <div class="cag-footer-grid">
+      <div class="cag-col"><p class="cag-col-title">About us</p><a href="#">The Changi Airport Story</a><a href="#">Future Developments</a><a href="#">Accolades</a><a href="#">Leadership</a><a href="#">Business Expertise</a><a href="#">Air Traffic Statistics</a></div>
+      <div class="cag-col"><p class="cag-col-title">Sustainability</p><a href="#">Environment</a><a href="#">Social</a></div>
+      <div class="cag-col"><p class="cag-col-title">Partnering us</p><a href="#">Opportunities</a><a href="#">Contact Information</a></div>
+      <div class="cag-col"><p class="cag-col-title">Media hub</p><a href="#">Newsroom</a><a href="#">Publications</a><a href="#">Image Gallery</a></div>
+      <div class="cag-col"><p class="cag-col-title">Airport community</p><a href="#">ONE Changi Newsletter</a><a href="#">Changi Service G.E.M</a><a href="#">Extra Mile Award</a><a href="#">Forms and Manuals</a></div>
+      <div class="cag-col"><p class="cag-col-title">Follow us</p>
+        <div class="cag-social">
+          <a href="#" aria-label="Facebook"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M22 12a10 10 0 1 0-11.6 9.9v-7H7.9V12h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.4h-1.2c-1.2 0-1.6.8-1.6 1.6V12h2.8l-.4 2.9h-2.4v7A10 10 0 0 0 22 12Z"/></svg></a>
+          <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg></a>
+          <a href="#" aria-label="LinkedIn"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5ZM3 9h4v12H3V9Zm7 0h3.8v1.7h.05c.53-1 1.83-2 3.76-2 4 0 4.74 2.6 4.74 6V21H18v-5.6c0-1.35-.02-3.1-1.9-3.1-1.9 0-2.2 1.48-2.2 3v5.7H10V9Z"/></svg></a>
+          <a href="#" aria-label="YouTube"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M22 12s0-3.2-.4-4.6c-.24-.85-.9-1.5-1.75-1.75C18.4 5.2 12 5.2 12 5.2s-6.4 0-7.85.4c-.85.25-1.5.9-1.75 1.75C2 8.8 2 12 2 12s0 3.2.4 4.6c.25.85.9 1.5 1.75 1.75 1.45.45 7.85.45 7.85.45s6.4 0 7.85-.45c.85-.25 1.5-.9 1.75-1.75.4-1.4.4-4.6.4-4.6ZM10 15V9l5.2 3-5.2 3Z"/></svg></a>
+          <a href="#" aria-label="X"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M3 3h4.6l4 5.6L16.4 3H21l-6.9 8.4L21.4 21h-4.6l-4.3-6-5.1 6H3l7.3-8.7L3 3Z"/></svg></a>
+        </div>
+      </div>
     </div>
-    <div class="cag-footer-legal">
-      <a href="#">Conditions of Use</a>
-      <a href="#">Privacy Policy</a>
-      <a href="#">Vulnerability Disclosure Policy</a>
+
+    <div class="cag-footer-bottom">
+      <nav class="cag-legal" aria-label="Legal"><a href="#">Conditions of Use</a><a href="#">Privacy Policy</a><a href="#">Vulnerability Disclosure Policy</a></nav>
+      <p class="cag-copy">&copy; 2026 Changi Airport</p>
     </div>
-    <p class="cag-footer-copyright">&copy; 2026 Changi Airport</p>
   </div>
 </footer>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script src="script.js"></script>
 </body>
