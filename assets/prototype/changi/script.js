@@ -773,7 +773,7 @@
   function syncTheme() {
     var dark = root.getAttribute("data-theme") === "dark";
     themeBtn.setAttribute("aria-pressed", dark ? "true" : "false");
-    $('meta[name="theme-color"]').setAttribute("content", dark ? "#150d1b" : "#f4eef8");
+    $('meta[name="theme-color"]').setAttribute("content", dark ? "#150d1b" : "#f4f5f7");
   }
   themeBtn.addEventListener("click", function () {
     var dark = root.getAttribute("data-theme") !== "dark";
