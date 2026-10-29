@@ -34,7 +34,13 @@
     var cv = scope.querySelector('.oe-prpd'), x = cv.getContext('2d');
     var countEl = scope.querySelector('[data-count]'), assetEl = scope.querySelector('[data-asset]');
     var tabs = scope.querySelectorAll('[data-tech]');
-    var pts = [], count = 0, tech = TECH.uhf, raf = 0, dpr = fit(cv), start = 0;
+    var pts = [], count = 0, tech = TECH.uhf, raf = 0, dpr = fit(cv), start = 0, ink;
+    /* plot colours come from CSS so the light scope can restyle the canvas */
+    function tone(){
+      var cs = getComputedStyle(cv), v = function(n, d){ return cs.getPropertyValue(n).trim() || d; };
+      ink = { grid: v('--prpd-grid', 'rgba(255,255,255,.06)'), wave: v('--prpd-wave', 'rgba(154,164,179,.55)'), dot: v('--prpd-dot', ORANGE), cursor: v('--prpd-cursor', TEAL) };
+    }
+    tone();
 
     function emit(n, t){
       for(var i = 0; i < n; i++){
@@ -53,19 +59,19 @@
     function draw(t){
       var W = cv.width, H = cv.height, m = H / 2;
       x.clearRect(0, 0, W, H);
-      x.strokeStyle = 'rgba(255,255,255,.06)'; x.lineWidth = 1;
+      x.strokeStyle = ink.grid; x.lineWidth = 1;
       for(var i = 1; i < 4; i++){ x.beginPath(); x.moveTo(W * i / 4, 0); x.lineTo(W * i / 4, H); x.stroke(); }
       x.beginPath(); x.moveTo(0, m); x.lineTo(W, m); x.stroke();
-      x.strokeStyle = 'rgba(154,164,179,.55)'; x.lineWidth = 1.5 * dpr; x.beginPath();
+      x.strokeStyle = ink.wave; x.lineWidth = 1.5 * dpr; x.beginPath();
       for(var k = 0; k <= W; k += 2){ var y = m - Math.sin(k / W * Math.PI * 2) * H * .36; if(k) x.lineTo(k, y); else x.moveTo(k, y); }
       x.stroke();
       var s = 2 * dpr;
       for(var j = 0; j < pts.length; j++){
         var q = pts[j], al = Math.max(.18, 1 - (t - q.t) / 9000);
-        x.fillStyle = 'rgba(' + ORANGE + ',' + al.toFixed(2) + ')';
+        x.fillStyle = 'rgba(' + ink.dot + ',' + al.toFixed(2) + ')';
         x.fillRect(q.p * W, m - q.a * H, s, s);
       }
-      if(!reduced){ x.fillStyle = 'rgba(' + TEAL + ',.9)'; x.fillRect(((t - start) / 2000 % 1) * W, 0, 1.5 * dpr, H); }
+      if(!reduced){ x.fillStyle = 'rgba(' + ink.cursor + ',.9)'; x.fillRect(((t - start) / 2000 % 1) * W, 0, 1.5 * dpr, H); }
       countEl.textContent = count.toLocaleString('en-SG');
     }
     function loop(t){ emit(tech.rate, t); draw(t); raf = requestAnimationFrame(loop); }
@@ -91,7 +97,7 @@
         if(reduced) prefill();
       });
     });
-    window.addEventListener('resize', function(){ dpr = fit(cv); if(reduced) draw(performance.now()); });
+    window.addEventListener('resize', function(){ dpr = fit(cv); tone(); if(reduced) draw(performance.now()); });
     if(reduced) prefill();
     else whenVisible(cv, function(){ start = start || performance.now(); raf = requestAnimationFrame(loop); }, function(){ cancelAnimationFrame(raf); });
   }

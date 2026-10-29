@@ -75,7 +75,7 @@ body.pl-done #preloader{pointer-events:none;}
 @media (prefers-reduced-motion: reduce){.ticker-track{animation:none;}}
 
 /* =============== Nav =============== */
-nav{position:fixed;top:44px;left:0;right:0;z-index:1000;padding:26px 0;transition:background .4s var(--ease), padding .4s var(--ease), border-color .4s var(--ease), top .3s var(--ease);border-bottom:1px solid transparent;}
+nav{position:fixed;top:44px;left:0;right:0;z-index:1000;padding:26px 0;transition:background .4s var(--ease), padding .4s var(--ease), border-color .4s var(--ease);border-bottom:1px solid transparent;}
 nav.scrolled{background:rgba(250,249,246,.88);backdrop-filter:blur(10px);padding:16px 0;border-color:var(--line);}
 nav.scrolled.on-dark{background:rgba(10,18,32,.82);border-color:var(--line-dark);}
 nav .wrap{display:flex;align-items:center;justify-content:space-between;gap:24px;}
@@ -97,14 +97,17 @@ nav.on-dark .navlinks a:hover,nav.on-dark .navlinks a.active{color:#fff;}
 /* =============== Mobile nav: hamburger + slide-in menu =============== */
 .navburger{display:none;width:34px;height:34px;border:none;background:none;padding:0;cursor:pointer;position:relative;z-index:1001;flex-shrink:0;}
 .navburger span{display:block;position:absolute;left:5px;right:5px;height:2px;background:var(--ink);border-radius:2px;transition:transform .32s var(--ease),opacity .2s var(--ease),background .3s;}
-.navburger span:nth-child(1){top:11px;}
-.navburger span:nth-child(2){top:18px;}
-.navburger span:nth-child(3){top:25px;}
+.navburger span:nth-child(1){top:9px;}
+.navburger span:nth-child(2){top:16px;}
+.navburger span:nth-child(3){top:23px;}
 nav.on-dark .navburger span{background:#fff;}
 body.menu-open .navburger span{background:var(--ink) !important;}
-body.menu-open .navburger span:nth-child(1){top:18px;transform:rotate(45deg);}
+body.menu-open .logo{color:var(--ink) !important;}
+body.menu-open nav{background:transparent;border-color:transparent;}
+body.menu-open .preview-banner{z-index:1002;}
+body.menu-open .navburger span:nth-child(1){top:16px;transform:rotate(45deg);}
 body.menu-open .navburger span:nth-child(2){opacity:0;}
-body.menu-open .navburger span:nth-child(3){top:18px;transform:rotate(-45deg);}
+body.menu-open .navburger span:nth-child(3){top:16px;transform:rotate(-45deg);}
 @media(max-width:980px){.navburger{display:block;}.nav-right .btn-line{display:none;}}
 
 .mobilemenu{position:fixed;inset:0;z-index:999;background:var(--paper);display:flex;flex-direction:column;justify-content:center;padding:40px 32px;transform:translateY(-100%);transition:transform .5s var(--ease);visibility:hidden;}

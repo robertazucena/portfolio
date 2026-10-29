@@ -19,7 +19,9 @@
     document.body.classList.add('pl-done');
     pl.style.transition = 'transform .75s var(--ease)';
     pl.style.transform = 'translateY(-100%)';
-    setTimeout(function(){ pl.style.display='none'; runEntrance(); }, 780);
+    /* start the sequence while the cover is still lifting, so items arrive as it clears */
+    setTimeout(runEntrance, 520);
+    setTimeout(function(){ pl.style.display='none'; }, 780);
   }
   if(pl){
     if(!reduced){
@@ -43,12 +45,22 @@
   }
 
   /* ---------- hero / section entrance ---------- */
+  /* every item in a page header joins the sequence, not just the h1 and lead */
+  document.querySelectorAll('.pagehead .wrap > *').forEach(function(el){ el.classList.add('entrance'); });
+  var entered = false;
   function runEntrance(){
-    document.querySelectorAll('.entrance').forEach(function(el, i){
-      setTimeout(function(){ el.classList.add('in'); }, i*90);
+    if(entered) return;
+    entered = true;
+    var seq = Array.prototype.slice.call(document.querySelectorAll('.entrance'));
+    /* reveals already on screen follow the header one by one instead of appearing under the cover */
+    document.querySelectorAll('.reveal, .reveal-scale').forEach(function(el){
+      var r = el.getBoundingClientRect();
+      if(!el.classList.contains('in') && r.top < window.innerHeight && r.bottom > 0){ seq.push(el); io.unobserve(el); }
+    });
+    seq.forEach(function(el, i){
+      setTimeout(function(){ el.classList.add('in'); }, i*120);
     });
   }
-  if(!pl || pl.style.display === 'none'){ runEntrance(); }
 
   /* ---------- page wipe transition ---------- */
   var wipe = document.getElementById('pagewipe');
@@ -167,9 +179,11 @@
 
   /* ---------- scroll reveals ---------- */
   var io = new IntersectionObserver(function(entries){
-    entries.forEach(function(en){ if(en.isIntersecting){ en.target.classList.add('in'); io.unobserve(en.target); } });
+    /* before the entrance runs, on-screen reveals wait for the sequence */
+    entries.forEach(function(en){ if(en.isIntersecting && entered){ en.target.classList.add('in'); io.unobserve(en.target); } });
   }, {threshold:0.16});
   document.querySelectorAll('.reveal, .reveal-scale').forEach(function(el){ io.observe(el); });
+  if(!pl || pl.style.display === 'none'){ runEntrance(); }
 
   /* ---------- expertise row image peek ---------- */
   var peek = document.getElementById('xpeek');
