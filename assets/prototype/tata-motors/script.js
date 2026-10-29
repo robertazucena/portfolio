@@ -106,7 +106,7 @@
       { data: ["TPMS readings from the Lucknow fleet"], oci: ["Anomaly Detection"] })
   ];
   var BY_ID = Object.create(null); ASSETS.forEach(function (a) { BY_ID[a.id] = a; });
-  var AVATAR = { "Priya Sharma": "av-47", "Arjun Mehta": "av-12", "Vikram Patel": "av-33", "Sneha Iyer": "av-44", "Rayven Weathers": "av-15", "Rajiv Sharma": "av-45" };
+  var AVATAR = { "Priya Sharma": "av-47", "Arjun Mehta": "av-12", "Vikram Patel": "av-33", "Sneha Iyer": "av-44", "Rayven Weathers": "av-15", "Eugene Sharma": "av-45" };
   var PROJECTS = [
     { name: "EV Battery Cost Optimization", desc: "4 scenario models minimising cobalt per pack.", state: "In Progress", stage: "Model training", pct: 72, due: "2026-11-24", team: ["Priya Sharma", "Arjun Mehta", "Sneha Iyer"], asset: "cobalt-optimizer" },
     { name: "Supply Chain Risk Assessment", desc: "Semiconductor dependency mapping for the Pune pipeline.", state: "In Progress", stage: "Data validation", pct: 45, due: "2026-12-02", team: ["Vikram Patel", "Rayven Weathers"], asset: "supplier-risk" },
@@ -481,7 +481,7 @@
   var PAGES = {};
 
   PAGES.home = function () {
-    $("#greet").textContent = greet() + ", Rajiv";
+    $("#greet").textContent = greet() + ", Eugene";
     var form = $("#askForm"), field = $("#ask"), card = $("#answer"), current;
     function ask(q) {
       q = q.trim(); if (!q) { field.focus(); return; }
@@ -842,7 +842,7 @@
       e.preventDefault();
       var name = $("#pName"), due = $("#pDue");
       if (!check([[name, $("#pNameErr"), name.value.trim().length < 4, "Give the project a name of at least 4 characters."], [due, $("#pDueErr"), !due.value || due.value < today(), "Choose a due date from today onwards."]])) return;
-      projects.unshift({ name: name.value.trim(), desc: "New project · owned by Rajiv Sharma", state: "In Progress", stage: $("#pStage").value.trim() || "Kick-off", pct: 5, due: due.value, team: ["Rajiv Sharma"], asset: $("#pAsset").value });
+      projects.unshift({ name: name.value.trim(), desc: "New project · owned by Eugene Sharma", state: "In Progress", stage: $("#pStage").value.trim() || "Kick-off", pct: 5, due: due.value, team: ["Eugene Sharma"], asset: $("#pAsset").value });
       form.reset(); close();
       $('#projFilters [data-f="All"]').click(); counts();
       toast("Project created. It's at the top of the list.");
