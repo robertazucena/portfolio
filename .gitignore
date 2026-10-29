@@ -8,3 +8,9 @@
 .agents/
 .claude/
 skills-lock.json
+
+# Design-skill briefs kept next to each prototype, not published
+assets/prototype/*/PRODUCT.md
+assets/prototype/*/DESIGN.md
+.impeccable/
+.taste-skill/
