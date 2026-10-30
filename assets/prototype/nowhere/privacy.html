@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta name="robots" content="noindex, nofollow">
+<script src="frame-top.js"></script>
+<meta charset="UTF-8">
+<style>/* page transitions: opted in here, first thing, so the next page is never revealed before the browser has read it */@view-transition{navigation:auto}</style>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#FAF8F3">
+<title>Nowhere | Privacy</title>
+<meta name="description" content="What Nowhere stores, what agents can see, the services it uses, and how to clear your data.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Bodoni:ital,wght@0,400..700;1,400..700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="foot.css">
+<link rel="stylesheet" href="info.css">
+<link rel="stylesheet" href="veil.css">
+</head>
+<body class="pg info">
+<script src="veil.js"></script>
+<a class="skip" href="#main">Skip to content</a>
+<header class="top">
+  <a class="brand" href="index.html" aria-label="Nowhere, home">
+    <svg class="brand-mark"><use href="#i-logo"/></svg>
+    <span class="brand-name">Nowhere</span>
+    <span class="brand-langs" lang="mul">家 · Rumah · வீடு</span>
+  </a>
+  <nav class="top-nav" aria-label="Main">
+    <a class="tn" href="find.html">Find a home</a>
+    <a class="tn" href="shortlist.html">Shortlist <span class="tn-count" data-saved>0</span></a>
+    <a class="tn" href="viewings.html">Viewings <span class="tn-count" data-viewings hidden>0</span></a>
+  </nav>
+  <a class="mode" href="agent.html">For agents &amp; owners</a>
+  <span class="avatar" aria-label="Signed in as Robert">RA</span>
+</header>
+
+<main id="main">
+  <header class="in pg-head">
+    <h1 class="in-h1 rv">Your data stays here</h1>
+    <div class="rv"><p class="in-lede" style="margin-top:0">Nowhere has no server and no accounts. Everything you enter is kept in this browser, on this device.</p><time datetime="2026-10-30">Last updated 30 October 2026</time></div>
+  </header>
+  <div class="in pg-body">
+    <aside class="pg-side"><nav class="lg-toc rv" aria-label="On this page"><a href="#device">On this device now</a><a href="#keep">What we keep</a><a href="#see">What agents and owners see</a><a href="#services">Services we use</a><a href="#tracking">No tracking</a></nav></aside>
+    <div class="lg-text">
+      <section id="device"><h2>On this device now</h2><p>Read straight from this browser's storage. Nothing here has left your device.</p>
+        <div class="pv-ledger" data-ledger>
+          <dl>
+            <div><dt>Places pinned</dt><dd data-n="places">0</dd></div>
+            <div><dt>Homes shortlisted</dt><dd data-n="saved">0</dd></div>
+            <div><dt>Viewing requests</dt><dd data-n="viewings">0</dd></div>
+            <div><dt>Messages</dt><dd data-n="messages">0</dd></div>
+            <div><dt>Offers</dt><dd data-n="offers">0</dd></div>
+            <div><dt>Homes you listed</dt><dd data-n="listings">0</dd></div>
+          </dl>
+          <div class="pv-row"><button type="button" class="pv-clear" data-clear>Clear my data on this device</button><p class="pv-done" role="status" data-clear-done></p></div>
+        </div></section>
+      <section id="keep"><h2>What we keep</h2><p>Your places, income, CPF and cash figures, shortlist, viewing requests, messages and offers. They're saved in your browser's local storage on this device only, and never sent anywhere.</p></section>
+      <section id="see"><h2>What agents and owners see</h2><p>When you book a viewing you choose whether to share your fit summary: your places, travel times and fit score. They see your name, your message and any offer you send.</p><p>They never see your income, CPF or savings.</p></section>
+      <section id="services"><h2>Services we use</h2><p>Map tiles and address search come from OneMap by the Singapore Land Authority, which receives the map area you view and any address you search. Fonts load from Google Fonts and the map library from cdnjs. None of them receive what you type into Nowhere.</p></section>
+      <section id="tracking"><h2>No tracking</h2><p>No analytics, no advertising cookies, no tracking pixels.</p></section>
+    </div>
+  </div>
+</main>
+<section class="in-close" aria-labelledby="close-h"><div class="in">
+    <div><h2 class="in-h2 rv" id="close-h">Want the full picture?</h2><p class="in-muted rv">Nowhere is a design concept. Everything here shows how a live service would work.</p></div>
+    <div class="in-acts rv"><a class="in-btn" href="terms.html">Read the terms</a><a class="in-btn ghost" href="find.html">Find homes that fit</a></div>
+  </div></section>
+<footer class="foot"><div class="foot-in">
+ <div class="foot-brand"><a class="foot-logo" href="index.html">NOWHERE</a><p>Find a home by the life you live.</p><a class="foot-cta" href="find.html">Rank homes for your week<svg aria-hidden="true" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a></div>
+ 
+  <nav class="foot-cols" aria-label="Footer">
+    <div class="foot-col"><p>Find</p><a href="find.html">Find a home</a><a href="shortlist.html">Shortlist</a><a href="viewings.html">Viewings</a></div>
+    <div class="foot-col"><p>For agents &amp; owners</p><a href="agent.html">Workspace</a><a href="list.html">List a home</a></div>
+    <div class="foot-col"><p>Nowhere</p><a href="about.html">About</a><a href="faq.html">FAQs</a></div>
+    <div class="foot-col"><p>The small print</p><a href="terms.html">Terms</a><a href="privacy.html" aria-current="page">Privacy</a></div>
+  </nav>
+  <p class="foot-legal"><span>© 2026 Nowhere. A self-initiated concept by Robert Azucena.</span><span>Listings, people, prices and travel times are samples. Map data from OneMap, Singapore Land Authority. Photographs from Unsplash.</span></p>
+</div></footer>
+<script src="core.js"></script>
+<script src="ui.js"></script>
+<script src="info.js"></script>
+</body>
+</html>

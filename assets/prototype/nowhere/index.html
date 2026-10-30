@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta name="robots" content="noindex, nofollow">
+<script src="frame-top.js"></script>
+<meta charset="UTF-8">
+<style>/* page transitions: opted in here, first thing, so the next page is never revealed before the browser has read it */@view-transition{navigation:auto}</style>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#FAF8F3">
+<title>Nowhere | Homes ranked by your week</title>
+<meta name="description" content="Nowhere, a concept Singapore property platform. Say where your week happens and every home is ranked by door-to-door minutes and the cash you pay after CPF.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Bodoni:ital,wght@0,400..700;1,400..700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="foot.css">
+<link rel="stylesheet" href="landing.css">
+<link rel="stylesheet" href="veil.css">
+</head>
+<body class="pg">
+<script src="veil.js"></script>
+<a class="skip" href="#main">Skip to content</a>
+<header class="top">
+  <a class="brand" href="index.html" aria-label="Nowhere, home">
+    <svg class="brand-mark"><use href="#i-logo"/></svg>
+    <span class="brand-name">Nowhere</span>
+    <span class="brand-langs" lang="mul">家 · Rumah · வீடு</span>
+  </a>
+  <nav class="top-nav" aria-label="Main">
+    <a class="tn" href="find.html">Find a home</a>
+    <a class="tn" href="shortlist.html">Shortlist <span class="tn-count" data-saved>0</span></a>
+    <a class="tn" href="viewings.html">Viewings <span class="tn-count" data-viewings hidden>0</span></a>
+  </nav>
+  <a class="mode" href="agent.html">For agents &amp; owners</a>
+  <span class="avatar" aria-label="Signed in as Robert">RA</span>
+</header>
+
+<main id="main" class="ld">
+  <header class="ld-hero">
+    <div class="ld-frame">
+      <div class="ld-slides" data-slides>
+        <figure class="ld-photo is-on" data-room="Living room"><img src="images/wt-1-living.webp" alt="A calm living room, a deep green sofa on a pale rug beside tall windows" width="2400" height="1200" fetchpriority="high"></figure>
+        <figure class="ld-photo" data-room="Kitchen"><img src="images/wt-2-kitchen.webp" alt="A modern kitchen in grey stone and warm wood, its island lit from below" width="2400" height="1200" decoding="async"></figure>
+        <figure class="ld-photo" data-room="Bedroom"><img src="images/wt-3-bedroom.webp" alt="A calm bedroom with a low bed and a wide window onto the garden" width="2400" height="1200" decoding="async"></figure>
+        <figure class="ld-photo" data-room="The balcony"><img src="images/wt-4-balcony.webp" alt="A balcony at dusk with a hanging chair, a lawn and the city beyond" width="2400" height="1200" decoding="async"></figure>
+      </div>
+      <div class="ld-sl" role="group" aria-label="A walk through a home">
+        <span class="ld-sl-n" aria-hidden="true"><span data-sl-n>01 / 04</span><b data-sl-t>Living room</b></span>
+        <div class="ld-sl-bar">
+          <button type="button" data-slide="0" aria-label="Living room, 1 of 4" aria-current="true"><i></i></button>
+          <button type="button" data-slide="1" aria-label="Kitchen, 2 of 4" aria-current="false"><i></i></button>
+          <button type="button" data-slide="2" aria-label="Bedroom, 3 of 4" aria-current="false"><i></i></button>
+          <button type="button" data-slide="3" aria-label="The balcony, 4 of 4" aria-current="false"><i></i></button>
+        </div>
+        <button type="button" class="ld-sl-pp" data-sl-pp aria-label="Pause the photos"><svg viewBox="0 0 24 24" aria-hidden="true"><path data-sl-icon d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z" fill="currentColor"/></svg></button>
+      </div>
+      <h1 class="ld-h1">Homes, ranked by your week</h1>
+      <p class="ld-lede">Every listing site sorts by price. We sort by the minutes in your week.</p>
+      <aside class="ld-stat rv" aria-label="Your results" aria-live="polite">
+        <p class="ld-count"><b data-n>0</b><span>homes fit your week well</span></p>
+        <ol class="ld-top3" data-top aria-label="Your top three homes"></ol>
+      </aside>
+    </div>
+    <fieldset class="ld-search rv" data-week>
+      <legend class="sr-only">Where your week happens</legend>
+      <label class="ld-f" style="--c:var(--office)"><span class="ld-k" title="I work in"><i aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 8h16v11H4zM9 8V5h6v3M4 13h16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></i><span class="sr-only">I work in</span></span><select data-work></select></label>
+      <div class="ld-f" data-clause="parents" style="--c:var(--parents)">
+        <label class="ld-k" for="ld-par" title="My parents live in"><i aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 11l8-7 8 7M6 9.5V20h12V9.5M10 20v-5h4v5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></i><span class="sr-only">My parents live in</span></label>
+        <span class="ld-two"><select id="ld-par" data-parents></select><select data-freq aria-label="How often you visit"><option value="weekly">Weekly</option><option value="daily">Daily</option></select></span>
+        <button type="button" class="ld-x" data-drop="parents" aria-label="Leave out visits to your parents"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="m7 7 10 10M17 7 7 17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+      </div>
+      <button type="button" class="ld-f ld-add" data-add="parents" style="--c:var(--parents)"><span class="ld-k"><i aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 11l8-7 8 7M6 9.5V20h12V9.5M10 20v-5h4v5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></i><span class="sr-only">Parents</span></span><span class="ld-add-t">+ Add parents nearby</span></button>
+      <div class="ld-f" data-clause="school" style="--c:var(--school)">
+        <label class="ld-k" for="ld-sch" title="The school run to"><i aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M2 9l10-5 10 5-10 5zM6 11v5c0 1.5 3 3 6 3s6-1.5 6-3v-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></i><span class="sr-only">The school run to</span></label>
+        <select id="ld-sch" data-school></select>
+        <button type="button" class="ld-x" data-drop="school" aria-label="Leave out the school run"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="m7 7 10 10M17 7 7 17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+      </div>
+      <button type="button" class="ld-f ld-add" data-add="school" style="--c:var(--school)"><span class="ld-k"><i aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M2 9l10-5 10 5-10 5zM6 11v5c0 1.5 3 3 6 3s6-1.5 6-3v-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></i><span class="sr-only">School</span></span><span class="ld-add-t">+ Add a school run</span></button>
+      <a class="ld-go" href="find.html" data-go><span>See all <span data-count>0</span></span> <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+    </fieldset>
+    <p class="ld-note rv"><span data-ok>0 more are</span> workable. Ranked on <span data-basis>your commute</span>. Sample income of $9,800 a month.</p>
+  </header>
+
+  <section class="ld-sec ld-w" id="cost" aria-labelledby="cost-h">
+    <div class="ld-head"><h2 class="ld-h2 rv" id="cost-h">The cheaper home can cost you days</h2><p class="rv">Two homes from your list right now. One looks better on price. The other gives you your evenings back.</p></div>
+    <div class="ld-vs rv" data-vs></div>
+  </section>
+
+  <section class="ld-sec" aria-labelledby="reel-h">
+    <div class="ld-w ld-head"><h2 class="ld-h2 rv" id="reel-h">Your top twelve, in order</h2><div class="ld-reel-nav rv"><a class="ld-reel-all" href="find.html" data-go>See all <b data-n2></b><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a><button type="button" data-reel-go="-1" aria-label="Previous homes"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="m9 5 7 7-7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button><button type="button" data-reel-go="1" aria-label="More homes"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="m9 5 7 7-7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div></div>
+    <ul class="ld-reel rv" data-reel aria-label="Homes ranked for your week"></ul>
+    <div class="ld-w ld-reel-foot rv" aria-hidden="true"><span class="ld-reel-bar"><i data-reel-bar></i></span><ol class="ld-reel-num" data-reel-num></ol></div>
+  </section>
+
+  <section class="ld-sec ld-w" aria-labelledby="path-h">
+    <div class="ld-head"><h2 class="ld-h2 rv" id="path-h">From your week to your keys</h2><p class="rv">The whole way, in one place. Talk to the agent or owner, follow every step, and know what comes next.</p></div>
+    <ol class="ld-path">
+      <li class="ld-step"><div class="ld-node" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 21s-6-5.5-6-11a6 6 0 0 1 12 0c0 5.5-6 11-6 11zM12 12.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="ld-step-c"><small>Step 01</small><h3>Pin your places</h3><p>Work, your parents, the school run, and how often you go.</p></div></li>
+      <li class="ld-step"><div class="ld-node" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 20V11M10 20V5M16 20v-6M2.5 20h19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="ld-step-c"><small>Step 02</small><h3>See homes in order</h3><p>Every home scored for your week and your budget.</p></div></li>
+      <li class="ld-step"><div class="ld-node" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 6h16v14H4zM4 10h16M8 3.5v4M16 3.5v4M8.5 14.5l2 2 4-4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="ld-step-c"><small>Step 03</small><h3>Book a viewing</h3><p>Pick a time. The agent replies right here, not in five apps.</p></div></li>
+      <li class="ld-step"><div class="ld-node" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M20.5 3.5 10 14M20.5 3.5 14 20.5l-4-6.5-6.5-4z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="ld-step-c"><small>Step 04</small><h3>Make an offer</h3><p>See what you'd pay each month before you send it.</p></div></li>
+      <li class="ld-step"><div class="ld-node" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 3h7l5 5v13H7zM14 3v5h5M10 13h6M10 17h4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="ld-step-c"><small>Step 05</small><h3>Option to Purchase</h3><p>Fees, dates and deadlines, laid out step by step.</p></div></li>
+      <li class="ld-step"><div class="ld-node" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M2.5 15.5a5 5 0 1 0 10 0 5 5 0 1 0-10 0M11.2 12 20.5 2.7M16 7.2l2.8 2.8M18.6 4.6l2 2" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="ld-step-c"><small>Step 06</small><h3>Collect your keys</h3><p>Every step ticked off, from first viewing to move-in.</p></div></li>
+    </ol>
+  </section>
+
+  <section class="ld-rv ld-sec" aria-labelledby="rv-h">
+    <div class="ld-w ld-rv-w">
+      <h2 class="ld-rv-label" id="rv-h">Reviews</h2>
+      <div class="ld-rv-stage" data-rv>
+        <span class="ld-rv-slot is-prev" aria-hidden="true"></span>
+        <span class="ld-rv-slot is-main" aria-hidden="true"></span>
+        <div class="ld-rv-text">
+          <div class="ld-rv-copy" aria-live="polite" data-rv-copy></div>
+          <div class="ld-rv-queue"><span class="ld-rv-slot is-q" aria-hidden="true"></span><span class="ld-rv-slot is-q" aria-hidden="true"></span><span class="ld-rv-slot is-q" aria-hidden="true"></span></div>
+        </div>
+        <ul class="ld-rv-people" data-rv-people></ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="ld-end" aria-labelledby="end-h">
+    <img src="images/wt-4-view.webp" alt="" loading="lazy">
+    <div class="ld-w">
+      <div><h2 class="ld-h2 rv" id="end-h">Your week is already written</h2><p class="rv">Find the home that fits it. <span data-count>0</span> sample homes are ranked and waiting.</p></div>
+      <a class="ld-btn brass rv" href="find.html" data-go>Open the marketplace <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+    </div>
+  </section>
+</main>
+<footer class="foot"><div class="foot-in">
+ <div class="foot-brand"><a class="foot-logo" href="index.html">NOWHERE</a><p>Find a home by the life you live.</p><a class="foot-cta" href="find.html">Rank homes for your week<svg aria-hidden="true" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a></div>
+ 
+  <nav class="foot-cols" aria-label="Footer">
+    <div class="foot-col"><p>Find</p><a href="find.html">Find a home</a><a href="shortlist.html" aria-current="page">Shortlist</a><a href="viewings.html">Viewings</a></div>
+    <div class="foot-col"><p>For agents &amp; owners</p><a href="agent.html">Workspace</a><a href="list.html">List a home</a></div>
+    <div class="foot-col"><p>Nowhere</p><a href="about.html">About</a><a href="faq.html">FAQs</a></div>
+    <div class="foot-col"><p>The small print</p><a href="terms.html">Terms</a><a href="privacy.html">Privacy</a></div>
+  </nav>
+  <p class="foot-legal"><span>© 2026 Nowhere. A self-initiated concept by Robert Azucena.</span><span>Listings, people, prices and travel times are samples. Map data from OneMap, Singapore Land Authority. Photographs from Unsplash.</span></p>
+</div></footer>
+<script src="core.js"></script>
+<script src="ui.js"></script>
+<script src="landing.js"></script>
+</body>
+</html>
