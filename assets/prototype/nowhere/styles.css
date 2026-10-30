@@ -661,3 +661,6 @@ h1, h2, .h1, .h2, .ch-h, .res-head h2, .life h1 { font-weight: 400 !important; l
 .mrt.is-own em { left: 30px; }
 /* zoomed in, the OneMap tiles already print station names, so ours stay quiet except the home's own */
 .mrt-names .mrt:not(.is-own) em { display: none; }
+
+/* headings and panels that the script moves focus to (so screen readers announce them) are not controls: no ring */
+[tabindex="-1"]:focus { outline: none; }

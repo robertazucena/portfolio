@@ -126,7 +126,8 @@
         { id: 3, role: "school", place: "Catholic High School", freq: "daily" }
       ].map(function (a) { var p = ROLES[a.role].places[a.place]; a.lat = p[0]; a.lng = p[1]; return a; }),
       money: { income: 9800, cpf: 82000, cash: 60000, buyer: "couple" },
-      saved: {}, published: [], status: {}, enquiries: [], offers: [], buyerSeeded: false, uid: 100, me: "priya"
+      // three sample homes already saved, so a first visit shows the shortlist doing its job
+      saved: { 1: 1, 2: 1, 3: 1 }, published: [], status: {}, enquiries: [], offers: [], buyerSeeded: false, uid: 100, me: "priya"
     };
   }
   function load() {
