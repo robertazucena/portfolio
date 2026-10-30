@@ -16,9 +16,11 @@
   function page(u) { var f = (u.pathname.split("/").pop() || "index.html"); return PAGES.indexOf(f) > -1 ? f : null; }
   function esc(t) { return String(t).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
 
+  // inside another page (the portfolio's case study) the host has its own loader, so this one stays out of the way
+  var framed = true; try { framed = window.self !== window.top; } catch (e) {}
   var arriving = read(KEY), first = !read(KEY + ":seen");
-  store(KEY); store(KEY + ":seen", "1");
-  var full = first && !still;
+  store(KEY); if (!framed) store(KEY + ":seen", "1");
+  var full = first && !still && !framed;
 
   /* ---------- the headline: lines rise from behind their own masks ---------- */
   // Split the first heading into its rendered lines, rise them one after another, then put the
@@ -91,7 +93,7 @@
     };
     var loaded = document.readyState === "complete", t0 = performance.now(), done = false, p = 0, MIN = 2200, CAP = 6000;
     addEventListener("load", function () { loaded = true; });
-    requestAnimationFrame(function () { v.classList.add("is-in"); });
+    setTimeout(function () { v.classList.add("is-in"); }, 16);
     A.forEach(function (a, i) { setTimeout(function () { say("<small>" + ROLE[a.role] + "</small>" + esc(a.place)); }, 120 + i * (MIN - 700) / A.length); });
     setTimeout(function () { say("Homes, ranked by your week"); }, MIN - 520);
 
@@ -104,7 +106,7 @@
       arc.style.strokeDashoffset = (100 - p * 100).toFixed(2);
       pct.textContent = Math.round(p * 100);
       if (p === 1) { lift(); return; }
-      requestAnimationFrame(tick);
+      setTimeout(tick, 16); // a timer, not a frame: frames pause in a page that is not being drawn
     };
     // done: the ring and the name lift away, the dark slides up, and the headline rises behind it
     var lift = function () {
@@ -115,7 +117,7 @@
         setTimeout(function () { v.remove(); }, 1300);
       }, 160);
     };
-    requestAnimationFrame(tick);
+    setTimeout(tick, 16);
   } else if (!native && !arriving) {
     rise(60);
   }
@@ -151,10 +153,10 @@
       wait = setTimeout(function () {
         if (!loader) { loader = document.createElement("div"); loader.className = "vt-load"; loader.setAttribute("role", "status"); loader.innerHTML = '<i aria-hidden="true"></i><span class="sr-only">Loading</span>'; document.body.appendChild(loader); }
         void loader.offsetWidth; loader.classList.add("is-on");
-        wait = setTimeout(done, 10000); // the navigation was stopped: don't leave it spinning
+        wait = setTimeout(unload, 10000); // the navigation was stopped: don't leave it spinning
       }, 280);
     };
-    var done = function () { clearTimeout(wait); if (loader) { loader.remove(); loader = null; } };
+    var unload = function () { clearTimeout(wait); if (loader) { loader.remove(); loader = null; } };
     if (window.navigation) {
       navigation.addEventListener("navigate", function (e) {
         if (e.hashChange || e.downloadRequest || e.navigationType === "reload" || e.destination.sameDocument) return;
@@ -163,8 +165,8 @@
         loading();
       });
     }
-    addEventListener("pageswap", done);
-    addEventListener("pagehide", done);
+    addEventListener("pageswap", unload);
+    addEventListener("pagehide", unload);
   }
 
   // back/forward from the cache: put this page back as it was
