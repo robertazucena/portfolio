@@ -37,14 +37,19 @@
     ];
   }
 
+  function vs(v) {
+    var d = h.price - v, off = Math.abs(d) / h.price * 100;
+    return Math.abs(d) < 500 ? "At the asking price" : fmt(Math.abs(d)) + " (" + off.toFixed(1) + "%) " + (d > 0 ? "below" : "above") + " asking";
+  }
+  // what the offer means for you, read top to bottom: the price, what goes out upfront, and what's left to pay each month
   function moneyHtml(v) {
-    var m = cost(v), off = (h.price - v) / h.price * 100;
+    var m = cost(v);
     return '<dl class="of-sum">' +
-      '<div><dt>Your offer</dt><dd><b>' + fmt(v) + "</b><small>" + (Math.abs(off) < 0.05 ? "the asking price" : Math.abs(off).toFixed(1) + "% " + (off > 0 ? "below" : "above") + " asking") + "</small></dd></div>" +
+      "<div><dt>Offer price</dt><dd><b>" + fmt(v) + "</b><small>" + vs(v) + "</small></dd></div>" +
       "<div><dt>Stamp duty</dt><dd><b>" + fmt(m.duty) + "</b><small>CPF or cash</small></dd></div>" +
-      "<div><dt>Paid upfront</dt><dd><b>" + fmt(m.upfront) + "</b><small>from your CPF and cash" + (m.gt ? ", after " + AH.short(m.gt) + " in grants" : "") + "</small></dd></div>" +
-      "<div><dt>Cash a month</dt><dd><b>" + (m.over ? "Over budget" : fmt(m.cash)) + "</b><small>" + (m.over ? "above your loan limit or savings" : "after CPF covers " + fmt(m.cpfPays)) + "</small></dd></div></dl>" +
-      (h.public ? '<p class="of-note">HDB values the flat after the OTP. Anything you pay above that value is Cash Over Valuation: cash only, no CPF or loan.</p>' : "");
+      "<div><dt>Paid upfront</dt><dd><b>" + fmt(m.upfront) + "</b><small>From your CPF and cash" + (m.gt ? ", after " + AH.short(m.gt) + " in grants" : "") + "</small></dd></div>" +
+      '<div class="of-big"><dt>Cash a month</dt><dd><b>' + (m.over ? "Over budget" : fmt(m.cash)) + "</b><small>" + (m.over ? "Above your loan limit or savings" : "After CPF covers " + fmt(m.cpfPays)) + "</small></dd></div></dl>" +
+      (h.public ? '<p class="of-note">HDB values the flat after the OTP. Anything above that value is Cash Over Valuation: cash only, no CPF or loan.</p>' : "");
   }
 
   function timeline(o, m, v) {
@@ -54,8 +59,8 @@
       var ts = base + s[0] * DAY; while (i && /^(0|6)$/.test(new Date(ts).getDay())) ts += DAY; // paperwork lands on working days
       return '<li class="tl-i' + (st ? " is-" + st : "") + '"><span class="tl-dot" aria-hidden="true">' + (st === "done" ? '<svg><use href="#i-check"/></svg>' : "") + "</span>" +
         '<div class="tl-b"><p class="tl-d">' + (st === "done" ? '<span class="sr-only">Done: </span>' : "") + "Day " + Math.round((ts - base) / DAY) + " · " + day(ts) + "</p><h3>" + s[1] + "</h3><p>" + s[2] + "</p>" +
-        (s[3] ? '<p class="tl-pay"><b>' + s[3] + "</b> " + s[4] + "</p>" : "") +
-        (st === "now" ? '<button type="button" class="btn ghost" data-done>I\'ve done this</button>' : "") + "</div></li>";
+        (st === "now" ? '<button type="button" class="btn ghost" data-done>I\'ve done this</button>' : "") + "</div>" +
+        (s[3] ? '<p class="tl-pay"><b>' + s[3] + "</b><small>" + s[4] + "</small></p>" : "") + "</li>";
     }).join("") + "</ol>";
   }
 
@@ -63,36 +68,39 @@
     U.savedCount();
     var o = AH.offerFor(h.id), v = o ? (o.state === "countered" ? o.counter : o.amount) : amount, m = cost(v);
     if (o && o.state === "declined") v = o.amount;
-    var top = '<div class="hp-top"><a class="back" href="viewings.html"><svg><use href="#i-chev"/></svg>Your viewings</a></div>' +
-      '<a class="vw-home of-home" href="home.html?id=' + h.id + '"><img src="' + esc(AH.img(h.photos[0])) + '" alt=""><span><b>' + esc(h.rooms + " · " + h.town) + "</b><small>" + esc(h.street) + " · asking " + fmt(h.price) + "</small></span></a>" +
-      '<h1 class="h1 of-h" tabindex="-1">' + (!o ? "Make an offer" : o.state === "accepted" ? "Your offer was accepted" : o.state === "countered" ? first + " came back with " + AH.short(o.counter) : o.state === "declined" ? "The seller said no" : "Offer sent") + "</h1>";
-    var main;
+    var head = '<div class="hp-top"><a class="back" href="viewings.html"><svg><use href="#i-chev"/></svg>Your viewings</a></div>' +
+      '<h1 class="h1 of-h" tabindex="-1">' + (!o ? "Make an offer" : o.state === "accepted" ? "Your offer was accepted" : o.state === "countered" ? first + " came back with " + AH.short(o.counter) : o.state === "declined" ? "The seller said no" : "Offer sent") + "</h1>" +
+      '<a class="of-home" href="home.html?id=' + h.id + '"><img src="' + esc(AH.img(h.photos[0])) + '" alt=""><span><b>' + esc(h.rooms + " · " + h.town) + "</b><small>" + esc(h.street) + "</small><small>Asking <strong>" + fmt(h.price) + "</strong> · listed by " + esc(p.name) + "</small></span></a>";
+    var form, side;
     if (!o) {
       var chips = [[0, "Asking"], [1, "1% less"], [2, "2% less"], [3, "3% less"]];
-      main = '<section class="ch">' + ch(1, "Your offer") +
-        '<div class="q"><label for="amt"><span class="of-lab">Offer price</span></label><div class="of-amt"><span aria-hidden="true">$</span><input id="amt" type="text" inputmode="numeric" autocomplete="off" value="' + amount.toLocaleString("en-SG") + '" data-amt aria-describedby="amt-hint"></div>' +
-        '<small id="amt-hint">Asking is ' + fmt(h.price) + ". Most resale offers land within 3% of it.</small></div>" +
-        '<div class="seg-row of-chips" role="group" aria-label="Quick amounts">' + chips.map(function (c) { var val = Math.round(h.price * (1 - c[0] / 100) / 1000) * 1000; return '<button type="button" data-set="' + val + '" aria-pressed="' + (val === amount) + '">' + c[1] + "</button>"; }).join("") + "</div>" +
-        '<div data-sum>' + moneyHtml(amount) + "</div>" +
-        '<label class="q of-msg"><span>Message to ' + esc(first) + ' (optional)</span><textarea data-note rows="3" placeholder="For example: we can be flexible on the completion date.">' + esc(note) + "</textarea></label>" +
+      form = '<section class="of-form" aria-labelledby="amt-l">' +
+        '<label id="amt-l" for="amt" class="of-lab">Your offer</label>' +
+        '<div class="of-amt"><span aria-hidden="true">$</span><input id="amt" type="text" inputmode="numeric" autocomplete="off" enterkeyhint="done" value="' + amount.toLocaleString("en-SG") + '" data-amt aria-describedby="amt-vs amt-hint"></div>' +
+        '<p class="of-vs" id="amt-vs" data-vs aria-live="polite">' + vs(amount) + "</p>" +
+        '<div class="of-chips" role="group" aria-label="Quick amounts">' + chips.map(function (c) { var val = Math.round(h.price * (1 - c[0] / 100) / 1000) * 1000; return '<button type="button" data-set="' + val + '" aria-pressed="' + (val === amount) + '">' + c[1] + "<small>" + AH.short(val) + "</small></button>"; }).join("") + "</div>" +
+        '<p class="of-tip" id="amt-hint">Most resale offers land within 3% of asking.</p>' +
+        '<label class="of-msg"><span class="of-lab">Message to ' + esc(first) + ' <em>Optional</em></span><textarea data-note rows="3" placeholder="For example: we can be flexible on the completion date.">' + esc(note) + "</textarea></label></section>";
+      side = '<div data-sum>' + moneyHtml(amount) + "</div>" +
         '<button type="button" class="btn primary of-send" data-send>Send offer of ' + fmt(amount) + "</button>" +
-        '<p class="of-fine">Sending isn\'t binding. Nothing is final until the seller grants you the Option to Purchase.</p></section>';
+        '<p class="of-fine">Sending isn\'t binding. Nothing is final until the seller grants you the Option to Purchase.</p>';
     } else {
       var log = o.history.map(function (x) { return "<li><b>" + (x.from === "buyer" ? "You" : esc(first)) + "</b> " + (x.note || "offered " + fmt(x.amount)) + " <small>" + U.ago(x.t) + "</small></li>"; }).join("");
-      var acts = o.state === "sent" ? '<div class="lead-actions"><button type="button" class="btn ghost" data-act="withdraw">Withdraw offer</button><a class="mode" href="agent.html?as=' + esc(h.lister) + '&amp;view=offers">See it from ' + esc(first) + "'s side</a></div>"
-        : o.state === "countered" ? '<div class="lead-actions"><button type="button" class="btn primary" data-act="take">Accept ' + fmt(o.counter) + '</button><button type="button" class="btn ghost" data-act="withdraw">Decline and offer again</button></div>'
-        : o.state === "declined" ? '<div class="lead-actions"><button type="button" class="btn primary" data-act="withdraw">Make a new offer</button><a class="btn ghost" href="find.html">Find similar homes</a></div>' : "";
-      main = '<section class="ch">' + ch(1, "Your offer") +
+      var acts = o.state === "sent" ? '<button type="button" class="btn ghost" data-act="withdraw">Withdraw offer</button><a class="of-link" href="agent.html?as=' + esc(h.lister) + '&amp;view=offers">See it from ' + esc(first) + "\'s side</a>"
+        : o.state === "countered" ? '<button type="button" class="btn primary" data-act="take">Accept ' + fmt(o.counter) + '</button><button type="button" class="btn ghost" data-act="withdraw">Decline and offer again</button>'
+        : o.state === "declined" ? '<button type="button" class="btn primary" data-act="withdraw">Make a new offer</button><a class="btn ghost" href="find.html">Find similar homes</a>' : "";
+      form = '<section class="of-form">' +
         '<p class="of-status">' + (o.state === "sent" ? "Sent to " + esc(p.name) + " " + U.ago(o.sent) + ". Sellers usually answer within two days."
           : o.state === "countered" ? "You offered " + fmt(o.amount) + ". " + esc(first) + " asked for " + fmt(o.counter) + ", " + ((h.price - o.counter) / h.price * 100).toFixed(1) + "% below asking."
           : o.state === "accepted" ? "Agreed at " + fmt(o.amount) + " on " + day(o.accepted) + ". Your next step is below."
-          : "Your offer of " + fmt(o.amount) + " wasn't accepted. You can offer again.") + "</p>" + acts +
-        '<ul class="of-log" aria-label="Offer history">' + log + "</ul>" +
-        '<div data-sum>' + moneyHtml(v) + "</div></section>";
+          : "Your offer of " + fmt(o.amount) + " wasn\'t accepted. You can offer again.") + "</p>" +
+        '<h2 class="of-lab">History</h2><ul class="of-log">' + log + "</ul></section>";
+      side = '<div data-sum>' + moneyHtml(v) + "</div>" + (acts ? '<div class="of-acts">' + acts + "</div>" : "");
     }
-    box.innerHTML = '<div class="of-col">' + top + main +
-      '<section class="ch">' + ch(2, "From offer to keys") + '<p class="of-fine">' + (o && o.state === "accepted" ? "Dates count from the day the seller accepted." : "If the seller accepts today.") + " Estimates only; your lawyer and " + (h.public ? "HDB" : "your bank") + " confirm the real dates.</p>" +
-        '<div data-tl>' + timeline(o, m, v) + "</div></section></div>";
+    box.innerHTML = '<div class="of-col">' + head + '<div class="of-grid">' + form +
+      '<aside class="of-side" aria-label="What this offer means for you"><div class="of-card"><p class="of-k">What this offer means for you</p>' + side + "</div></aside>" +
+      '<section class="of-steps" aria-labelledby="tl-h"><h2 class="of-sh" id="tl-h">From offer to keys</h2><p class="of-fine">' + (o && o.state === "accepted" ? "Dates count from the day the seller accepted." : "If the seller accepts today.") + " Estimates only; your lawyer and " + (h.public ? "HDB" : "your bank") + " confirm the real dates.</p>" +
+        '<div data-tl>' + timeline(o, m, v) + "</div></section></div></div>";
   }
 
   function live() {
@@ -100,6 +108,7 @@
     amount = v;
     $("[data-sum]").innerHTML = moneyHtml(v || h.price);
     $("[data-tl]").innerHTML = timeline(null, cost(v || h.price), v || h.price);
+    $("[data-vs]").textContent = v ? vs(v) : "Enter an amount";
     U.$$("[data-set]").forEach(function (b) { b.setAttribute("aria-pressed", +b.dataset.set === v); });
     var send = $("[data-send]"), low = v < h.price * 0.8;
     send.disabled = !v || low; send.textContent = !v ? "Enter an amount" : low ? "Too far below asking to send" : "Send offer of " + fmt(v);
