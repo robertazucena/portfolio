@@ -1,0 +1,333 @@
+<!doctype html>
+<html lang="en-SG">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Oracle Charity · Singapore</title>
+<meta name="description" content="A concept for Oracle Singapore's charity and volunteering home: find a cause, join an event, and see what colleagues did together.">
+<meta name="theme-color" content="#F8F8FC">
+<script src="frame-top.js"></script>
+<script>(function(){var r=document.documentElement,f;try{f=self!==top}catch(e){f=true}r.classList.add('js');if('scrollRestoration' in history)history.scrollRestoration='manual';if(f){var h=location.hash.slice(1);if(/^(story|causes|how|crew|moments|faq)$/.test(h))r.dataset.solo=h}else if(!matchMedia('(prefers-reduced-motion: reduce)').matches)r.classList.add('js-pre')})()</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://images.unsplash.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/light/style.css">
+<link rel="preload" as="image" href="https://images.unsplash.com/photo-1732194438313-40cb4261f49b?auto=format&fit=crop&w=160&h=192&q=70">
+<link rel="preload" as="image" href="https://images.unsplash.com/photo-1704475686860-ab71b444df6b?auto=format&fit=crop&w=160&h=192&q=70">
+<link rel="preload" as="image" href="https://images.unsplash.com/photo-1758599669406-d5179ccefcb9?auto=format&fit=crop&w=160&h=192&q=70">
+<link rel="preload" as="image" href="https://images.unsplash.com/photo-1588106832140-87523dd73ed0?auto=format&fit=crop&w=160&h=192&q=70">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body data-s="0">
+<a class="skip" href="#main">Skip to content</a>
+
+<!-- preloader: four small cause photos pop in one by one as a tilted fan, a thin glowing line in the cause colours fills beside the count -->
+<div class="pre" aria-hidden="true">
+  <div class="pre-in">
+    <div class="pre-fan"><span style="background-image:url(https://images.unsplash.com/photo-1732194438313-40cb4261f49b?auto=format&fit=crop&w=160&h=192&q=70)"></span><span style="background-image:url(https://images.unsplash.com/photo-1704475686860-ab71b444df6b?auto=format&fit=crop&w=160&h=192&q=70)"></span><span style="background-image:url(https://images.unsplash.com/photo-1758599669406-d5179ccefcb9?auto=format&fit=crop&w=160&h=192&q=70)"></span><span style="background-image:url(https://images.unsplash.com/photo-1588106832140-87523dd73ed0?auto=format&fit=crop&w=160&h=192&q=70)"></span></div>
+    
+    <p class="pre-bar"><i class="pre-line"></i><span class="pre-n"><span data-pre-n>0</span>%</span></p>
+  </div>
+</div>
+
+<!-- soft light behind everything -->
+<div class="orbs" aria-hidden="true"><i class="o1"></i><i class="o2"></i><i class="o3"></i><i class="o4"></i><i class="o5"></i><div class="glass"><b class="g1"></b><b class="g2"></b><b class="g3"></b><b class="g4"></b><b class="g5"></b><b class="g6"></b><b class="g7"></b><b class="g8"></b><b class="g9"></b><b class="g10"></b><b class="g11"></b><b class="g12"></b></div></div>
+
+<header class="nav">
+  <a class="brand" href="index.html"><svg class="mark" viewBox="0 0 52 52" role="img" aria-label="Oracle"><rect width="52" height="52" rx="11" fill="#C74634"/><rect x="13" y="18.5" width="26" height="15" rx="7.5" fill="none" stroke="#fff" stroke-width="3.6"/></svg><span class="brand-name">Charity</span></a>
+  <nav aria-label="Main">
+    <a href="#causes">Causes</a>
+    <a href="#story">Our year</a>
+    <a href="#stories">Stories</a>
+    <a href="#moments">Moments</a>
+  </nav>
+  <a class="pill-btn" href="#causes" data-mine-link aria-label="My events, 0 joined"><i class="ph-light ph-calendar-check" aria-hidden="true"></i><span>My events</span><b class="count" data-mine aria-hidden="true">0</b></a>
+</header>
+
+<main id="main">
+
+  <section class="hero" data-sec="0" data-label="Welcome">
+    <div class="show" role="region" aria-roledescription="carousel" aria-label="Causes in pictures">
+      <div class="hero-copy">
+        <h1>Give time.<br>Change lives.</h1>
+        <p class="lede">Volunteer with Singapore's charities in your 20 paid hours a year. Find a cause and sign up in two taps.</p>
+        <form class="find" role="search" action="#causes">
+        <label class="sr" for="q">Search causes</label>
+        <input id="q" name="q" type="search" placeholder="Try food, seniors or beach" autocomplete="off" enterkeyhint="search" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="sugg">
+        <button type="button" class="clear" aria-label="Clear search" hidden></button>
+        <button type="submit">Go</button>
+        <ul class="sugg" id="sugg" role="listbox" aria-label="Matching causes" hidden></ul>
+        </form>
+      </div>
+      <div class="slides">
+        <figure class="slide is-on" data-k="Food"><picture><source media="(max-width: 760px)" srcset="https://images.unsplash.com/photo-1732194438313-40cb4261f49b?auto=format&fit=crop&w=800&h=1600&q=80 800w, https://images.unsplash.com/photo-1732194438313-40cb4261f49b?auto=format&fit=crop&w=1300&h=2600&q=80 1300w" sizes="100vw"><img src="https://images.unsplash.com/photo-1732194438313-40cb4261f49b?auto=format&fit=crop&w=2000&h=1200&q=80" srcset="https://images.unsplash.com/photo-1732194438313-40cb4261f49b?auto=format&fit=crop&w=1200&h=720&q=80 1200w, https://images.unsplash.com/photo-1732194438313-40cb4261f49b?auto=format&fit=crop&w=2000&h=1200&q=80 2000w, https://images.unsplash.com/photo-1732194438313-40cb4261f49b?auto=format&fit=crop&w=2800&h=1680&q=80 2800w" sizes="(max-width: 760px) 100vw, min(1320px, 92vw)" alt="Volunteers in lanyards handing out tins and fresh fruit" width="2000" height="1200" fetchpriority="high" style="object-position:50% 40%"></picture><figcaption><b>Food from the Heart</b><em>Pack groceries for families</em><button type="button" class="show-go" data-k="Food">See food events</button></figcaption></figure>
+        <figure class="slide" data-k="Seniors"><picture><source media="(max-width: 760px)" srcset="https://images.unsplash.com/photo-1704475686860-ab71b444df6b?auto=format&fit=crop&w=800&h=1600&q=80 800w, https://images.unsplash.com/photo-1704475686860-ab71b444df6b?auto=format&fit=crop&w=1300&h=2600&q=80 1300w" sizes="100vw"><img src="https://images.unsplash.com/photo-1704475686860-ab71b444df6b?auto=format&fit=crop&w=2000&h=1200&q=80" srcset="https://images.unsplash.com/photo-1704475686860-ab71b444df6b?auto=format&fit=crop&w=1200&h=720&q=80 1200w, https://images.unsplash.com/photo-1704475686860-ab71b444df6b?auto=format&fit=crop&w=2000&h=1200&q=80 2000w, https://images.unsplash.com/photo-1704475686860-ab71b444df6b?auto=format&fit=crop&w=2800&h=1680&q=80 2800w" sizes="(max-width: 760px) 100vw, min(1320px, 92vw)" alt="An older woman and a young volunteer laughing while gardening" width="2000" height="1200" loading="lazy" style="object-position:65% 35%"></picture><figcaption><b>Kopi with seniors</b><em>Gardens, games and a good chat</em><button type="button" class="show-go" data-k="Seniors">See seniors events</button></figcaption></figure>
+        <figure class="slide" data-k="Youth"><picture><source media="(max-width: 760px)" srcset="https://images.unsplash.com/photo-1758599669406-d5179ccefcb9?auto=format&fit=crop&w=800&h=1600&q=80 800w, https://images.unsplash.com/photo-1758599669406-d5179ccefcb9?auto=format&fit=crop&w=1300&h=2600&q=80 1300w" sizes="100vw"><img src="https://images.unsplash.com/photo-1758599669406-d5179ccefcb9?auto=format&fit=crop&w=2000&h=1200&q=80" srcset="https://images.unsplash.com/photo-1758599669406-d5179ccefcb9?auto=format&fit=crop&w=1200&h=720&q=80 1200w, https://images.unsplash.com/photo-1758599669406-d5179ccefcb9?auto=format&fit=crop&w=2000&h=1200&q=80 2000w, https://images.unsplash.com/photo-1758599669406-d5179ccefcb9?auto=format&fit=crop&w=2800&h=1680&q=80 2800w" sizes="(max-width: 760px) 100vw, min(1320px, 92vw)" alt="Young volunteers in matching shirts smiling together" width="2000" height="1200" loading="lazy" style="object-position:50% 35%"></picture><figcaption><b>Halogen &amp; Heartware</b><em>Coaching young people all year</em><button type="button" class="show-go" data-k="Youth">See youth events</button></figcaption></figure>
+        <figure class="slide" data-k="Nature"><picture><source media="(max-width: 760px)" srcset="https://images.unsplash.com/photo-1588106832140-87523dd73ed0?auto=format&fit=crop&w=800&h=1600&q=80 800w, https://images.unsplash.com/photo-1588106832140-87523dd73ed0?auto=format&fit=crop&w=1300&h=2600&q=80 1300w" sizes="100vw"><img src="https://images.unsplash.com/photo-1588106832140-87523dd73ed0?auto=format&fit=crop&w=2000&h=1200&q=80" srcset="https://images.unsplash.com/photo-1588106832140-87523dd73ed0?auto=format&fit=crop&w=1200&h=720&q=80 1200w, https://images.unsplash.com/photo-1588106832140-87523dd73ed0?auto=format&fit=crop&w=2000&h=1200&q=80 2000w, https://images.unsplash.com/photo-1588106832140-87523dd73ed0?auto=format&fit=crop&w=2800&h=1680&q=80 2800w" sizes="(max-width: 760px) 100vw, min(1320px, 92vw)" alt="Volunteers sorting plastic collected from a beach" width="2000" height="1200" loading="lazy" style="object-position:50% 55%"></picture><figcaption><b>Coastal clean-up</b><em>East Coast Park, at low tide</em><button type="button" class="show-go" data-k="Nature">See nature events</button></figcaption></figure>
+        <figure class="slide" data-k="Inclusion"><picture><source media="(max-width: 760px)" srcset="https://images.unsplash.com/photo-1732194438700-c7eb8cc16cb6?auto=format&fit=crop&w=800&h=1600&q=80 800w, https://images.unsplash.com/photo-1732194438700-c7eb8cc16cb6?auto=format&fit=crop&w=1300&h=2600&q=80 1300w" sizes="100vw"><img src="https://images.unsplash.com/photo-1732194438700-c7eb8cc16cb6?auto=format&fit=crop&w=2000&h=1200&q=80" srcset="https://images.unsplash.com/photo-1732194438700-c7eb8cc16cb6?auto=format&fit=crop&w=1200&h=720&q=80 1200w, https://images.unsplash.com/photo-1732194438700-c7eb8cc16cb6?auto=format&fit=crop&w=2000&h=1200&q=80 2000w, https://images.unsplash.com/photo-1732194438700-c7eb8cc16cb6?auto=format&fit=crop&w=2800&h=1680&q=80 2800w" sizes="(max-width: 760px) 100vw, min(1320px, 92vw)" alt="Friends, two in wheelchairs, chatting at a cafe table" width="2000" height="1200" loading="lazy" style="object-position:50% 50%"></picture><figcaption><b>The Purple Parade</b><em>Walk together for inclusion</em><button type="button" class="show-go" data-k="Inclusion">See inclusion events</button></figcaption></figure>
+      </div>
+      <div class="deck" role="group" aria-label="Open another cause">
+        <button type="button" class="dcard" data-i="0"><img src="https://images.unsplash.com/photo-1732194438313-40cb4261f49b?auto=format&fit=crop&w=480&h=672&q=80" alt="Volunteers in lanyards handing out tins and fresh fruit" width="480" height="672" loading="lazy" style="object-position:50% 40%"><span>Food</span><b>Food from the Heart</b></button>
+        <button type="button" class="dcard" data-i="1"><img src="https://images.unsplash.com/photo-1704475686860-ab71b444df6b?auto=format&fit=crop&w=480&h=672&q=80" alt="An older woman and a young volunteer laughing while gardening" width="480" height="672" loading="lazy" style="object-position:65% 35%"><span>Seniors</span><b>Kopi with seniors</b></button>
+        <button type="button" class="dcard" data-i="2"><img src="https://images.unsplash.com/photo-1758599669406-d5179ccefcb9?auto=format&fit=crop&w=480&h=672&q=80" alt="Young volunteers in matching shirts smiling together" width="480" height="672" loading="lazy" style="object-position:50% 35%"><span>Youth</span><b>Halogen &amp; Heartware</b></button>
+        <button type="button" class="dcard" data-i="3"><img src="https://images.unsplash.com/photo-1588106832140-87523dd73ed0?auto=format&fit=crop&w=480&h=672&q=80" alt="Volunteers sorting plastic collected from a beach" width="480" height="672" loading="lazy" style="object-position:50% 55%"><span>Nature</span><b>Coastal clean-up</b></button>
+        <button type="button" class="dcard" data-i="4"><img src="https://images.unsplash.com/photo-1732194438700-c7eb8cc16cb6?auto=format&fit=crop&w=480&h=672&q=80" alt="Friends, two in wheelchairs, chatting at a cafe table" width="480" height="672" loading="lazy" style="object-position:50% 50%"><span>Inclusion</span><b>The Purple Parade</b></button>
+      </div>
+      <div class="show-ctl">
+        <button type="button" class="arw" data-step="-1" aria-label="Previous cause"><i class="ph-light ph-arrow-left" aria-hidden="true"></i></button>
+        <button type="button" class="arw" data-step="1" aria-label="Next cause"><i class="ph-light ph-arrow-right" aria-hidden="true"></i></button>
+        <span class="prog" aria-hidden="true"><i></i></span>
+        <span class="show-n" aria-hidden="true">01</span> <!-- taste-skill-ignore: slide counter from the reference -->
+        <button type="button" class="show-pause" aria-pressed="false" aria-label="Pause slideshow"></button>
+      </div>
+    </div>
+  </section>
+
+  <section class="say" data-sec="1" aria-label="Who can help">
+    <p class="say-t" data-say>Whether you have one free morning <span class="say-pic" aria-hidden="true"><img src="https://images.unsplash.com/photo-1628717341663-0007b0ee2597?auto=format&fit=crop&w=240&h=120&q=70" alt="" width="240" height="120" loading="lazy" style="object-position:50% 40%"></span> a skill to share <span class="say-pic" aria-hidden="true"><img src="https://images.unsplash.com/photo-1526795443948-005b48ce4791?auto=format&fit=crop&w=240&h=120&q=70" alt="" width="240" height="120" loading="lazy" style="object-position:50% 30%"></span> or a whole team behind you <span class="say-pic" aria-hidden="true"><img src="https://images.unsplash.com/photo-1777150895644-2ca253ee1c93?auto=format&fit=crop&w=240&h=120&q=70" alt="" width="240" height="120" loading="lazy" style="object-position:50% 55%"></span> a charity in Singapore is counting on you.</p>
+  </section>
+
+  <section class="story" id="story" data-sec="1" data-label="Our year" aria-labelledby="story-h">
+    <div class="yr-head">
+      <h2 id="story-h">2025, one morning at a time</h2>
+      <ul class="yr-stats">
+        <li><b data-count="794">794</b><span>hours given</span></li>
+        <li><b data-count="205">205</b><span>colleagues</span></li>
+        <li><b data-count="28">28</b><span>projects</span></li>
+      </ul>
+    </div>
+    <div class="yr-legend" role="group" aria-label="Show one kind of project"><button type="button" aria-pressed="true" data-yk="All">All 28</button><button type="button" aria-pressed="false" data-yk="Food" style="--c:var(--k-food)"><i class="ph-light ph-bowl-food" aria-hidden="true"></i>Food</button><button type="button" aria-pressed="false" data-yk="Seniors" style="--c:var(--k-seniors)"><i class="ph-light ph-coffee" aria-hidden="true"></i>Seniors</button><button type="button" aria-pressed="false" data-yk="Youth" style="--c:var(--k-youth)"><i class="ph-light ph-graduation-cap" aria-hidden="true"></i>Youth</button><button type="button" aria-pressed="false" data-yk="Nature" style="--c:var(--k-nature)"><i class="ph-light ph-leaf" aria-hidden="true"></i>Nature</button><button type="button" aria-pressed="false" data-yk="Inclusion" style="--c:var(--k-inclusion)"><i class="ph-light ph-wheelchair" aria-hidden="true"></i>Inclusion</button></div>
+    <div class="cal" data-cal></div>
+    <figure class="yr-view" data-yv>
+      <img alt="" width="1600" height="700"><img alt="" width="1600" height="700">
+      <figcaption aria-live="polite"><h3 data-yv-t></h3><span class="yv-d" data-yv-d></span><p data-yv-l></p><button type="button" class="pill-btn dark" data-yv-go><i class="ph-light ph-calendar-check" aria-hidden="true"></i><span>See the next one</span></button></figcaption>
+      <div class="yv-nav"><button type="button" data-yv-step="-1" aria-label="Previous project"><i class="ph-light ph-arrow-left" aria-hidden="true"></i></button><button type="button" data-yv-step="1" aria-label="Next project"><i class="ph-light ph-arrow-right" aria-hidden="true"></i></button></div>
+    </figure>
+    <p class="yr-note">Each lit day is one of the 28 projects colleagues ran in Singapore in 2025. Days and photos here are illustrative.</p>
+  </section>
+
+  <section class="causes" id="causes" data-sec="5" data-label="Causes" aria-labelledby="causes-h">
+    <div class="causes-head">
+      <h2 id="causes-h">Causes our colleagues stand with</h2>
+      <p class="found sr" aria-live="polite" data-found>8 causes</p>
+    </div>
+    <div class="tabs" role="group" aria-label="Filter causes">
+      <button type="button" aria-pressed="true" data-f="All">All</button>
+      <button type="button" aria-pressed="false" data-f="Food"><i class="ph-light ph-bowl-food" aria-hidden="true"></i>Food</button>
+      <button type="button" aria-pressed="false" data-f="Seniors"><i class="ph-light ph-coffee" aria-hidden="true"></i>Seniors</button>
+      <button type="button" aria-pressed="false" data-f="Youth"><i class="ph-light ph-graduation-cap" aria-hidden="true"></i>Youth</button>
+      <button type="button" aria-pressed="false" data-f="Nature"><i class="ph-light ph-leaf" aria-hidden="true"></i>Nature</button>
+      <button type="button" aria-pressed="false" data-f="Inclusion"><i class="ph-light ph-wheelchair" aria-hidden="true"></i>Inclusion</button>
+    </div>
+    <ul class="grid" data-grid></ul>
+    <button type="button" class="more" data-more hidden><span>Show more causes</span><i class="ph-light ph-arrow-down"></i></button>
+  </section>
+
+  <section class="feature" data-sec="6" data-label="One morning" aria-labelledby="feat-h">
+    <div class="feature-frame"><img src="https://images.unsplash.com/photo-1672084891746-29828996afd6?auto=format&fit=crop&w=2200&h=1400&q=72" alt="Clean-up volunteers on the beach with their sign" width="2200" height="1500" loading="lazy"></div>
+    <div class="feature-copy">
+      <h2 id="feat-h">One morning. A cleaner coast.</h2>
+      <p>Most colleagues start with a single morning. Pick a date, bring a friend, and we handle the rest.</p>
+    </div>
+  </section>
+
+  <section class="how" id="how" data-sec="6" data-label="How it works" aria-labelledby="how-h">
+    <div class="collage">
+      <div class="cl card a-title sky" data-depth="0.06"><h2 id="how-h">Your first morning, step by step</h2></div>
+      <div class="cl card a-c1 sky" data-depth="-0.08"><i class="ph-light ph-magnifying-glass" aria-hidden="true"></i><h3>Pick a cause</h3><p>Filter eight causes by what you care about and where you live.</p></div>
+      <figure class="cl pic a-p1" data-depth="0.14"><img src="https://images.unsplash.com/photo-1599059813005-11265ba4b4ce?auto=format&fit=crop&w=520&h=400&q=72" alt="Volunteers sorting tins of donated food" width="520" height="400" loading="lazy" style="object-position:50% 40%"></figure>
+      <figure class="cl pic a-p2" data-depth="-0.04"><img src="https://images.unsplash.com/photo-1589696484849-fe06c15e42f6?auto=format&fit=crop&w=800&h=1060&q=72" alt="Volunteers gathered on a green field" width="800" height="1060" loading="lazy" style="object-position:55% 40%"></figure>
+      <div class="cl card a-c3 mint" data-depth="0.1"><i class="ph-light ph-sneaker-move" aria-hidden="true"></i><h3>Show up</h3><p>A team lead meets you there and briefs everyone. Gloves and tools provided.</p></div>
+      <div class="cl card a-c2 peach" data-depth="-0.03"><i class="ph-light ph-calendar-check" aria-hidden="true"></i><h3>Sign up in two taps</h3><p>Join from any card. The invite lands in your calendar and the hours count toward your 20 paid ones. Change your mind? Leave up to 48 hours before.</p><a class="pill-btn" href="#causes"><i class="ph-light ph-arrow-right" aria-hidden="true"></i><span>Browse causes</span></a></div>
+      <figure class="cl pic a-p3" data-depth="0.08"><img src="https://images.unsplash.com/photo-1544928938-6852c1925194?auto=format&fit=crop&w=800&h=620&q=72" alt="Two volunteers holding shovels, smiling" width="800" height="620" loading="lazy" style="object-position:50% 25%"></figure>
+      <figure class="cl pic a-p4" data-depth="0.18"><img src="https://images.unsplash.com/photo-1618477461853-cf6ed80faba5?auto=format&fit=crop&w=700&h=900&q=72" alt="Two volunteers collecting rubbish on a beach" width="700" height="900" loading="lazy" style="object-position:50% 40%"></figure>
+      <div class="cl card a-c4 lilac" data-depth="-0.1"><i class="ph-light ph-users-three" aria-hidden="true"></i><h3>Bring your team</h3><p>Book a morning for your whole team and we will find a partner to host you.</p></div>
+      <span class="cl ico a-mark rose" data-depth="0.22" aria-hidden="true"><i class="ph-light ph-hand-heart"></i></span><span class="cl ico i-1 peach" data-depth="0.16" aria-hidden="true"><i class="ph-light ph-heart"></i></span><span class="cl ico i-2 mint" data-depth="-0.12" aria-hidden="true"><i class="ph-light ph-leaf"></i></span><span class="cl ico i-3 sky" data-depth="0.2" aria-hidden="true"><i class="ph-light ph-plant"></i></span><span class="cl ico i-4 lilac" data-depth="-0.08" aria-hidden="true"><i class="ph-light ph-sparkle"></i></span><span class="cl ico i-5 peach" data-depth="0.14" aria-hidden="true"><i class="ph-light ph-sun"></i></span><span class="cl ico i-6 mint" data-depth="-0.1" aria-hidden="true"><i class="ph-light ph-users-three"></i></span><span class="cl ico i-7 rose" data-depth="0.04" aria-hidden="true"><i class="ph-light ph-basket"></i></span>
+      <figure class="cl pic a-p5" id="stories" data-depth="0.06"><img src="https://images.unsplash.com/photo-1609139010253-40ad2ad5216d?auto=format&fit=crop&w=720&h=900&q=80" alt="Volunteers handing out food at a distribution day" width="720" height="900" loading="lazy"></figure>
+      <figure class="cl pic a-p6" data-depth="-0.04"><img src="https://images.unsplash.com/photo-1709563942266-79a602b65695?auto=format&fit=crop&w=900&h=780&q=80" alt="Two older friends laughing at a community table" width="900" height="780" loading="lazy"></figure>
+      <figure class="cl pic a-p7" data-depth="0.05"><img src="https://images.unsplash.com/photo-1758599669199-a858720a9689?auto=format&fit=crop&w=720&h=960&q=80" alt="A young volunteer smiling with a full bag on a clean-up" width="720" height="960" loading="lazy"></figure>
+      <figure class="cl pic a-p8" data-depth="-0.03"><img src="https://images.unsplash.com/photo-1569937684907-3c79f075b202?auto=format&fit=crop&w=960&h=760&q=80" alt="Friends, one in a wheelchair, chatting in a park" width="960" height="760" loading="lazy"></figure>
+    </div>
+  </section>
+
+  <section class="crew" id="crew" data-sec="7" aria-labelledby="crew-h">
+    <div class="crew-head">
+      <h2 id="crew-h">Featured Volunteers</h2>
+      <p>Colleagues who turned up this month, and what keeps them coming back. Names, photos and quotes are illustrative samples.</p>
+    </div>
+    <ul class="crew-list">
+      <li class="vol" style="--c:var(--k-food)">
+        <div class="vol-fig"><svg class="vol-flag" viewBox="0 0 400 575" aria-hidden="true" focusable="false"><path d="M163 22Q163 0 185 5L379 55Q400 60 400 82V556Q400 575 389 560L163 279Z"/></svg><img src="img/vol-1.png" alt="Portrait of Wei Ling Tan" width="410" height="640" loading="lazy"></div>
+        <h3><span>Wei Ling Tan</span><span class="vol-live" title="Volunteered this month"><span class="sr">Volunteered this month</span></span></h3>
+        <p class="vol-r">Finance <span aria-hidden="true">&middot;</span> Food from the Heart</p>
+        <blockquote><p>I came for one food drive. Three years on, the Saturday packing line is the best part of my month.</p></blockquote>
+        <button type="button" class="vol-go" data-cause="ffth"><span>Join the next one</span><i class="ph-light ph-arrow-right" aria-hidden="true"></i></button>
+      </li>
+      <li class="vol" style="--c:var(--k-seniors)">
+        <div class="vol-fig"><svg class="vol-flag" viewBox="0 0 400 575" aria-hidden="true" focusable="false"><path d="M163 22Q163 0 185 5L379 55Q400 60 400 82V556Q400 575 389 560L163 279Z"/></svg><img src="img/vol-2.png" alt="Portrait of Arjun Menon" width="440" height="640" loading="lazy"></div>
+        <h3><span>Arjun Menon</span><span class="vol-live" title="Volunteered this month"><span class="sr">Volunteered this month</span></span></h3>
+        <p class="vol-r">Cloud engineering <span aria-hidden="true">&middot;</span> Phone help for seniors</p>
+        <blockquote><p>Showing an auntie how to spot a scam text takes ten minutes. She keeps that for years.</p></blockquote>
+        <button type="button" class="vol-go" data-cause="phone"><span>Join the next one</span><i class="ph-light ph-arrow-right" aria-hidden="true"></i></button>
+      </li>
+      <li class="vol" style="--c:var(--k-youth)">
+        <div class="vol-fig"><svg class="vol-flag" viewBox="0 0 400 575" aria-hidden="true" focusable="false"><path d="M163 22Q163 0 185 5L379 55Q400 60 400 82V556Q400 575 389 560L163 279Z"/></svg><img src="img/vol-3.png" alt="Portrait of Nur Aisyah" width="431" height="640" loading="lazy"></div>
+        <h3><span>Nur Aisyah</span><span class="vol-live" title="Volunteered this month"><span class="sr">Volunteered this month</span></span></h3>
+        <p class="vol-r">People team <span aria-hidden="true">&middot;</span> Reading buddies</p>
+        <blockquote><p>The children do not care what I do at work. They care that I do the lion voice properly.</p></blockquote>
+        <button type="button" class="vol-go" data-cause="read"><span>Join the next one</span><i class="ph-light ph-arrow-right" aria-hidden="true"></i></button>
+      </li>
+      <li class="vol" style="--c:var(--k-nature)">
+        <div class="vol-fig"><svg class="vol-flag" viewBox="0 0 400 575" aria-hidden="true" focusable="false"><path d="M163 22Q163 0 185 5L379 55Q400 60 400 82V556Q400 575 389 560L163 279Z"/></svg><img src="img/vol-4.png" alt="Portrait of Daniel Lim" width="434" height="640" loading="lazy"></div>
+        <h3><span>Daniel Lim</span><span class="vol-live" title="Volunteered this month"><span class="sr">Volunteered this month</span></span></h3>
+        <p class="vol-r">Sales <span aria-hidden="true">&middot;</span> Coastal clean-up</p>
+        <blockquote><p>My team gets to know each other better on the beach at 7am than at any offsite.</p></blockquote>
+        <button type="button" class="vol-go" data-cause="coast"><span>Join the next one</span><i class="ph-light ph-arrow-right" aria-hidden="true"></i></button>
+      </li>
+    </ul>
+  </section>
+
+  <section class="moments" id="moments" data-sec="8" data-label="Moments" aria-labelledby="moments-h">
+    <div class="arch" data-arch>
+      <div class="arch-head">
+        <h2 id="moments-h">Moments from the year</h2>
+        <p class="arch-sub">Tap any photo to see it whole.</p>
+      </div>
+    </div>
+    <!-- thank-you card: the Customer Moments deck, for volunteers -->
+    <div class="thanks" aria-labelledby="thanks-h">
+      <div class="thanks-copy">
+        <h3 id="thanks-h">Thank someone who showed up</h3>
+        <p>Pick a morning, add a colleague's name and send them a card. It lands in their inbox and on the team's wall.</p>
+        <div class="thanks-pick" role="radiogroup" aria-label="Which morning">
+          <button type="button" role="radio" aria-checked="true" data-t="0">Food</button>
+          <button type="button" role="radio" aria-checked="false" data-t="1">Beach</button>
+          <button type="button" role="radio" aria-checked="false" data-t="2">Seniors</button>
+        </div>
+        <form class="thanks-form" data-thanks novalidate>
+          <label for="thanks-name">Their name</label>
+          <div class="thanks-row">
+            <input id="thanks-name" type="text" autocomplete="off" maxlength="24" placeholder="e.g. Wei Ling" aria-describedby="thanks-err">
+            <button type="submit" class="pill-btn red" aria-label="Send thanks"><i class="ph-light ph-paper-plane-tilt" aria-hidden="true"></i><span>Send thanks</span></button>
+          </div>
+          <p class="thanks-err" id="thanks-err" aria-live="polite"></p>
+        </form>
+      </div>
+      <div class="tdeck" data-tdeck aria-hidden="true">
+        <div class="tdeck-tilt">
+          <div class="tcard tb1"><img alt="" width="480" height="720" loading="lazy"></div>
+          <div class="tcard tb2"><img alt="" width="480" height="720" loading="lazy"></div>
+          <div class="tcard tfront"><img alt="" width="520" height="780" loading="lazy">
+            <div class="tmsg"><p class="tmsg-h"><span data-tline>Thank you for Saturday,</span> <span class="tname"></span></p><p class="tmsg-s" data-tfrom>From the Food from the Heart crew</p></div>
+            <span class="tsheen"></span>
+          </div>
+          <div class="tchip tchip-a"><i class="ph-light ph-clock" aria-hidden="true"></i><span><b data-thours>3 hours</b> logged<small>Paid volunteer time</small></span></div>
+          <div class="tchip tchip-b"><i class="ph-light ph-heart" aria-hidden="true"></i><span>Opened by <b class="tchip-name"></b><small>just now</small></span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="faq" id="faq" data-sec="9" data-label="Questions" aria-labelledby="faq-h">
+    <div class="faq-head">
+      <h2 id="faq-h">Good to know</h2>
+      <p>The questions colleagues ask before their first event.</p>
+    </div>
+    <div class="faq-list">
+      <details open><summary><i class="ph-light ph-clock" aria-hidden="true"></i><span>Do these hours count as paid time?</span><i class="ph-light ph-plus" aria-hidden="true"></i></summary><p>Yes. Oracle Singapore colleagues get 20 paid volunteer hours a year, on top of annual leave. Log them in My events after the day.</p></details>
+      <details><summary><i class="ph-light ph-hand-waving" aria-hidden="true"></i><span>I've never volunteered. Where do I start?</span><i class="ph-light ph-plus" aria-hidden="true"></i></summary><p>Pick a hands-on morning such as Food from the Heart or Willing Hearts. A team lead briefs everyone on arrival, so no experience is needed.</p></details>
+      <details><summary><i class="ph-light ph-users-three" aria-hidden="true"></i><span>Can I bring my whole team?</span><i class="ph-light ph-plus" aria-hidden="true"></i></summary><p>Yes. Book a morning for your team and the Oracle Charity team will find a partner who can host you, usually within two weeks.</p></details>
+      <details><summary><i class="ph-light ph-calendar-blank" aria-hidden="true"></i><span>What if I can't make it?</span><i class="ph-light ph-plus" aria-hidden="true"></i></summary><p>Leave the event from My events at least 48 hours before, so a colleague on the waitlist can take your spot.</p></details>
+      <details><summary><i class="ph-light ph-lifebuoy" aria-hidden="true"></i><span>How is Oracle Cares different from giving?</span><i class="ph-light ph-plus" aria-hidden="true"></i></summary><p>Oracle Cares helps colleagues hit by disaster or sudden hardship. Gifts go to the fund, never to one named person, so help reaches whoever needs it next.</p></details>
+    </div>
+  </section>
+
+  <section class="give" data-sec="9" data-label="Give" aria-labelledby="give-h">
+    <div class="give-in">
+      <div class="give-copy">
+        <h2 id="give-h">Rather give than go?</h2>
+        <p>Oracle matches your gift to eligible charities, dollar for dollar. Pick an amount to see where it lands.</p>
+        <div class="amts" role="radiogroup" aria-label="Gift amount">
+          <button type="button" role="radio" aria-checked="false" data-amt="20">$20</button>
+          <button type="button" role="radio" aria-checked="true" data-amt="50">$50</button>
+          <button type="button" role="radio" aria-checked="false" data-amt="100">$100</button>
+          <button type="button" role="radio" aria-checked="false" data-amt="250">$250</button>
+        </div>
+        <ol class="flow" aria-live="polite">
+          <li><i class="ph-light ph-wallet" aria-hidden="true"></i><b data-g="you">$50</b><span>You give</span></li>
+          <li><i class="ph-light ph-handshake" aria-hidden="true"></i><b data-g="match">$50</b><span>Oracle adds</span></li>
+          <li class="total"><i class="ph-light ph-hand-heart" aria-hidden="true"></i><b data-g="total">$100</b><span>Charity receives</span></li>
+        </ol>
+        <p class="tax"><i class="ph-light ph-receipt" aria-hidden="true"></i><span>Give to a Singapore IPC and you can claim <b data-g="tax">$125</b> in tax deductions (250%, until 31 Dec 2026).</span></p>
+        <button type="button" class="pill-btn red" data-give><i class="ph-light ph-gift" aria-hidden="true"></i><span>Give with a match</span></button>
+        <small class="give-note">Payroll or card. Matching limits may apply; check the giving policy.</small>
+      </div>
+      <figure class="give-pic"><img src="https://images.unsplash.com/photo-1617817546276-80b86dd60151?auto=format&fit=crop&w=1000&h=1200&q=72" alt="A volunteer beside boxes of donated food" width="1000" height="1200" loading="lazy"></figure>
+    </div>
+  </section>
+
+</main>
+
+<footer class="foot" data-sec="10" data-label="Stay close">
+  <div class="band" role="region" aria-label="Charities we work with">
+    <div class="band-track"><ul><li><i class="ph-light ph-bowl-food" aria-hidden="true"></i>Food from the Heart</li><li><i class="ph-light ph-cooking-pot" aria-hidden="true"></i>Willing Hearts</li><li><i class="ph-light ph-wheelchair" aria-hidden="true"></i>The Purple Parade</li><li><i class="ph-light ph-lightbulb" aria-hidden="true"></i>Halogen Foundation</li><li><i class="ph-light ph-hand-heart" aria-hidden="true"></i>Heartware Network</li><li><i class="ph-light ph-waves" aria-hidden="true"></i>East Coast clean-ups</li><li><i class="ph-light ph-coffee" aria-hidden="true"></i>Kopi with seniors</li></ul><ul aria-hidden="true"><li><i class="ph-light ph-bowl-food" aria-hidden="true"></i>Food from the Heart</li><li><i class="ph-light ph-cooking-pot" aria-hidden="true"></i>Willing Hearts</li><li><i class="ph-light ph-wheelchair" aria-hidden="true"></i>The Purple Parade</li><li><i class="ph-light ph-lightbulb" aria-hidden="true"></i>Halogen Foundation</li><li><i class="ph-light ph-hand-heart" aria-hidden="true"></i>Heartware Network</li><li><i class="ph-light ph-waves" aria-hidden="true"></i>East Coast clean-ups</li><li><i class="ph-light ph-coffee" aria-hidden="true"></i>Kopi with seniors</li></ul></div>
+  </div>
+  <div class="foot-top">
+    <article class="foot-next">
+      <img src="https://images.unsplash.com/photo-1778315599241-030773aa636b?auto=format&fit=crop&w=800&h=900&q=70" alt="" width="800" height="900" loading="lazy" style="object-position:50% 30%">
+      <div><h2>The Purple Parade</h2><p><i class="ph-light ph-calendar-blank" aria-hidden="true"></i>Sat 7 Nov, from 4pm</p><button type="button" class="pill-btn dark" data-cause="purple"><i class="ph-light ph-arrow-right" aria-hidden="true"></i><span>See the next event</span></button></div>
+    </article>
+    <div class="foot-news">
+      <ul class="fan" aria-hidden="true"><li><img src="https://images.unsplash.com/photo-1626607007733-d09228471d9f?auto=format&fit=crop&w=200&h=240&q=70" alt="" width="200" height="240" loading="lazy" style="object-position:50% 40%"></li><li><img src="https://images.unsplash.com/photo-1763994682395-3a85ae0eef0c?auto=format&fit=crop&w=200&h=240&q=70" alt="" width="200" height="240" loading="lazy" style="object-position:50% 40%"></li><li><img src="https://images.unsplash.com/photo-1618477460930-d8bffff64172?auto=format&fit=crop&w=200&h=240&q=70" alt="" width="200" height="240" loading="lazy" style="object-position:50% 55%"></li><li><img src="https://images.unsplash.com/photo-1598335624134-5bceb5de202d?auto=format&fit=crop&w=200&h=240&q=70" alt="" width="200" height="240" loading="lazy" style="object-position:50% 30%"></li></ul>
+      <form class="news" data-news novalidate>
+        <label for="em">New events, first</label>
+        <p class="news-sub">One email a month with every open morning. No other mail.</p>
+        <div><input id="em" type="email" placeholder="you@oracle.com" autocomplete="email" required aria-describedby="em-msg"><button type="submit">Join</button></div>
+        <p class="news-ok" id="em-msg" aria-live="polite" data-news-ok></p>
+      </form>
+    </div>
+    <ul class="foot-help">
+      <li><a href="#faq"><i class="ph-light ph-lifebuoy" aria-hidden="true"></i><span><b>Questions?</b>Paid hours, teams, cancelling</span></a></li>
+      <li><a href="#faq"><i class="ph-light ph-first-aid-kit" aria-hidden="true"></i><span><b>Going through a hard time?</b>Oracle Cares can help</span></a></li>
+      <li><a href="#give-h"><i class="ph-light ph-hand-heart" aria-hidden="true"></i><span><b>Rather give?</b>Oracle matches your gift</span></a></li>
+    </ul>
+  </div>
+  <div class="foot-cols">
+    <nav aria-label="Explore"><b>Explore</b><a href="#causes">Causes</a><a href="#story">Our year</a><a href="#stories">Stories</a><a href="#moments">Moments</a></nav>
+    <nav aria-label="Volunteer"><b>Volunteer</b><a href="#how">How it works</a><a href="#faq">Good to know</a><a href="#causes">This season</a></nav>
+    <div class="foot-note">
+      <p>A concept by Robert Azucena, not made by or for Oracle. Singapore 2025 and FY25 figures are as Oracle reported them (AmCham Singapore; Oracle Social Impact FY25). Event dates, "Reading buddies", "Kopi with seniors" and "Phone help for seniors" are samples.</p>
+      <p data-credits></p>
+    </div>
+  </div>
+  <div class="foot-end">
+    <a class="brand" href="index.html"><svg class="mark" viewBox="0 0 52 52" role="img" aria-label="Oracle"><rect width="52" height="52" rx="11" fill="#C74634"/><rect x="13" y="18.5" width="26" height="15" rx="7.5" fill="none" stroke="#fff" stroke-width="3.6"/></svg><span class="brand-name">Charity</span></a>
+    <a class="top" href="#main"><i class="ph-light ph-arrow-up" aria-hidden="true"></i>Back to top</a>
+  </div>
+</footer>
+
+<dialog class="drawer" data-drawer aria-labelledby="dr-h">
+  <form method="dialog"><button class="x" aria-label="Close" autofocus></button></form>
+  <img data-dr-img src="" alt="" width="900" height="600">
+  <div class="dr-b">
+    <p class="dr-k" data-dr-k></p>
+    <h3 id="dr-h" data-dr-h></h3>
+    <p data-dr-p></p>
+    <ul class="dr-facts" data-dr-facts></ul>
+    <div class="dr-acts"><button type="button" class="pill-btn red" data-join><i class="ph-light ph-user-plus" aria-hidden="true"></i><span>Join this event</span></button><button type="button" class="pill-btn ghost" data-ics hidden><i class="ph-light ph-calendar-blank" aria-hidden="true"></i><span>Add to calendar</span></button></div>
+  </div>
+</dialog>
+
+<dialog class="lb" data-lightbox aria-label="Photo">
+  <form method="dialog"><button class="x" aria-label="Close" autofocus></button></form>
+  <figure><img data-lb-img src="" alt=""><figcaption><span data-lb-cap></span><b class="lb-count" data-lb-count></b></figcaption></figure>
+  <button type="button" class="lb-n prev" data-lb-go="-1" aria-label="Previous photo"></button>
+  <button type="button" class="lb-n next" data-lb-go="1" aria-label="Next photo"></button>
+</dialog>
+
+<div class="toast" role="status" aria-live="polite" data-toast></div>
+
+<script src="script.js"></script>
+</body>
+</html>
