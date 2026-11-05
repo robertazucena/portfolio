@@ -875,3 +875,15 @@ html:has(body[data-fx="black"]) { background: #0b0c0e; }
   .kpi__h { flex-wrap: wrap; row-gap: 10px; }
   .kpi__h h2 { order: 3; flex-basis: 100%; white-space: normal; }
 }
+/* phones: the tab bar clears a phone's rounded screen corners, and a black scrim fills the strip under it,
+   so nothing peeks out beneath the bar or gets cut at the corners */
+@media (max-width: 1023px) {
+  .tabs { left: 18px; right: 18px; bottom: calc(18px + env(safe-area-inset-bottom)); }
+  body::after { content: ""; position: fixed; left: 0; right: 0; bottom: 0; z-index: 39; pointer-events: none;
+    height: calc(var(--tab) + 48px + env(safe-area-inset-bottom));
+    background: linear-gradient(180deg, rgba(11, 12, 14, 0) 0%, rgba(11, 12, 14, .82) 45%, #0b0c0e 72%); }
+  .fab { bottom: calc(var(--tab) + 30px + env(safe-area-inset-bottom)); right: 20px; }
+}
+/* embedded in the portfolio's scaled frames, Chrome can pause the frame's rendering work, so cards are shown at once instead of revealed */
+.is-embedded .rv { opacity: 1 !important; transform: none !important; filter: none !important; transition: none !important; }
+.is-embedded svg *, .is-embedded .kpi__bar i { transition: none !important; }

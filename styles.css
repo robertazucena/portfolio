@@ -135,3 +135,9 @@
 .foot-row{font-size:13px}
 .proc .mono{font-family:var(--display);font-size:13px;letter-spacing:0}
 .ch .act{font-family:var(--display);font-size:13px;text-transform:none;letter-spacing:0;min-height:30px;display:inline-flex;align-items:center}
+.intro .play-hint{will-change:transform}
+.js:not(.ready) .intro .play-hint{opacity:0}
+.js.ready .intro .play-hint{opacity:1;animation:upIn .9s var(--ease) both;animation-delay:.72s}
+@media (prefers-reduced-motion:reduce){.js .intro .play-hint{opacity:1;animation:none}}
+.phone-f .shot-view{clip-path:inset(0 round clamp(14px,2vw,25px));isolation:isolate}
+.tablet-f .shot-view{clip-path:inset(0 round clamp(12px,1.6vw,20px));isolation:isolate}

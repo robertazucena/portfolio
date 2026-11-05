@@ -45,6 +45,7 @@
     let embedded = false; try { embedded = window.self !== window.top; } catch { embedded = true; }
     const fromNav = ss('steady:nav') === '1', seen = ss('steady:seen') === '1';
     ss('steady:nav', null); ss('steady:seen', '1');
+    if (embedded) doc.classList.add('is-embedded');
     if (embedded && !fromNav) { pre.classList.add('is-gone'); preDone = true; }
     else {
       doc.classList.add('pre-on');
@@ -147,6 +148,15 @@
   const watch = el => io ? io.observe(el) : el.classList.add('is-in');
   $$('.kpis.rv').forEach(k => { k.classList.remove('rv'); [...k.children].forEach(c => c.classList.add('rv')); });
   whenReady(() => $$('.rv').forEach(watch));
+  // fallback: inside a scaled or late-woken iframe the observer can stay silent, so cards in view are also revealed by measuring
+  const sweep = () => {
+    const vh = innerHeight;
+    $$('.rv:not(.is-in)').forEach((el, k) => {
+      const r = el.getBoundingClientRect();
+      if (r.top < vh * .92 && r.bottom > 0) { el.style.setProperty('--i', k); el.classList.add('is-in'); io && io.unobserve(el); }
+    });
+  };
+  whenReady(() => { setTimeout(sweep, 700); addEventListener('scroll', sweep, { passive: true }); addEventListener('resize', sweep, { passive: true }); });
 
   /* ---------- charts: one line language ---------- */
   const svg = (tag, attrs = {}) => { const el = document.createElementNS(NS, tag); for (const k in attrs) el.setAttribute(k, attrs[k]); return el; };
