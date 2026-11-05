@@ -144,3 +144,6 @@
 .phone-f .shot-view,.tablet-f .shot-view{-webkit-mask-image:-webkit-radial-gradient(white,black);mask-image:radial-gradient(white,black)}
 .phone-f .lv iframe{border-radius:35px}
 @media (max-width:759px){.phone-f .lv iframe{border-radius:21px}}
+.nav .pill{background:none!important;border:0;padding:0;gap:4px;backdrop-filter:none;-webkit-backdrop-filter:none}
+.nav{transition:background-color .35s var(--ease),box-shadow .35s var(--ease)}
+.nav.is-scrolled{background:#fff;box-shadow:0 1px 0 var(--line)}
