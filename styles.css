@@ -141,3 +141,6 @@
 @media (prefers-reduced-motion:reduce){.js .intro .play-hint{opacity:1;animation:none}}
 .phone-f .shot-view{clip-path:inset(0 round clamp(14px,2vw,25px));isolation:isolate}
 .tablet-f .shot-view{clip-path:inset(0 round clamp(12px,1.6vw,20px));isolation:isolate}
+.phone-f .shot-view,.tablet-f .shot-view{-webkit-mask-image:-webkit-radial-gradient(white,black);mask-image:radial-gradient(white,black)}
+.phone-f .lv iframe{border-radius:35px}
+@media (max-width:759px){.phone-f .lv iframe{border-radius:21px}}
