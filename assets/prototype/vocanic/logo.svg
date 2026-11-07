@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -8 626 132" role="img" aria-label="Vocanic">
+  <g fill="#F26A00">
+    <path d="M0 20h25l27 70 27-70h25L63 120H41z"/>
+    <path d="M296 120h25l27-70 27 70h25L359 20h-22z"/>
+    <path d="M408 20h20l45 62V20h21v100h-20l-45-62v62h-21z"/>
+    <path d="M504 20h21v100h-21z"/>
+  </g>
+  <g fill="none" stroke="#F26A00" stroke-width="21">
+    <path d="M288.5 39.7A41.5 41.5 0 1 0 288.5 100.3"/>
+    <path d="M613.5 39.7A41.5 41.5 0 1 0 613.5 100.3"/>
+  </g>
+  <g fill="#88888F">
+    <path fill-rule="evenodd" d="M150 18a52 52 0 1 0 0 104 52 52 0 1 0 0-104zm0 21a31 31 0 1 1 0 62 31 31 0 1 1 0-62z"/>
+    <circle cx="133" cy="4" r="9.5"/>
+    <circle cx="167" cy="4" r="9.5"/>
+  </g>
+</svg>
