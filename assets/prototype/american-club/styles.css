@@ -300,7 +300,13 @@ a.hr__cue:focus-visible { outline: 2px solid var(--focus); outline-offset: 4px; 
   .hr__caps { bottom: 14px; }
   .hr__caps--next { display: none; }
   .hr__cue { display: none; }
-  .hr__rail { margin-top: 10px; }
+  .hr__rail { margin-top: 10px; gap: 10px; }
+  /* phones: the caption stays inside the centre panel, clear of its rules */
+  .hr__cap p { display: none; }
+  .hr__rail { min-width: 0; }
+  .hr__ticks { flex: 1; min-width: 0; gap: 2px; }
+  .hr__ticks li { flex: 1; min-width: 0; }
+  .hr__tick { width: 100%; }
 }
 @media (max-width: 1100px) { .hr__caps--next p { display: none; } .hr__cue span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; } }
 @media (max-height: 960px) { .hr__caps--next p { display: none; } }
