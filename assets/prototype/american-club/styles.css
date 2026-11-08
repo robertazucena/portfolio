@@ -621,8 +621,9 @@ html.is-pl .pl, html.pl-go .pl { position: fixed; inset: 0; z-index: 300; displa
 .pl__cv::before, .pl__cv::after { content: ""; position: absolute; left: -10%; right: -10%; height: var(--arc); background: inherit; }
 .pl__cv::before { bottom: 100%; margin-bottom: -1px; border-radius: 50% 50% 0 0 / 100% 100% 0 0; }
 .pl__cv::after { top: 100%; margin-top: -1px; border-radius: 0 0 50% 50% / 0 0 100% 100%; }
-.pl__to { position: relative; display: grid; gap: clamp(18px, 3svh, 28px); max-width: 100%; transition: transform 1.05s var(--ease-io), opacity .5s ease; }
-.pl__name { font: 700 clamp(2.4rem, min(7.4vw, 12svh), 6rem)/1 var(--display); letter-spacing: -.045em; text-align: center; text-wrap: balance; }
+.pl__to { position: relative; display: grid; gap: clamp(14px, 2.2svh, 20px); max-width: 100%; transition: transform 1.05s var(--ease-io), opacity .5s ease; }
+.pl__logo { justify-self: center; width: clamp(76px, 7vw, 96px); height: auto; margin-bottom: clamp(6px, 1.2svh, 12px); }
+.pl__name { font: 700 clamp(1.7rem, min(3.6vw, 6.4svh), 2.9rem)/1 var(--display); letter-spacing: -.045em; text-align: center; text-wrap: balance; }
 .pl__name .w { display: inline-block; overflow: hidden; padding: 0 .03em .1em; margin-bottom: -.1em; white-space: nowrap; }
 .pl__name .w span { display: inline-block; }
 /* the loading line runs the width of the name, the % sits at its end */
@@ -635,7 +636,8 @@ html.pl-out .pl__cv { transform: translateY(calc(-100% - var(--arc))); }
 html.pl-out .pl__to { transform: translateY(-14svh); opacity: 0; }
 @media (prefers-reduced-motion: no-preference) {
   html.is-pl:not(.pl-nav) .pl__name .w span, html.pl-go .pl__name .w span { animation: plIn .7s var(--ease-expo) both; animation-delay: calc(.2s + var(--i) * 45ms); }
-  html.is-pl:not(.pl-nav) .pl__pg, html.pl-go .pl__pg { animation: fadeUp .6s var(--ease-out) .35s both; }
+  html.is-pl:not(.pl-nav) :is(.pl__logo, .pl__pg), html.pl-go :is(.pl__logo, .pl__pg) { animation: fadeUp .6s var(--ease-out) .35s both; }
+  html.is-pl:not(.pl-nav) .pl__logo, html.pl-go .pl__logo { animation-delay: .1s; }
   /* leaving: the curtain comes up from below as an arch, then the next page's name arrives letter by letter */
   html.pl-go .pl__cv { animation: plUp .7s var(--ease-io) both; }
   html.pl-go .pl__name .w span { animation-delay: calc(.3s + var(--i) * 28ms); }
