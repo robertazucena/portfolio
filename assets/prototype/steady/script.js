@@ -313,6 +313,7 @@
     document.addEventListener('keydown', e => { if (e.key === 'Escape' && !panel.hidden && !document.querySelector('dialog[open]')) open(false); });
     document.addEventListener('pointerdown', e => { if (!panel.hidden && !panel.contains(e.target) && !fab.contains(e.target)) open(false, false); });
     if (location.hash === '#ai') open(true);
+    $$('[data-ask]').forEach(b => b.addEventListener('click', () => open(true)));
   }
 
   /* ---------- moment banner: part of day, or the event happening now ---------- */
@@ -347,7 +348,7 @@
         { s: '16:30', e: '16:45', title: 'A two-minute pause', sub: 'Your heart usually climbs around now', href: 'index.html', ic: 'wind', cta: 'Start breathing', sky: 'morning' },
         { s: '22:30', e: '23:00', title: 'Wind down', sub: 'Lights low, screens away', href: 'sleep.html', ic: 'sleep', cta: 'Sleep plan', sky: 'midnight' }
       ];
-      if (d.getDay() === 0) list.push({ s: '08:00', e: '09:00', title: 'Sunday walk with Sarah K.', sub: '5k loop, meet at the park', href: 'circle.html', ic: 'walk', cta: 'Message Sarah', sky: 'lunch' });
+      if (d.getDay() === 0) list.push({ s: '08:00', e: '09:00', title: 'Sunday walk with Nina K.', sub: '5k loop, meet at the park', href: 'circle.html#chat-walkers', ic: 'walk', cta: 'Message the group', sky: 'lunch' });
       const b = store.get();
       if (b && b.date === d.toDateString()) list.push({ s: b.t, e: `${String(Math.floor((mins(b.t) + 15) / 60)).padStart(2, '0')}:${String((mins(b.t) + 15) % 60).padStart(2, '0')}`, title: `Video call with ${b.who}`, sub: `${b.role} · 15 minutes`, href: 'circle.html', ic: 'video', cta: 'Join call', sky: 'lunch', prio: 1 });
       return list.map(x => ({ ...x, sm: mins(x.s), em: mins(x.e) })).sort((a, z) => (z.prio || 0) - (a.prio || 0) || a.sm - z.sm);
@@ -822,46 +823,262 @@
   }
 
   if (page === 'circle') {
+    /* ---------- saved state: what you sent, read, accepted, cheered and joined stays between visits ---------- */
+    const CK = 'steady:circle';
+    const saved = (() => { try { return JSON.parse(localStorage.getItem(CK)) || {}; } catch (e) { return {}; } })();
+    ['sent', 'read', 'cheer', 'joined'].forEach(k => { saved[k] = saved[k] || {}; });
+    const save = () => { try { localStorage.setItem(CK, JSON.stringify(saved)); } catch (e) { /* storage blocked */ } };
+
+    /* ---------- people and conversations (sample data) ---------- */
+    const P = {
+      nina: { n: 'Nina K.', i: 'NK', av: 3, st: 'Active now' },
+      david: { n: 'David L.', i: 'DL', av: 4, st: 'Active now' },
+      emma: { n: 'Emma W.', i: 'EW', av: 5, st: 'Wants to connect' },
+      marcus: { n: 'Marcus J.', i: 'MJ', av: 6, st: 'Away · back this evening' },
+      aris: { n: 'Dr. Aris', i: 'DA', av: 2, st: 'Doctor · replies within a day', pro: 'Doctor' },
+      dan: { n: 'Coach Dan', i: 'CD', av: 7, st: 'Coach · replies within a few hours', pro: 'Coach' },
+      elena: { n: 'Elena R.', i: 'ER', av: 1, st: 'Nutritionist · free at 4:30 PM', pro: 'Nutritionist' }
+    };
+    const MORE = ['Aiden P.', 'Bea S.', 'Carlos M.', 'Dana O.', 'Farah N.', 'Grace T.', 'Hiro S.', 'Isla B.', 'Jon R.', 'Kai W.', 'Lena V.', 'Omar H.', 'Rosa D.', 'Theo G.'];
+    MORE.forEach((n, k) => { P['f' + k] = { n, i: n.split(' ').map(w => w[0]).join(''), av: [1, 3, 4, 5, 6, 7][k % 6], st: k % 3 ? 'Active today' : 'Active this week' }; });
+    const FRIENDS = ['nina', 'david', 'emma', 'marcus', ...MORE.map((_, k) => 'f' + k)];
+    const ago = m => Date.now() - m * 60000;
+    const C = [
+      { id: 'nina', with: 'nina', msgs: [['nina', 'Morning! 5k done before work 🙌', 150], ['me', 'Nice pace on that one', 138], ['nina', 'Joining the Sunday walk?', 22]], unread: 1, quick: ['I’m in for Sunday', '👏 Great run'] },
+      { id: 'aris', with: 'aris', msgs: [['aris', 'Your resting heart rate has been steady all month. Keep the evening walks.', 300], ['aris', 'I added a beetroot salad to your Nourish ideas.', 298]], unread: 2, quick: ['Thank you, doctor', 'Can we talk this week?'] },
+      { id: 'walkers', group: 'Sunday walkers', members: ['nina', 'david', 'marcus'], msgs: [['david', 'Same loop this Sunday?', 1500], ['marcus', 'Yes, 8 AM by the fountain', 1490], ['nina', 'Bringing coffee ☕', 1420]], quick: ['See you at 8', 'Running 10 minutes late'] },
+      { id: 'sleep', group: 'Sleep Challenge', members: ['marcus', 'nina', 'emma'], msgs: [['marcus', 'Night 4 done. In bed 10:52 😴', 600], ['nina', '10:41 here. Who is still up?', 590]], quick: ['Night 4 done', 'Heading to bed now'] },
+      { id: 'david', with: 'david', msgs: [['david', 'That beetroot salad from Dr. Aris is actually good.', 1700], ['me', 'Told you!', 1690]], quick: ['👍', 'Walk tomorrow?'] },
+      { id: 'emma', with: 'emma', req: true, msgs: [['emma', 'Hi Sarah! We’re both in the Sleep Challenge. Connect?', 1440]] },
+      { id: 'marcus', with: 'marcus', msgs: [['marcus', 'Rest day today. Legs say thanks.', 2900]], quick: ['Enjoy it', 'Gym Thursday?'] }
+    ];
+    const REPLY = {
+      nina: ['Yay! See you Sunday', 'Ha, thanks 😄', 'Same time as last week?'],
+      david: ['Sounds good', 'I’m in', '👍'],
+      marcus: ['Back later, will reply properly', 'Nice one'],
+      dan: ['Good question. Let’s look at it on our next call.', 'Keep the pace easy this week.'],
+      elena: ['Happy to help. Book 15 minutes and we’ll plan your week.']
+    };
+    const PRO_NOTE = p => `${p.n} usually replies within a day. For anything urgent, book a call.`;
+    // turn the sample lines into messages, then add what you sent before
+    C.forEach(c => {
+      c.msgs = c.msgs.map(([f, t, m]) => ({ f, t, at: ago(m) }));
+      (saved.sent[c.id] || []).forEach(m => c.msgs.push(m));
+      if (saved.read[c.id]) c.unread = 0;
+      if (c.id === 'emma' && saved.emma) { c.req = false; if (saved.emma === 'no') c.gone = true; }
+    });
+    const convo = id => C.find(c => c.id === id);
+    const ensure = id => convo(id) || (C.push({ id, with: id, msgs: [], quick: ['Hi!', 'Walk this week?'] }), convo(id));
+    // conversations you started with other friends come back too
+    Object.keys(saved.sent).forEach(id => { if (!convo(id) && P[id]) ensure(id).msgs.push(...saved.sent[id]); });
+
+    /* ---------- helpers ---------- */
+    const esc = t => String(t).replace(/[&<>"]/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[ch]));
+    const av = (k, cls = 'avatar') => { const p = P[k]; return `<span class="${cls} av-${p.av}" aria-hidden="true">${p.i}</span>`; };
+    const cAv = c => c.group ? `<span class="avatar avatar--grp" aria-hidden="true">${icon('circle')}</span>` : av(c.with);
+    const cName = c => c.group || P[c.with].n;
+    const cSub = c => c.group ? c.members.map(k => P[k].n.split(' ')[0]).join(', ') + ' and you' : (c.id === 'emma' && !c.req ? 'Active today' : P[c.with].st);
+    const fT = new Intl.DateTimeFormat('en-US', { hour: 'numeric', minute: '2-digit' });
+    const fD = new Intl.DateTimeFormat('en-GB', { weekday: 'long' });
+    const dayOf = t => { const d = new Date(t), n = new Date(); const k = Math.round((new Date(n.toDateString()) - new Date(d.toDateString())) / 864e5); return k === 0 ? 'Today' : k === 1 ? 'Yesterday' : fD.format(d); };
+    const when = t => { const k = dayOf(t); return k === 'Today' ? fT.format(t) : k === 'Yesterday' ? 'Yesterday' : k.slice(0, 3); };
+    const last = c => c.msgs[c.msgs.length - 1];
+
+    /* ---------- inbox list ---------- */
+    const list = $('#convos'), q = $('#inboxQ');
+    let filter = 'all', openId = '';
+    const unreadTotal = () => C.reduce((n, c) => n + (c.gone ? 0 : c.unread || 0), 0);
+    function counts() {
+      const u = unreadTotal(), inC = C.filter(c => !c.gone && c.unread).length;
+      $('#kUnread').textContent = u;
+      $('#kUnreadS').textContent = u ? `in ${inC} conversation${inC === 1 ? '' : 's'}` : 'All caught up';
+      const req = C.filter(c => c.req && !c.gone).length;
+      $('#statPending').textContent = req;
+      $('#kPendS').textContent = req ? 'Emma W. wants to connect' : 'Nothing waiting';
+    }
+    function drawList() {
+      const term = q.value.trim().toLowerCase();
+      const rows = C.filter(c => !c.gone && c.msgs.length)
+        .filter(c => filter === 'all' || (filter === 'unread' ? c.unread : c.group))
+        .filter(c => !term || cName(c).toLowerCase().includes(term) || c.msgs.some(m => m.t.toLowerCase().includes(term)))
+        .sort((a, z) => last(z).at - last(a).at);
+      list.innerHTML = rows.length ? rows.map(c => {
+        const m = last(c), who = m.f === 'me' ? 'You: ' : c.group ? P[m.f].n.split(' ')[0] + ': ' : '';
+        return `<li><button type="button" class="convo${c.id === openId ? ' is-on' : ''}${c.unread ? ' is-new' : ''}" data-open="${c.id}"${c.id === openId ? ' aria-current="true"' : ''}>
+          ${cAv(c)}<span class="convo__t"><b>${esc(cName(c))}</b><small>${esc(who + m.t)}</small></span>
+          <span class="convo__m"><small>${when(m.at)}</small>${c.req ? '<i class="convo__req">Request</i>' : c.unread ? `<i class="convo__n" aria-label="${c.unread} unread">${c.unread}</i>` : ''}</span></button></li>`;
+      }).join('') : `<li class="empty-msg">${term ? 'No messages match that.' : filter === 'unread' ? 'You’re all caught up.' : 'No conversations yet.'}</li>`;
+      counts();
+    }
+    $$('.inbox__seg button').forEach(b => b.addEventListener('click', () => {
+      filter = b.dataset.f; $$('.inbox__seg button').forEach(x => x.setAttribute('aria-pressed', String(x === b))); drawList();
+    }));
+    q.addEventListener('input', drawList);
+
+    /* ---------- the thread: in the card on desktop, in a sheet on phones ---------- */
+    const thread = $('#thread'), msgsEl = $('#thMsgs'), form = $('#chatForm'), inp = $('#chatIn');
+    const wide = matchMedia('(min-width: 1024px)'), sheet = $('#chatSheet');
+    const place = () => { (wide.matches ? $('#pane') : $('#chatHold')).append(thread); if (wide.matches && sheet.open) sheet.close(); };
+    wide.addEventListener('change', place); place();
+    sheet.addEventListener('close', () => { if (!wide.matches) { openId = ''; drawList(); } });
+
+    function bubble(c, m, i) {
+      const prev = c.msgs[i - 1], day = !prev || dayOf(prev.at) !== dayOf(m.at);
+      const same = prev && !day && prev.f === m.f && m.at - prev.at < 600000;
+      let h = day ? `<p class="day"><span>${dayOf(m.at)}</span></p>` : '';
+      if (m.f === 'sys') return h + `<p class="sysmsg">${esc(m.t)}</p>`;
+      const me = m.f === 'me', name = c.group && !me && !same ? `<b class="bub__n">${esc(P[m.f].n)}</b>` : '';
+      const body = m.card ? `<span class="bub__card">${icon('walk')}<b>${esc(m.card)}</b><small>steps today</small></span>` : esc(m.t);
+      return h + `<div class="bub${me ? ' bub--me' : ''}${same ? ' bub--more' : ''}">${name}<p>${body}</p><small><time datetime="${new Date(m.at).toISOString()}">${fT.format(m.at)}</time>${me && i === c.msgs.length - 1 ? ` · <span class="bub__st">${m.seen ? 'Seen' : 'Sent'}</span>` : ''}</small></div>`;
+    }
+    function drawThread(c) {
+      msgsEl.innerHTML = c.msgs.map((m, i) => bubble(c, m, i)).join('');
+      msgsEl.scrollTop = msgsEl.scrollHeight;
+    }
+    function openConvo(id, focus) {
+      const c = ensure(id); if (c.gone) return;
+      openId = id; c.unread = 0; saved.read[id] = 1; save();
+      $('#thAv').innerHTML = cAv(c); $('#thName').textContent = cName(c); $('#thSub').textContent = cSub(c);
+      const p = !c.group && P[c.with];
+      $('#thActs').innerHTML = p && p.pro ? `<button class="btn btn--ghost btn--s" type="button" data-consult="${esc(p.n)}" data-role="${p.pro}">${icon('video')}Book a call</button>` : '';
+      $('#thReq').hidden = !c.req; $('#thReqName').textContent = p ? p.n : '';
+      form.hidden = !!c.req;
+      $('#thQuick').innerHTML = c.req ? '' : (c.quick || []).map(t => `<button type="button" class="chip">${esc(t)}</button>`).join('');
+      thread.classList.add('is-open');
+      drawThread(c); drawList();
+      if (!wide.matches && !sheet.open) sheet.showModal();
+      if (focus !== false) setTimeout(() => (c.req ? $('#reqYes') : inp).focus({ preventScroll: true }), 60);
+    }
+    // anything marked data-open (friends, feed, challenges, professionals) opens that conversation
+    document.addEventListener('click', e => {
+      const b = e.target.closest('[data-open]'); if (!b) return;
+      if (b.closest('#friendsSheet')) $('#friendsSheet').close();
+      openConvo(b.dataset.open, true);
+      if (wide.matches && !b.closest('.inbox')) $('#messages').scrollIntoView({ behavior: reduce.matches ? 'auto' : 'smooth', block: 'start' });
+    });
+
+    /* ---------- sending, and the sample replies that follow ---------- */
+    let replyT = 0;
+    function send(text, card) {
+      const c = convo(openId); if (!c || c.req) return;
+      const m = { f: 'me', t: text, at: Date.now() }; if (card) m.card = card;
+      c.msgs.push(m); (saved.sent[c.id] = saved.sent[c.id] || []).push(m); save();
+      drawThread(c); drawList();
+      clearTimeout(replyT);
+      const p = !c.group && P[c.with];
+      const from = c.group ? c.members[Math.floor(Math.random() * c.members.length)] : c.with;
+      if (p && p.pro && !REPLY[c.with]) {
+        // a doctor does not answer instantly: say so once
+        if (!c.msgs.some(x => x.f === 'sys')) setTimeout(() => { c.msgs.push({ f: 'sys', t: PRO_NOTE(p), at: Date.now() }); m.seen = false; drawThread(c); }, 700);
+        return;
+      }
+      const pool = REPLY[from] || ['👍', 'Sounds good'];
+      setTimeout(() => { if (openId !== c.id) return; m.seen = true; save(); drawThread(c); msgsEl.insertAdjacentHTML('beforeend', `<div class="bub bub--typing" aria-label="${esc(P[from].n)} is typing"><p><i></i><i></i><i></i></p></div>`); msgsEl.scrollTop = msgsEl.scrollHeight; }, 900);
+      replyT = setTimeout(() => {
+        const r = { f: from, t: pool[Math.floor(Math.random() * pool.length)], at: Date.now() };
+        c.msgs.push(r); (saved.sent[c.id] = saved.sent[c.id] || []).push(r); save();
+        if (openId === c.id) drawThread(c); else c.unread = (c.unread || 0) + 1;
+        drawList();
+      }, 2600);
+    }
+    form.addEventListener('submit', e => { e.preventDefault(); const v = inp.value.trim(); if (!v) return; inp.value = ''; send(v); });
+    $('#thQuick').addEventListener('click', e => { const b = e.target.closest('button'); if (b) send(b.textContent); });
+    $('#shareSteps').addEventListener('click', () => send('Shared today’s steps: 8,240', '8,240'));
+
+    /* ---------- a connection request: accept or decline ---------- */
+    const emmaSt = $('[data-emma-st]');
+    const settleEmma = () => { const c = convo('emma'); if (!c.req && emmaSt) { emmaSt.textContent = c.gone ? 'Declined' : 'Active'; emmaSt.previousElementSibling.className = c.gone ? 'away' : ''; } };
+    $('#reqYes').addEventListener('click', () => {
+      const c = convo('emma'); c.req = false; saved.emma = 'yes'; save();
+      c.msgs.push({ f: 'sys', t: 'You’re now connected with Emma W.', at: Date.now() });
+      c.quick = ['Welcome! 👋', 'How’s night 4 going?'];
+      settleEmma(); openConvo('emma'); toast('You and Emma W. are connected');
+    });
+    $('#reqNo').addEventListener('click', () => {
+      const c = convo('emma'); c.req = false; c.gone = true; saved.emma = 'no'; save();
+      settleEmma(); openId = ''; thread.classList.toggle('is-open', false); msgsEl.innerHTML = '';
+      $('#thName').textContent = 'Messages'; $('#thSub').textContent = ''; $('#thAv').innerHTML = ''; $('#thActs').innerHTML = ''; $('#thReq').hidden = true; $('#thQuick').innerHTML = '';
+      if (sheet.open) sheet.close();
+      drawList(); toast('Request declined');
+    });
+    settleEmma();
+
+    /* ---------- friends: see all, or start a new message ---------- */
+    const fs = $('#friendsSheet'), fq = $('#fsQ'), fl = $('#flist');
+    const drawFriends = () => {
+      const t = fq.value.trim().toLowerCase();
+      const rows = FRIENDS.filter(k => !(k === 'emma' && convo('emma').gone)).filter(k => !t || P[k].n.toLowerCase().includes(t));
+      fl.innerHTML = rows.length ? rows.map(k => `<li>${av(k)}<div><b>${esc(P[k].n)}</b><small>${k === 'emma' && convo('emma').req ? 'Wants to connect' : esc(P[k].st)}</small></div><button class="btn btn--ghost btn--s" type="button" data-open="${k}">${icon('chat')}Message</button></li>`).join('') : '<li class="empty-msg">No friend by that name.</li>';
+    };
+    fq.addEventListener('input', drawFriends);
+    const openFriends = title => { $('#fsH').textContent = title; fq.value = ''; drawFriends(); fs.showModal(); setTimeout(() => fq.focus(), 50); };
+    $('#allFriends').addEventListener('click', () => openFriends('Friends'));
+    $('#newMsg').addEventListener('click', () => openFriends('New message'));
+
+    /* ---------- activity: cheer back ---------- */
+    $$('[data-cheer]').forEach(b => {
+      const k = b.dataset.cheer, set = on => { b.setAttribute('aria-pressed', String(on)); $('span', b).textContent = on ? 'Cheered' : (b.dataset.l || ($('span', b).textContent)); };
+      b.dataset.l = $('span', b).textContent;
+      if (saved.cheer[k]) set(true);
+      b.addEventListener('click', () => { const on = b.getAttribute('aria-pressed') !== 'true'; saved.cheer[k] = on ? 1 : 0; save(); set(on); if (on) toast(`You cheered ${k}`); });
+    });
+
+    /* ---------- challenges: join and leave ---------- */
+    const chals = $$('.chal');
+    const drawChal = () => { $('#kChal').textContent = chals.filter(li => li.dataset.joined === 'true').length; };
+    chals.forEach(li => {
+      const b = $('.chal__go', li), k = li.dataset.chal;
+      const set = on => { li.dataset.joined = String(on); b.setAttribute('aria-pressed', String(on)); b.classList.toggle('btn--ink', !on); b.classList.toggle('btn--ghost', on); $('span', b).textContent = on ? 'Leave' : 'Join'; b.setAttribute('aria-label', `${on ? 'Leave' : 'Join'} ${$('h3', li).textContent}`); };
+      if (k in saved.joined) set(!!saved.joined[k]); else set(li.dataset.joined === 'true');
+      b.addEventListener('click', () => { const on = li.dataset.joined !== 'true'; set(on); saved.joined[k] = on ? 1 : 0; save(); drawChal(); toast(on ? `You joined ${$('h3', li).textContent}` : `You left ${$('h3', li).textContent}`); });
+    });
+    drawChal();
+
+    /* ---------- people you may know ---------- */
     $$('[data-connect]').forEach(b => b.addEventListener('click', () => {
       const on = b.getAttribute('aria-pressed') !== 'true'; b.setAttribute('aria-pressed', String(on));
       b.classList.toggle('btn--ink', !on); b.classList.toggle('btn--ghost', on);
       $('span', b).textContent = on ? 'Requested' : 'Connect';
-      const pend = $('#statPending'); pend.textContent = +pend.textContent + (on ? 1 : -1);
       if (on) toast(`Request sent to ${b.dataset.connect}`);
     }));
-    // consult
+
+    // invite: copy a link where the browser allows it
+    $('#invite').addEventListener('click', () => {
+      const url = new URL('index.html', location.href).href;
+      const done = () => toast('Invite link copied. Paste it anywhere to share.');
+      if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(url).then(done, () => toast('Invite link: ' + url)); else toast('Invite link: ' + url);
+    });
+
+    /* ---------- book a professional; the booking shows on the card ---------- */
     let pro = '';
     const slotBtns = $$('#slots button');
-    $$('[data-consult]').forEach(b => b.addEventListener('click', () => {
+    const drawBooked = () => {
+      const bk = store.get(), box = $('#booked');
+      box.hidden = !bk;
+      if (bk) { $('#bookedT').textContent = `Video call with ${bk.who}`; $('#bookedS').textContent = `${bk.role} · ${new Date(bk.date).toDateString() === new Date().toDateString() ? 'Today' : fD.format(new Date(bk.date))} at ${fT.format(new Date(`${new Date(bk.date).toDateString()} ${bk.t}`))}`; }
+    };
+    document.addEventListener('click', e => {
+      const b = e.target.closest('[data-consult]'); if (!b) return;
       pro = b.dataset.consult; $('#consultWho').textContent = pro; $('#consultRole').textContent = b.dataset.role;
-      slotBtns.forEach(s => s.setAttribute('aria-pressed', 'false')); $('#consultGo').disabled = true; openSheet('consultSheet');
-    }));
+      slotBtns.forEach(s => s.setAttribute('aria-pressed', 'false')); $('#consultGo').disabled = true;
+      if (sheet.open) sheet.close();
+      openSheet('consultSheet');
+    });
     slotBtns.forEach(s => s.addEventListener('click', () => { slotBtns.forEach(x => x.setAttribute('aria-pressed', String(x === s))); $('#consultGo').disabled = false; }));
     $('#consultGo').addEventListener('click', () => {
       const s = slotBtns.find(x => x.getAttribute('aria-pressed') === 'true'); $('#consultSheet').close();
-      const when = new Date(); when.setDate(when.getDate() + (+s.dataset.d || 0));
-      store.set({ who: pro, role: $('#consultRole').textContent, t: s.dataset.t, date: when.toDateString() });
-      toast(`Video call with ${pro} booked for ${s.dataset.label}`);
+      const d = new Date(); d.setDate(d.getDate() + (+s.dataset.d || 0));
+      store.set({ who: pro, role: $('#consultRole').textContent, t: s.dataset.t, date: d.toDateString() });
+      drawBooked(); toast(`Video call with ${pro} booked for ${s.dataset.label}`);
     });
-    // peer chat
-    const CHATS = {
-      'Sarah K.': ['Morning! 5k done before work 🙌', 'Joining the Sunday walk?'],
-      'David L.': ['That beetroot salad from Dr. Aris is actually good.'],
-      'Emma W.': ['Accepted! When does the sleep challenge start?'],
-      'Marcus J.': ['Rest day today. Legs say thanks.']
-    };
-    let who = '';
-    const chat = $('#chatList'), form = $('#chatForm');
-    $$('[data-chat]').forEach(b => b.addEventListener('click', () => {
-      who = b.dataset.chat; $('#chatWho').textContent = who; chat.innerHTML = '';
-      (CHATS[who] || []).forEach(t => { const m = document.createElement('p'); m.className = 'msg msg--them'; m.textContent = t; chat.append(m); });
-      openSheet('chatSheet'); setTimeout(() => $('input', form).focus(), 50);
-    }));
-    form.addEventListener('submit', e => {
-      e.preventDefault(); const inp = $('input', form); const v = inp.value.trim(); if (!v) return;
-      const m = document.createElement('p'); m.className = 'msg msg--me'; m.textContent = v; chat.append(m); chat.scrollTop = chat.scrollHeight; inp.value = '';
-      (CHATS[who] = CHATS[who] || []);
-    });
+    $('#bookedX').addEventListener('click', () => { const bk = store.get(); try { localStorage.setItem(BOOK_KEY, 'null'); } catch (e) { /* storage blocked */ } drawBooked(); if (bk) toast(`Call with ${bk.who} cancelled`); });
+    drawBooked();
+
+    /* ---------- start: open the newest conversation on desktop, or the one named in the link (#chat-nina) ---------- */
+    drawList();
+    const want = /^#chat-([a-z0-9]+)$/.exec(location.hash);
+    if (want && P[want[1]] || want && convo(want[1])) openConvo(want[1], false);
+    else if (wide.matches) openConvo(C.filter(c => !c.gone && c.msgs.length).sort((a, z) => last(z).at - last(a).at)[0].id, false);
   }
 
 })();

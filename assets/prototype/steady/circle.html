@@ -28,7 +28,7 @@
   <aside class="rail" aria-label="Steady">
     <a class="brand" href="index.html"><span class="brand__mark"><svg viewBox="0 0 20 12" aria-hidden="true"><path d="M1 6.5h4.2l2.1-4.5 3.2 8.5 2.2-4h6.3"/></svg></span>Steady</a>
     <nav aria-label="Main"><a href="index.html"><svg class="ic" aria-hidden="true"><use href="#i-today"/></svg><span>Today</span></a><a href="health.html"><svg class="ic" aria-hidden="true"><use href="#i-nourish"/></svg><span>Nourish</span></a><a href="sleep.html"><svg class="ic" aria-hidden="true"><use href="#i-sleep"/></svg><span>Sleep</span></a><a href="rhythm.html"><svg class="ic" aria-hidden="true"><use href="#i-rhythm"/></svg><span>Rhythm</span></a><a href="circle.html" aria-current="page"><svg class="ic" aria-hidden="true"><use href="#i-circle"/></svg><span>Circle</span></a></nav>
-    <a class="rail__me" href="profile.html" aria-label="Your profile"><span class="rail__name">Sarah</span><span class="avatar avatar--photo"><img class="avatar__img" src="media/me.webp" alt="" width="40" height="40"></span></a>
+    <a class="rail__me" href="profile.html" aria-label="Sarah, your profile"><span class="rail__name">Sarah</span><span class="avatar avatar--photo"><img class="avatar__img" src="media/me.webp" alt="" width="40" height="40"></span></a>
   </aside>
   <header class="top">
     <a class="brand" href="index.html"><span class="brand__mark"><svg viewBox="0 0 20 12" aria-hidden="true"><path d="M1 6.5h4.2l2.1-4.5 3.2 8.5 2.2-4h6.3"/></svg></span>Steady</a>
@@ -43,37 +43,125 @@
         <h1>Circle. <span>Better together.</span></h1>
       </div>
     </div>
-    <div class="grid circle-grid">
-      <div class="grid">
-        <section class="card rv" aria-labelledby="frH">
-          <div class="card__h"><h2 id="frH">Friends</h2><a class="lnk" href="#main" aria-label="See all 18 friends">See all (18)<svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></a></div>
-          <div class="people"><button class="person" type="button" data-chat="Sarah K." aria-label="Chat with Sarah K., active"><span class="avatar avatar--l av-3" aria-hidden="true">SK</span><b>Sarah K.</b><small><i class=""></i>Active</small></button><button class="person" type="button" data-chat="David L." aria-label="Chat with David L., active"><span class="avatar avatar--l av-4" aria-hidden="true">DL</span><b>David L.</b><small><i class=""></i>Active</small></button><button class="person" type="button" data-chat="Emma W." aria-label="Chat with Emma W., pending"><span class="avatar avatar--l av-5" aria-hidden="true">EW</span><b>Emma W.</b><small><i class="wait"></i>Pending</small></button><button class="person" type="button" data-chat="Marcus J." aria-label="Chat with Marcus J., active"><span class="avatar avatar--l av-6" aria-hidden="true">MJ</span><b>Marcus J.</b><small><i class=""></i>Active</small></button></div>
-        </section>
-        <section class="card rv" aria-labelledby="prH">
-          <div class="card__h"><h2 id="prH">Your professionals</h2><span class="meta">Video or chat</span></div>
-          <ul class="pros"><li><span class="avatar av-2" aria-hidden="true">DA</span><div><b>Dr. Aris</b><small>Doctor</small></div><button class="btn btn--ghost btn--s" type="button" data-consult="Dr. Aris" data-role="Doctor"><svg class="ic" aria-hidden="true"><use href="#i-video"/></svg>Consult</button></li><li><span class="avatar av-7" aria-hidden="true">CD</span><div><b>Coach Dan</b><small>Coach</small></div><button class="btn btn--ghost btn--s" type="button" data-consult="Coach Dan" data-role="Coach"><svg class="ic" aria-hidden="true"><use href="#i-video"/></svg>Consult</button></li><li><span class="avatar av-4" aria-hidden="true">ER</span><div><b>Elena R.</b><small>Nutritionist</small></div><button class="btn btn--ghost btn--s" type="button" data-consult="Elena R." data-role="Nutritionist"><svg class="ic" aria-hidden="true"><use href="#i-video"/></svg>Consult</button></li></ul>
-        </section>
-        <section class="card rv" aria-labelledby="sgH">
-          <div class="card__h"><h2 id="sgH">People you may know</h2></div>
-          <ul class="sugg"><li><span class="avatar av-3" aria-hidden="true">CT</span><div><b>Claire Temple</b><small>Certified yoga instructor · 4 mutual</small></div><button class="btn btn--ink btn--s" type="button" data-connect="Claire Temple" aria-pressed="false"><span>Connect</span></button></li><li><span class="avatar av-6" aria-hidden="true">JF</span><div><b>Dr. James Foster</b><small>Cardiologist &amp; coach · 12 mutual</small></div><button class="btn btn--ink btn--s" type="button" data-connect="Dr. James Foster" aria-pressed="false"><span>Connect</span></button></li></ul>
-        </section>
+    <div class="dash circle-dash">
+      <div class="kpis span-12 rv">
+        <article class="card kpi" aria-labelledby="ck1">
+          <div class="kpi__h"><span class="kpi__ic"><svg class="ic" aria-hidden="true"><use href="#i-circle"/></svg></span><h2 id="ck1">Connections</h2></div>
+          <p class="kpi__v num"><b>142</b><small>people</small></p>
+          <div class="kpi__bar" aria-hidden="true"><i style="transform:scaleX(0.64)"></i></div>
+          <p class="kpi__s"><em class="up">+6</em> this month</p>
+        </article>
+        <article class="card kpi" aria-labelledby="ck2">
+          <div class="kpi__h"><span class="kpi__ic"><svg class="ic" aria-hidden="true"><use href="#i-chat"/></svg></span><h2 id="ck2">Unread</h2></div>
+          <p class="kpi__v num"><b id="kUnread">3</b><small>messages</small></p>
+          <p class="kpi__s"><span id="kUnreadS">in 2 conversations</span></p>
+        </article>
+        <article class="card kpi" aria-labelledby="ck3">
+          <div class="kpi__h"><span class="kpi__ic"><svg class="ic" aria-hidden="true"><use href="#i-bell"/></svg></span><h2 id="ck3">Requests</h2></div>
+          <p class="kpi__v num"><b id="statPending">1</b><small>waiting</small></p>
+          <p class="kpi__s"><span id="kPendS">Emma W. wants to connect</span></p>
+        </article>
+        <article class="card kpi" aria-labelledby="ck4">
+          <div class="kpi__h"><span class="kpi__ic"><svg class="ic" aria-hidden="true"><use href="#i-spark"/></svg></span><h2 id="ck4">Challenges</h2></div>
+          <p class="kpi__v num"><b id="kChal">2</b><small>active</small></p>
+          <div class="kpi__bar" aria-hidden="true"><i style="transform:scaleX(0.29)"></i></div>
+          <p class="kpi__s">Sleep Challenge: night 4 of 14</p>
+        </article>
       </div>
-      <div class="side">
-        <section class="card rv" aria-labelledby="acH">
-          <div class="stats3"><div><b class="num">142</b><span>connections</span></div><div><b class="num" id="statPending">3</b><span>pending</span></div><div><b class="num">5</b><span>challenges</span></div></div>
-          <div class="card__h" style="margin:22px 0 4px"><h2 id="acH">Activity</h2><span class="meta">Today</span></div>
-          <ul class="feed">
-            <li><span class="avatar av-3" aria-hidden="true">SK</span><p><b>Sarah K.</b> cheered your run<br><small>5k Morning Flow</small></p><small>2h</small></li>
-            <li><span class="avatar av-2" aria-hidden="true">DA</span><p><b>Dr. Aris</b> added a recipe<br><small>Earthy beetroot salad</small></p><small>5h</small></li>
-            <li><span class="avatar av-5" aria-hidden="true">EW</span><p><b>Emma W.</b> accepted your invite<br><small>Joined the Sleep Challenge</small></p><small>1d</small></li>
-          </ul>
-        </section>
-        <div class="card card--soft rv">
-          <p class="note">A 15-minute session with Elena R. tends to lift weekly nourish scores. She has time this afternoon.</p>
-          <p style="margin-top:14px"><button class="btn btn--accent btn--s" type="button" data-consult="Elena R." data-role="Nutritionist"><svg class="ic" aria-hidden="true"><use href="#i-video"/></svg>Book Elena</button></p>
+
+      <section class="card msgs-card span-8 rv" id="messages" aria-labelledby="msH">
+        <div class="card__h"><h2 id="msH">Messages</h2><button class="btn btn--ink btn--s" type="button" id="newMsg"><svg class="ic" aria-hidden="true"><use href="#i-plus"/></svg>New message</button></div>
+        <div class="inbox">
+          <div class="inbox__list">
+            <label class="field field--s"><span class="sr">Search messages</span><svg class="ic" aria-hidden="true"><use href="#i-search"/></svg><input id="inboxQ" type="search" placeholder="Search" autocomplete="off"></label>
+            <div class="seg inbox__seg" role="group" aria-label="Show"><button type="button" aria-pressed="true" data-f="all">All</button><button type="button" aria-pressed="false" data-f="unread">Unread</button><button type="button" aria-pressed="false" data-f="groups">Groups</button></div>
+            <ul class="convos" id="convos" aria-label="Conversations"></ul>
+          </div>
+          <div class="inbox__pane" id="pane">
+            <div class="thread" id="thread">
+              <div class="thread__h">
+                <button class="icon-btn thread__x" type="button" data-close aria-label="Back to messages"><svg class="ic" aria-hidden="true"><use href="#i-back"/></svg></button>
+                <span class="thread__av" id="thAv" aria-hidden="true"></span>
+                <div class="thread__who"><h3 id="thName">Messages</h3><small id="thSub"></small></div>
+                <div class="thread__acts" id="thActs"></div>
+              </div>
+              <div class="thread__msgs" id="thMsgs" role="log" aria-live="polite" aria-labelledby="thName" tabindex="0"></div>
+              <div class="thread__req" id="thReq" hidden>
+                <p><b id="thReqName">Emma W.</b> wants to connect. Accept to chat and see each other&rsquo;s activity.</p>
+                <div><button class="btn btn--ink btn--s" type="button" id="reqYes"><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg>Accept</button><button class="btn btn--ghost btn--s" type="button" id="reqNo">Decline</button></div>
+              </div>
+              <div class="thread__quick" id="thQuick" role="group" aria-label="Quick replies"></div>
+              <form class="field thread__form" id="chatForm" autocomplete="off">
+                <button class="icon-btn icon-btn--s" type="button" id="shareSteps" aria-label="Share today&rsquo;s steps"><svg class="ic" aria-hidden="true"><use href="#i-walk"/></svg></button>
+                <label class="sr" for="chatIn">Message</label><input id="chatIn" type="text" placeholder="Write a message" enterkeyhint="send">
+                <button class="icon-btn icon-btn--s icon-btn--ink" type="submit" aria-label="Send"><svg class="ic" aria-hidden="true"><use href="#i-send"/></svg></button>
+              </form>
+            </div>
+          </div>
         </div>
-      </div>
+      </section>
+
+      <section class="card span-4 rv" aria-labelledby="acH">
+        <div class="card__h"><h2 id="acH">Activity</h2><span class="meta">Today</span></div>
+        <ul class="feed" id="feed">
+          <li><span class="avatar av-3" aria-hidden="true">NK</span><p><b>Nina K.</b> cheered your run<small>5k Morning Flow · 2h</small></p><div class="feed__acts"><button class="cheer" type="button" aria-pressed="false" data-cheer="Nina K."><svg class="ic" aria-hidden="true"><use href="#i-heart"/></svg><span>Cheer back</span></button><button class="lnk" type="button" data-open="nina">Reply</button></div></li>
+          <li><span class="avatar av-6" aria-hidden="true">MJ</span><p><b>Marcus J.</b> finished night 4<small>Sleep Challenge · 3h</small></p><div class="feed__acts"><button class="cheer" type="button" aria-pressed="false" data-cheer="Marcus J."><svg class="ic" aria-hidden="true"><use href="#i-heart"/></svg><span>Cheer</span></button><button class="lnk" type="button" data-open="sleep">Open chat</button></div></li>
+          <li><span class="avatar av-2" aria-hidden="true">DA</span><p><b>Dr. Aris</b> added a recipe<small>Earthy beetroot salad · 5h</small></p><div class="feed__acts"><a class="lnk" href="health.html">See it in Nourish</a></div></li>
+          <li><span class="avatar av-4" aria-hidden="true">DL</span><p><b>David L.</b> reached 10,000 steps<small>Yesterday</small></p><div class="feed__acts"><button class="cheer" type="button" aria-pressed="false" data-cheer="David L."><svg class="ic" aria-hidden="true"><use href="#i-heart"/></svg><span>Cheer</span></button></div></li>
+          <li><span class="avatar av-5" aria-hidden="true">EW</span><p><b>Emma W.</b> joined the Sleep Challenge<small>Yesterday</small></p><div class="feed__acts"><button class="lnk" type="button" data-open="emma">See her request</button></div></li>
+        </ul>
+      </section>
+
+      <section class="card span-8 rv" id="challenges" aria-labelledby="chgH">
+        <div class="card__h"><h2 id="chgH">Challenges</h2><span class="meta">With your circle</span></div>
+        <ul class="chals">
+          <li class="chal" data-chal="sleep" data-joined="true">
+            <div class="chal__top"><span class="kpi__ic"><svg class="ic" aria-hidden="true"><use href="#i-sleep"/></svg></span><div><h3>Sleep Challenge</h3><small>In bed by 11 PM for 14 nights</small></div><span class="chal__rank num">2nd of 4</span></div>
+            <div class="chal__bar"><div class="bar" aria-hidden="true"><i style="transform:scaleX(.286)"></i></div><span class="num">Night 4 of 14</span></div>
+            <div class="chal__foot"><span class="faces" role="img" aria-label="With Marcus J., Nina K. and Emma W."><i class="avatar av-6" aria-hidden="true">MJ</i><i class="avatar av-3" aria-hidden="true">NK</i><i class="avatar av-5" aria-hidden="true">EW</i></span><button class="lnk" type="button" data-open="sleep" aria-label="Open the Sleep Challenge chat">Chat</button><button class="btn btn--ghost btn--s chal__go" type="button" aria-pressed="true"><span>Leave</span></button></div>
+          </li>
+          <li class="chal" data-chal="walk" data-joined="true">
+            <div class="chal__top"><span class="kpi__ic"><svg class="ic" aria-hidden="true"><use href="#i-walk"/></svg></span><div><h3>Sunday 5k walk</h3><small>Every Sunday, 8 AM at the park</small></div><span class="chal__rank num">3 of 4 Sundays</span></div>
+            <div class="chal__bar"><div class="bar" aria-hidden="true"><i style="transform:scaleX(.75)"></i></div><span class="num">This month</span></div>
+            <div class="chal__foot"><span class="faces" role="img" aria-label="With Nina K., David L. and Marcus J."><i class="avatar av-3" aria-hidden="true">NK</i><i class="avatar av-4" aria-hidden="true">DL</i><i class="avatar av-6" aria-hidden="true">MJ</i></span><button class="lnk" type="button" data-open="walkers" aria-label="Open the Sunday walkers chat">Chat</button><button class="btn btn--ghost btn--s chal__go" type="button" aria-pressed="true"><span>Leave</span></button></div>
+          </li>
+          <li class="chal" data-chal="calm" data-joined="false">
+            <div class="chal__top"><span class="kpi__ic"><svg class="ic" aria-hidden="true"><use href="#i-wind"/></svg></span><div><h3>Ten calm minutes</h3><small>Breathe 10 minutes a day for 7 days</small></div><span class="chal__rank num">Starts Monday</span></div>
+            <div class="chal__bar"><div class="bar" aria-hidden="true"><i style="transform:scaleX(0)"></i></div><span class="num">6 friends in</span></div>
+            <div class="chal__foot"><span class="faces" role="img" aria-label="With David L. and Coach Dan"><i class="avatar av-4" aria-hidden="true">DL</i><i class="avatar av-7" aria-hidden="true">CD</i></span><button class="btn btn--ink btn--s chal__go" type="button" aria-pressed="false"><span>Join</span></button></div>
+          </li>
+        </ul>
+      </section>
+
+      <section class="card span-4 rv" aria-labelledby="frH">
+        <div class="card__h"><h2 id="frH">Friends</h2><button class="lnk" type="button" id="allFriends" aria-label="See all 18 friends">See all (18)<svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></button></div>
+        <div class="people"><button class="person" type="button" data-open="nina"><span class="avatar avatar--l av-3" aria-hidden="true">NK</span><b>Nina K.</b><small><i></i>Active</small></button><button class="person" type="button" data-open="david"><span class="avatar avatar--l av-4" aria-hidden="true">DL</span><b>David L.</b><small><i></i>Active</small></button><button class="person" type="button" data-open="emma"><span class="avatar avatar--l av-5" aria-hidden="true">EW</span><b>Emma W.</b><small><i class="wait"></i><span data-emma-st>Request</span></small></button><button class="person" type="button" data-open="marcus"><span class="avatar avatar--l av-6" aria-hidden="true">MJ</span><b>Marcus J.</b><small><i class="away"></i>Away</small></button></div>
+      </section>
+
+      <section class="card span-6 rv" id="pros" aria-labelledby="prH">
+        <div class="card__h"><h2 id="prH">Your professionals</h2><span class="meta">Video or chat</span></div>
+        <div class="booked" id="booked" hidden><svg class="ic" aria-hidden="true"><use href="#i-video"/></svg><p><b id="bookedT"></b><small id="bookedS"></small></p><button class="lnk" type="button" id="bookedX">Cancel</button></div>
+        <ul class="pros"><li><span class="avatar av-2" aria-hidden="true">DA</span><div><b>Dr. Aris</b><small>Doctor</small></div><button class="icon-btn icon-btn--s" type="button" data-open="aris" aria-label="Message Dr. Aris"><svg class="ic" aria-hidden="true"><use href="#i-chat"/></svg></button><button class="btn btn--ghost btn--s" type="button" data-consult="Dr. Aris" data-role="Doctor"><svg class="ic" aria-hidden="true"><use href="#i-video"/></svg>Consult</button></li><li><span class="avatar av-7" aria-hidden="true">CD</span><div><b>Coach Dan</b><small>Coach</small></div><button class="icon-btn icon-btn--s" type="button" data-open="dan" aria-label="Message Coach Dan"><svg class="ic" aria-hidden="true"><use href="#i-chat"/></svg></button><button class="btn btn--ghost btn--s" type="button" data-consult="Coach Dan" data-role="Coach"><svg class="ic" aria-hidden="true"><use href="#i-video"/></svg>Consult</button></li><li><span class="avatar av-1" aria-hidden="true">ER</span><div><b>Elena R.</b><small>Nutritionist · free at 4:30 PM</small></div><button class="icon-btn icon-btn--s" type="button" data-open="elena" aria-label="Message Elena R."><svg class="ic" aria-hidden="true"><use href="#i-chat"/></svg></button><button class="btn btn--ghost btn--s" type="button" data-consult="Elena R." data-role="Nutritionist"><svg class="ic" aria-hidden="true"><use href="#i-video"/></svg>Consult</button></li></ul>
+        <p class="insight dash__foot"><svg class="ic" aria-hidden="true"><use href="#i-spark"/></svg><span>A 15-minute session with Elena R. tends to lift weekly nourish scores.</span></p>
+      </section>
+
+      <section class="card span-6 rv" aria-labelledby="sgH">
+        <div class="card__h"><h2 id="sgH">People you may know</h2></div>
+        <ul class="sugg"><li><span class="avatar av-3" aria-hidden="true">CT</span><div><b>Claire Temple</b><small>Certified yoga instructor · 4 mutual</small></div><button class="btn btn--ink btn--s" type="button" data-connect="Claire Temple" aria-pressed="false"><span>Connect</span></button></li><li><span class="avatar av-6" aria-hidden="true">JF</span><div><b>Dr. James Foster</b><small>Cardiologist &amp; coach · 12 mutual</small></div><button class="btn btn--ink btn--s" type="button" data-connect="Dr. James Foster" aria-pressed="false"><span>Connect</span></button></li><li><span class="avatar av-5" aria-hidden="true">PL</span><div><b>Priya L.</b><small>In the Sunday 5k walk · 3 mutual</small></div><button class="btn btn--ink btn--s" type="button" data-connect="Priya L." aria-pressed="false"><span>Connect</span></button></li></ul>
+        <div class="invite dash__foot"><p><b>Bring someone along</b><small>Friends who join can cheer you on and share challenges.</small></p><button class="btn btn--ghost btn--s" type="button" id="invite"><svg class="ic" aria-hidden="true"><use href="#i-send"/></svg>Invite a friend</button></div>
+      </section>
     </div>
+    <footer class="foot">
+      <div class="foot__top">
+        <div><a class="brand" href="index.html"><span class="brand__mark"><svg viewBox="0 0 20 12" aria-hidden="true"><path d="M1 6.5h4.2l2.1-4.5 3.2 8.5 2.2-4h6.3"/></svg></span>Steady</a><p class="foot__line">Sleep, food, movement and the people who keep you going, one steady day at a time.</p></div>
+        <nav class="foot__nav" aria-label="Footer">
+          <div><h2>Your day</h2><ul><li><a href="index.html">Today</a></li><li><a href="health.html">Nourish</a></li><li><a href="sleep.html">Sleep</a></li><li><a href="rhythm.html">Rhythm</a></li><li><a href="circle.html" aria-current="page">Circle</a></li></ul></div>
+          <div><h2>You</h2><ul><li><a href="profile.html">Profile</a></li><li><a href="profile.html#gH">Daily goals</a></li><li><a href="profile.html#rmH">Reminders</a></li><li><a href="profile.html#pvH">Privacy and data</a></li></ul></div>
+          <div><h2>Help</h2><ul><li><button type="button" data-ask>Ask Steady</button></li><li><a href="circle.html#pros">Book a professional</a></li><li><a href="circle.html#messages">Message your circle</a></li></ul></div>
+        </nav>
+      </div>
+      <div class="foot__base"><p>Guidance, not diagnosis. In an emergency, call your local emergency number.</p><p>A concept with sample data</p><p>&copy; 2026 Steady</p></div>
+    </footer>
   </main>
 </div>
 <nav class="tabs" aria-label="Main"><a href="index.html"><svg class="ic" aria-hidden="true"><use href="#i-today"/></svg><span>Today</span></a><a href="health.html"><svg class="ic" aria-hidden="true"><use href="#i-nourish"/></svg><span>Nourish</span></a><a href="sleep.html"><svg class="ic" aria-hidden="true"><use href="#i-sleep"/></svg><span>Sleep</span></a><a href="rhythm.html"><svg class="ic" aria-hidden="true"><use href="#i-rhythm"/></svg><span>Rhythm</span></a><a href="circle.html" aria-current="page"><svg class="ic" aria-hidden="true"><use href="#i-circle"/></svg><span>Circle</span></a></nav>
@@ -100,12 +188,15 @@
     <button class="btn btn--accent" type="button" id="consultGo" disabled><svg class="ic" aria-hidden="true"><use href="#i-video"/></svg>Book video call</button>
   </div>
 </dialog>
-<dialog class="sheet" id="chatSheet" aria-labelledby="chH">
+<dialog class="sheet sheet--chat" id="chatSheet" aria-labelledby="thName">
+  <div class="sheet__in" id="chatHold"><div class="sheet__grab" aria-hidden="true"></div></div>
+</dialog>
+<dialog class="sheet" id="friendsSheet" aria-labelledby="fsH">
   <div class="sheet__in">
     <div class="sheet__grab" aria-hidden="true"></div>
-    <div class="sheet__h"><h2 id="chH"><span id="chatWho">Chat</span></h2><button class="icon-btn" type="button" data-close aria-label="Close"><svg class="ic" aria-hidden="true"><use href="#i-x"/></svg></button></div>
-    <div class="chat" id="chatList" aria-live="polite"></div>
-    <form class="field" id="chatForm" autocomplete="off"><label class="sr" for="chatIn">Message</label><input id="chatIn" type="text" placeholder="Write a message" enterkeyhint="send"><button class="icon-btn" type="submit" aria-label="Send"><svg class="ic" aria-hidden="true"><use href="#i-send"/></svg></button></form>
+    <div class="sheet__h"><h2 id="fsH">Friends</h2><button class="icon-btn" type="button" data-close aria-label="Close"><svg class="ic" aria-hidden="true"><use href="#i-x"/></svg></button></div>
+    <label class="field"><span class="sr">Search friends</span><svg class="ic" aria-hidden="true"><use href="#i-search"/></svg><input id="fsQ" type="search" placeholder="Search 18 friends" autocomplete="off"></label>
+    <ul class="flist" id="flist"></ul>
   </div>
 </dialog>
 <script src="script.js"></script>
