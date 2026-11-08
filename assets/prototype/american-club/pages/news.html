@@ -7,7 +7,7 @@
 <meta name="description" content="News for Members of The American Club Singapore, including the 2026 Annual General Meeting.">
 <meta name="theme-color" content="#001e62">
 <meta name="robots" content="noindex">
-<script>(function(h){h.classList.add('js');try{var s=sessionStorage;s.getItem('acNext')?h.classList.add('is-pl','pl-nav'):s.getItem('acPl')||h.classList.add('is-pl')}catch(e){}})(document.documentElement)</script>
+<script>(function(h){h.classList.add('js','is-pl');try{sessionStorage.getItem('acNext')&&h.classList.add('pl-nav')}catch(e){}})(document.documentElement)</script>
 <link rel="icon" href="../media/eagle-ink.webp" type="image/webp">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -16,8 +16,8 @@
 <link rel="stylesheet" href="../pages.css">
 </head>
 <body>
-<div class="pl" aria-hidden="true"><div class="pl__cv"></div><div class="pl__in"><img class="pl__logo" src="../media/logo.webp" width="320" height="154" alt=""><ol class="pl__list"><li style="--i:0"><span><b>01</b>The Club</span></li><li style="--i:1"><span><b>02</b>Dining</span></li><li style="--i:2"><span><b>03</b>Aquatics</span></li><li style="--i:3"><span><b>04</b>sên Spa</span></li><li style="--i:4"><span><b>05</b>Kids</span></li><li style="--i:5"><span><b>06</b>Private Events</span></li><li style="--i:6"><span><b>07</b>Membership</span></li></ol><p class="pl__yr"><span>Since 1948 · Claymore Hill</span></p></div><div class="pl__to"><img class="pl__eagle" src="../media/eagle.webp" width="300" height="60" alt=""><p class="pl__name" id="plName"></p></div></div>
-<script>try{var n=sessionStorage.getItem('acNext');n&&(document.getElementById('plName').innerHTML=[...n].map(function(c,i){return '<span style="--i:'+i+'">'+(c===' '?'&nbsp;':c)+'</span>'}).join(''))}catch(e){}</script>
+<div class="pl" aria-hidden="true"><div class="pl__cv"></div><div class="pl__to"><p class="pl__name" id="plName"><span class="w"><span style="--i:0">T</span><span style="--i:1">h</span><span style="--i:2">e</span></span> <span class="w"><span style="--i:4">A</span><span style="--i:5">m</span><span style="--i:6">e</span><span style="--i:7">r</span><span style="--i:8">i</span><span style="--i:9">c</span><span style="--i:10">a</span><span style="--i:11">n</span></span> <span class="w"><span style="--i:13">C</span><span style="--i:14">l</span><span style="--i:15">u</span><span style="--i:16">b</span></span></p><div class="pl__pg"><span class="pl__track"><i id="plBar"></i></span><b id="plPct">0%</b></div></div></div>
+<script>try{var n=sessionStorage.getItem('acNext');n&&(document.getElementById('plName').innerHTML=(function(n){var i=0;return n.split(' ').map(function(w){var s='';for(var k=0;k<w.length;k++)s+='<span style="--i:'+(i++)+'">'+w[k]+'</span>';i++;return '<span class="w">'+s+'</span>'}).join(' ')})(n))}catch(e){}</script>
 <a class="skip" href="#main">Skip to content</a>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">

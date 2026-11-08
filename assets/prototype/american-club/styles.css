@@ -213,7 +213,7 @@ html { scrollbar-color: var(--ink-3) var(--paper-2); scrollbar-width: thin; }
 
 /* ---------- hero: three bands between two rules, an arch in each, shifted against the others ---------- */
 .hr { position: relative; }
-.hr__pin { position: sticky; top: 0; height: 100svh; min-height: 560px; overflow: hidden; background: var(--paper); --stage: 41vw; --pad: 4vw; --tp: clamp(14px, 1.6vw, 24px); --yf: min(10vw, 16svh); --h: min(calc(var(--w) * 1.46), calc(89svh - var(--yf) * .78 - 200px)); --bh: var(--h); --wb: clamp(40px, 6svh, 64px); --w: min(calc(27vw - 28px), 38svh); --panel: calc((var(--w) + 2 * var(--pad)) * .77); --o: max(calc(var(--w) * .2), calc((2 * var(--w) + var(--panel) - 100vw + var(--stage) + 24px) / 2)); --bt: 11%; --foot: 14px; }
+.hr__pin { position: sticky; top: 0; height: 100svh; min-height: 560px; overflow: hidden; background: var(--paper); --stage: 41vw; --pad: 4vw; --tp: clamp(14px, 1.6vw, 24px); --yf: min(10vw, 16svh); --h: min(calc(var(--w) * 1.46), calc(89svh - var(--yf) * .78 - 200px)); --bh: calc(var(--h) - clamp(30px, 6svh, 64px)); --wb: clamp(40px, 6svh, 64px); --w: min(calc(27vw - 28px), 38svh); --panel: calc((var(--w) + 2 * var(--pad)) * .77); --o: max(calc(var(--w) * .2), calc((2 * var(--w) + var(--panel) - 100vw + var(--stage) + 24px) / 2)); --bt: 11%; --foot: 14px; }
 .hr__say { position: absolute; z-index: 2; left: var(--edge); bottom: clamp(24px, 5.4svh, 56px); top: calc(clamp(70px, 6.4vw, 92px) + clamp(12px, 3svh, 32px)); width: calc(var(--stage) - var(--edge) - 12px); display: flex; flex-direction: column; justify-content: flex-end; }
 .hr__clocks { display: flex; gap: 26px; margin-bottom: auto; font-size: 13px; line-height: 1.35; color: var(--muted); }
 .hr__clocks dd { color: var(--ink); font-weight: 500; font-variant-numeric: tabular-nums; }
@@ -245,7 +245,7 @@ html { scrollbar-color: var(--ink-3) var(--paper-2); scrollbar-width: thin; }
 /* 1948, cut out of the clubhouse and split across the first rule: 19 stands on the first arch, 48 under the second */
 .hr__yr { position: absolute; font: 700 var(--yf)/.78 var(--display); letter-spacing: -.05em; color: var(--ink); background: url("media/clubhouse-1280.webp") 18% 42% / 620% auto; -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; user-select: none; }
 .hr__yr--a { left: 0; bottom: calc(var(--wb) + var(--h) + .1em); }
-.hr__yr--b { left: var(--tp); top: calc(var(--bt) + var(--bh) + .1em); background-position: 62% 56%; }
+.hr__yr--b { left: var(--tp); top: calc(var(--bt) + var(--bh) + .14em); background-position: 62% 56%; }
 
 .hr__caps { position: absolute; z-index: 2; left: var(--tp); right: var(--tp); pointer-events: auto; bottom: clamp(20px, 4.2svh, 44px); display: grid; }
 .hr__cap { grid-area: 1 / 1; align-self: end; opacity: 0; visibility: hidden; transform: translateY(10px); transition: opacity .3s ease, transform .5s var(--ease-out), visibility 0s .3s; }
@@ -283,7 +283,7 @@ a.hr__cue:focus-visible { outline: 2px solid var(--focus); outline-offset: 4px; 
 .hr__cue path { stroke: var(--ink); stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; transform: rotate(90deg); transform-origin: 22px 22px; }
 
 @media (max-width: 900px) {
-  .hr__pin { --stage: 0px; --h: min(calc(var(--w) * 1.46), calc(100svh - var(--say, 280px) - 26px - var(--yf) * .78 - 185px)); --pad: 3.5vw; --panel: calc(var(--w) + 2 * var(--pad)); --tp: 10px; --yf: 13vw; --wb: 28px; --w: min(46vw, calc((100svh - var(--say, 280px) - 260px) / 1.27)); --bt: max(3%, 26px); --foot: 10px; }
+  .hr__pin { --stage: 0px; --bh: var(--h); --h: min(calc(var(--w) * 1.46), calc(100svh - var(--say, 280px) - 26px - var(--yf) * .78 - 185px)); --pad: 3.5vw; --panel: calc(var(--w) + 2 * var(--pad)); --tp: 10px; --yf: 13vw; --wb: 28px; --w: min(46vw, calc((100svh - var(--say, 280px) - 260px) / 1.27)); --bt: max(3%, 26px); --foot: 10px; }
   .hr__say { top: calc(clamp(70px, 6.4vw, 92px) + 8px); bottom: auto; width: auto; right: var(--edge); }
   .hr__clocks, .hr__deck { display: none; }
   .hr__cta { margin-top: 12px; }
@@ -613,7 +613,7 @@ html.js .rv-img.is-in img { transform: none; }
   .ix { clip-path: none; }
 }
 
-/* ---------- preloader: an arch-edged curtain. First visit lists the rooms one by one; between pages it spells the next page ---------- */
+/* ---------- preloader: an arch-edged curtain. The name spells out letter by letter with the loading line and % under it; between pages it spells the next page ---------- */
 .pl { display: none; }
 html.is-pl, html.pl-go { overflow: hidden; }
 html.is-pl .pl, html.pl-go .pl { position: fixed; inset: 0; z-index: 300; display: grid; place-items: center; padding: var(--gut); color: #fff; }
@@ -621,36 +621,27 @@ html.is-pl .pl, html.pl-go .pl { position: fixed; inset: 0; z-index: 300; displa
 .pl__cv::before, .pl__cv::after { content: ""; position: absolute; left: -10%; right: -10%; height: var(--arc); background: inherit; }
 .pl__cv::before { bottom: 100%; margin-bottom: -1px; border-radius: 50% 50% 0 0 / 100% 100% 0 0; }
 .pl__cv::after { top: 100%; margin-top: -1px; border-radius: 0 0 50% 50% / 0 0 100% 100%; }
-.pl__in, .pl__to { position: relative; grid-area: 1 / 1; transition: transform 1.05s var(--ease-io), opacity .5s ease; }
-.pl__in { display: grid; justify-items: start; width: min(100%, 26rem); }
-html.pl-nav .pl__in, html:not(.pl-nav) .pl__to { display: none; }
-.pl__logo { width: clamp(104px, 11vw, 132px); height: auto; margin-bottom: clamp(28px, 5svh, 44px); }
-.pl__list { display: grid; gap: 2px; margin: 0; padding: 0; list-style: none; }
-.pl__list li { overflow: hidden; }
-.pl__list span { display: flex; align-items: baseline; gap: 14px; font: 700 clamp(1.6rem, min(4vw, 5.4svh), 2.5rem)/1.12 var(--display); letter-spacing: -.035em; }
-.pl__list b { min-width: 2ch; font: 500 12px/1 var(--body); letter-spacing: .04em; color: #ff9db0; font-variant-numeric: tabular-nums; transform: translateY(-.9em); }
-.pl__yr { overflow: hidden; margin-top: clamp(24px, 4svh, 36px); font: 400 italic clamp(1.1rem, 1.6vw, 1.35rem)/1.2 var(--italic); color: rgba(255, 255, 255, .75); }
-.pl__yr span { display: block; }
-.pl__to { display: grid; justify-items: center; gap: clamp(18px, 3svh, 28px); text-align: center; }
-.pl__eagle { width: clamp(150px, 16vw, 210px); height: auto; opacity: .9; }
-.pl__name { overflow: hidden; padding: 0 .04em .08em; font: 700 clamp(2.6rem, min(8vw, 13svh), 6.5rem)/1 var(--display); letter-spacing: -.045em; white-space: nowrap; }
-.pl__name span { display: inline-block; }
+.pl__to { position: relative; display: grid; gap: clamp(18px, 3svh, 28px); max-width: 100%; transition: transform 1.05s var(--ease-io), opacity .5s ease; }
+.pl__name { font: 700 clamp(2.4rem, min(7.4vw, 12svh), 6rem)/1 var(--display); letter-spacing: -.045em; text-align: center; text-wrap: balance; }
+.pl__name .w { display: inline-block; overflow: hidden; padding: 0 .03em .1em; margin-bottom: -.1em; white-space: nowrap; }
+.pl__name .w span { display: inline-block; }
+/* the loading line runs the width of the name, the % sits at its end */
+.pl__pg { display: flex; align-items: center; gap: 16px; }
+.pl__track { position: relative; flex: 1; height: 1px; overflow: hidden; background: rgba(255, 255, 255, .22); }
+.pl__track i { position: absolute; inset: 0; background: #fff; transform: scaleX(0); transform-origin: left; }
+.pl__pg b { min-width: 4ch; font: 500 13px/1 var(--body); letter-spacing: .04em; text-align: right; font-variant-numeric: tabular-nums; }
 /* lift: the curtain rises off with its curved hem showing */
 html.pl-out .pl__cv { transform: translateY(calc(-100% - var(--arc))); }
-html.pl-out :is(.pl__in, .pl__to) { transform: translateY(-14svh); opacity: 0; }
+html.pl-out .pl__to { transform: translateY(-14svh); opacity: 0; }
 @media (prefers-reduced-motion: no-preference) {
-  .pl__list span { animation: plIn .7s var(--ease-expo) both; animation-delay: calc(.2s + var(--i) * .13s); }
-  .pl__list li:not(:last-child) span { animation: plIn .7s var(--ease-expo) both, plDim .5s ease forwards; animation-delay: calc(.2s + var(--i) * .13s), calc(.33s + var(--i) * .13s); }
-  .pl__logo { animation: fadeUp .7s var(--ease-out) both; }
-  .pl__yr span { animation: plIn .7s var(--ease-expo) 1.25s both; }
+  html.is-pl:not(.pl-nav) .pl__name .w span, html.pl-go .pl__name .w span { animation: plIn .7s var(--ease-expo) both; animation-delay: calc(.2s + var(--i) * 45ms); }
+  html.is-pl:not(.pl-nav) .pl__pg, html.pl-go .pl__pg { animation: fadeUp .6s var(--ease-out) .35s both; }
   /* leaving: the curtain comes up from below as an arch, then the next page's name arrives letter by letter */
   html.pl-go .pl__cv { animation: plUp .7s var(--ease-io) both; }
-  html.pl-go .pl__eagle { animation: fadeUp .5s var(--ease-out) .35s both; }
-  html.pl-go .pl__name span { animation: plIn .6s var(--ease-expo) both; animation-delay: calc(.3s + var(--i) * 28ms); }
+  html.pl-go .pl__name .w span { animation-delay: calc(.3s + var(--i) * 28ms); }
   /* the hero waits behind the curtain, then plays as it lifts */
   html.is-pl:not(.pl-out) :is(.hr__h .ln > span, .hr__band--b::before, .hr__band--b::after, .hr__frame) { animation-play-state: paused; }
 }
 @media (prefers-reduced-motion: reduce) { .pl { transition: opacity .3s ease; } html.pl-out .pl__cv { transform: none; } html.pl-out .pl { opacity: 0; } }
-@keyframes plIn { from { transform: translateY(105%); } }
-@keyframes plDim { to { opacity: .5; } }
+@keyframes plIn { from { transform: translateY(110%); } }
 @keyframes plUp { from { transform: translateY(calc(100% + var(--arc))); } }

@@ -4,25 +4,34 @@
   const $$ = (s, c = document) => [...c.querySelectorAll(s)];
   const reduce = matchMedia('(prefers-reduced-motion: reduce)');
 
-  /* ---------- preloader: first visit holds for the hero photo and fonts (2s to 3.5s); between pages it is a quick curtain ---------- */
+  /* ---------- preloader: every load. The line and % follow the fonts and hero photos, never faster than the name can spell (1.7s) or slower than 3.5s; between pages it is quicker ---------- */
   const root = document.documentElement, pl = $('.pl'), plName = $('#plName');
   const NAMES = { index: 'The Club', dining: 'Dining', fitness: 'Fitness', events: 'Private Events', kids: 'Kids', membership: 'Membership', about: 'About the Club', 'whats-on': 'What’s On', news: 'News', gallery: 'Gallery', contact: 'Contact', login: 'Member Login', privacy: 'Privacy' };
   const store = (k, v) => { try { v == null ? sessionStorage.removeItem(k) : sessionStorage.setItem(k, v); } catch (e) {} };
   if (pl && root.classList.contains('is-pl')) {
     const nav = root.classList.contains('pl-nav');
-    const hero = $('img[fetchpriority="high"]');
-    const img = hero && !hero.complete ? new Promise(r => { hero.addEventListener('load', r, { once: true }); hero.addEventListener('error', r, { once: true }); }) : 0;
-    let done = false;
-    const lift = () => {
-      if (done) return; done = true;
+    const MIN = reduce.matches ? 300 : nav ? 500 : 1700, MAX = nav ? 2200 : 3500, t0 = performance.now();
+    const bar = $('#plBar'), pct = $('#plPct');
+    const jobs = [document.fonts ? document.fonts.ready : 0, ...$$('img[fetchpriority="high"]').map(im => im.complete ? 0 : new Promise(r => { im.addEventListener('load', r, { once: true }); im.addEventListener('error', r, { once: true }); }))];
+    let loaded = 0, shown = 0, lifted = false;
+    jobs.forEach(j => Promise.resolve(j).then(() => loaded++, () => loaded++));
+    const step = () => {
+      const now = performance.now();
+      // half the line is time (so it never jumps), half is what has actually arrived
+      let target = now - t0 >= MAX ? 1 : .5 * Math.min(1, now / MIN) + .5 * (loaded / jobs.length);
+      shown = reduce.matches ? target : shown + (target - shown) * .12;
+      if (target - shown < .004) shown = target;
+      bar.style.transform = `scaleX(${shown.toFixed(4)})`;
+      pct.textContent = Math.round(shown * 100) + '%';
+      if (shown < 1) return requestAnimationFrame(step);
+      if (lifted) return; lifted = true;
       setTimeout(() => {
         root.classList.add('pl-out');
-        store('acPl', '1'); store('acNext', null);
+        store('acNext', null);
         setTimeout(() => root.classList.remove('is-pl', 'pl-out', 'pl-nav'), reduce.matches ? 320 : 1100);
-      }, Math.max(0, (reduce.matches ? 300 : nav ? 450 : 2000) - performance.now()));
+      }, reduce.matches ? 0 : 180);
     };
-    Promise.all([document.fonts ? document.fonts.ready : 0, img]).then(lift, lift);
-    setTimeout(lift, nav ? 2200 : 3500);
+    requestAnimationFrame(step);
   }
   // leaving for another page of the Club: bring the curtain up, spell the page, then go
   document.addEventListener('click', e => {
@@ -34,9 +43,11 @@
     const key = url.pathname.split('/').pop().replace('.html', '');
     const name = NAMES[key]; if (!name) return;
     e.preventDefault();
-    store('acNext', name); store('acPl', '1');
+    store('acNext', name);
     if (reduce.matches) { location.href = url.href; return; }
-    plName.innerHTML = [...name].map((ch, i) => `<span style="--i:${i}">${ch === ' ' ? '&nbsp;' : ch}</span>`).join('');
+    let k = 0;
+    plName.innerHTML = name.split(' ').map(w => `<span class="w">${[...w].map(ch => `<span style="--i:${k++}">${ch}</span>`).join('')}</span>`).join(' ');
+    $('#plBar').style.transform = 'scaleX(0)'; $('#plPct').textContent = '0%';
     root.classList.remove('is-pl', 'pl-out'); root.classList.add('pl-nav', 'pl-go');
     setTimeout(() => { location.href = url.href; }, 300 + name.length * 28 + 350);
   });
