@@ -361,7 +361,7 @@ a.hr__cue:focus-visible { outline: 2px solid var(--focus); outline-offset: 4px; 
 .rbtn:disabled { opacity: .3; cursor: default; }
 @media (hover: hover) { .rbtn:not(:disabled):hover { background: var(--ink); color: var(--paper); border-color: var(--ink); } }
 
-.days { position: relative; display: flex; margin-top: 36px; border-bottom: 1px solid var(--line); overflow-x: auto; scrollbar-width: none; }
+.days { position: relative; display: flex; margin-bottom: 28px; border-bottom: 1px solid var(--line); overflow-x: auto; scrollbar-width: none; }
 .days::-webkit-scrollbar { display: none; }
 .dy { flex: 1 0 auto; min-width: 84px; display: grid; justify-items: start; gap: 8px; padding: 10px 16px 16px 0; text-align: left; color: var(--muted); transition: color .25s ease, opacity .25s ease; }
 .dy span { font: 600 11px/1 var(--body); letter-spacing: .14em; text-transform: uppercase; }
@@ -612,3 +612,45 @@ html.js .rv-img.is-in img { transform: none; }
   html.js .rv, html.js .rv-img, html.js .rv-img img, html.js .reel:not(.is-in) .pc { opacity: 1; transform: none; clip-path: none; }
   .ix { clip-path: none; }
 }
+
+/* ---------- preloader: an arch-edged curtain. First visit lists the rooms one by one; between pages it spells the next page ---------- */
+.pl { display: none; }
+html.is-pl, html.pl-go { overflow: hidden; }
+html.is-pl .pl, html.pl-go .pl { position: fixed; inset: 0; z-index: 300; display: grid; place-items: center; padding: var(--gut); color: #fff; }
+.pl__cv { --arc: clamp(70px, 14svh, 150px); position: absolute; inset: 0; background: var(--ink); transition: transform 1.05s var(--ease-io); }
+.pl__cv::before, .pl__cv::after { content: ""; position: absolute; left: -10%; right: -10%; height: var(--arc); background: inherit; }
+.pl__cv::before { bottom: 100%; margin-bottom: -1px; border-radius: 50% 50% 0 0 / 100% 100% 0 0; }
+.pl__cv::after { top: 100%; margin-top: -1px; border-radius: 0 0 50% 50% / 0 0 100% 100%; }
+.pl__in, .pl__to { position: relative; grid-area: 1 / 1; transition: transform 1.05s var(--ease-io), opacity .5s ease; }
+.pl__in { display: grid; justify-items: start; width: min(100%, 26rem); }
+html.pl-nav .pl__in, html:not(.pl-nav) .pl__to { display: none; }
+.pl__logo { width: clamp(104px, 11vw, 132px); height: auto; margin-bottom: clamp(28px, 5svh, 44px); }
+.pl__list { display: grid; gap: 2px; margin: 0; padding: 0; list-style: none; }
+.pl__list li { overflow: hidden; }
+.pl__list span { display: flex; align-items: baseline; gap: 14px; font: 700 clamp(1.6rem, min(4vw, 5.4svh), 2.5rem)/1.12 var(--display); letter-spacing: -.035em; }
+.pl__list b { min-width: 2ch; font: 500 12px/1 var(--body); letter-spacing: .04em; color: #ff9db0; font-variant-numeric: tabular-nums; transform: translateY(-.9em); }
+.pl__yr { overflow: hidden; margin-top: clamp(24px, 4svh, 36px); font: 400 italic clamp(1.1rem, 1.6vw, 1.35rem)/1.2 var(--italic); color: rgba(255, 255, 255, .75); }
+.pl__yr span { display: block; }
+.pl__to { display: grid; justify-items: center; gap: clamp(18px, 3svh, 28px); text-align: center; }
+.pl__eagle { width: clamp(150px, 16vw, 210px); height: auto; opacity: .9; }
+.pl__name { overflow: hidden; padding: 0 .04em .08em; font: 700 clamp(2.6rem, min(8vw, 13svh), 6.5rem)/1 var(--display); letter-spacing: -.045em; white-space: nowrap; }
+.pl__name span { display: inline-block; }
+/* lift: the curtain rises off with its curved hem showing */
+html.pl-out .pl__cv { transform: translateY(calc(-100% - var(--arc))); }
+html.pl-out :is(.pl__in, .pl__to) { transform: translateY(-14svh); opacity: 0; }
+@media (prefers-reduced-motion: no-preference) {
+  .pl__list span { animation: plIn .7s var(--ease-expo) both; animation-delay: calc(.2s + var(--i) * .13s); }
+  .pl__list li:not(:last-child) span { animation: plIn .7s var(--ease-expo) both, plDim .5s ease forwards; animation-delay: calc(.2s + var(--i) * .13s), calc(.33s + var(--i) * .13s); }
+  .pl__logo { animation: fadeUp .7s var(--ease-out) both; }
+  .pl__yr span { animation: plIn .7s var(--ease-expo) 1.25s both; }
+  /* leaving: the curtain comes up from below as an arch, then the next page's name arrives letter by letter */
+  html.pl-go .pl__cv { animation: plUp .7s var(--ease-io) both; }
+  html.pl-go .pl__eagle { animation: fadeUp .5s var(--ease-out) .35s both; }
+  html.pl-go .pl__name span { animation: plIn .6s var(--ease-expo) both; animation-delay: calc(.3s + var(--i) * 28ms); }
+  /* the hero waits behind the curtain, then plays as it lifts */
+  html.is-pl:not(.pl-out) :is(.hr__h .ln > span, .hr__band--b::before, .hr__band--b::after, .hr__frame) { animation-play-state: paused; }
+}
+@media (prefers-reduced-motion: reduce) { .pl { transition: opacity .3s ease; } html.pl-out .pl__cv { transform: none; } html.pl-out .pl { opacity: 0; } }
+@keyframes plIn { from { transform: translateY(105%); } }
+@keyframes plDim { to { opacity: .5; } }
+@keyframes plUp { from { transform: translateY(calc(100% + var(--arc))); } }

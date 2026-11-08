@@ -4,6 +4,45 @@
   const $$ = (s, c = document) => [...c.querySelectorAll(s)];
   const reduce = matchMedia('(prefers-reduced-motion: reduce)');
 
+  /* ---------- preloader: first visit holds for the hero photo and fonts (2s to 3.5s); between pages it is a quick curtain ---------- */
+  const root = document.documentElement, pl = $('.pl'), plName = $('#plName');
+  const NAMES = { index: 'The Club', dining: 'Dining', fitness: 'Fitness', events: 'Private Events', kids: 'Kids', membership: 'Membership', about: 'About the Club', 'whats-on': 'What’s On', news: 'News', gallery: 'Gallery', contact: 'Contact', login: 'Member Login', privacy: 'Privacy' };
+  const store = (k, v) => { try { v == null ? sessionStorage.removeItem(k) : sessionStorage.setItem(k, v); } catch (e) {} };
+  if (pl && root.classList.contains('is-pl')) {
+    const nav = root.classList.contains('pl-nav');
+    const hero = $('img[fetchpriority="high"]');
+    const img = hero && !hero.complete ? new Promise(r => { hero.addEventListener('load', r, { once: true }); hero.addEventListener('error', r, { once: true }); }) : 0;
+    let done = false;
+    const lift = () => {
+      if (done) return; done = true;
+      setTimeout(() => {
+        root.classList.add('pl-out');
+        store('acPl', '1'); store('acNext', null);
+        setTimeout(() => root.classList.remove('is-pl', 'pl-out', 'pl-nav'), reduce.matches ? 320 : 1100);
+      }, Math.max(0, (reduce.matches ? 300 : nav ? 450 : 2000) - performance.now()));
+    };
+    Promise.all([document.fonts ? document.fonts.ready : 0, img]).then(lift, lift);
+    setTimeout(lift, nav ? 2200 : 3500);
+  }
+  // leaving for another page of the Club: bring the curtain up, spell the page, then go
+  document.addEventListener('click', e => {
+    const a = e.target.closest('a[href]');
+    if (!pl || !a || e.defaultPrevented || e.button || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || a.target || a.hasAttribute('download') || a.hasAttribute('data-soon')) return;
+    const url = new URL(a.href, location.href);
+    if (url.protocol !== location.protocol || url.host !== location.host || !/\.html$/.test(url.pathname)) return;
+    if (url.pathname === location.pathname) return; // same page: let the anchor scroll
+    const key = url.pathname.split('/').pop().replace('.html', '');
+    const name = NAMES[key]; if (!name) return;
+    e.preventDefault();
+    store('acNext', name); store('acPl', '1');
+    if (reduce.matches) { location.href = url.href; return; }
+    plName.innerHTML = [...name].map((ch, i) => `<span style="--i:${i}">${ch === ' ' ? '&nbsp;' : ch}</span>`).join('');
+    root.classList.remove('is-pl', 'pl-out'); root.classList.add('pl-nav', 'pl-go');
+    setTimeout(() => { location.href = url.href; }, 300 + name.length * 28 + 350);
+  });
+  // coming back through the history cache: put the page back as it was
+  addEventListener('pageshow', e => { if (e.persisted) { root.classList.remove('pl-go', 'pl-nav', 'is-pl', 'pl-out'); store('acNext', null); } });
+
   /* ---------- clocks ---------- */
   const fmt = {};
   const clocks = $$('[data-tz]');
