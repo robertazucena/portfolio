@@ -110,14 +110,79 @@
   }));
 })();
 
-/* ---------- sign-in: show or hide the password ---------- */
+/* ---------- member sign-in: inline checks, show password, Caps Lock, reset step, confirmation. Nothing is sent ---------- */
 (() => {
-  document.querySelectorAll('.sgn__eye').forEach(b => b.addEventListener('click', () => {
-    const pw = document.getElementById(b.getAttribute('aria-controls')), show = pw.type === 'password';
-    pw.type = show ? 'text' : 'password';
-    b.textContent = show ? 'Hide' : 'Show';
-    b.setAttribute('aria-pressed', String(show));
-  }));
-  // a cleared form hides the password again
-  document.querySelectorAll('form.sgn').forEach(f => f.addEventListener('reset', () => { const b = f.querySelector('.sgn__eye'), pw = f.querySelector('[type=text][autocomplete=current-password], #s-pw'); pw.type = 'password'; b.textContent = 'Show'; b.setAttribute('aria-pressed', 'false'); }));
+  const box = document.getElementById('sgn');
+  if (!box) return;
+  const $ = (s, c = box) => c.querySelector(s);
+  const views = { in: $('#sgnIn'), reset: $('#sgnReset'), ok: $('#sgnOk') };
+  const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+  const rules = {
+    's-id': v => !v ? 'Enter your Member number or the email on your account.' : v.includes('@') && !EMAIL.test(v) ? 'That email looks incomplete. Check for a missing @ or domain.' : '',
+    's-pw': v => v ? '' : 'Enter your password.',
+    'r-email': v => !v ? 'Enter the email on your Member account.' : EMAIL.test(v) ? '' : 'That email looks incomplete. Check for a missing @ or domain.',
+  };
+  function check(input) {
+    const msg = rules[input.id](input.value.trim());
+    const err = $('#e-' + input.id), f = input.closest('.f');
+    err.textContent = msg;
+    f.classList.toggle('is-err', !!msg);
+    input.setAttribute('aria-invalid', msg ? 'true' : 'false');
+    const desc = [msg && err.id, input.id === 's-pw' && !$('#s-caps').hidden && 's-caps'].filter(Boolean).join(' ');
+    desc ? input.setAttribute('aria-describedby', desc) : input.removeAttribute('aria-describedby');
+    return !msg;
+  }
+  Object.keys(rules).forEach(id => {
+    const input = $('#' + id);
+    input.addEventListener('blur', () => { if (input.value) check(input); });
+    input.addEventListener('input', () => { if (input.closest('.f').classList.contains('is-err')) check(input); });
+  });
+  // show / hide the password
+  const pw = $('#s-pw'), eye = $('.sgn__eye');
+  const setEye = show => { pw.type = show ? 'text' : 'password'; eye.textContent = show ? 'Hide' : 'Show'; eye.setAttribute('aria-pressed', String(show)); };
+  eye.addEventListener('click', () => { setEye(pw.type === 'password'); pw.focus(); });
+  // Caps Lock warning while typing the password
+  const caps = $('#s-caps');
+  const capsOn = e => { if (e.getModifierState) { caps.hidden = !e.getModifierState('CapsLock'); } };
+  pw.addEventListener('keydown', capsOn); pw.addEventListener('keyup', capsOn);
+  pw.addEventListener('blur', () => { caps.hidden = true; });
+  // switching between sign in, reset and the confirmation
+  function show(name, focus) {
+    Object.entries(views).forEach(([k, v]) => { v.hidden = k !== name; });
+    const t = focus || (name === 'in' ? $('#s-id') : name === 'reset' ? $('.sgn__h', views.reset) : $('#sgnOkH'));
+    t.focus();
+  }
+  box.addEventListener('click', e => {
+    const b = e.target.closest('[data-go]'); if (!b) return;
+    if (b.dataset.go === 'reset' && $('#s-id').value.includes('@')) $('#r-email').value = $('#s-id').value.trim();
+    show(b.dataset.go);
+  });
+  function busy(form, label, done) {
+    const btn = $('.sgn__btn', form), span = $('span', btn), was = span.textContent;
+    btn.setAttribute('aria-busy', 'true'); span.textContent = label;
+    setTimeout(() => { btn.removeAttribute('aria-busy'); span.textContent = was; done(); }, 800);
+  }
+  views.in.addEventListener('submit', e => {
+    e.preventDefault();
+    if ($('.sgn__btn', views.in).getAttribute('aria-busy') === 'true') return;
+    const bad = [$('#s-id'), pw].filter(i => !check(i));
+    if (bad.length) { bad[0].focus(); return; }
+    busy(views.in, 'Signing in…', () => {
+      $('#sgnOkH').textContent = 'Welcome back';
+      $('#sgnOkP').textContent = 'This is a concept, so you are not really signed in. On the real site you would now see your bookings, statements and Club documents.';
+      $('#sgnOkGo').hidden = false;
+      views.in.reset(); setEye(false); show('ok');
+    });
+  });
+  views.reset.addEventListener('submit', e => {
+    e.preventDefault();
+    const email = $('#r-email');
+    if (!check(email)) { email.focus(); return; }
+    busy(views.reset, 'Sending…', () => {
+      $('#sgnOkH').textContent = 'Check your email';
+      $('#sgnOkP').textContent = `If ${email.value.trim()} matches a Member account, a reset link is on its way. In this concept nothing is sent.`;
+      $('#sgnOkGo').hidden = true;
+      views.reset.reset(); show('ok');
+    });
+  });
 })();
