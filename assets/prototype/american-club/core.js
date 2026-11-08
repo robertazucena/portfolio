@@ -36,7 +36,7 @@
   // leaving for another page of the Club: bring the curtain up, spell the page, then go
   document.addEventListener('click', e => {
     const a = e.target.closest('a[href]');
-    if (!pl || !a || e.defaultPrevented || e.button || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || a.target || a.hasAttribute('download') || a.hasAttribute('data-soon')) return;
+    if (!pl || !a || root.classList.contains('is-embedded') || e.defaultPrevented || e.button || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || a.target || a.hasAttribute('download') || a.hasAttribute('data-soon')) return;
     const url = new URL(a.href, location.href);
     if (url.protocol !== location.protocol || url.host !== location.host || !/\.html$/.test(url.pathname)) return;
     if (url.pathname === location.pathname) return; // same page: let the anchor scroll
