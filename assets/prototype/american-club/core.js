@@ -36,7 +36,7 @@
     const a = e.target.closest('[data-soon]');
     if (!a) return;
     e.preventDefault();
-    say(a.dataset.soon, 'is coming soon. This concept covers the homepage, Dining, Fitness, Kids, Events and Membership.');
+    say(a.dataset.soon, 'is not part of this concept yet.');
   });
 
   /* ---------- the Club Index (full-screen menu) ---------- */

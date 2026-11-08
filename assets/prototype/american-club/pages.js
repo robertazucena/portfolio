@@ -111,3 +111,14 @@
     }, 700);
   });
 })();
+
+/* ---------- demo forms (Talk2Us!): nothing is sent; the page says what would happen ---------- */
+(() => {
+  const { $$, say } = window.AC;
+  $$('form[data-demo]').forEach(form => form.addEventListener('submit', e => {
+    e.preventDefault();
+    if (!form.reportValidity()) return;
+    form.reset();
+    say('Thanks.', form.dataset.demo);
+  }));
+})();
