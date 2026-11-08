@@ -16,27 +16,6 @@
 .mast__lk[aria-current="page"] { color: var(--red); }
 
 /* ---------- membership: three arches that open as you scroll ---------- */
-.mh { --w: min(calc(21vw + 40px), 38svh, 460px); overflow: clip; padding: calc(var(--bar) + clamp(40px, 7svh, 80px)) var(--edge) clamp(56px, 8vw, 110px); text-align: center; }
-.mh__say { max-width: 62rem; margin-inline: auto; }
-.mh__h { font: 700 clamp(2.5rem, min(5.2vw, 9.4svh), 6rem)/1.03 var(--tag); letter-spacing: -.04em; text-wrap: balance; }
-.mh__h em { font-style: normal; color: var(--red); }
-.mh__deck { max-width: 50ch; margin: clamp(18px, 3svh, 28px) auto 0; color: var(--muted); font-size: clamp(1.05rem, 1.35vw, 1.22rem); line-height: 1.5; text-wrap: pretty; }
-.mh__cta { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 14px 26px; margin-top: clamp(20px, 3.4svh, 34px); }
-.mh__trio { --s: 0; position: relative; display: flex; justify-content: center; margin-top: clamp(36px, 6svh, 64px); padding-bottom: calc(var(--w) * .16); }
-.mh__a { position: relative; flex: none; width: var(--w); aspect-ratio: 1 / 1.27; border-radius: calc(var(--w) / 2) calc(var(--w) / 2) 16px 16px; overflow: hidden; background: var(--paper-2); will-change: transform; }
-.mh__a img, .mh__a video { position: absolute; inset: 0; width: 100%; height: 100%; max-width: none; object-fit: cover; object-position: var(--x, 50%) var(--y, 50%); }
-.mh__a video { opacity: 0; transition: opacity .5s ease; }
-.mh__a video.is-on { opacity: 1; }
-.mh__a--c { z-index: 1; box-shadow: 0 0 0 clamp(5px, .6vw, 9px) var(--paper); }
-.mh__a--l { margin-right: calc(var(--w) * -.2); transform: translate(calc(var(--s) * -7vw), calc(var(--w) * .16)); }
-.mh__a--r { margin-left: calc(var(--w) * -.2); transform: translate(calc(var(--s) * 7vw), calc(var(--w) * .16)); }
-@media (max-width: 900px) {
-  .mh { --w: calc((100vw - 2 * var(--edge) - 4vw) / 2.6); }
-  .mh__a--l { transform: translate(calc(var(--s) * -2vw), calc(var(--w) * .16)); }
-  .mh__a--r { transform: translate(calc(var(--s) * 2vw), calc(var(--w) * .16)); }
-}
-
-/* ---------- membership: a week at the Club, the arch stays while the days pass ---------- */
 .wk { background: var(--ink); color: var(--paper); }
 .wk__in { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(32px, 6vw, 96px); }
 .wk__art { position: sticky; top: var(--bar); height: calc(100svh - var(--bar)); display: flex; align-items: center; justify-content: center; }

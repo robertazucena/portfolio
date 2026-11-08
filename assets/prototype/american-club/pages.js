@@ -1,6 +1,6 @@
 /* The American Club Singapore: inner pages (hero reel, dining filter, membership finder, tour form). Needs core.js. */
 (() => {
-  const { $, $$, reduce } = window.AC;
+  const { $, $$ } = window.AC;
 
   /* ---------- hero reel: desktop only, the photo stays underneath ---------- */
   const reelMQ = matchMedia('(min-width: 901px) and (prefers-reduced-motion: no-preference)');
@@ -30,19 +30,6 @@
     });
     count.textContent = `${n} ${n === 1 ? 'place' : 'places'}`;
   }));
-
-  /* ---------- membership: the arches open as the page moves on ---------- */
-  const trio = $('#mhTrio');
-  if (trio && !reduce.matches) {
-    let raf = 0;
-    const spread = () => {
-      raf = 0;
-      const b = trio.getBoundingClientRect();
-      trio.style.setProperty('--s', Math.min(1, Math.max(0, 1 - (b.top - innerHeight * .12) / (innerHeight * .55))).toFixed(3));
-    };
-    addEventListener('scroll', () => { if (!raf) raf = requestAnimationFrame(spread); }, { passive: true });
-    spread();
-  }
 
   /* ---------- membership: one arch, a week of days ---------- */
   const days = $$('.wk__day'), pics = $$('.wk__pic');
