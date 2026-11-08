@@ -173,10 +173,37 @@
 </div>
 
 <main id="main">
-<section class="pt" aria-labelledby="l-h">
-  <div class="wrap">
-    <h1 class="pt__h" id="l-h">Member <em>sign-in</em></h1>
-    <p class="pt__deck">Signing in is not part of this concept, so there is no form here.</p>
+<section class="ph" aria-labelledby="l-h">
+  <div class="ph__say">
+    <h1 class="ph__h" id="l-h">Member <em>sign-in</em></h1>
+    <p class="ph__deck">Book tables, courts and events, and keep an eye on your account.</p>
+    <div class="ph__cta"><a class="btn btn--red" href="#signin"><span>Sign in</span><svg class="ic"><use href="#i-arrow"/></svg></a><a class="lnk" href="membership.html#tour">Become a Member</a></div>
+  </div>
+  <div class="duo">
+    <figure class="duo__side"><img src="../media/u/join-pool.webp" alt="" width="900" height="1125" fetchpriority="high"></figure>
+    <div class="duo__panel">
+      <figure class="duo__main"><img src="../media/u/idx-spa.webp" alt="A quiet treatment room with a low wooden table" width="1400" height="854" fetchpriority="high"><video data-src="../media/reels/spa.mp4" loop muted playsinline aria-hidden="true"></video></figure>
+      <p class="duo__note"><b>Not a Member yet?</b>Every application starts with a tour of the Club.</p>
+    </div>
+  </div>
+</section>
+<section class="ps" id="signin" aria-labelledby="signin-h">
+  <div class="wrap ps__in rv">
+    <h2 class="ps__h" id="signin-h">Sign in</h2>
+    <div class="ps__body">
+      <form class="tour sgn" data-demo="This is a concept, so nothing is sent or checked. On the real site you would now be signed in." novalidate>
+        <div class="tour__grid">
+          <div class="f f--wide"><label for="s-id">Member number or email</label><input id="s-id" name="username" autocomplete="username" autocapitalize="off" spellcheck="false" required></div>
+          <div class="f f--wide"><label for="s-pw">Password</label><div class="sgn__pw"><input id="s-pw" name="password" type="password" autocomplete="current-password" required><button class="sgn__eye" type="button" aria-controls="s-pw" aria-pressed="false">Show</button></div></div>
+        </div>
+        <div class="sgn__row">
+          <label class="sgn__keep"><input type="checkbox" name="keep"> Keep me signed in</label>
+          <a class="lnk" href="contact.html#essentials">Forgot your password?</a>
+        </div>
+        <button class="btn btn--red tour__btn" type="submit"><span>Sign in</span></button>
+        <p class="tour__fine">Concept only. Nothing you type here is sent or stored.</p>
+      </form>
+    </div>
   </div>
 </section>
 <section class="ps" aria-labelledby="after-signing-in-members-can-h">

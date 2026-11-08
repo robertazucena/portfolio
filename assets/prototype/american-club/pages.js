@@ -3,7 +3,7 @@
   const { $, $$ } = window.AC;
 
   /* ---------- hero reel: desktop only, the photo stays underneath ---------- */
-  const reelMQ = matchMedia('(min-width: 901px) and (prefers-reduced-motion: no-preference)');
+  const reelMQ = matchMedia('(min-width: 901px) and (min-height: 560px) and (prefers-reduced-motion: no-preference)'); // same rule as the home hero
   $$('video[data-src]').forEach(v => {
     const sync = on => {
       if (on && reelMQ.matches) {
@@ -108,4 +108,16 @@
     form.reset();
     say('Thanks.', form.dataset.demo);
   }));
+})();
+
+/* ---------- sign-in: show or hide the password ---------- */
+(() => {
+  document.querySelectorAll('.sgn__eye').forEach(b => b.addEventListener('click', () => {
+    const pw = document.getElementById(b.getAttribute('aria-controls')), show = pw.type === 'password';
+    pw.type = show ? 'text' : 'password';
+    b.textContent = show ? 'Hide' : 'Show';
+    b.setAttribute('aria-pressed', String(show));
+  }));
+  // a cleared form hides the password again
+  document.querySelectorAll('form.sgn').forEach(f => f.addEventListener('reset', () => { const b = f.querySelector('.sgn__eye'), pw = f.querySelector('[type=text][autocomplete=current-password], #s-pw'); pw.type = 'password'; b.textContent = 'Show'; b.setAttribute('aria-pressed', 'false'); }));
 })();

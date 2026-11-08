@@ -218,10 +218,11 @@ html { scrollbar-color: var(--ink-3) var(--paper-2); scrollbar-width: thin; }
 .hr__clocks { display: flex; gap: 26px; margin-bottom: auto; font-size: 13px; line-height: 1.35; color: var(--muted); }
 .hr__clocks dd { color: var(--ink); font-weight: 500; font-variant-numeric: tabular-nums; }
 .hr__clocks small { font-size: .8em; margin-left: 2px; }
-.hr__h { font: 700 clamp(1.95rem, min(3.75vw, 7.4svh), 4.3rem)/1.05 var(--tag); letter-spacing: -.04em; }
+/* sized so "Blending American Traditions" holds one line in the text column (41vw on desktop, the full width on phones); the second line shares the size */
+.hr__h { font: 700 min(clamp(1.95rem, min(3.75vw, 7.4svh), 4.3rem), calc((41vw - var(--edge) - 12px) / 13))/1.05 var(--tag); letter-spacing: -.04em; }
 .hr__h em { font-family: var(--italic); font-style: italic; font-weight: 400; letter-spacing: -.01em; color: var(--red); }
 .hr__h .ln { display: block; overflow: hidden; padding-bottom: .12em; margin-bottom: -.12em; }
-.hr__h .ln > span { display: inline-block; }
+.hr__h .ln > span { display: inline-block; white-space: nowrap; }
 .hr__deck { max-width: 40ch; margin-top: clamp(14px, 2.2svh, 22px); color: var(--muted); font-size: clamp(.98rem, 1.15vw, 1.08rem); line-height: 1.5; text-wrap: pretty; }
 .hr__cta { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 26px; margin-top: clamp(16px, 3svh, 30px); }
 
@@ -286,6 +287,7 @@ a.hr__cue:focus-visible { outline: 2px solid var(--focus); outline-offset: 4px; 
   .hr__pin { --stage: 0px; --bh: var(--h); --h: min(calc(var(--w) * 1.46), calc(100svh - var(--say, 280px) - 26px - var(--yf) * .78 - 185px)); --pad: 3.5vw; --panel: calc(var(--w) + 2 * var(--pad)); --tp: 10px; --yf: 13vw; --wb: 28px; --w: min(46vw, calc((100svh - var(--say, 280px) - 260px) / 1.27)); --bt: max(3%, 26px); --foot: 10px; }
   .hr__say { top: calc(clamp(70px, 6.4vw, 92px) + 8px); bottom: auto; width: auto; right: var(--edge); }
   .hr__clocks, .hr__deck { display: none; }
+  .hr__h { font-size: min(1.95rem, calc((100vw - 2 * var(--edge)) / 13.2)); }
   .hr__cta { margin-top: 12px; }
   .hr__cta .btn { min-height: 46px; padding: 0 20px; }
   .hr__stage { inset: var(--say, 280px) 0 0 0; }
