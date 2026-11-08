@@ -43,9 +43,10 @@
 
 /* ---------- membership: doors abroad, on live local time ---------- */
 .dr { padding: var(--sec) 0; }
-.dr__in { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); align-items: center; gap: clamp(32px, 6vw, 96px); padding-right: var(--edge); }
-.dr__img { overflow: hidden; aspect-ratio: 5 / 4; border-radius: 0 clamp(120px, 20vw, 300px) 16px 0; }
-.dr__img img { width: 100%; height: 100%; object-fit: cover; }
+.dr__in { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); align-items: center; gap: clamp(32px, 6vw, 96px); max-width: calc(var(--max) + var(--gut) * 2); margin-inline: auto; padding: 0 var(--gut); }
+/* the site's arch: a full semicircle on top of a 4:5 frame */
+.dr__img { justify-self: start; width: min(100%, 440px); overflow: hidden; aspect-ratio: 4 / 5; border-radius: 50% 50% 16px 16px / 40% 40% 16px 16px; background: var(--paper-2); }
+.dr__img img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 62%; }
 .dr__txt .lede { margin-top: 20px; }
 .dr__cities { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px 20px; margin-top: clamp(28px, 3.6vw, 44px); }
 .dr__c { padding-top: 12px; border-top: 1px solid var(--line-2); }
@@ -53,9 +54,8 @@
 .dr__c dd { margin-top: 4px; font: 400 clamp(1.5rem, 2.2vw, 2rem)/1.1 var(--display); letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
 .dr__c small { margin-left: 3px; font: 500 12px/1 var(--body); letter-spacing: 0; color: var(--muted); }
 @media (max-width: 900px) {
-  .dr__in { grid-template-columns: 1fr; padding-right: 0; }
-  .dr__img { margin-right: var(--edge); }
-  .dr__txt { padding: 0 var(--edge); }
+  .dr__in { grid-template-columns: 1fr; }
+  .dr__img { width: min(100%, 340px); }
 }
 @media (max-width: 420px) { .dr__cities { grid-template-columns: 1fr 1fr; } }
 
