@@ -96,9 +96,10 @@
   });
   form.addEventListener('submit', e => {
     e.preventDefault();
+    const btn = $('.tour__btn', form);
+    if (btn.getAttribute('aria-busy') === 'true') return;
     const bad = Object.keys(rules).filter(n => !check(n));
     if (bad.length) { form.elements[bad[0]].focus(); return; }
-    const btn = $('.tour__btn', form);
     btn.setAttribute('aria-busy', 'true');
     $('span', btn).textContent = 'Sending…';
     setTimeout(() => {

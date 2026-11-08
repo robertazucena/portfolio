@@ -10,7 +10,7 @@
   /* ---------- hero: each room enters on the right, takes the centre, leaves left ---------- */
   const hx = $('#top'), hxPin = $('.hr__pin', hx), hxStage = $('.hr__stage', hx), hxSay = $('.hr__say', hx);
   const ROOMS = [
-    ['media/clubhouse-1920.webp', '42%', '62%'], ['media/rooms/dining.webp', '62%', '40%'], ['media/rooms/pool.webp', '50%', '55%'],
+    ['media/clubhouse-720.webp', '42%', '62%'], ['media/rooms/dining.webp', '62%', '40%'], ['media/rooms/pool.webp', '50%', '55%'],
     ['media/rooms/spa.webp', '50%', '42%'], ['media/rooms/kids.webp', '42%', '45%'], ['media/rooms/ballroom.webp', '50%', '42%'], ['media/rooms/family.webp', '48%', '30%']
   ];
   const N = ROOMS.length, wrapI = i => ((i % N) + N) % N;
@@ -20,7 +20,6 @@
   const clamp01 = v => Math.min(1, Math.max(0, v));
   const span = (p, a, b) => clamp01((p - a) / (b - a));
   const eio = t => (t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
-  const hxMQ = matchMedia('(min-height: 560px) and (prefers-reduced-motion: no-preference)');
   const capsNow = $$('#hrCaps .hr__cap'), capsNext = $('#hrNext');
   capsNow.forEach(cap => {
     const c = cap.cloneNode(true);
@@ -61,7 +60,9 @@
   };
   if (document.readyState === 'complete') loadRooms(); else addEventListener('load', loadRooms, { once: true });
 
-  let hxStatic = false, hxDist = 1, curRoom = -1;
+  /* the rooms advance on their own: hold, then wipe the next one up; ticks jump, the button pauses */
+  const HOLD = 5200, WIPE = 1500;
+  let curRoom = -1, cur = 0, to = 0, phase = 'hold', held = 0, wipeT = 0, last = 0, raf = 0, paused = false, inView = true;
   function setRoom(i) {
     if (i === curRoom) return;
     curRoom = i;
@@ -70,30 +71,11 @@
     hxTicks.forEach((t, k) => t.setAttribute('aria-current', k === i ? 'true' : 'false'));
     hxNum.textContent = String(i + 1).padStart(2, '0');
   }
-  // each tick scrolls to the point where its room fills the centre arch
-  const hxTicks = $$('.hr__tick', hx), hxNum = $('#hrNum');
-  hxTicks.forEach(t => t.addEventListener('click', () => {
-    const top = hx.getBoundingClientRect().top + scrollY + (+t.dataset.room / (N - 1)) * hxDist;
-    scrollTo({ top: Math.round(top), behavior: reduce.matches ? 'auto' : 'smooth' });
-  }));
-  function measureHero() {
-    hxStatic = !hxMQ.matches;
-    hx.classList.toggle('is-static', hxStatic);
-    hx.style.removeProperty('height');
-    const pinBox = hxPin.getBoundingClientRect();
-    hxPin.style.setProperty('--say', Math.ceil(hxSay.getBoundingClientRect().bottom - pinBox.top + 10) + 'px');
-    hxDist = hx.offsetHeight - hxPin.offsetHeight;
-    hero();
-  }
-  function hero() {
-    const box = hx.getBoundingClientRect();
-    mast.classList.toggle('is-solid', box.bottom <= 68);
-    if (box.bottom < 0 && curRoom !== -1) { centre.vids.forEach(v => setReel(v, false)); return; }
-    const p = hxStatic ? 0 : clamp01(-box.top / (hxDist || 1));
-    const pos = p * (N - 1), s = Math.min(Math.floor(pos), N - 2), f = pos - s;
-    arches.forEach(({ el, off, from, drift, imgs, vids }) => {
-      const t = eio(span(f, from + .04, from + .62));
-      const base = wrapI(s + off), next = wrapI(s + off + 1);
+  const hxTicks = $$('.hr__tick', hx), hxNum = $('#hrNum'), hxRail = $('.hr__rail', hx), hxPlay = $('#hrPlay');
+  function render(from, dest, f) {
+    arches.forEach(({ el, off, from: st, imgs, vids }) => {
+      const t = from === dest ? 0 : eio(span(f, st + .04, st + .62));
+      const base = wrapI(from + off), next = from === dest ? -1 : wrapI(dest + off), soon = wrapI(from + 1 + off);
       imgs.forEach((im, i) => {
         const show = i === base || (i === next && t > 0);
         im.style.visibility = show ? 'visible' : 'hidden';
@@ -105,18 +87,67 @@
         if (vids) {
           const v = vids[i];
           v.style.visibility = im.style.visibility; v.style.zIndex = im.style.zIndex; v.style.clipPath = im.style.clipPath; v.style.transform = im.style.transform;
-          // the coming room buffers ahead of its wipe; only what shows actually plays
-          if (i === next && !show && reelMQ.matches && v.dataset.src) { v.src = v.dataset.src; v.removeAttribute('data-src'); }
-          setReel(v, show && !(i === base && t >= 1));
+          // the coming room buffers during the hold; only what shows actually plays
+          if ((i === next || i === soon) && reelMQ.matches && v.dataset.src) { v.src = v.dataset.src; v.removeAttribute('data-src'); }
+          setReel(v, inView && show && !(i === base && t >= 1));
         }
       });
-      el.style.transform = `translate3d(0, ${(drift * Math.sin(p * Math.PI)).toFixed(1)}px, 0)`;
     });
-    setRoom(f > .5 ? s + 1 : s);
-    hxPin.style.setProperty('--ring', (1 - p).toFixed(3));
   }
-  hxMQ.addEventListener('change', measureHero);
+  const playing = () => !reduce.matches && !paused && inView && !document.hidden;
+  function frame(now) {
+    raf = 0;
+    const dt = last ? Math.min(64, now - last) : 0;
+    last = now;
+    if (phase === 'wipe') {
+      wipeT += dt;
+      const f = clamp01(wipeT / WIPE);
+      render(cur, to, f);
+      setRoom(wrapI(f > .5 ? to : cur));
+      if (f >= 1) { cur = to; phase = 'hold'; held = 0; render(cur, cur, 0); }
+    } else if (playing()) {
+      held += dt;
+      if (held >= HOLD) go(cur + 1);
+    }
+    hxRail.style.setProperty('--hold', reduce.matches ? 1 : clamp01(held / HOLD).toFixed(3));
+    if (phase === 'wipe' || playing()) raf = requestAnimationFrame(frame);
+  }
+  function kick() { if (!raf) { last = 0; raf = requestAnimationFrame(frame); } }
+  function go(n) {
+    if (phase === 'wipe') cur = to;
+    to = n; held = 0; wipeT = 0;
+    if (reduce.matches) { cur = to; phase = 'hold'; render(cur, cur, 0); setRoom(wrapI(cur)); return; }
+    phase = 'wipe';
+    kick();
+  }
+  // a tick always walks forward, so rooms keep entering from the right
+  hxTicks.forEach(t => t.addEventListener('click', () => {
+    const base = phase === 'wipe' ? to : cur, step = wrapI(+t.dataset.room - wrapI(base));
+    if (step) go(base + step);
+  }));
+  function setPaused(p) {
+    paused = p;
+    hxPlay.setAttribute('aria-label', p ? 'Play the rooms' : 'Pause the rooms');
+    hxPlay.classList.toggle('is-paused', p);
+    kick();
+  }
+  hxPlay.addEventListener('click', () => setPaused(!paused));
+  new IntersectionObserver(([en]) => {
+    inView = en.isIntersecting;
+    render(cur, phase === 'wipe' ? to : cur, phase === 'wipe' ? clamp01(wipeT / WIPE) : 0);
+    kick();
+  }, { threshold: .25 }).observe(hx);
+  document.addEventListener('visibilitychange', kick);
+  reduce.addEventListener('change', kick);
+  function measureHero() {
+    hxPin.style.setProperty('--say', Math.ceil(hxSay.getBoundingClientRect().bottom - hxPin.getBoundingClientRect().top + 10) + 'px');
+  }
+  const heroMast = () => mast.classList.toggle('is-solid', hx.getBoundingClientRect().bottom <= 68);
+  render(0, 0, 0);
+  setRoom(0);
   measureHero();
+  heroMast();
+  kick();
 
   /* ---------- this week: poster reel ---------- */
   const CAT = { engage: 'Member engagement', dining: 'Dining', fitness: 'Fitness & wellness', kids: 'Kids' };
@@ -146,7 +177,7 @@
     li.dataset.d = ev.d;
     li.style.setProperty('--d', i);
     li.innerHTML = `<article aria-labelledby="pc-${i}">
-      <figure class="pc__img"><img src="media/ev/${ev.img}.jpg" alt="" width="1000" height="666" loading="lazy" draggable="false">${ev.d === today ? '<span class="pc__tag">Today</span>' : ''}</figure>
+      <figure class="pc__img"><img src="media/ev/${ev.img}.webp" alt="" width="1000" height="666" loading="lazy" draggable="false">${ev.d === today ? '<span class="pc__tag">Today</span>' : ''}</figure>
       <div class="pc__meta">
         <p class="pc__date"><span class="sr">${fLong.format(date)}</span><b aria-hidden="true">${date.getUTCDate()}</b><span aria-hidden="true">${fWd.format(date)}</span></p>
         <div><p class="pc__cat"></p><h3 class="pc__t" id="pc-${i}"></h3>
@@ -167,8 +198,8 @@
     b.className = 'dy' + (ds === today ? ' is-today' : '');
     b.type = 'button';
     b.dataset.d = ds;
-    b.setAttribute('aria-label', fLong.format(date) + (ds === today ? ', today' : ''));
-    b.innerHTML = `<span>${ds === today ? 'Today' : fWd.format(date)}</span><b>${date.getUTCDate()}</b>`;
+    // the spoken name starts with what is on the button, then spells the date out
+    b.innerHTML = `<span>${ds === today ? 'Today' : fWd.format(date)}</span> <b>${date.getUTCDate()}</b><span class="sr">, ${fLong.format(date)}</span>`;
     b.addEventListener('click', () => {
       wantDay = ds;
       const first = posters.find(p => p.dataset.d === ds && !p.hidden);
@@ -383,6 +414,6 @@
   let sRaf = 0;
   addEventListener('scroll', () => {
     if (sRaf) return;
-    sRaf = requestAnimationFrame(() => { sRaf = 0; hero(); updateFromScroll(); });
+    sRaf = requestAnimationFrame(() => { sRaf = 0; heroMast(); updateFromScroll(); });
   }, { passive: true });
 })();

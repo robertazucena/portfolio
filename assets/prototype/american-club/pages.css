@@ -45,7 +45,7 @@
 .wk__pic.is-on { opacity: 1; transform: none; }
 .wk__col { padding: var(--sec) 0 clamp(40px, 8svh, 96px); }
 .wk__h em { color: var(--teal); }
-.wk__day { min-height: 66svh; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; opacity: .32; transition: opacity .5s ease; }
+.wk__day { min-height: 66svh; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; opacity: .7; transition: opacity .5s ease; }
 .wk__day.is-on { opacity: 1; }
 .wk__inline { display: none; }
 .wk__when { font-size: 16px; color: var(--muted-l); }
