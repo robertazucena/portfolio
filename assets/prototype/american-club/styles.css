@@ -99,10 +99,8 @@ html { scrollbar-color: var(--ink-3) var(--paper-2); scrollbar-width: thin; }
 .btn--red { background: var(--red); color: var(--paper); --sweep: var(--red-d); }
 .btn--paper { background: var(--paper); color: var(--ink); --sweep: var(--paper-2); }
 .btn--ink { background: var(--ink); color: var(--paper); --sweep: var(--ink-3); }
-.btn--line { border: 1px solid var(--ink); color: var(--ink); --sweep: var(--ink); }
 @media (hover: hover) and (pointer: fine) {
   .btn:hover::before { transform: scaleX(1); transform-origin: left; }
-  .btn--line:hover { color: var(--paper); }
   .btn:hover .ic { transform: translateX(3px); }
 }
 
@@ -246,6 +244,7 @@ html { scrollbar-color: var(--ink-3) var(--paper-2); scrollbar-width: thin; }
 /* 1948, cut out of the clubhouse and split across the first rule: 19 stands on the first arch, 48 under the second */
 .hr__yr { position: absolute; font: 700 var(--yf)/.78 var(--display); letter-spacing: -.05em; color: var(--ink); background: url("media/clubhouse-1280.webp") 18% 42% / 620% auto; -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; user-select: none; }
 .hr__yr--a { left: 0; bottom: calc(var(--wb) + var(--h) + .1em); }
+.hr__yr--c { display: none; }
 .hr__yr--b { left: var(--tp); top: calc(var(--bt) + var(--bh) + .14em); background-position: 62% 56%; }
 
 .hr__caps { position: absolute; z-index: 2; left: var(--tp); right: var(--tp); pointer-events: auto; bottom: clamp(20px, 4.2svh, 44px); display: grid; }
@@ -292,6 +291,11 @@ a.hr__cue:focus-visible { outline: 2px solid var(--focus); outline-offset: 4px; 
   .hr__cta .btn { min-height: 46px; padding: 0 20px; }
   .hr__stage { inset: var(--say, 280px) 0 0 0; }
   .hr__band--c .hr__arch { top: calc(var(--bt) + var(--w) * .4); }
+  /* phones: two arches, like the inner-page heroes; the left one drops out and its 19 moves over the right arch */
+  .hr__pin { --o: calc(var(--w) * .3); }
+  .hr__stage { grid-template-columns: var(--panel) calc(var(--w) - var(--o)); }
+  .hr__band--a { display: none; }
+  .hr__yr--c { display: block; left: auto; right: 0; top: calc(var(--bt) + var(--w) * .4 - .9em); }
   .hr__yr--b { top: calc(var(--bt) + var(--bh) + 10px); }
   .hr__caps { bottom: 14px; }
   .hr__caps--next { display: none; }
