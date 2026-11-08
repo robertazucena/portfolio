@@ -524,12 +524,13 @@ html.js .pc.is-settled { transition: none; }
 @media (max-width: 960px) { .svc__grid { grid-template-columns: 1fr; } .svc__big { grid-row: auto; min-height: 0; aspect-ratio: 4 / 5; } }
 
 /* ---------- one white panel between two lines, covering part of a second arch: the hero's shape at smaller sizes ---------- */
-.duo { --w: min(24vw, 46svh); --o: calc(var(--w) * .3); --top: 0px; position: relative; flex: none; width: calc(var(--w) * 2 - var(--o)); }
+/* the right-hand arch (the one that carries the video) is 10% narrower than the side arch, same height, matching the home hero's centre arch */
+.duo { --w: min(24vw, 46svh); --mw: calc(var(--w) * .9); --o: calc(var(--w) * .3); --top: 0px; position: relative; flex: none; width: calc(var(--w) + var(--mw) - var(--o)); }
 .duo__side, .duo__main { aspect-ratio: 1 / 1.3; border-radius: calc(var(--w) / 2) calc(var(--w) / 2) 14px 14px; overflow: hidden; background: var(--paper-2); }
 .duo__side { position: absolute; left: 0; bottom: 6%; width: var(--w); }
 .duo__side img, .duo__main img, .duo__main video { position: absolute; inset: 0; width: 100%; height: 100%; max-width: none; object-fit: cover; object-position: var(--x, 50%) var(--y, 50%); }
-.duo__panel { position: absolute; z-index: 1; top: 0; bottom: 0; right: 0; width: var(--w); padding-top: var(--top); background: var(--paper); border-inline: 1px solid var(--ink); }
-.duo__main { position: relative; }
+.duo__panel { position: absolute; z-index: 1; top: 0; bottom: 0; right: 0; width: var(--mw); padding-top: var(--top); background: var(--paper); border-inline: 1px solid var(--ink); }
+.duo__main { position: relative; aspect-ratio: auto; height: calc(var(--w) * 1.3); border-radius: calc(var(--mw) / 2) calc(var(--mw) / 2) 14px 14px; }
 .duo__main video { opacity: 0; transition: opacity .5s ease; }
 .duo__main video.is-on { opacity: 1; }
 .duo__note { padding: 18px 16px 24px; font-size: 15px; line-height: 1.45; color: var(--muted); text-wrap: pretty; }
