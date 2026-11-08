@@ -46,7 +46,8 @@
     store('acNext', name);
     if (reduce.matches) { location.href = url.href; return; }
     let k = 0;
-    plName.innerHTML = name.split(' ').map(w => `<span class="w">${[...w].map(ch => `<span style="--i:${k++}">${ch}</span>`).join('')}</span>`).join(' ');
+    // the space between words takes a step too, same as the inline script on the next page
+    plName.innerHTML = name.split(' ').map(w => { const h = `<span class="w">${[...w].map(ch => `<span style="--i:${k++}">${ch}</span>`).join('')}</span>`; k++; return h; }).join(' ');
     $('#plBar').style.transform = 'scaleX(0)'; $('#plPct').textContent = '0%';
     root.classList.remove('is-pl', 'pl-out'); root.classList.add('pl-nav', 'pl-go');
     // go only once every letter, the logo and the line have landed, so the next page picks them up exactly where they are

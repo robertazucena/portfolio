@@ -128,9 +128,14 @@
     err.textContent = msg;
     f.classList.toggle('is-err', !!msg);
     input.setAttribute('aria-invalid', msg ? 'true' : 'false');
-    const desc = [msg && err.id, input.id === 's-pw' && !$('#s-caps').hidden && 's-caps'].filter(Boolean).join(' ');
-    desc ? input.setAttribute('aria-describedby', desc) : input.removeAttribute('aria-describedby');
+    describe(input);
     return !msg;
+  }
+  // the error and, on the password, a showing Caps Lock warning
+  function describe(input) {
+    const err = $('#e-' + input.id);
+    const desc = [err.textContent && err.id, input.id === 's-pw' && !$('#s-caps').hidden && 's-caps'].filter(Boolean).join(' ');
+    desc ? input.setAttribute('aria-describedby', desc) : input.removeAttribute('aria-describedby');
   }
   Object.keys(rules).forEach(id => {
     const input = $('#' + id);
@@ -143,9 +148,9 @@
   eye.addEventListener('click', () => { setEye(pw.type === 'password'); pw.focus(); });
   // Caps Lock warning while typing the password
   const caps = $('#s-caps');
-  const capsOn = e => { if (e.getModifierState) { caps.hidden = !e.getModifierState('CapsLock'); } };
+  const capsOn = e => { if (e.getModifierState) { caps.hidden = !e.getModifierState('CapsLock'); describe(pw); } };
   pw.addEventListener('keydown', capsOn); pw.addEventListener('keyup', capsOn);
-  pw.addEventListener('blur', () => { caps.hidden = true; });
+  pw.addEventListener('blur', () => { caps.hidden = true; describe(pw); });
   // switching between sign in, reset and the confirmation
   function show(name, focus) {
     Object.entries(views).forEach(([k, v]) => { v.hidden = k !== name; });
@@ -176,6 +181,7 @@
   });
   views.reset.addEventListener('submit', e => {
     e.preventDefault();
+    if ($('.sgn__btn', views.reset).getAttribute('aria-busy') === 'true') return;
     const email = $('#r-email');
     if (!check(email)) { email.focus(); return; }
     busy(views.reset, 'Sending…', () => {

@@ -89,7 +89,7 @@
           v.style.visibility = im.style.visibility; v.style.zIndex = im.style.zIndex; v.style.clipPath = im.style.clipPath; v.style.transform = im.style.transform;
           // the coming room buffers during the hold; only what shows actually plays
           if ((i === next || i === soon) && reelMQ.matches && v.dataset.src) { v.src = v.dataset.src; v.removeAttribute('data-src'); }
-          setReel(v, inView && show && !(i === base && t >= 1));
+          setReel(v, inView && !paused && !document.hidden && show && !(i === base && t >= 1));
         }
       });
     });
@@ -129,15 +129,13 @@
     paused = p;
     hxPlay.setAttribute('aria-label', p ? 'Play the rooms' : 'Pause the rooms');
     hxPlay.classList.toggle('is-paused', p);
-    kick();
+    redraw();
   }
   hxPlay.addEventListener('click', () => setPaused(!paused));
-  new IntersectionObserver(([en]) => {
-    inView = en.isIntersecting;
-    render(cur, phase === 'wipe' ? to : cur, phase === 'wipe' ? clamp01(wipeT / WIPE) : 0);
-    kick();
-  }, { threshold: .25 }).observe(hx);
-  document.addEventListener('visibilitychange', kick);
+  // re-draw the current state so the reel pauses or resumes with the rooms (pause button, off screen, hidden tab)
+  function redraw() { render(cur, phase === 'wipe' ? to : cur, phase === 'wipe' ? clamp01(wipeT / WIPE) : 0); kick(); }
+  new IntersectionObserver(([en]) => { inView = en.isIntersecting; redraw(); }, { threshold: .25 }).observe(hx);
+  document.addEventListener('visibilitychange', redraw);
   reduce.addEventListener('change', kick);
   function measureHero() {
     hxPin.style.setProperty('--say', Math.ceil(hxSay.getBoundingClientRect().bottom - hxPin.getBoundingClientRect().top + 10) + 'px');
@@ -155,8 +153,8 @@
     { d: '2026-11-04', c: 'engage', t: 'Pre-annual General Meeting sharing session', img: 'pre-agm' },
     { d: '2026-11-05', c: 'fitness', t: 'Diwali dance night with henna session', img: 'diwali' },
     { d: '2026-11-05', c: 'dining', t: 'Unwind into the evening @ Union Bar', img: 'union-bar' },
-    { d: '2026-11-05', c: 'kids', t: 'Tiny Art Explorers, November 2026', img: 'tiny-art' },
-    { d: '2026-11-06', c: 'kids', t: 'EnrichTots, November 2026', img: 'enrichtots' },
+    { d: '2026-11-05', c: 'kids', t: 'Tiny Art Explorers', img: 'tiny-art' },
+    { d: '2026-11-06', c: 'kids', t: 'EnrichTots', img: 'enrichtots' },
     { d: '2026-11-07', c: 'engage', t: 'Sip, Shop and be Merry: a Christmas market', img: 'christmas-market' },
     { d: '2026-11-08', c: 'dining', t: 'Deepavali special @ Tradewinds', img: 'deepavali' },
     { d: '2026-11-09', c: 'fitness', t: 'Sound bath healing by Master Sasti', img: 'sound-bath' },
@@ -166,6 +164,9 @@
   const [rPrev, rNext] = $$('.rbtn');
   const today = sgDay();
   const asDate = s => new Date(s + 'T12:00:00Z');
+  // sample week: move it forward by whole weeks so it always covers today
+  const lag = Math.floor((asDate(today) - asDate(EVENTS[0].d)) / (7 * 864e5));
+  if (lag > 0) EVENTS.forEach(ev => { ev.d = new Date(asDate(ev.d).getTime() + lag * 7 * 864e5).toISOString().slice(0, 10); });
   const fWd = new Intl.DateTimeFormat('en-GB', { weekday: 'short', timeZone: 'UTC' });
   const fLong = new Intl.DateTimeFormat('en-GB', { weekday: 'long', day: 'numeric', month: 'long', timeZone: 'UTC' });
 
