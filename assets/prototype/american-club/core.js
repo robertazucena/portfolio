@@ -4,21 +4,21 @@
   const $$ = (s, c = document) => [...c.querySelectorAll(s)];
   const reduce = matchMedia('(prefers-reduced-motion: reduce)');
 
-  /* ---------- preloader: every load. The line and % follow the fonts and hero photos, never faster than the name can spell (1.7s) or slower than 3.5s; between pages it is quicker ---------- */
+  /* ---------- preloader: every load. The line and % follow the fonts and hero photos, never faster than the name can spell (1.3s) or slower than 3.5s; between pages it is quicker ---------- */
   const root = document.documentElement, pl = $('.pl'), plName = $('#plName');
   const NAMES = { index: 'The Club', dining: 'Dining', fitness: 'Fitness', events: 'Private Events', kids: 'Kids', membership: 'Membership', about: 'About the Club', 'whats-on': 'What’s On', news: 'News', gallery: 'Gallery', contact: 'Contact', login: 'Member Login', privacy: 'Privacy' };
   const store = (k, v) => { try { v == null ? sessionStorage.removeItem(k) : sessionStorage.setItem(k, v); } catch (e) {} };
   if (pl && root.classList.contains('is-pl')) {
     const nav = root.classList.contains('pl-nav');
-    const MIN = reduce.matches ? 300 : nav ? 500 : 1700, MAX = nav ? 2200 : 3500, t0 = performance.now();
+    const MIN = reduce.matches ? 300 : nav ? 500 : 1300, MAX = nav ? 2200 : 3500, t0 = performance.now();
     const bar = $('#plBar'), pct = $('#plPct');
     const jobs = [document.fonts ? document.fonts.ready : 0, ...$$('img[fetchpriority="high"]').map(im => im.complete ? 0 : new Promise(r => { im.addEventListener('load', r, { once: true }); im.addEventListener('error', r, { once: true }); }))];
     let loaded = 0, shown = 0, lifted = false;
     jobs.forEach(j => Promise.resolve(j).then(() => loaded++, () => loaded++));
     const step = () => {
       const now = performance.now();
-      // half the line is time (so it never jumps), half is what has actually arrived
-      let target = now - t0 >= MAX ? 1 : .5 * Math.min(1, now / MIN) + .5 * (loaded / jobs.length);
+      // half the line is time since the font arrived (so it never jumps), half is what has actually arrived
+      let target = now - t0 >= MAX ? 1 : .5 * (window.__plF ? Math.min(1, (now - window.__plF) / MIN) : 0) + .5 * (loaded / jobs.length);
       shown = reduce.matches ? target : shown + (target - shown) * .12;
       if (target - shown < .004) shown = target;
       bar.style.transform = `scaleX(${shown.toFixed(4)})`;
@@ -49,7 +49,8 @@
     plName.innerHTML = name.split(' ').map(w => `<span class="w">${[...w].map(ch => `<span style="--i:${k++}">${ch}</span>`).join('')}</span>`).join(' ');
     $('#plBar').style.transform = 'scaleX(0)'; $('#plPct').textContent = '0%';
     root.classList.remove('is-pl', 'pl-out'); root.classList.add('pl-nav', 'pl-go');
-    setTimeout(() => { location.href = url.href; }, 300 + name.length * 28 + 350);
+    // go only once every letter, the logo and the line have landed, so the next page picks them up exactly where they are
+    setTimeout(() => { location.href = url.href; }, 300 + name.length * 24 + 580);
   });
   // coming back through the history cache: put the page back as it was
   addEventListener('pageshow', e => { if (e.persisted) { root.classList.remove('pl-go', 'pl-nav', 'is-pl', 'pl-out'); store('acNext', null); } });

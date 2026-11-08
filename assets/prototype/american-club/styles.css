@@ -213,7 +213,7 @@ html { scrollbar-color: var(--ink-3) var(--paper-2); scrollbar-width: thin; }
 
 /* ---------- hero: three bands between two rules, an arch in each, shifted against the others ---------- */
 .hr { position: relative; }
-.hr__pin { position: sticky; top: 0; height: 100svh; min-height: 560px; overflow: hidden; background: var(--paper); --stage: 41vw; --pad: 4vw; --tp: clamp(14px, 1.6vw, 24px); --yf: min(10vw, 16svh); --h: min(calc(var(--w) * 1.46), calc(89svh - var(--yf) * .78 - 200px)); --bh: calc(var(--h) - clamp(30px, 6svh, 64px)); --wb: clamp(40px, 6svh, 64px); --w: min(calc(27vw - 28px), 38svh); --panel: calc((var(--w) + 2 * var(--pad)) * .77); --o: max(calc(var(--w) * .2), calc((2 * var(--w) + var(--panel) - 100vw + var(--stage) + 24px) / 2)); --bt: 11%; --foot: 14px; }
+.hr__pin { position: sticky; top: 0; height: 100svh; min-height: 560px; overflow: hidden; background: var(--paper); --stage: 41vw; --pad: 4vw; --tp: clamp(14px, 1.6vw, 24px); --yf: min(10vw, 16svh); --h: min(calc(var(--w) * 1.46), calc(89svh - var(--yf) * .78 - 200px)); --bh: var(--h); --wb: clamp(40px, 6svh, 64px); --w: min(calc(27vw - 28px), 38svh); --panel: calc((var(--w) + 2 * var(--pad)) * .693); --o: max(calc(var(--w) * .2), calc((2 * var(--w) + var(--panel) - 100vw + var(--stage) + 24px) / 2)); --bt: calc(11% - clamp(30px, 6svh, 64px)); --foot: 14px; }
 .hr__say { position: absolute; z-index: 2; left: var(--edge); bottom: clamp(24px, 5.4svh, 56px); top: calc(clamp(70px, 6.4vw, 92px) + clamp(12px, 3svh, 32px)); width: calc(var(--stage) - var(--edge) - 12px); display: flex; flex-direction: column; justify-content: flex-end; }
 .hr__clocks { display: flex; gap: 26px; margin-bottom: auto; font-size: 13px; line-height: 1.35; color: var(--muted); }
 .hr__clocks dd { color: var(--ink); font-weight: 500; font-variant-numeric: tabular-nums; }
@@ -631,6 +631,12 @@ html.is-pl .pl, html.pl-go .pl { position: fixed; inset: 0; z-index: 300; displa
 .pl__track { position: relative; flex: 1; height: 1px; overflow: hidden; background: rgba(255, 255, 255, .22); }
 .pl__track i { position: absolute; inset: 0; background: #fff; transform: scaleX(0); transform-origin: left; }
 .pl__pg b { min-width: 4ch; font: 500 13px/1 var(--body); letter-spacing: .04em; text-align: right; font-variant-numeric: tabular-nums; }
+/* a fresh load spells nothing until the real font is in, so the name never swaps faces mid-animation (between pages the name is already up, so it stays) */
+html.is-pl:not(.pl-f):not(.pl-nav) .pl__to { opacity: 0; }
+html.is-pl:not(.pl-f):not(.pl-nav) .pl__to * { animation-play-state: paused; }
+/* between pages the old page holds until the new one can paint the same curtain, then swaps with no fade */
+@view-transition { navigation: auto; }
+::view-transition-old(root), ::view-transition-new(root) { animation: none; }
 /* lift: the curtain rises off with its curved hem showing */
 html.pl-out .pl__cv { transform: translateY(calc(-100% - var(--arc))); }
 html.pl-out .pl__to { transform: translateY(-14svh); opacity: 0; }
@@ -640,7 +646,7 @@ html.pl-out .pl__to { transform: translateY(-14svh); opacity: 0; }
   html.is-pl:not(.pl-nav) .pl__logo, html.pl-go .pl__logo { animation-delay: .1s; }
   /* leaving: the curtain comes up from below as an arch, then the next page's name arrives letter by letter */
   html.pl-go .pl__cv { animation: plUp .7s var(--ease-io) both; }
-  html.pl-go .pl__name .w span { animation-delay: calc(.3s + var(--i) * 28ms); }
+  html.pl-go .pl__name .w span { animation-duration: .55s; animation-delay: calc(.3s + var(--i) * 24ms); }
   /* the hero waits behind the curtain, then plays as it lifts */
   html.is-pl:not(.pl-out) :is(.hr__h .ln > span, .hr__band--b::before, .hr__band--b::after, .hr__frame) { animation-play-state: paused; }
 }
