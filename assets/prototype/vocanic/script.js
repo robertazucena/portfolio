@@ -489,6 +489,25 @@
     else dr.pen.style.visibility = 'hidden';
   };
 
+  /* ---------- Statement frames: each slot shifts at random to another photo or drawing ---------- */
+  const sayPills = $$('.say-i').map(el => ({ el, frames: $$('.sf', el), cur: 0 }));
+  if (!reduce && sayPills.length) {
+    let sayOn = false;
+    const swap = p => {
+      let j = Math.floor(Math.random() * (p.frames.length - 1)); if (j >= p.cur) j++; // any frame but the one showing
+      const old = p.frames[p.cur], next = p.frames[j];
+      p.frames.forEach(f => f.classList.toggle('was', false));
+      old.classList.replace('on', 'was');
+      next.classList.add('on');
+      p.cur = j;
+      setTimeout(() => old.classList.toggle('was', false), 800);
+    };
+    // slots never change together: each waits its own 1.8 to 3.6s, and only while its word is lit on screen
+    const plan = p => setTimeout(() => { if (sayOn && !d.hidden && p.el.classList.contains('lit')) swap(p); plan(p); }, 1800 + Math.random() * 1800);
+    new IntersectionObserver(([en]) => { sayOn = en.isIntersecting; }).observe($('.say-big'));
+    sayPills.forEach((p, i) => setTimeout(() => plan(p), i * 650));
+  }
+
   /* ---------- One scroll engine ---------- */
   const layers = $$('[data-p]').map(el => ({ el, speed: parseFloat(el.dataset.p), y: 0, h: 0 }));
   const lnA = $('.ln-a'), lnB = $('.ln-b'), photo = $('.hero-photo'), copy = $('.hero-copy');

@@ -467,11 +467,28 @@ html:not(.js) .deck,html:not(.js) .show-ctl,html:not(.js) .iris,.flat .deck,.fla
 .tools-head .body,.sec-head .body,.story-p,.talk-head .body,.track-head .body{max-width:27rem;text-wrap:balance}
 @media (min-width:861px){.hello{display:none}}
 /* Statement: small icons light up inside the sentence */
-.say-big .say-i{display:inline-grid;place-items:center;width:1.3em;height:.86em;vertical-align:-.08em;border-radius:.43em;background:var(--veil);color:var(--ink);transform:scale(.5);opacity:0;transition:transform .5s var(--out),opacity .25s}
-.say-big .say-i.lit,html:not(.js) .say-big .say-i{color:var(--ink);transform:none;opacity:1}
-.say-i svg{width:.6em;height:.6em;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-.say-big .say-i-o,.say-big .say-i-o.lit{background:var(--orange);color:#2B2C2F}
-.say-big .say-i-d,.say-big .say-i-d.lit{background:var(--ink);color:#fff}
+/* inline frames: each slot shifts at random between photos and small drawings (script.js, sayFrames) */
+.say-big .say-i{position:relative;display:inline-block;width:1.9em;height:.86em;vertical-align:-.08em;border-radius:.43em;overflow:hidden;isolation:isolate;background:var(--veil);transform:scale(.5);opacity:0;transition:transform .5s var(--out),opacity .25s}
+.say-big .say-i.lit,html:not(.js) .say-big .say-i,.flat .say-big .say-i{transform:none;opacity:1}
+.sf{position:absolute;inset:0;z-index:0;display:grid;place-items:center;font-weight:400;clip-path:inset(100% 0 0 0);transition:clip-path .75s var(--out)}
+.sf.on{z-index:1;clip-path:inset(0)}
+.sf.was{clip-path:inset(0);transition:none}
+.sf img{width:100%;height:100%;object-fit:cover;filter:contrast(1.14) brightness(.95);transform:scale(1.18);transition:transform 1.2s var(--out)}
+.sf.on img,.sf.was img{transform:none}
+.sf svg{width:.6em;height:.6em;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.sf-v{background:var(--veil);color:var(--ink)}
+.sf-o{background:var(--orange);color:var(--ink)}
+.sf-d{background:var(--ink);color:#fff}
+.sf .g-feed{width:1.2em;height:.55em;fill:currentColor;stroke:none}
+.sf .g-feed circle{fill:var(--orange)}
+.g-dots,.g-wave{display:flex;align-items:center;gap:.09em;font-style:normal}
+.g-dots i{width:.13em;height:.13em;border-radius:50%;background:var(--ink);animation:gDot 1.1s ease-in-out infinite}
+.g-dots i:nth-child(2){animation-delay:.15s}.g-dots i:nth-child(3){animation-delay:.3s}
+.g-wave i{width:.07em;height:.42em;border-radius:.04em;background:var(--orange);transform-origin:50% 50%;animation:gWave .9s ease-in-out infinite}
+.g-wave i:nth-child(2){animation-delay:-.2s}.g-wave i:nth-child(3){animation-delay:-.45s}.g-wave i:nth-child(4){animation-delay:-.1s}.g-wave i:nth-child(5){animation-delay:-.6s}
+@keyframes gDot{0%,60%,100%{transform:none;opacity:.45}30%{transform:translateY(-.08em);opacity:1}}
+@keyframes gWave{0%,100%{transform:scaleY(.3)}50%{transform:scaleY(1)}}
+.flat .g-dots i,.flat .g-wave i{animation:none}
 /* Hero reel: one real video, with comments timed over it */
 .reel{background:#2B2C2F}
 .reel video{display:block;width:100%;height:100%;object-fit:cover}
