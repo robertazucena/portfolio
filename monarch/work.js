@@ -154,9 +154,8 @@
       "Launched with partner clinics, watching return visits, bookings and safety escalations every week."]
   };
   const PHASE = ["Frame", "Find", "Form", "Field"];
-  /* product screens: recreated interfaces with sample data. Rebuilt ones are HTML sources in work/src (screens.html,
-     captured to work/*.webp by capture.py, named with .webp here). Every study now uses them; img() still accepts a bare name as .jpg.
-     main = [file, address bar, caption]; tiles / phones = [file, caption]; views + phone = the screen viewer (see viewHTML) */
+  /* product screens: recreated interfaces with sample data, captured to work/*.webp (sources are kept outside the live site).
+     views + phone = the screen viewer (see viewHTML) */
   const SHOT = {
     aster: { h: "The answer, with its working shown.", site: "app.aster.io",
       /* the viewer: [file, path, tab, caption, callouts [n, x %, y %]]; each callout's number matches "What we built" */
@@ -210,8 +209,7 @@
         ["anadl-3", "/talk", "Talk", "Counsellors this week, Welsh-speaking first, with the cost upfront", [[3, 18.7, 48.4], [4, 49.9, 96]]]],
       phone: ["anadl-m", "A breathing pause, on the phone", [[4, 87.4, 93.5]]] }
   };
-  const img = (f, w, h, alt) => `<img src="work/${/\.\w+$/.test(f) ? f : f + ".jpg"}" width="${w}" height="${h}" alt="${alt}" loading="lazy" decoding="async">`;
-  const win = (m, w, h) => `<div class="s-win"><span><i></i><i></i><i></i>${m[1] ? `<em>${m[1]}</em>` : ""}</span>${img(m[0], w, h, m[m.length - 1])}</div>`;
+  const img = (f, w, h, alt) => `<img src="work/${f}" width="${w}" height="${h}" alt="${alt}" loading="lazy" decoding="async">`;
   /* the viewer: one large frame, tabs that crossfade between whole views, a Desktop / Phone toggle, and numbered
      callouts on each view that match the numbers in "What we built" (hovering either lights both) */
   const pins = (p, alt) => p.map(c => `<span class="s-pin" data-n="${c[0]}" style="left:${c[1]}%;top:${c[2]}%" aria-hidden="true">${c[0]}</span>`).join("");
@@ -229,18 +227,10 @@
     </div>`;
   const stageHTML = id => {
     const x = SHOT[id]; if (!x) return "";
-    if (x.views) return `<div class="s-stage s-stage-v rv">
+    return `<div class="s-stage s-stage-v rv">
         <div class="s-stage-h"><small>The product</small><p>${x.h}</p></div>
         ${viewHTML(id, x)}
         <p class="s-note">Interfaces recreated for illustration, with sample data. Numbers match “What we built”.</p>
-      </div>`;
-    const phones = x.phones ? `<div class="s-phones" style="--n:${x.phones.length}">${x.phones.map(p => `<figure><div class="s-phone">${img(p[0], 360, 740, p[1])}</div><figcaption>${p[1]}</figcaption></figure>`).join("")}</div>` : "";
-    const main = x.main ? `<figure>${win(x.main, 1200, 720)}<figcaption>${x.main[2]}</figcaption></figure>` : "";
-    const tiles = x.tiles ? `<div class="s-tiles">${x.tiles.map(t => `<figure>${win([t[0], "", t[1]], 600, 400)}<figcaption>${t[1]}</figcaption></figure>`).join("")}</div>` : "";
-    return `<div class="s-stage rv">
-        <div class="s-stage-h"><small>The product</small><p>${x.h}</p></div>
-        <div class="s-shots">${phones}${main}${tiles}</div>
-        <p class="s-note">Interfaces recreated for illustration, with sample data</p>
       </div>`;
   };
   /* service → studies (a study can belong to more than one) */
@@ -256,13 +246,14 @@
   const scroll = $(".work-scroll", work), inner = $(".work-in", work), tabs = $(".work-tabs", work);
   const layers = $$(".work-bg i", work);
   /* everything about a service comes from the hero itself: name, side bearing, photos, line */
+  const cut = b => getComputedStyle(b).getPropertyValue("--img").trim();   /* the photo cut this device uses (see .t>b in styles.css) */
   const SV = words.map((w, k) => {
     const t = $(".t", w);
     return { name: t.firstChild.textContent.trim(), lsb: t.style.getPropertyValue("--lsb"),
-      imgs: $$(".t>b", w).map(b => b.style.getPropertyValue("--img")), desc: descs[k] ? descs[k].textContent : "" };
+      imgs: $$(".t>b", w).map(cut), desc: descs[k] ? descs[k].textContent : "" };
   });
   const slug = k => SV[k].name.toLowerCase();
-  const hi = img => img.replace(/w=1400/, "w=2400");       /* full-frame backdrop: a sharper copy, swapped in once loaded */
+  const hi = img => img.replace(/w=\d+/, "w=2400");       /* full-frame backdrop: a sharper copy, swapped in once loaded */
   const urlOf = img => (img.match(/url\(['"]?([^'")]+)/) || [])[1];
 
   /* ---------- render ---------- */
@@ -334,7 +325,7 @@
   let cur = -1, busy = false, pushed = false;
   const isOpen = () => root.classList.contains("work-open");
   const tOf = k => $(".t", words[k]);
-  const shownImg = k => { const b = $(".t>b.on", words[k]); return b ? b.style.getPropertyValue("--img") : SV[k].imgs[0]; };
+  const shownImg = k => { const b = $(".t>b.on", words[k]); return b ? cut(b) : SV[k].imgs[0]; };
   /* the word's box relative to the frame, as a clip-path inset, and the backdrop transform that sits the photo
      on the word (scaled to the word's width, centred on it) */
   const geo = r => {

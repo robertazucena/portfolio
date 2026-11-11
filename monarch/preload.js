@@ -25,7 +25,7 @@
   let shots = [];
   const build = () => { if (!shots.length) shots = PHOTOS.map(id => {
     const el = document.createElement("i");
-    el.style.setProperty("--img", `url('https://images.unsplash.com/photo-${id}?auto=format&fit=crop&w=1400&q=60')`);
+    el.style.setProperty("--img", `url('https://images.unsplash.com/photo-${id}?auto=format&fit=crop&w=${matchMedia("(max-width:820px)").matches ? 1000 : 1400}&q=60')`);
     wings.appendChild(el); return el;
   }); };
   let flk = 0, fi = 0;

@@ -98,6 +98,9 @@ ol{padding:0;list-style:none}
    hero: each photo drifts its own way (pan right, slow zoom in, pan left, zoom out, set per layer by hero.js as
    --s0/--p0 → --s1/--p1) on a soft in-out curve, and crossfades with the next; the leaving photo keeps its place
    while it fades, then resets unseen. */
+/* each photo layer carries two cuts; phones take the 1000px one (the letters are small there), so each device fetches one size only */
+.t>b{--img:var(--im)}
+@media (max-width:820px){.t>b{--img:var(--ims)}}
 .t>b{position:absolute;inset:0;z-index:1;font-weight:inherit;color:transparent;background:var(--img) no-repeat;background-size:var(--s0,112%) auto;background-position:var(--p0,50% 50%);
   -webkit-background-clip:text;background-clip:text;opacity:0;
   transition:opacity .2s linear 1.6s,background-size 0s linear 1.85s,background-position 0s linear 1.85s}   /* the leaving photo stays whole underneath until the new one covers it */
@@ -254,20 +257,12 @@ ol{padding:0;list-style:none}
 .s-stage-h{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap;margin-bottom:clamp(24px,3vw,44px)}
 .s-stage-h p{font:500 clamp(22px,2vw,32px)/1.15 var(--display);letter-spacing:-.02em;max-width:18em}
 .s-stage-h small{font:500 10px/1.4 var(--sans);letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
-.s-shots{display:grid;gap:clamp(20px,2.4vw,36px)}
-.s-shots figure{margin:0}
-.s-shots figcaption{margin-top:12px;font:500 10px/1.4 var(--sans);letter-spacing:.18em;text-transform:uppercase;color:var(--muted)}
-.s-shots img{display:block;width:100%;height:auto}
 .s-win{overflow:hidden;border-radius:12px;background:#fff;box-shadow:0 30px 60px -34px rgba(0,0,0,.35),0 0 0 1px rgba(0,0,0,.06)}
 .s-win>span{display:flex;align-items:center;gap:7px;height:34px;padding:0 14px;background:#f2f2f1;border-bottom:1px solid rgba(0,0,0,.06);font:500 11px/1 var(--sans);color:#636363}
 .s-win>span i{width:9px;height:9px;border-radius:50%;background:#d6d6d4}
 .s-win>span em{margin:0 auto;font-style:normal;padding:5px 14px;border-radius:6px;background:#fff}
-.s-tiles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:inherit}
-.s-tiles .s-win{border-radius:10px}
-.s-phones{display:grid;grid-template-columns:repeat(var(--n),minmax(0,300px));justify-content:center;gap:clamp(18px,3vw,48px)}
 .s-phone{overflow:hidden;border-radius:clamp(26px,3vw,44px);background:#fff;border:clamp(5px,.6vw,9px) solid #0d0d0d;box-shadow:0 30px 60px -30px rgba(0,0,0,.4)}
 .s-phone img{margin:-2px}
-.s-phones figcaption{text-align:center}
 .s-note{margin-top:clamp(18px,2vw,28px);font:500 10px/1.4 var(--sans);letter-spacing:.18em;text-transform:uppercase;color:var(--muted)}
 
 .s-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,2.2fr);gap:clamp(24px,4vw,64px);padding-top:clamp(28px,3.4vw,44px);border-top:1px solid var(--rule)}
@@ -319,9 +314,7 @@ ol{padding:0;list-style:none}
   .w-index span{display:none}
   .w-index button{grid-template-columns:auto 1fr auto}
   .s-stage{margin-left:-8px;margin-right:-8px;padding:18px}
-  .s-tiles,.s-row,.s-story,.s-built,.s-steps{grid-template-columns:1fr}
-  .s-phones{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;justify-content:flex-start;margin:0 -18px;padding:0 18px 4px;scrollbar-width:none}
-  .s-phones figure{flex:0 0 68%;scroll-snap-align:center}
+  .s-row,.s-story,.s-built,.s-steps{grid-template-columns:1fr}
   .s-row{gap:14px}
   .w-next i{width:52px;height:52px}
   .w-next span{font-size:calc((100vw - 2 * var(--rim) - 40px) / 7.4)}   /* the longest name still clears the arrow */
