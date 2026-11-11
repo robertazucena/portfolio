@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Monarch Labs — product screens</title>
+<!-- Source for the case-study screens. Open screens.html#kyma-2 to see one screen at its native size; with no hash,
+     every screen is listed. capture.py renders each one and writes ../<name>.webp -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400..600&family=Inter+Tight:wght@400..700&family=JetBrains+Mono:wght@400..600&family=Geist:wght@300..700&family=Geist+Mono:wght@400..600&family=Instrument+Sans:wdth,wght@75..100,400..700&family=IBM+Plex+Mono:wght@400;500;600&family=Archivo:wdth,wght@62..125,400..800&family=DM+Mono:wght@400;500&family=Atkinson+Hyperlegible:wght@400;700&family=Atkinson+Hyperlegible+Mono:wght@400;500&family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Figtree:wght@400..800&family=Spline+Sans+Mono:wght@400;500;600&family=Albert+Sans:wght@400..800&family=Red+Hat+Mono:wght@400;500;600&family=Familjen+Grotesk:wght@400..700&family=Instrument+Serif:ital@0;1&family=Hanken+Grotesk:wght@400..700&display=swap">
+<link rel="stylesheet" href="kit.css">
+<style>.all{display:flex;flex-direction:column;gap:40px;padding:40px;background:#e9e9e6}.all h2{margin:0 0 10px;font:600 13px/1 var(--mono)}.all>div{display:inline-block}</style>
+</head>
+<body>
+<div id="stage"></div>
+<script src="kit.js"></script>
+<script>
+(function () {
+  var stage = document.getElementById("stage"), id = location.hash.slice(1);
+  if (SCREENS[id]) { stage.innerHTML = SCREENS[id][0](); return; }
+  stage.className = "all";
+  stage.innerHTML = Object.keys(SCREENS).map(function (k) { return "<section><h2>" + k + "</h2><div>" + SCREENS[k][0]() + "</div></section>"; }).join("");
+})();
+</script>
+</body>
+</html>

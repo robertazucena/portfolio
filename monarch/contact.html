@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en" class="page-contact">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Contact — Monarch Labs</title>
+<meta name="description" content="Start a conversation with Monarch Labs in Manila and Singapore. Tell us the problem, not the deliverables; we reply within two working days.">
+<meta name="theme-color" content="#e6e6e6">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;700&family=DM+Sans:opsz,wght@9..40,500;9..40,600&display=swap">
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="studio.css">
+</head>
+<body>
+<!-- preloader: the service photos flick through the Wings as the page syncs, the name decodes, the percentage counts up (preload.js) -->
+<div class="pre" id="pre" aria-hidden="true">
+  <div class="pre-core">
+    <div class="pre-wings"></div>
+    <p class="pre-name" data-w="MONARCH LABS"><i>M</i><i>O</i><i>N</i><i>A</i><i>R</i><i>C</i><i>H</i><i>&nbsp;</i><i>L</i><i>A</i><i>B</i><i>S</i></p>
+    <p class="pre-num">0%</p>
+  </div>
+</div>
+<div class="aura" aria-hidden="true"><i></i><i></i><i></i></div>
+<div class="frame" aria-hidden="true"></div>
+<div class="cols" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+
+<header class="bar">
+  <a class="mark" href="index.html" aria-label="Monarch Labs, home">
+    <svg class="sym" viewBox="28 46 200 166" aria-hidden="true"><path d="M28 212V46l92 92v74H86v-52l-22-22v74zM228 212V46l-92 92v74h34v-52l22-22v74z"/></svg>
+  </a>
+  <nav class="nav" aria-label="Primary">
+    <a href="index.html">Labs</a>
+    <a href="studio.html">Studio</a>
+    <a href="capabilities.html">Capabilities</a>
+    <a href="contact.html" aria-current="page">Contact</a>
+  </nav>
+  <a class="btn dark" href="contact.html" aria-current="page" aria-disabled="true" tabindex="-1">Start a project <i aria-hidden="true">↗</i></a>
+</header>
+
+<p class="side side-l" aria-hidden="true">Contact — Manila / Singapore</p>
+<div class="side side-r" aria-hidden="true">
+  <span class="count"><b>01</b></span>
+  <span class="ticks"><i class="on"></i><i></i><i></i><i></i></span>
+  <span class="lbl">Contact</span>
+</div>
+
+<!-- Copy from the earlier Monarch site (mnrch-studio.com, Start a conversation / footer), with both cities. The brief asks
+     one thing at a time (as the Greed reservation console) and fills a brief card as you answer; sending posts
+     the brief and any attached file to the form service in data-endpoint (contact.js) -->
+<main class="studio" tabindex="-1">
+
+  <section class="st-intro bf" data-sec aria-labelledby="h-brief">
+    <h1 class="sr" id="h-brief">Start a conversation with Monarch Labs</h1>
+    <p class="st-eye rv"><i class="dot" aria-hidden="true"></i>Start a conversation <span>/</span> Manila <span>/</span> Singapore <span>/</span> New partnerships Jan—Mar 2027</p>
+    <!-- data-endpoint: FormSubmit emails each brief (and its file) to the studio inbox. The visitor's email is the
+         reply-to. The very first send triggers a one-time "Activate" email to the inbox; after that, briefs arrive
+         directly. FormSubmit's activation email also gives a random alias that can replace the address below. -->
+    <form class="bf-form rv" data-bf data-endpoint="https://formsubmit.co/ajax/robertazucena@gmail.com" method="post" enctype="multipart/form-data" novalidate>
+      <input type="hidden" name="_subject" value="New brief — Monarch Labs">
+      <input type="hidden" name="_template" value="table">
+      <input type="hidden" name="_captcha" value="false">
+      <input type="hidden" name="reference" value="">
+      <input type="hidden" name="services" value="">
+      <p class="bf-hp" aria-hidden="true"><label>Leave this empty <input name="_honey" tabindex="-1" autocomplete="off"></label></p>
+      <fieldset class="bf-q on">
+        <legend><small>01</small>What should be more useful?</legend>
+        <textarea class="bf-in" name="problem" rows="2" placeholder="Tell us the problem, not the deliverables" required aria-describedby="bf-err"></textarea>
+      </fieldset>
+      <fieldset class="bf-q">
+        <legend><small>02 <em>optional</em></small>Have a brief already?</legend>
+        <label class="bf-drop" data-bf-drop>
+          <input type="file" name="attachment" accept=".pdf,.doc,.docx,.ppt,.pptx,.key,.pages,.txt,.md,.rtf,.png,.jpg,.jpeg,.zip" aria-describedby="bf-err bf-drop-note">
+          <span class="bf-drop-ic" aria-hidden="true"><svg viewBox="0 0 48 48"><path d="M30 6H13a3 3 0 0 0-3 3v30a3 3 0 0 0 3 3h22a3 3 0 0 0 3-3V14z"/><path d="M30 6v8h8"/><path d="M24 34V21M18.5 26.5L24 21l5.5 5.5"/><circle class="a" cx="24" cy="21" r="2"/></svg></span>
+          <span class="bf-drop-t"><b data-bf-file>Drop your file here, or browse</b><span id="bf-drop-note">PDF, Word, PowerPoint, Keynote, images or a zip · up to 10 MB</span></span>
+          <button type="button" class="bf-ghost bf-drop-x" data-bf-unfile hidden>Remove</button>
+        </label>
+      </fieldset>
+      <fieldset class="bf-q">
+        <legend><small>03 <em>optional</em></small>Where would you start?</legend>
+        <div class="bf-opts"><button class="bf-opt" type="button" data-svc="Strategy" aria-pressed="false"><span class="bf-ic"><svg aria-hidden="true" viewBox="0 0 48 48"><circle cx="24" cy="24" r="17" pathLength="1"/><circle cx="24" cy="24" r="10" pathLength="1"/><path d="M24 7v6M24 35v6M7 24h6M35 24h6" pathLength="1"/><circle class="a" cx="24" cy="24" r="2.6"/></svg></span><b>Strategy</b><span>Audits, discovery, roadmaps</span></button><button class="bf-opt" type="button" data-svc="Experience" aria-pressed="false"><span class="bf-ic"><svg aria-hidden="true" viewBox="0 0 48 48"><rect x="6" y="8" width="36" height="26" rx="3" pathLength="1"/><path d="M17 42h14M24 34v8" pathLength="1"/><path d="M22 16l9 7-4 1 2.5 5-2 1-2.5-5-3 3z" pathLength="1"/><circle class="a" cx="13" cy="15" r="2"/></svg></span><b>Experience</b><span>Websites, brands, campaigns</span></button><button class="bf-opt" type="button" data-svc="Intelligence" aria-pressed="false"><span class="bf-ic"><svg aria-hidden="true" viewBox="0 0 48 48"><rect x="6" y="6" width="36" height="36" rx="3" pathLength="1"/><path d="M13 34V25M20 34V19M27 34V22M34 34V13" pathLength="1"/><circle class="a" cx="34" cy="13" r="2.4"/></svg></span><b>Intelligence</b><span>AI apps, dashboards, interfaces</span></button><button class="bf-opt" type="button" data-svc="Knowledge" aria-pressed="false"><span class="bf-ic"><svg aria-hidden="true" viewBox="0 0 48 48"><path d="M24 13c-4-3-10-4-17-3v26c7-1 13 0 17 3 4-3 10-4 17-3V10c-7-1-13 0-17 3z" pathLength="1"/><path d="M24 13v26" pathLength="1"/><path d="M12 18h7M12 24h7M29 18h7" pathLength="1"/><circle class="a" cx="32.5" cy="24" r="2.2"/></svg></span><b>Knowledge</b><span>Answers from your own data</span></button><button class="bf-opt" type="button" data-svc="Automation" aria-pressed="false"><span class="bf-ic"><svg aria-hidden="true" viewBox="0 0 48 48"><rect x="5" y="18" width="11" height="11" rx="2.5" pathLength="1"/><rect x="32" y="6" width="11" height="11" rx="2.5" pathLength="1"/><rect x="32" y="31" width="11" height="11" rx="2.5" pathLength="1"/><path d="M16 23.5h7V11.5h9M23 23.5v13h9" pathLength="1"/><circle class="a" cx="23" cy="23.5" r="2.2"/></svg></span><b>Automation</b><span>Agents, workflows, integrations</span></button><button class="bf-opt" type="button" data-svc="Creative" aria-pressed="false"><span class="bf-ic"><svg aria-hidden="true" viewBox="0 0 48 48"><path d="M24 5l17 9.5v19L24 43 7 33.5v-19z" pathLength="1"/><path d="M7 14.5L24 24l17-9.5M24 24v19" pathLength="1"/><circle class="a" cx="24" cy="24" r="2.4"/></svg></span><b>Creative</b><span>AI visuals, 3D, film</span></button></div>
+      </fieldset>
+      <fieldset class="bf-q">
+        <legend><small>04 <em>optional</em></small>Who is it for?</legend>
+        <input class="bf-in" name="company" autocomplete="organization" placeholder="Company or team" aria-describedby="bf-err">
+      </fieldset>
+      <fieldset class="bf-q">
+        <legend><small>05</small>What should we call you?</legend>
+        <input class="bf-in" name="name" autocomplete="name" placeholder="Your name" required aria-describedby="bf-err">
+      </fieldset>
+      <fieldset class="bf-q">
+        <legend><small>06</small>Where should we reply?</legend>
+        <input class="bf-in" name="email" type="email" inputmode="email" autocomplete="email" placeholder="you@company.com" required aria-describedby="bf-err">
+      </fieldset>
+      <fieldset class="bf-q bf-done">
+        <legend><small>OK</small>Your brief is on its way.</legend>
+        <p class="st-text">Thanks, <span data-bf-first>there</span>. It reached the studio with reference <b data-bf-ref2>ML-26-0000</b>. We reply within two working days from Manila and Singapore.</p>
+        <div class="bf-row">
+          <button type="button" class="bf-ghost" data-bf-again>Send another brief</button>
+        </div>
+      </fieldset>
+      <p class="bf-err" id="bf-err" role="alert" data-bf-err></p>
+      <div class="bf-nav">
+        <button type="button" class="bf-ghost" data-bf-back>Back</button>
+        <button type="submit" class="btn dark" data-bf-next><span>Next</span> <i aria-hidden="true">→</i></button>
+        <span class="bf-hint">or press Enter</span>
+      </div>
+    </form>
+    <aside class="bf-card rv" aria-label="Your brief so far" data-bf-card>
+      <div class="bf-card-top"><span class="ct-ava" aria-hidden="true"><svg viewBox="28 46 200 166"><path d="M28 212V46l92 92v74H86v-52l-22-22v74zM228 212V46l-92 92v74h34v-52l22-22v74z"/></svg></span><b>Brief</b><span class="bf-state" data-bf-state>Drafting</span></div>
+      <dl>
+        <div><dt>The problem</dt><dd class="blank" data-bf-show="problem">—</dd></div>
+        <div><dt>Attachment</dt><dd class="blank" data-bf-show="file">—</dd></div>
+        <div><dt>Start with</dt><dd class="blank" data-bf-show="services">—</dd></div>
+        <div><dt>Company</dt><dd class="blank" data-bf-show="company">—</dd></div>
+        <div><dt>Name</dt><dd class="blank" data-bf-show="name">—</dd></div>
+        <div><dt>Email</dt><dd class="blank" data-bf-show="email">—</dd></div>
+      </dl>
+      <p class="bf-card-foot"><span data-bf-ref>ML-26-0000</span><span>Manila / Singapore</span></p>
+    </aside>
+  </section>
+
+  <section class="st-sec" data-sec aria-labelledby="h-write">
+    <h2 class="st-label rv" id="h-write"><small>01</small>Or write directly</h2>
+    <p class="st-big rv">Tell us the problem, not the deliverables.</p>
+    <div class="st-under ct-write">
+      <p class="ct-mail rv"><a class="see" href="mailto:hello@monarch.studio">hello@monarch.studio <i aria-hidden="true">→</i></a></p>
+      <p class="st-lede rv">We reply within two working days from Manila and Singapore.</p>
+    </div>
+  </section>
+
+  <section class="st-sec" data-sec aria-labelledby="h-studios">
+    <h2 class="st-label rv" id="h-studios"><small>02</small>Two studios, one clock</h2>
+    <ol class="st-principles ct-places">
+      <li class="rv"><span class="ic" aria-hidden="true"><svg viewBox="0 0 48 48"><path d="M24 43s14-12.5 14-24a14 14 0 0 0-28 0c0 11.5 14 24 14 24z" pathLength="1"/><circle cx="24" cy="19" r="5" pathLength="1"/><circle class="a" cx="24" cy="19" r="2"/></svg></span><small>PH <span>Home base</span></small><h3>Manila</h3><p>14.5995° N, 120.9842° E</p><p class="ct-time">PHT <time data-time>--:--</time></p></li>
+      <li class="rv"><span class="ic" aria-hidden="true"><svg viewBox="0 0 48 48"><path d="M24 43s14-12.5 14-24a14 14 0 0 0-28 0c0 11.5 14 24 14 24z" pathLength="1"/><path d="M17 27h14M20 22v5M28 22v5M24 13v14" pathLength="1"/><circle class="a" cx="24" cy="10" r="2"/></svg></span><small>SG <span>Studio</span></small><h3>Singapore</h3><p>1.3521° N, 103.8198° E</p><p class="ct-time">SGT <time data-time>--:--</time></p></li>
+      <li class="rv"><span class="ic" aria-hidden="true"><svg viewBox="0 0 48 48"><rect x="5" y="10" width="38" height="28" rx="3" pathLength="1"/><path d="M6 12l18 14 18-14" pathLength="1"/><circle class="a" cx="38" cy="15" r="2.4"/></svg></span><small>@ <span>Channels</span></small><h3>Write to us</h3><p><a href="mailto:hello@monarch.studio">hello@monarch.studio</a></p><p class="ct-links"><a href="#">LinkedIn</a><a href="#">Instagram</a></p></li>
+    </ol>
+  </section>
+
+  <section class="st-sec" data-sec aria-labelledby="h-next">
+    <h2 class="st-label rv" id="h-next"><small>03</small>What happens next</h2>
+    <ol class="st-principles">
+      <li class="rv"><span class="ic" aria-hidden="true"><svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="17" pathLength="1"/><path d="M24 13v11l7 5" pathLength="1"/><circle class="a" cx="24" cy="24" r="2.2"/></svg></span><small>01 <span>Within two working days</span></small><h3>We reply</h3><p>A person from the studio, not an auto-responder, with the questions that matter.</p></li>
+      <li class="rv"><span class="ic" aria-hidden="true"><svg viewBox="0 0 48 48"><path d="M8 12a3 3 0 0 1 3-3h26a3 3 0 0 1 3 3v17a3 3 0 0 1-3 3H25l-8 7v-7h-6a3 3 0 0 1-3-3z" pathLength="1"/><path d="M16 18h16M16 24h10" pathLength="1"/><circle class="a" cx="32" cy="24" r="2.2"/></svg></span><small>02 <span>30 minutes</span></small><h3>We talk</h3><p>A short call to hear the problem in your words and meet the people who would do the work.</p></li>
+      <li class="rv"><span class="ic" aria-hidden="true"><svg viewBox="0 0 48 48"><path d="M12 5h17l9 9v29H12z" pathLength="1"/><path d="M29 5v9h9" pathLength="1"/><path d="M18 23h14M18 29h14M18 35h8" pathLength="1"/><circle class="a" cx="31" cy="35" r="2.2"/></svg></span><small>03 <span>Within a week</span></small><h3>We frame it</h3><p>A written frame: the problem, the evidence, a measurable definition of useful, and a first plan.</p></li>
+    </ol>
+    <footer class="st-foot">
+      <span>© Monarch Labs 2026 · Manila / Singapore</span>
+      <span>PHT / SGT · UTC +8</span>
+    </footer>
+  </section>
+
+</main>
+<script src="preload.js" defer></script>
+<script src="studio.js" defer></script>
+<script src="contact.js" defer></script>
+</body>
+</html>
