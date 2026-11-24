@@ -1,4 +1,4 @@
-/* HELIO ENERGY: router, preloader, nav, entrances, sunrise-to-sunset steps, roof peel, savings estimate.
+/* Helio Energy: router, preloader, nav, entrances, sunrise-to-sunset steps, roof peel, savings estimate.
    Works from file:// (no fetch). */
 (function () {
   'use strict';
@@ -32,8 +32,8 @@
     $$('.menu__links a').forEach(function (a) {
       if (a.getAttribute('href') === '#' + name) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
     });
-    doc.title = name === 'home' ? 'HELIO ENERGY · Solar energy for homes and businesses'
-      : (($('[data-view="' + name + '"] h1') || {}).textContent || 'HELIO ENERGY') + ' · HELIO ENERGY';
+    doc.title = name === 'home' ? 'Helio Energy · Solar energy for homes and businesses'
+      : (($('[data-view="' + name + '"] h1') || {}).textContent || 'Helio Energy') + ' · Helio Energy';
     current = name;
     body.classList.toggle('is-sub', name !== 'home');
     if (!first) window.scrollTo(0, 0);
