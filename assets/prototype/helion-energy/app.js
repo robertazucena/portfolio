@@ -479,7 +479,7 @@
     var go2 = function (n, dir) {
       step = n;
       sets.forEach(function (s) { var on = +s.getAttribute('data-step') === n; s.hidden = !on; s.classList.toggle('is-back', on && dir < 0); });
-      suns.forEach(function (s, k) { s.classList.toggle('is-on', k < (n - 1) * 2); });
+      suns.forEach(function (s, k) { s.classList.toggle('is-on', k < (n - 1) * 3); });
       back.hidden = n === 1; next.textContent = n === 3 ? 'Send my request' : 'Next';
       $('#wz-count').textContent = 'Step ' + n + ' of 3';
       var first = sets[n - 1].querySelector('input:not([type=radio]),select'); if (first && dir) first.focus({ preventScroll: true });
@@ -502,3 +502,4 @@
 
   go(true);
 })();
+
