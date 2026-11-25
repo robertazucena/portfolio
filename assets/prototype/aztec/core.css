@@ -1,0 +1,98 @@
+/* ═══════════════════════════════════════════════════════════════
+   Aztec core: shared by the website (index.html) and the platform
+   (platform/). Brand tokens, icon + logo atoms and the ONE preloader.
+   Change the loader here only, never per page.
+   ═══════════════════════════════════════════════════════════════ */
+:root {
+  --navy: #050C1F;
+  --navy-2: #081536;
+  --navy-3: #0E2152;
+  --sky: #8AD4FF;
+  --sky-hi: #C9ECFF;
+  --ice: #EAF3FF;
+
+  --text: #EAF1FF;
+  --muted: #9EB0CC;
+  --faint: rgba(234, 241, 255, .5);
+  --line: rgba(160, 200, 255, .12);
+  --line-strong: rgba(160, 200, 255, .24);
+  --surface: rgba(255, 255, 255, .04);
+  --surface-2: rgba(255, 255, 255, .075);
+  --on-sky: #06142E;
+  --glow: rgba(138, 212, 255, .5);
+
+  --font: "Manrope", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --display: "Sora", "Manrope", system-ui, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  --wrap: 1280px;
+  --pad: clamp(20px, 4vw, 48px);
+  --ease: cubic-bezier(.22, 1, .36, 1);
+  --ease-io: cubic-bezier(.65, 0, .35, 1);
+  color-scheme: dark;
+}
+
+.ic { width: 20px; height: 20px; flex: none; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.lg-t { fill: #fff; }
+.lg-q { fill: var(--sky); }
+
+/* ── preloader ────────────────────────────────────────── */
+.loader {
+  position: fixed; inset: 0; z-index: 250; display: grid; place-items: center; pointer-events: none;
+  background: transparent;   /* the prism + pattern (.bgfx) show through, so load and page read as one */
+  transition: opacity .55s var(--ease), visibility 0s .55s;
+}
+html:not(.js) .loader, .loader.is-done { opacity: 0; visibility: hidden; }
+/* while the counter runs, only the prism, the pattern and the counter are on screen;
+   when it finishes the page fades in on the same background (first load and every page change) */
+.js:has(.loader:not(.is-done)) body > :not(.bgfx, .loader, script) { opacity: 0 !important; }
+.js:has(.loader.is-done) body > :not(.bgfx, .loader, script) { animation: pageIn .6s var(--ease) backwards; }
+@keyframes pageIn { from { opacity: 0; } }
+
+/* ONE entrance for every element that appears (website + platform): same rise, time, easing and step */
+:root { --in-y: 16px; --in-t: .8s; --in-step: 70ms; }
+@keyframes aIn { from { opacity: 0; transform: translateY(var(--in-y)); } }
+/* app chrome (nav bar, sidebar, top bar, tab bar): each item steps in once the loader is done */
+.is-in [data-chrome] { animation: aIn var(--in-t) var(--ease) calc(var(--c, 0) * var(--in-step)) backwards; }
+.loader.is-swap { transition: opacity .3s var(--ease), visibility 0s; }
+.loader__mark { position: relative; display: grid; place-items: center; transition: transform .7s var(--ease), opacity .5s var(--ease); }
+.loader__mark > * { grid-area: 1 / 1; }
+/* the big counter: a faint outline-weight base, and a sky copy that fills from the bottom as it counts */
+.loader__num { font: 600 clamp(60px, 13.6vw, 172px)/.8 var(--display); letter-spacing: -.07em; font-variant-numeric: tabular-nums; color: rgba(160, 200, 255, .07); user-select: none; }
+.loader__num--fill { color: rgba(138, 212, 255, .24); clip-path: inset(calc(100% - var(--p, 0) * 1%) 0 0 0); }
+.loader__logo { position: relative; width: clamp(50px, 6.5vw, 82px); height: auto; }
+.loader.is-run .loader__num { animation: numIn .6s var(--ease) both; }
+/* logo build (preloader only): the Z pops in, flips once, then the A and "tec" slide out from behind it */
+.lgo path { transform-box: fill-box; transform-origin: 50% 50%; }
+.loader.is-run .lgo .lg-q { animation: lgZ 1s linear both; }
+.loader.is-run .lgo .lg-a { animation: lgA .38s var(--ease) .72s both; }
+.loader.is-run .lgo .lg-tec { animation: lgTec .4s var(--ease) .74s both; }
+/* the Z starts in the middle of the wordmark (74% of its own width right), pops, flips, then slides home as the letters arrive */
+@keyframes lgZ {
+  0% { opacity: 0; transform: translateX(74%) scale(.4) rotateY(0deg); animation-timing-function: cubic-bezier(.2, .8, .2, 1); }
+  20% { opacity: 1; transform: translateX(74%) scale(1.1) rotateY(0deg); animation-timing-function: var(--ease); }
+  28% { transform: translateX(74%) scale(1) rotateY(0deg); animation-timing-function: cubic-bezier(.6, 0, .3, 1); }
+  64% { transform: translateX(74%) scale(1) rotateY(360deg); }
+  70% { transform: translateX(74%) scale(1) rotateY(360deg); animation-timing-function: cubic-bezier(.5, 0, .2, 1); }
+  100% { opacity: 1; transform: translateX(0) scale(1) rotateY(360deg); }
+}
+@keyframes lgA { from { opacity: 0; transform: translateX(70%); } }
+@keyframes lgTec { from { opacity: 0; transform: translateX(-28%); } }
+@media (prefers-reduced-motion: reduce) { .lgo path { animation: none !important; } }
+.loader.is-done .loader__mark { transform: scale(1.06); opacity: 0; }
+@keyframes numIn { from { opacity: 0; transform: translateY(24px); } }
+
+/* the prism: a fixed layer behind every page (website + platform); CSS mesh until (or instead of) WebGL */
+.bgfx {
+  position: fixed; inset: 0; z-index: -1; pointer-events: none;
+  background:
+    radial-gradient(45% 55% at 75% 40%, rgba(138, 212, 255, .35), transparent 70%),
+    radial-gradient(40% 50% at 90% 75%, rgba(40, 100, 230, .5), transparent 70%),
+    radial-gradient(55% 60% at 55% 15%, rgba(28, 77, 210, .4), transparent 70%),
+    radial-gradient(60% 60% at 15% 85%, rgba(14, 33, 82, .9), transparent 70%),
+    var(--navy);
+}
+.bgfx canvas { width: 100%; height: 100%; display: block; opacity: 0; transition: opacity 1.6s var(--ease); }
+.bgfx canvas.is-live { opacity: 1; }
+/* a faint woven triangle pattern over the prism (media/pattern-web.png, white lines on transparent);
+   soft-light keeps it near invisible on dark navy and lets it surface only where the bands are lit */
+.bgfx::after { content: ""; position: absolute; inset: 0; background: url(media/pattern-web.png) 0 0 / 400px 400px repeat; mix-blend-mode: soft-light; opacity: .16; }

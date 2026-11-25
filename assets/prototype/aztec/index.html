@@ -1,0 +1,781 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Aztec | Money, Made Simple.</title>
+<meta name="description" content="Aztec is a new way to experience digital finance. From digital payments to cryptocurrency, we're making financial technology easier to understand, access and use. Join the waitlist for 2027.">
+<meta name="theme-color" content="#050C1F">
+<link rel="icon" href="media/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Sora:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script>document.documentElement.classList.add('js');</script>
+<link rel="stylesheet" href="core.css">
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="app-ui.css">
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-logo" viewBox="0 0 1289 267"><path class="lg-t lg-a" fill-rule="evenodd" d="M0.0 261.2L0.2 262.2L4.5 262.5L66.0 262.2L98.5 202.8L100.0 201.5L256.8 201.5L258.2 203.2L266.5 219.8L276.2 237.2L288.0 260.2L289.5 262.2L356.0 262.2L356.0 261.2L351.5 252.8L329.8 215.0L325.0 205.8L320.5 198.8L308.2 175.8L291.2 145.8L271.2 108.2L233.2 39.8L215.5 6.5L214.0 5.5L144.2 5.5L143.0 6.8L132.5 26.8L86.5 108.0L84.2 112.8Z M179.5 55.0L229.5 147.8L233.0 155.0L233.0 156.0L232.2 156.5L124.2 156.2L124.0 155.0L134.5 135.5L148.2 111.5L178.2 55.8Z"/><path class="lg-t lg-tec" fill-rule="evenodd" d="M1101.2 58.2L1086.0 66.8L1074.8 74.8L1065.8 82.5L1055.8 93.2L1048.8 103.2L1042.8 114.0L1037.8 126.0L1034.8 138.2L1033.8 144.2L1033.2 153.2L1033.8 166.5L1035.8 178.0L1039.8 190.8L1045.5 203.0L1052.8 214.2L1059.5 222.5L1069.8 232.8L1081.0 241.5L1094.5 249.8L1105.8 255.0L1120.0 260.2L1133.2 263.8L1148.2 266.2L1157.2 267.0L1179.2 267.0L1194.0 265.5L1206.5 263.2L1221.2 259.2L1234.0 254.2L1243.0 250.0L1257.2 241.2L1266.5 234.2L1276.8 224.2L1283.8 216.0L1289.2 208.2L1289.2 207.0L1234.2 182.8L1232.8 183.5L1229.2 189.0L1224.5 194.8L1215.5 202.8L1209.0 207.0L1202.0 210.5L1189.2 214.8L1174.2 217.2L1161.8 217.5L1149.2 216.0L1134.2 212.0L1124.8 207.8L1116.8 202.8L1110.5 197.8L1103.2 189.8L1099.2 183.8L1095.0 174.5L1092.8 166.5L1091.8 158.5L1091.8 151.8L1093.8 140.0L1097.0 130.8L1101.2 122.8L1107.8 114.8L1115.8 107.5L1124.0 102.0L1133.2 97.5L1141.8 94.5L1150.0 92.5L1162.2 91.2L1177.2 91.8L1191.2 94.5L1206.5 100.5L1214.8 105.8L1219.2 109.2L1225.5 115.5L1228.5 119.2L1233.5 127.0L1234.8 127.0L1246.5 122.2L1288.2 103.5L1288.0 102.0L1281.8 93.5L1273.0 83.8L1265.8 77.0L1256.8 70.0L1239.2 59.5L1218.8 51.2L1202.8 47.0L1188.8 44.5L1171.2 43.0L1161.8 43.0L1147.2 44.2L1136.0 46.2L1120.5 50.5Z M828.5 57.5L818.2 62.8L805.2 71.0L796.0 78.2L786.8 87.2L779.2 96.2L771.5 108.5L766.2 119.8L763.2 128.5L760.5 141.0L759.5 154.5L760.2 170.2L762.2 181.0L765.5 192.0L770.8 203.5L778.8 216.0L785.5 224.2L794.5 233.0L804.8 241.0L815.8 247.8L828.2 254.0L842.0 259.2L856.2 263.2L867.0 265.2L881.8 267.0L895.8 267.2L915.0 266.5L930.2 264.2L946.0 260.2L955.2 257.0L969.8 250.2L984.5 240.8L994.8 232.2L1003.2 223.5L1010.0 215.2L1011.5 212.2L980.8 198.8L963.5 190.5L962.2 190.5L952.0 200.8L946.0 205.0L935.2 210.8L925.5 214.2L909.5 217.8L901.0 218.5L887.8 218.5L878.2 217.8L868.0 216.0L854.2 211.8L845.8 207.8L837.8 202.5L833.2 198.8L827.2 192.2L821.2 182.2L818.5 174.0L818.5 172.8L819.5 172.0L1020.8 171.8L1021.2 167.8L1021.2 148.8L1020.2 139.2L1017.2 126.0L1010.0 107.8L1000.8 92.5L994.2 84.8L985.2 75.8L978.8 70.5L969.0 63.8L961.8 59.5L950.2 54.2L939.2 50.2L917.0 45.0L905.5 43.5L887.8 43.0L875.0 44.0L861.5 46.2L849.2 49.5L839.0 53.0Z M819.0 132.5L822.5 124.0L828.2 115.0L836.0 107.2L846.5 99.8L857.5 94.5L870.2 90.5L884.5 88.2L897.2 88.2L908.0 89.5L919.2 92.0L930.0 96.2L939.2 101.5L948.0 108.5L954.2 116.0L959.5 125.0L962.2 132.2L962.2 133.5L961.8 134.0L819.8 134.2L819.0 133.5Z M629.2 0.0L628.8 0.5L628.8 49.5L627.5 50.5L607.5 50.2L593.0 50.8L592.8 97.2L593.8 98.0L627.8 98.0L628.8 98.8L628.8 200.2L629.5 210.2L630.5 215.8L634.5 227.8L637.8 234.0L641.8 239.8L650.5 248.5L660.2 254.2L671.8 258.8L682.2 261.0L694.0 262.2L755.0 262.5L756.0 261.8L756.0 211.5L755.5 211.0L721.8 214.8L711.5 214.8L707.2 214.2L700.8 212.8L694.5 209.5L690.8 205.8L688.2 201.2L686.5 195.8L686.0 191.5L686.0 99.2L687.2 98.0L755.5 97.8L756.0 97.0L756.0 51.2L755.2 50.5L687.8 50.5L686.5 49.5L686.2 0.0Z"/><path class="lg-q" d="M353.5 50.8L353.2 97.2L354.0 98.0L489.0 98.0L490.0 98.8L349.8 220.8L349.5 221.8L369.5 262.0L370.8 262.5L586.2 262.5L587.2 261.8L587.5 236.0L587.2 211.5L586.8 211.0L438.2 211.0L437.0 210.2L437.8 209.0L496.0 160.8L577.5 90.8L578.0 83.5L578.0 51.8L577.2 50.5L366.5 50.2Z"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+    <symbol id="i-home" viewBox="0 0 24 24"><path d="M3 11 12 4l9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1Z"/></symbol>
+    <symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9M10.3 21a1.9 1.9 0 0 0 3.4 0"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></symbol>
+    <symbol id="i-chart" viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-swap" viewBox="0 0 24 24"><path d="M7 4 3 8l4 4M3 8h14M17 20l4-4-4-4M21 16H7"/></symbol>
+    <symbol id="i-more" viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.4"/><circle cx="12" cy="12" r="1.4"/><circle cx="19" cy="12" r="1.4"/></symbol>
+    <symbol id="i-card" viewBox="0 0 24 24"><rect x="2.5" y="5" width="19" height="14" rx="3"/><path d="M2.5 10h19M6 15h4"/></symbol>
+    <symbol id="i-chevl" viewBox="0 0 24 24"><path d="m15 5-7 7 7 7"/></symbol>
+    <symbol id="i-chevr" viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"/></symbol>
+    <symbol id="i-chevd" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+    <symbol id="i-star" viewBox="0 0 24 24"><path d="m12 3.5 2.6 5.3 5.9.9-4.3 4.1 1 5.8-5.2-2.7-5.2 2.7 1-5.8-4.3-4.1 5.9-.9Z"/></symbol>
+    <symbol id="i-snow" viewBox="0 0 24 24"><path d="M12 2v20M4 7l16 10M20 7 4 17M9 3.5l3 2.5 3-2.5M9 20.5l3-2.5 3 2.5"/></symbol>
+    <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></symbol>
+    <symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1Z"/></symbol>
+    <symbol id="i-nfc" viewBox="0 0 24 24"><path d="M8.5 8.5a5 5 0 0 1 0 7M12 5.5a9 9 0 0 1 0 13M15.5 3a12.5 12.5 0 0 1 0 18"/></symbol>
+    <symbol id="i-fork" viewBox="0 0 24 24"><path d="M7 3v8a2 2 0 0 0 2 2v8M11 3v8a2 2 0 0 1-2 2M17 21V3c-2 1-3 4-3 8h3"/></symbol>
+    <symbol id="i-plane" viewBox="0 0 24 24"><path d="M10.2 13.8 3 11l1.5-1.5 8 1 4.2-4.2a2 2 0 0 1 2.9 2.9l-4.2 4.2 1 8L15 22.9l-2.8-7.2-3.4 3.4.5 2.4-1.4 1.4-1.8-3.6-3.6-1.8 1.4-1.4 2.4.5Z"/></symbol>
+    <symbol id="i-bus" viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="15" rx="3"/><path d="M4 11h16M8 18v3M16 18v3M8 14.5h.01M16 14.5h.01"/></symbol>
+    <symbol id="i-bag" viewBox="0 0 24 24"><path d="M5 7h14l-1 14H6L5 7ZM9 7a3 3 0 0 1 6 0"/></symbol>
+    <symbol id="i-cup" viewBox="0 0 24 24"><path d="M4 8h13v6a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5V8ZM17 10h1.5a2.5 2.5 0 0 1 0 5H17M8 2.5v2M12 2.5v2"/></symbol>
+    <symbol id="i-del" viewBox="0 0 24 24"><path d="M9 5h11a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H9l-6-7 6-7ZM12.5 9.5l5 5M17.5 9.5l-5 5"/></symbol>
+    <symbol id="i-cell" viewBox="0 0 18 12"><rect x="0" y="8" width="3" height="4" rx=".8"/><rect x="5" y="5.5" width="3" height="6.5" rx=".8"/><rect x="10" y="3" width="3" height="9" rx=".8"/><rect x="15" y="0" width="3" height="12" rx=".8"/></symbol>
+    <symbol id="i-wifi" viewBox="0 0 16 12"><path d="M8 2.4c2.3 0 4.4.9 6 2.4l1.3-1.3A10.2 10.2 0 0 0 8 .6C5.2.6 2.6 1.7.7 3.5L2 4.8a8.4 8.4 0 0 1 6-2.4Zm0 3.6c1.3 0 2.5.5 3.4 1.3l1.3-1.3A6.7 6.7 0 0 0 8 4.2c-1.8 0-3.5.7-4.7 1.8l1.3 1.3C5.5 6.5 6.7 6 8 6Zm0 3.4-2.1 2 2.1 2 2.1-2Z"/></symbol>
+    <symbol id="i-simple" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 12h8"/></symbol>
+    <symbol id="i-access" viewBox="0 0 24 24"><circle cx="12" cy="4.5" r="1.8"/><path d="M5 8.5c2.3.7 4.6 1 7 1s4.7-.3 7-1M12 9.5V14M12 14l-3 7M12 14l3 7"/></symbol>
+    <symbol id="i-spark" viewBox="0 0 24 24"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5 18 18M18 6l-2.5 2.5M8.5 15.5 6 18"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></symbol>
+    <symbol id="i-send" viewBox="0 0 24 24"><path d="M21.5 2.5 10.5 13.5M21.5 2.5l-7 19-4-8-8-4Z"/></symbol>
+    <symbol id="i-receive" viewBox="0 0 24 24"><path d="M12 4v12M6 10l6 6 6-6M5 20h14"/></symbol>
+    <symbol id="i-coins" viewBox="0 0 24 24"><circle cx="8.5" cy="8.5" r="5.5"/><path d="M18.1 10.4A5.5 5.5 0 1 1 10.4 18"/></symbol>
+    <symbol id="i-book" viewBox="0 0 24 24"><path d="M4 19.5V5a2 2 0 0 1 2-2h14v15H6.5A2.5 2.5 0 0 0 4 20.5 2.5 2.5 0 0 0 6.5 23H20"/></symbol>
+    <symbol id="i-lock" viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></symbol>
+    <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8v.01"/></symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3 4.5 6v5.5c0 4.6 3.2 8.4 7.5 9.5 4.3-1.1 7.5-4.9 7.5-9.5V6L12 3Z"/><path d="m9 12 2 2 4-4"/></symbol><symbol id="i-device" viewBox="0 0 24 24"><rect x="6" y="2.5" width="12" height="19" rx="3"/><path d="M11 18.5h2"/></symbol><symbol id="i-bank" viewBox="0 0 24 24"><path d="M3 10 12 4l9 6M5 10v8M9.5 10v8M14.5 10v8M19 10v8M3 20h18"/></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24"><path d="M4 4l16 16M20 4 4 20"/></symbol>
+    <symbol id="i-in" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M8 10v7M8 7v.01M12 17v-4a2 2 0 0 1 4 0v4M12 10v7"/></symbol>
+    <symbol id="i-ig" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><path d="M17.5 6.5v.01"/></symbol>
+    <symbol id="i-yt" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="4"/><path d="m10 9 5 3-5 3Z"/></symbol>
+  </defs>
+</svg>
+
+<!-- The prism: one moving mesh behind every page (mesh.js) -->
+<div class="bgfx" aria-hidden="true"><canvas data-mesh></canvas></div>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<!-- Preloader: the same one on first load and on every page change. -->
+<div class="loader" aria-hidden="true">
+  <div class="loader__mark">
+    <span class="loader__num" data-loader-count>000</span>
+    <span class="loader__num loader__num--fill" data-loader-count>000</span>
+    <svg class="loader__logo" viewBox="0 0 1289 267"><use href="#i-logo"/></svg>
+  </div>
+</div>
+
+<header class="nav" data-nav>
+  <a class="nav__logo" href="#home" aria-label="Aztec home"><svg viewBox="0 0 1289 267" aria-hidden="true"><use href="#i-logo"/></svg></a>
+  <nav class="nav__links" aria-label="Main">
+    <a href="#about">About</a>
+    <a href="#products">What we're building</a>
+    <a href="#security">Security</a>
+    <a href="#fees">Fees</a>
+    <a href="#vision">2027</a>
+  </nav>
+  <a class="btn btn--ghost btn--sm nav__cta nav__app" href="platform/index.html">Preview the app</a>
+  <a class="btn btn--sky btn--sm nav__cta" href="#waitlist">Join the waitlist</a>
+  <button class="nav__burger" type="button" data-menu-toggle aria-expanded="false" aria-controls="menu" aria-label="Open menu">
+    <span></span><span></span>
+  </button>
+</header>
+
+<div class="menu" id="menu" hidden>
+  <nav aria-label="Mobile">
+    <a href="#about"><small>01</small>About</a>
+    <a href="#products"><small>02</small>What we're building</a>
+    <a href="#security"><small>03</small>Security</a>
+    <a href="#why"><small>04</small>Why Aztec</a>
+    <a href="#fees"><small>05</small>Fees</a>
+    <a href="#learn"><small>06</small>Learn</a>
+    <a href="#vision"><small>07</small>2027</a>
+    <a href="#waitlist"><small>08</small>Join the waitlist</a>
+    <a href="platform/index.html"><small>09</small>Preview the app</a>
+  </nav>
+</div>
+
+<main id="main">
+
+<!-- ═════════════════════════ HOME ═════════════════════════ -->
+<div class="view" data-view="home">
+
+  <!-- A. HERO: the turn ring and the app, over the page-wide prism -->
+  <section class="hero" id="home" aria-labelledby="hero-title">
+    <div class="hero__shade" aria-hidden="true"></div>
+
+    <div class="hero__inner">
+      <div class="hero__copy">
+        <p class="kicker">Introducing Aztec <span class="yearcard">2027</span></p>
+        <h1 id="hero-title" class="hero__title"><span class="line"><span>Money,</span></span><span class="line"><span>Made Simple.</span></span></h1>
+        <p class="hero__sub">A new way to experience digital finance.</p>
+        <p class="hero__desc">From digital payments to cryptocurrency, we're making financial technology easier to understand, access, and use.</p>
+        <div class="hero__ctas">
+          <a class="btn btn--sky" href="#about">Discover Aztec <svg class="ic"><use href="#i-arrow"/></svg></a>
+          <a class="btn btn--glass" href="#waitlist">Join the Waitlist</a>
+        </div>
+      </div>
+
+      <div class="hero__device" aria-label="Preview of the planned Aztec app with sample data" role="img">
+        <!-- the turn: a dial of light that rotates as you scroll -->
+        <svg class="turn" viewBox="0 0 600 600" aria-hidden="true">
+          <g class="turn__ticks" data-ticks></g>
+          <circle class="turn__track" cx="300" cy="300" r="236"/>
+          <circle class="turn__arc" cx="300" cy="300" r="236" pathLength="100"/>
+          <circle class="turn__dot" cx="536" cy="300" r="5"/>
+        </svg>
+
+        <div class="phone phone--hero" aria-hidden="true">
+          <div class="phone__screen">
+            <div class="app">
+              <div class="a-sb"><span class="a-sb__time">9:41</span><i class="a-sb__island"></i><span class="a-sb__icons"><svg class="ic-f" viewBox="0 0 18 12"><use href="#i-cell"/></svg><svg class="ic-f" viewBox="0 0 16 12"><use href="#i-wifi"/></svg><i class="a-batt"><b></b></i></span></div>
+              <div class="a-view">
+                <div class="a-top"><span class="a-avatar">A</span><span class="a-search"><svg class="ic"><use href="#i-search"/></svg>Search</span><span class="a-iconbtn"><svg class="ic"><use href="#i-chart"/></svg></span><span class="a-iconbtn a-iconbtn--dot"><svg class="ic"><use href="#i-bell"/></svg></span></div>
+                <div class="a-balance"><small>Personal &middot; USD</small><strong>$4,280<span>.50</span></strong><span class="a-pill">Accounts<svg class="ic"><use href="#i-chevd"/></svg></span></div>
+                <div class="a-actions"><span><i><svg class="ic"><use href="#i-plus"/></svg></i>Add money</span><span><i><svg class="ic"><use href="#i-send"/></svg></i>Send</span><span><i><svg class="ic"><use href="#i-swap"/></svg></i>Exchange</span><span><i><svg class="ic"><use href="#i-more"/></svg></i>More</span></div>
+                <div class="a-card">
+                  <div class="a-row"><span class="a-ico a-ico--a"><svg class="ic"><use href="#i-cup"/></svg></span><span class="a-row__t"><b>Coffee &amp; Co.</b><small>Today, 8:12</small></span><span class="a-row__v"><b class="">&minus;$4.80</b></span></div>
+                  <div class="a-row"><span class="a-ico a-ico--b"><svg class="ic"><use href="#i-send"/></svg></span><span class="a-row__t"><b>From Maya</b><small>Yesterday, 19:40</small></span><span class="a-row__v"><b class="is-pos">+$25.00</b><small>Dinner</small></span></div>
+                  <div class="a-row"><span class="a-ico a-ico--c"><svg class="ic"><use href="#i-bus"/></svg></span><span class="a-row__t"><b>City Transit</b><small>Mon, 7:58</small></span><span class="a-row__v"><b class="">&minus;$2.40</b></span></div>
+                  <span class="a-card__more">See all</span>
+                </div>
+                <div class="a-card">
+                  <div class="a-card__head"><b>Watchlist</b><small>Prices move. Learn why</small></div>
+                  <div class="a-row"><span class="a-coin a-coin--btc">&#8383;</span><span class="a-row__t"><b>Bitcoin</b><small>BTC</small></span><svg class="a-mini" viewBox="0 0 60 24"><path d="M0 18 8 15 15 17 22 10 30 12 38 6 46 8 53 3 60 5"/></svg><span class="a-row__v"><b>$64,210</b><small class="is-pos">+2.4%</small></span></div>
+                </div>
+              </div>
+              <nav class="a-tabs"><span class="is-on"><svg class="ic"><use href="#i-home"/></svg>Home</span><span><svg class="ic"><use href="#i-card"/></svg>Cards</span><span><svg class="ic"><use href="#i-send"/></svg>Pay</span><span><svg class="ic"><use href="#i-coins"/></svg>Assets</span><span><svg class="ic"><use href="#i-chart"/></svg>Insights</span></nav><i class="a-home-ind"></i>
+            </div>
+          </div>
+        </div>
+
+        <div class="chip chip--a" aria-hidden="true"><span class="chip__ic"><svg class="ic"><use href="#i-check"/></svg></span><span><b>Sent to Maya</b><small>$25.00 &middot; arrives today</small></span></div>
+        <div class="chip chip--b" aria-hidden="true"><span class="chip__ic chip__ic--ghost"><svg class="ic"><use href="#i-info"/></svg></span><span><b>Network fee, explained</b><small>The small cost to process it</small></span></div>
+      </div>
+    </div>
+
+    <div class="hero__foot">
+      <span class="scrollcue" aria-hidden="true"><svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="17"/><path d="M20 13v14M14 21l6 6 6-6"/></svg>Scroll to turn</span>
+      <span class="hero__note">Previews show sample data. Aztec launches in 2027.</span>
+    </div>
+  </section>
+
+  <!-- B. ABOUT: who we are, the problem, what we do, then the values dial -->
+  <section class="sec about" id="about" aria-labelledby="about-title">
+    <div class="wrap">
+      <div class="head head--split">
+        <div>
+          <p class="label"><span>01</span>About Aztec</p>
+          <h2 id="about-title" class="title" data-words>Making digital finance accessible to everyone.</h2>
+        </div>
+        <p class="head__intro">Aztec is a new digital finance company. We're building one simple place to manage, access and understand your money, from everyday payments to cryptocurrency.</p>
+      </div>
+
+      <div class="story">
+        <article class="story__item">
+          <span class="story__k">The problem</span>
+          <h3 class="sub">Money moved online. The tools didn't get easier.</h3>
+          <p>Banking apps are crowded, crypto apps speak in jargon, and fees, networks and risks are rarely explained in plain words.</p>
+        </article>
+        <article class="story__item">
+          <span class="story__k">What it costs people</span>
+          <h3 class="sub">Some stay away. Others jump in blind.</h3>
+          <p>Without clear information, people either miss out on useful tools or sign up for things they don't fully understand.</p>
+        </article>
+        <article class="story__item">
+          <span class="story__k">What Aztec does</span>
+          <h3 class="sub">Products that explain themselves.</h3>
+          <p>Clear words, honest numbers, and every cost and risk shown before we ask you to do anything.</p>
+        </article>
+      </div>
+
+      <div class="values" data-dial>
+        <div class="values__copy">
+          <h3 class="sub">What guides us</h3>
+          <p>Five values we check every product decision against. Pick one to see what it means for you, or watch the dial turn through them.</p>
+          <div class="values__list" role="radiogroup" aria-label="Aztec values">
+            <button role="radio" aria-checked="true"><span class="v__n">01</span><span class="v__ic"><svg class="ic"><use href="#i-simple"/></svg></span><span class="v__body"><b>Simplicity</b><small>Less to read, less to tap.</small><span class="v__more"><span><em>In practice</em>One home screen for cash, cards and crypto, with no menus hidden inside menus.</span></span></span></button>
+            <button role="radio" aria-checked="false"><span class="v__n">02</span><span class="v__ic"><svg class="ic"><use href="#i-access"/></svg></span><span class="v__body"><b>Accessibility</b><small>For first-timers and experts alike.</small><span class="v__more"><span><em>In practice</em>Large readable text, full screen-reader support and plain-English help on every screen.</span></span></span></button>
+            <button role="radio" aria-checked="false"><span class="v__n">03</span><span class="v__ic"><svg class="ic"><use href="#i-eye"/></svg></span><span class="v__body"><b>Transparency</b><small>Every cost, shown before you agree.</small><span class="v__more"><span><em>In practice</em>Fees, exchange rates and risk levels appear before you confirm a payment, never after.</span></span></span></button>
+            <button role="radio" aria-checked="false"><span class="v__n">04</span><span class="v__ic"><svg class="ic"><use href="#i-spark"/></svg></span><span class="v__body"><b>Innovation</b><small>New tools, only when they help.</small><span class="v__more"><span><em>In practice</em>Digital assets and spending insights sit beside everyday money, explained like everything else.</span></span></span></button>
+            <button role="radio" aria-checked="false"><span class="v__n">05</span><span class="v__ic"><svg class="ic"><use href="#i-lock"/></svg></span><span class="v__body"><b>Trust</b><small>Safety comes before speed.</small><span class="v__more"><span><em>In practice</em>We launch only once licensing, security reviews and customer protections are in place.</span></span></span></button>
+          </div>
+        </div>
+        <div class="dial coin">
+          <span class="coin__edge" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
+          <div class="dial__ring" aria-hidden="true">
+            <svg viewBox="0 0 400 400"><circle class="dial__track" cx="200" cy="200" r="170"/><g data-dial-ticks></g><circle class="dial__arc" cx="200" cy="200" r="170" pathLength="100"/></svg>
+            <span class="dial__knob"><i></i></span>
+          </div>
+          <div class="dial__center" aria-live="polite">
+            <span class="dial__num" data-dial-num>01 / 05</span>
+            <h4 class="dial__name" data-dial-name>Simplicity</h4>
+            <p class="dial__text" data-dial-text>Fewer steps, fewer screens, and nothing on the page that doesn't need to be there.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- C. WHAT WE'RE BUILDING: one phone, pinned, turning through four planned products -->
+  <section class="sec build" id="products" aria-labelledby="products-title">
+    <div class="wrap head head--split">
+      <div>
+        <p class="label"><span>02</span>What we're building</p>
+        <h2 id="products-title" class="title">One simple home for your digital money.</h2>
+      </div>
+      <div class="head__intro"><p>Four planned product areas, shown on one phone. None of them are available yet. Scroll to turn through them.</p><a class="link-app" href="platform/index.html">Try the dashboard preview<svg class="ic"><use href="#i-arrow"/></svg></a></div>
+    </div>
+    <div class="build__pin" data-build>
+    <div class="build__sticky">
+      <div class="build__grid wrap">
+
+        <ol class="steps" role="list">
+          <li class="step is-on" data-step="0">
+            <span class="step__n">01</span>
+            <div><h3>Digital Wallet</h3><p>A simpler way to understand and manage digital money. Everything you hold, in one clear view.</p></div>
+          </li>
+          <li class="step" data-step="1">
+            <span class="step__n">02</span>
+            <div><h3>Digital Assets</h3><p>Making cryptocurrency easier to discover and understand, with the explanation right beside the price.</p></div>
+          </li>
+          <li class="step" data-step="2">
+            <span class="step__n">03</span>
+            <div><h3>Payments</h3><p>Exploring simpler digital payment experiences: who, how much, what it costs and when it arrives.</p></div>
+          </li>
+          <li class="step" data-step="3">
+            <span class="step__n">04</span>
+            <div><h3>Financial Insights</h3><p>Helping people understand their money through clear information and short, useful insights.</p></div>
+          </li>
+        </ol>
+
+        <div class="build__stage" aria-hidden="true">
+          <svg class="build__ring" viewBox="0 0 500 500"><circle class="br-track" cx="250" cy="250" r="230"/><circle class="br-arc" cx="250" cy="250" r="230" pathLength="100"/></svg>
+          <div class="phone phone--build" data-build-phone>
+            <div class="phone__screen">
+              <div class="app">
+                <div class="a-sb"><span class="a-sb__time">9:41</span><i class="a-sb__island"></i><span class="a-sb__icons"><svg class="ic-f" viewBox="0 0 18 12"><use href="#i-cell"/></svg><svg class="ic-f" viewBox="0 0 16 12"><use href="#i-wifi"/></svg><i class="a-batt"><b></b></i></span></div>
+
+                <!-- 1 cards -->
+                <div class="a-view scr is-on" data-scr="0">
+                  <div class="a-head"><b class="a-title">Cards</b><span class="a-iconbtn"><svg class="ic"><use href="#i-plus"/></svg></span></div>
+                  <div class="a-cards">
+                    <div class="a-tcard"><span class="a-tcard__lines"></span><svg class="a-tcard__logo" viewBox="0 0 1289 267"><use href="#i-logo"/></svg><svg class="ic a-tcard__nfc"><use href="#i-nfc"/></svg><i class="a-tcard__chip"></i><span class="a-tcard__no">&bull;&bull;&bull;&bull; 2027</span><span class="a-tcard__type">Debit</span></div>
+                    <div class="a-tcard a-tcard--navy"><svg class="a-tcard__logo" viewBox="0 0 1289 267"><use href="#i-logo"/></svg></div>
+                  </div>
+                  <div class="a-dots"><i class="is-on"></i><i></i><i></i></div>
+                  <div class="a-actions a-actions--3"><span><i><svg class="ic"><use href="#i-snow"/></svg></i>Freeze</span><span><i><svg class="ic"><use href="#i-eye"/></svg></i>Show details</span><span><i><svg class="ic"><use href="#i-gear"/></svg></i>Settings</span></div>
+                  <div class="a-card">
+                    <div class="a-card__head"><b>Monthly limit</b><small>$640.20 of $1,000</small></div>
+                    <div class="a-meter"><i style="--w:64%"></i></div>
+                    <small class="a-note">You can change this any time. We'll tell you at 80%.</small>
+                  </div>
+                  <div class="a-card">
+                    <div class="a-row"><span class="a-ico a-ico--d"><svg class="ic"><use href="#i-bag"/></svg></span><span class="a-row__t"><b>Corner Market</b><small>Today, 18:20 &middot; Card</small></span><span class="a-row__v"><b class="">&minus;$32.15</b></span></div>
+                    <div class="a-row"><span class="a-ico a-ico--a"><svg class="ic"><use href="#i-fork"/></svg></span><span class="a-row__t"><b>Noodle House</b><small>Sun, 12:41 &middot; Card</small></span><span class="a-row__v"><b class="">&minus;$14.60</b></span></div>
+                  </div>
+                </div>
+
+                <!-- 2 assets -->
+                <div class="a-view scr" data-scr="1">
+                  <div class="a-nav"><span class="a-iconbtn"><svg class="ic"><use href="#i-chevl"/></svg></span><b><span class="a-coin a-coin--btc a-coin--sm">&#8383;</span>Bitcoin</b><span class="a-iconbtn"><svg class="ic"><use href="#i-star"/></svg></span></div>
+                  <div class="a-price"><strong>$64,210<span>.40</span></strong><small class="is-pos">+$1,512.20 (2.4%) today</small></div>
+                  <div class="a-chart">
+                    <svg viewBox="0 0 353 170" preserveAspectRatio="none"><defs><linearGradient id="a-fill" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#8AD4FF" stop-opacity=".35"/><stop offset="1" stop-color="#8AD4FF" stop-opacity="0"/></linearGradient></defs>
+                      <path class="a-chart__area" d="M0 128 C20 124 30 104 52 108 S84 136 106 118 138 74 160 84 190 120 212 100 244 60 266 66 300 92 318 70 340 38 353 42 V170 H0Z"/>
+                      <path class="a-chart__line" pathLength="1" d="M0 128 C20 124 30 104 52 108 S84 136 106 118 138 74 160 84 190 120 212 100 244 60 266 66 300 92 318 70 340 38 353 42"/>
+                      <line class="a-chart__x" x1="266" x2="266" y1="0" y2="170"/><circle class="a-chart__dot" cx="266" cy="66" r="5"/></svg>
+                    <span class="a-chart__tip" style="left:75%">$63,880 &middot; Thu</span>
+                  </div>
+                  <div class="a-seg"><span>1D</span><span class="is-on">1W</span><span>1M</span><span>1Y</span><span>All</span></div>
+                  <div class="a-card a-explain"><span class="a-ico a-ico--sky"><svg class="ic"><use href="#i-info"/></svg></span><span><b>In plain words</b><p>Digital money that isn't issued by a bank or government. You can own a small part of one.</p></span></div>
+                  <div class="a-card">
+                    <div class="a-card__head"><b>How much it moves</b><small class="is-warn">High</small></div>
+                    <div class="a-risk"><i></i><i></i><i class="is-on"></i></div>
+                    <small class="a-note">Prices can rise or fall sharply in a day. Only put in what you could afford to lose.</small>
+                  </div>
+                  <div class="a-cta"><span class="a-btn a-btn--ghost">Sell</span><span class="a-btn">Buy</span></div>
+                </div>
+
+                <!-- 3 pay -->
+                <div class="a-view scr a-view--flow" data-scr="2">
+                  <div class="a-nav"><span class="a-iconbtn"><svg class="ic"><use href="#i-chevl"/></svg></span><b>Send money</b><span class="a-iconbtn a-iconbtn--clear"></span></div>
+                  <div class="a-to"><span class="a-avatar a-avatar--lg">M</span><b>Maya Chen</b><small>@maya &middot; on Aztec</small></div>
+                  <div class="a-amount"><strong>$25<span>.00</span></strong><small>Balance $2,148.20</small></div>
+                  <span class="a-pill a-pill--note">Dinner on Friday</span>
+                  <div class="a-facts"><span>No fee</span><i></i><span>Arrives instantly</span><i></i><span>Maya gets $25.00</span></div>
+                  <div class="a-keys"><span>1</span><span class="k-2">2</span><span>3</span><span>4</span><span class="k-5">5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>.</span><span>0</span><span><svg class="ic"><use href="#i-del"/></svg></span></div>
+                  <span class="a-btn a-btn--block">Send $25.00</span>
+                </div>
+
+                <!-- 4 insights -->
+                <div class="a-view scr" data-scr="3">
+                  <div class="a-head"><b class="a-title">Insights</b><span class="a-pill">November<svg class="ic"><use href="#i-chevd"/></svg></span></div>
+                  <div class="a-spent"><small>Spent this month</small><strong>$1,842<span>.30</span></strong><span class="a-badge">$136 less than October</span></div>
+                  <div class="a-card a-bars">
+                    <div class="a-bars__plot"><i style="--h:62%"><b>Jun</b></i><i style="--h:78%"><b>Jul</b></i><i style="--h:70%"><b>Aug</b></i><i style="--h:88%"><b>Sep</b></i><i style="--h:80%"><b>Oct</b></i><i class="is-now" style="--h:72%"><b>Nov</b></i><span class="a-bars__avg" style="--a:75%"><em>avg</em></span></div>
+                  </div>
+                  <div class="a-card">
+                    <div class="a-cat"><span class="a-ico a-ico--d"><svg class="ic"><use href="#i-home"/></svg></span><span class="a-cat__t"><b>Home &amp; bills</b><i style="--w:72%"></i></span><b>$612.00</b></div>
+                    <div class="a-cat"><span class="a-ico a-ico--a"><svg class="ic"><use href="#i-fork"/></svg></span><span class="a-cat__t"><b>Eating out</b><i style="--w:44%"></i></span><b>$384.50</b></div>
+                    <div class="a-cat"><span class="a-ico a-ico--b"><svg class="ic"><use href="#i-plane"/></svg></span><span class="a-cat__t"><b>Travel</b><i style="--w:36%"></i></span><b>$310.80</b></div>
+                    <div class="a-cat"><span class="a-ico a-ico--c"><svg class="ic"><use href="#i-bus"/></svg></span><span class="a-cat__t"><b>Transport</b><i style="--w:12%"></i></span><b>$64.20</b></div>
+                  </div>
+                </div>
+                <nav class="a-tabs" data-tabbar><span><svg class="ic"><use href="#i-home"/></svg>Home</span><span class="is-on"><svg class="ic"><use href="#i-card"/></svg>Cards</span><span><svg class="ic"><use href="#i-send"/></svg>Pay</span><span><svg class="ic"><use href="#i-coins"/></svg>Assets</span><span><svg class="ic"><use href="#i-chart"/></svg>Insights</span></nav><i class="a-home-ind"></i>
+              </div>
+            </div>
+          </div>
+          <span class="build__count" data-build-count>01</span>
+        </div>
+      </div>
+    </div>
+    </div>
+  </section>
+
+  <!-- SECURITY: a bento of safety features, each with a small working piece of the app -->
+  <section class="sec security" id="security" aria-labelledby="security-title">
+    <div class="wrap">
+      <div class="head head--split">
+        <div>
+          <p class="label"><span>03</span>Security</p>
+          <h2 id="security-title" class="title">Protected by design.</h2>
+        </div>
+        <p class="head__intro">Safety features are on from day one, built into every screen and explained in plain words. Try them below.</p>
+      </div>
+      <div class="bento">
+        <article class="bx bx--wide">
+          <div class="bx__copy"><h3>Freeze your card in one tap.</h3><p>Lost it, or something looks wrong? Freeze it straight away, without calling anyone, and unfreeze it if it turns up.</p></div>
+          <div class="bx__demo bx__demo--card">
+            <div class="mini-card" data-mini-card><span class="mini-card__lines"></span><svg class="mini-card__logo" viewBox="0 0 1289 267" aria-hidden="true"><use href="#i-logo"/></svg><span class="mini-card__no">&bull;&bull;&bull;&bull; 2027</span><span class="mini-card__frost"><svg class="ic"><use href="#i-snow"/></svg>Frozen</span></div>
+            <div class="sw-row"><span><b id="bx-fz">Freeze card</b><small data-fz-note>New card payments are allowed.</small></span><button type="button" class="sw" role="switch" aria-checked="false" aria-labelledby="bx-fz" data-bx-freeze><i></i></button></div>
+          </div>
+        </article>
+        <article class="bx">
+          <div class="bx__copy"><h3>Know every sign-in.</h3><p>A new device signs in? You hear about it right away, and one tap signs it out.</p></div>
+          <div class="bx__demo">
+            <div class="alert" data-alert>
+              <span class="alert__ic"><svg class="ic"><use href="#i-device"/></svg></span>
+              <span><b>New sign-in on iPhone 15</b><small>Just now, near Lisbon</small></span>
+              <div class="alert__acts"><button type="button" class="pill-btn" data-alert-ok>It was me</button><button type="button" class="pill-btn pill-btn--warn" data-alert-no>Not me</button></div>
+              <p class="alert__res" data-alert-res aria-live="polite"></p>
+            </div>
+          </div>
+        </article>
+        <article class="bx">
+          <div class="bx__copy"><h3>Risk shown before you buy.</h3><p>Every digital asset carries a clear risk level, and you confirm you understand it first.</p></div>
+          <div class="bx__demo">
+            <div class="risk-demo">
+              <div class="risk-demo__top"><span class="coin-ic">&#8383;</span><b>Bitcoin</b><span class="tag tag--warn">High risk</span></div>
+              <div class="risk-bars" aria-hidden="true"><i></i><i></i><i class="is-on"></i></div>
+              <p>Its price can rise or fall sharply in a single day.</p>
+            </div>
+          </div>
+        </article>
+        <article class="bx">
+          <div class="bx__copy"><h3>A second check on big payments.</h3><p>Over $500, we ask once more with a code only you receive.</p></div>
+          <div class="bx__demo">
+            <button type="button" class="code-demo" data-code aria-label="Play the code check again">
+              <small>Send $750.00 to Jon Park</small>
+              <span class="code-demo__boxes" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></span>
+              <span class="code-demo__ok"><svg class="ic"><use href="#i-check"/></svg>Confirmed</span>
+            </button>
+          </div>
+        </article>
+        <article class="bx">
+          <div class="bx__copy"><h3>We never ask for your passcode.</h3><p>Not by message, email or phone. If someone does, it isn’t us.</p></div>
+          <div class="bx__demo">
+            <div class="msg-demo"><span class="msg-demo__from"><svg class="ic"><use href="#i-shield"/></svg>Aztec</span><p>We will never ask for your passcode, your card PIN or a code we text you.</p></div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHY IT MATTERS: real, sourced numbers -->
+  <section class="sec scale" aria-labelledby="scale-title">
+    <div class="wrap">
+      <div class="head head--split">
+        <div>
+          <p class="label"><span>04</span>Why it matters</p>
+          <h2 id="scale-title" class="title">Digital money is everywhere. <span class="hl">Understanding it isn't.</span></h2>
+        </div>
+        <p class="head__intro">More people can reach financial services than ever before. Far fewer get a clear explanation of what they're using.</p>
+      </div>
+      <div class="scale__grid">
+        <div class="stat"><strong><span data-count="1.4" data-dec="1">1.4</span><em>billion</em></strong><p>adults around the world still have no account at a bank or mobile money provider.</p><cite>World Bank, Global Findex 2021</cite></div>
+        <div class="stat"><strong><span data-count="76">76</span><em>%</em></strong><p>of adults worldwide now have an account, up from 51% in 2011. Access is growing fast.</p><cite>World Bank, Global Findex 2021</cite></div>
+        <div class="stat"><strong><span data-count="1">1</span><em>in 3</em></strong><p>adults worldwide understand basic financial ideas like interest, inflation and spreading risk.</p><cite>S&amp;P Global FinLit Survey</cite></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- D. WHY AZTEC: principles + plain-English translator -->
+  <section class="sec why" id="why" aria-labelledby="why-title">
+    <div class="wrap">
+      <div class="head head--split">
+        <div>
+          <p class="label"><span>05</span>Why Aztec</p>
+          <h2 id="why-title" class="title">Finance that explains itself.</h2>
+        </div>
+        <p class="head__intro">Five principles every Aztec screen is held to, and a translator that shows what they mean in practice.</p>
+      </div>
+
+      <div class="why__grid">
+        <ul class="principles" role="list">
+          <li><h3>Designed for everyday people</h3><p>No finance degree needed. If you can send a message, you can use Aztec.</p></li>
+          <li><h3>Less complicated</h3><p>Payments, digital assets and insights in one home, without ten menus in between.</p></li>
+          <li><h3>Clear, understandable information</h3><p>Every term, fee and risk explained right where you see it.</p></li>
+          <li><h3>A modern approach</h3><p>Designed mobile-first, for how people actually move money today.</p></li>
+          <li><h3>Accessible and transparent</h3><p>Readable, keyboard and screen-reader friendly, with costs shown before you commit.</p></li>
+        </ul>
+
+        <!-- the plain-English dictionary: one page per term, with thumb-index tabs down the edge -->
+        <div class="translator dict" data-translator>
+          <div class="dict__page">
+            <div class="dict__meta"><span>The plain-English translator</span><span data-dict-no>p. 1</span></div>
+            <div class="dict__entry" aria-live="polite">
+              <h3 class="dict__word"><span data-dict-word>Gas fee</span> <small data-dict-pos>noun</small></h3>
+              <div class="dict__j"><small>What other apps say</small><p class="mono" data-tr-j></p></div>
+              <div class="dict__p"><small>What Aztec says</small><p data-tr-p></p></div>
+            </div>
+            <button type="button" class="dict__see" data-dict-next>See also <b data-dict-next-word>Private key</b><svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></button>
+          </div>
+          <div class="terms dict__tabs" role="group" aria-label="Financial terms"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEES: every planned fee in one plain table, with a calculator -->
+  <section class="sec fees" id="fees" aria-labelledby="fees-title">
+    <div class="wrap">
+      <div class="head head--split">
+        <div>
+          <p class="label"><span>06</span>Fees</p>
+          <h2 id="fees-title" class="title">Every fee, before you pay it.</h2>
+        </div>
+        <p class="head__intro">These are the fees we plan to launch with. The app always shows the exact amount before you confirm.</p>
+      </div>
+      <div class="fees__grid">
+        <ul class="fees__list" role="list">
+          <li><span><b>Opening an account</b><small>Look around before you add any money</small></span><strong class="is-free">Free</strong></li>
+          <li><span><b>Monthly fee</b><small>No plan to pick, no minimum balance</small></span><strong class="is-free">$0</strong></li>
+          <li><span><b>Sending to anyone on Aztec</b><small>Arrives in seconds</small></span><strong class="is-free">Free</strong></li>
+          <li><span><b>Adding money by bank transfer</b><small>Usually within one working day</small></span><strong class="is-free">Free</strong></li>
+          <li><span><b>Adding money by debit card</b><small>Arrives right away</small></span><strong>1.5%</strong></li>
+          <li><span><b>Buying or selling digital assets</b><small>Shown in dollars before you confirm</small></span><strong>1%</strong></li>
+        </ul>
+        <div class="calc" data-calc>
+          <h3>Work it out</h3>
+          <div class="calc__how" role="radiogroup" aria-label="What you want to do">
+            <span class="calc__thumb" aria-hidden="true"></span>
+            <button type="button" role="radio" aria-checked="true" data-calc-how="send">Send</button>
+            <button type="button" role="radio" aria-checked="false" data-calc-how="card">Add by card</button>
+            <button type="button" role="radio" aria-checked="false" data-calc-how="buy">Buy crypto</button>
+          </div>
+          <label class="calc__amt"><span>Amount</span><span class="calc__in"><i aria-hidden="true">$</i><input inputmode="decimal" value="100" data-calc-amt aria-label="Amount in US dollars"></span></label>
+          <!-- calculator tape: the sum prints out of a slot, like an adding machine -->
+          <div class="tape" aria-live="polite">
+            <span class="tape__slot" aria-hidden="true"></span>
+            <div class="tape__roll">
+              <div class="tape__paper" data-tape>
+                <div class="tape__head" aria-hidden="true"><span>Aztec estimate</span><span data-tape-no>No. 0001</span></div>
+                <div class="tape__row"><span data-calc-in-l>You send</span><b data-calc-in>$100.00</b></div>
+                <div class="tape__row"><span>Fee</span><b class="tape__minus" data-calc-fee>$0.00</b></div>
+                <div class="tape__row tape__row--sum"><span data-calc-get-l>They get</span><b data-calc-get>$100.00</b></div>
+              </div>
+            </div>
+          </div>
+          <p class="calc__note">Planned pricing. We’ll tell you before it changes.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PEOPLE: who we're designing for (personas, not customers) -->
+  <section class="sec people" aria-labelledby="people-title">
+    <div class="wrap head head--split">
+      <div>
+        <p class="label"><span>07</span>Who it's for</p>
+        <h2 id="people-title" class="title">Built for people finance forgot to explain things to.</h2>
+      </div>
+      <p class="head__intro">Illustrative personas we design around. They are not customers or endorsements.</p>
+    </div>
+    <div class="people__row wrap">
+      <article class="person">
+        <img src="media/persona-ferry.webp" alt="A man on an evening ferry looking at his phone, city lights behind him" loading="lazy">
+        <div class="person__body">
+          <span class="person__tag">Persona &middot; The commuter</span>
+          <h3>&ldquo;I send money home every month. I just want to know the fee before I tap send.&rdquo;</h3>
+          <p class="person__fix">Aztec shows the total cost and arrival time on the same screen.</p>
+        </div>
+      </article>
+      <article class="person">
+        <img src="media/persona-subway.webp" alt="A woman sitting in a subway station looking at her phone" loading="lazy">
+        <div class="person__body">
+          <span class="person__tag">Persona &middot; The curious first-timer</span>
+          <h3>&ldquo;Everyone talks about crypto. Nobody explains it without selling it.&rdquo;</h3>
+          <p class="person__fix">Every asset in Aztec comes with a plain explanation and its risk level.</p>
+        </div>
+      </article>
+      <article class="person">
+        <img src="media/persona-street.webp" alt="A man on a busy city street at night looking at his phone" loading="lazy">
+        <div class="person__body">
+          <span class="person__tag">Persona &middot; The busy saver</span>
+          <h3>&ldquo;I don't need more charts. I need one sentence that tells me how I'm doing.&rdquo;</h3>
+          <p class="person__fix">Insights in Aztec are written as short, clear sentences first.</p>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- LEARN: the five basics guides as a carousel; each opens in the app preview -->
+  <section class="sec learn" id="learn" aria-labelledby="learn-title">
+    <div class="wrap">
+      <div class="head head--split">
+        <div>
+          <p class="label"><span>08</span>Learn</p>
+          <h2 id="learn-title" class="title">Start from zero. We’ll explain.</h2>
+        </div>
+        <div class="learn__side">
+          <p class="head__intro">Ten short guides, no jargon and no sales pitch. Each one opens in the app preview.</p>
+          <div class="learn__ctl"><button type="button" class="round-btn" data-gl-prev aria-label="Previous guide"><svg class="ic"><use href="#i-chevl"/></svg></button><span data-gl-count aria-live="polite">1 of 10</span><button type="button" class="round-btn" data-gl-next aria-label="Next guide"><svg class="ic"><use href="#i-chevr"/></svg></button></div>
+        </div>
+      </div>
+    </div>
+    <div class="guides" data-guides tabindex="0" aria-label="Guides">
+      <a class="guide" href="platform/index.html#learn"><span class="guide__ic"><svg class="ic"><use href="#i-coins"/></svg></span><small>Guide 1, 3 min</small><h3>What is cryptocurrency?</h3><p>Money that exists only in digital form, with no bank in charge, and why its price moves so much.</p><span class="guide__go">Read in the preview<svg class="ic"><use href="#i-arrow"/></svg></span></a>
+      <a class="guide" href="platform/index.html#learn"><span class="guide__ic"><svg class="ic"><use href="#i-card"/></svg></span><small>Guide 2, 3 min</small><h3>What is a digital wallet?</h3><p>Where your money lives in an app, and what keeps it yours.</p><span class="guide__go">Read in the preview<svg class="ic"><use href="#i-arrow"/></svg></span></a>
+      <a class="guide" href="platform/index.html#learn"><span class="guide__ic"><svg class="ic"><use href="#i-spark"/></svg></span><small>Guide 3, 2 min</small><h3>What are digital assets?</h3><p>Crypto, stablecoins, and why you can own a small part of one.</p><span class="guide__go">Read in the preview<svg class="ic"><use href="#i-arrow"/></svg></span></a>
+      <a class="guide" href="platform/index.html#learn"><span class="guide__ic"><svg class="ic"><use href="#i-send"/></svg></span><small>Guide 4, 2 min</small><h3>How do digital payments work?</h3><p>What happens between pressing Send and the money arriving.</p><span class="guide__go">Read in the preview<svg class="ic"><use href="#i-arrow"/></svg></span></a>
+      <a class="guide" href="platform/index.html#learn"><span class="guide__ic"><svg class="ic"><use href="#i-shield"/></svg></span><small>Guide 5, 3 min</small><h3>What are the risks of investing in crypto?</h3><p>Price swings, scams and missing protections, said plainly.</p><span class="guide__go">Read in the preview<svg class="ic"><use href="#i-arrow"/></svg></span></a>
+      <a class="guide" href="platform/index.html#learn"><span class="guide__ic"><svg class="ic"><use href="#i-chart"/></svg></span><small>Guide 6, 2 min</small><h3>What is inflation?</h3><p>Why the same money buys a little less each year.</p><span class="guide__go">Read in the preview<svg class="ic"><use href="#i-arrow"/></svg></span></a>
+      <a class="guide" href="platform/index.html#learn"><span class="guide__ic"><svg class="ic"><use href="#i-plus"/></svg></span><small>Guide 7, 3 min</small><h3>How does interest work?</h3><p>What you earn on savings, and what you pay when you borrow.</p><span class="guide__go">Read in the preview<svg class="ic"><use href="#i-arrow"/></svg></span></a>
+      <a class="guide" href="platform/index.html#learn"><span class="guide__ic"><svg class="ic"><use href="#i-swap"/></svg></span><small>Guide 8, 2 min</small><h3>What does spreading risk mean?</h3><p>Why it’s safer not to put everything in one place.</p><span class="guide__go">Read in the preview<svg class="ic"><use href="#i-arrow"/></svg></span></a>
+      <a class="guide" href="platform/index.html#learn"><span class="guide__ic"><svg class="ic"><use href="#i-info"/></svg></span><small>Guide 9, 3 min</small><h3>How do I spot a scam?</h3><p>The warning signs, and what to do if something feels off.</p><span class="guide__go">Read in the preview<svg class="ic"><use href="#i-arrow"/></svg></span></a>
+      <a class="guide" href="platform/index.html#learn"><span class="guide__ic"><svg class="ic"><use href="#i-lock"/></svg></span><small>Guide 10, 2 min</small><h3>How do I build a safety net?</h3><p>Money set aside for surprises, before anything else.</p><span class="guide__go">Read in the preview<svg class="ic"><use href="#i-arrow"/></svg></span></a>
+    </div>
+  </section>
+
+  <!-- E. 2027 VISION: a ruler that slides to 2027 -->
+  <section class="sec vision" id="vision" aria-labelledby="vision-title" data-vision>
+    <div class="wrap head head--split">
+      <div>
+        <p class="label"><span>09</span>Our 2027 vision</p>
+        <h2 id="vision-title" class="title">The future of money should be easier to understand.</h2>
+      </div>
+      <p class="head__intro">In 2027 we'll introduce Aztec to the world. Until then, our work is to make every part of it simpler, safer and clearer than what people are used to, and to launch only when it's ready.</p>
+    </div>
+
+    <div class="ruler" aria-hidden="true">
+      <div class="ruler__track" data-ruler></div>
+      <span class="ruler__needle"></span>
+    </div>
+
+    <ol class="stages wrap" role="list">
+      <li data-stage="0"><span class="stages__when">Now</span><h3>Designing with people</h3><p>We're shaping the product with early waitlist members, testing what's confusing and fixing it.</p></li>
+      <li data-stage="1"><span class="stages__when">Before launch</span><h3>Getting the foundations right</h3><p>Licensing, security reviews and independent testing come first. No shortcuts.</p></li>
+      <li data-stage="2"><span class="stages__when">2027</span><h3>Aztec, introduced</h3><p>The first Aztec experience opens to the public, starting with the people who joined early.</p></li>
+    </ol>
+
+    <ul class="promises wrap" role="list">
+      <li>Explain before we ask</li>
+      <li>Show every cost up front</li>
+      <li>Never ask for your wallet keys</li>
+      <li>Launch responsibly</li>
+    </ul>
+  </section>
+
+  <!-- F. WAITLIST: the form is a card; it turns into your founding member card -->
+  <section class="sec join" id="waitlist" aria-labelledby="waitlist-title">
+    <div class="wrap join__grid">
+      <div class="join__copy">
+        <p class="label"><span>10</span>Early access</p>
+        <h2 id="waitlist-title" class="title">Be among the first to try Aztec.</h2>
+        <p class="lead">Join the waitlist and we'll let you know when early access opens. It's free and takes ten seconds.</p>
+        <ul class="ticks" role="list">
+          <li>Early access invitations before 2027</li>
+          <li>Occasional product updates, never spam</li>
+          <li>A say in what we build next</li>
+        </ul>
+        <p class="safe"><svg class="ic"><use href="#i-lock"/></svg>We will never ask for bank details, card numbers or wallet keys.</p>
+      </div>
+
+      <div class="flip" data-flip>
+        <div class="flip__inner">
+          <div class="flip__front">
+            <form class="form form--steps" novalidate data-waitlist>
+              <div class="form__head"><svg class="form__logo" viewBox="0 0 1289 267" aria-hidden="true"><use href="#i-logo"/></svg><span data-wz-count>Step 1 of 4</span></div>
+              <div class="wz-bar" aria-hidden="true"><i class="is-on"></i><i></i><i></i><i></i></div>
+              <p class="sr-only" aria-live="polite" data-wz-live></p>
+
+              <div class="wz">
+                <fieldset class="wz__step is-on" data-step="0">
+                  <legend class="wz__q"><span>01</span>What should we call you?</legend>
+                  <div class="field">
+                    <label for="f-name">Full name</label>
+                    <input id="f-name" name="name" type="text" autocomplete="name" required maxlength="80" aria-describedby="e-name" placeholder="Alex Rivera">
+                    <p class="err" id="e-name"></p>
+                  </div>
+                </fieldset>
+
+                <fieldset class="wz__step" data-step="1">
+                  <legend class="wz__q"><span>02</span>Where can we reach you<b data-wz-first></b>?</legend>
+                  <div class="field">
+                    <label for="f-email">Email address</label>
+                    <input id="f-email" name="email" type="email" autocomplete="email" inputmode="email" required maxlength="120" aria-describedby="e-email h-email" placeholder="you@example.com">
+                    <p class="hint" id="h-email">Only for early access and launch news. No spam.</p>
+                    <p class="err" id="e-email"></p>
+                  </div>
+                </fieldset>
+
+                <fieldset class="wz__step" data-step="2">
+                  <legend class="wz__q"><span>03</span>Where are you joining from?</legend>
+                  <div class="field">
+                    <label for="f-country">Country</label>
+                    <div class="select"><select id="f-country" name="country" autocomplete="country" required aria-describedby="e-country h-country"><option value="">Choose your country</option></select></div>
+                    <p class="hint" id="h-country">This helps us plan where Aztec launches first.</p>
+                    <p class="err" id="e-country"></p>
+                  </div>
+                </fieldset>
+
+                <fieldset class="wz__step" data-step="3">
+                  <legend class="wz__q"><span>04</span>Check your details</legend>
+                  <dl class="review">
+                    <div><dt>Name</dt><dd data-rv="name"></dd><button type="button" class="review__edit" data-goto="0">Edit<span class="sr-only"> name</span></button></div>
+                    <div><dt>Email</dt><dd data-rv="email"></dd><button type="button" class="review__edit" data-goto="1">Edit<span class="sr-only"> email</span></button></div>
+                    <div><dt>Country</dt><dd data-rv="country"></dd><button type="button" class="review__edit" data-goto="2">Edit<span class="sr-only"> country</span></button></div>
+                  </dl>
+                  <div class="field field--check">
+                    <input id="f-consent" name="consent" type="checkbox" required aria-describedby="e-consent">
+                    <label for="f-consent">I agree that Aztec can email me about early access and launch updates. I can unsubscribe at any time. See our <a href="#privacy">Privacy Policy</a>.</label>
+                    <p class="err" id="e-consent"></p>
+                  </div>
+                </fieldset>
+              </div>
+
+              <div class="wz-nav">
+                <button class="btn btn--ghost wz-back" type="button" data-wz-back hidden><svg class="ic"><use href="#i-chevl"/></svg>Back</button>
+                <button class="btn btn--sky wz-next" type="submit"><span data-wz-label>Continue</span> <svg class="ic"><use href="#i-arrow"/></svg></button>
+              </div>
+              <p class="form__fine">Press Enter to continue. We only use your name, email and country to manage the waitlist, and we don't sell your data.</p>
+            </form>
+          </div>
+
+          <div class="flip__back" data-done tabindex="-1" aria-hidden="true">
+            <div class="member">
+              <span class="member__lines"></span>
+              <div class="member__top"><svg viewBox="0 0 1289 267" aria-hidden="true"><use href="#i-logo"/></svg><span>Founding member</span></div>
+              <div class="member__mid"><small>Member</small><b data-done-name>Your name</b></div>
+              <div class="member__bot"><span><small>Country</small><b data-done-country>-</b></span><span><small>Since</small><b>2027</b></span></div>
+            </div>
+            <p class="done__text">You're on the list. We'll email <b data-done-email></b> when early access opens.</p>
+            <button class="btn btn--ghost btn--sm" type="button" data-reset>Add another person</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="wrap next">
+      <a class="next__card" href="platform/index.html"><span class="next__ic"><svg class="ic"><use href="#i-home"/></svg></span><span><b>Try the dashboard preview</b><small>The planned app, with sample data.</small></span><svg class="ic next__go"><use href="#i-arrow"/></svg></a>
+      <a class="next__card" href="#fees"><span class="next__ic"><svg class="ic"><use href="#i-coins"/></svg></span><span><b>See what it will cost</b><small>Plain fees, always shown before you confirm.</small></span><svg class="ic next__go"><use href="#i-arrow"/></svg></a>
+    </div>
+  </section>
+</div>
+
+<!-- ═════════════════════════ LEGAL / CONTACT ═════════════════════════ -->
+<div class="view" data-view="privacy" hidden>
+  <article class="doc wrap">
+    <p class="label"><span>Legal</span>Draft</p>
+    <h1 class="title">Privacy Policy</h1>
+    <p class="doc__draft">Draft for the pre-launch waitlist. The final policy will be reviewed by legal counsel before Aztec is introduced.</p>
+    <h2>What we collect</h2>
+    <p>When you join the waitlist we collect your full name, email address and country. Nothing else. We never ask for bank details, card numbers, government ID or wallet keys on this site.</p>
+    <h2>Why we collect it</h2>
+    <p>To manage the waitlist, invite you to early access, and send occasional updates about Aztec's launch, only with your consent.</p>
+    <h2>Your choices</h2>
+    <p>You can unsubscribe from any email, and ask us to see, correct or delete your details at any time.</p>
+    <h2>Sharing</h2>
+    <p>We don't sell your personal data. We'll only share it with service providers that help us run the waitlist, under contract and for that purpose alone.</p>
+    <a class="btn btn--ghost" href="#home">Back to home</a>
+  </article>
+</div>
+
+<div class="view" data-view="terms" hidden>
+  <article class="doc wrap">
+    <p class="label"><span>Legal</span>Draft</p>
+    <h1 class="title">Terms and Conditions</h1>
+    <p class="doc__draft">Draft for the pre-launch website. Final terms will be published before any Aztec service is offered.</p>
+    <h2>Aztec is in development</h2>
+    <p>Aztec does not currently offer any financial service. Nothing on this website is an offer to provide payments, accounts, cryptocurrency exchange, custody or investment services.</p>
+    <h2>Not financial advice</h2>
+    <p>Information on this website is general education only. It is not financial, investment, legal or tax advice.</p>
+    <h2>Sample content</h2>
+    <p>All balances, prices, transactions and names shown in product previews are samples for illustration. They are not real customer data or live market prices.</p>
+    <h2>Cryptocurrency risk</h2>
+    <p>Cryptocurrency prices can be extremely volatile. You could lose some or all of the money you put in.</p>
+    <a class="btn btn--ghost" href="#home">Back to home</a>
+  </article>
+</div>
+
+<div class="view" data-view="contact" hidden>
+  <article class="doc wrap">
+    <p class="label"><span>Contact</span>Aztec</p>
+    <h1 class="title">Talk to Aztec.</h1>
+    <p class="lead">Official contact channels will open ahead of our 2027 introduction. Until then, the best way to hear from us is the waitlist.</p>
+    <p class="safe"><svg class="ic"><use href="#i-lock"/></svg>Aztec will never message you asking for passwords, card numbers or wallet keys. If someone does, it isn't us.</p>
+    <div class="doc__ctas"><a class="btn btn--sky" href="#waitlist">Join the waitlist</a><a class="btn btn--ghost" href="#home">Back to home</a></div>
+  </article>
+</div>
+
+</main>
+
+<!-- G. FOOTER -->
+<footer class="foot">
+  <div class="foot__glow" aria-hidden="true"></div>
+  <div class="wrap">
+    <div class="foot__top">
+      <div class="foot__brand">
+        <a class="foot__logo" href="#home" aria-label="Aztec home"><svg viewBox="0 0 1289 267" aria-hidden="true"><use href="#i-logo"/></svg></a>
+        <p>A new way to experience digital finance. Arriving 2027.</p>
+        <div class="social" aria-label="Social media, coming soon">
+          <span class="social__btn" role="img" aria-label="X, coming soon" title="Coming soon"><svg class="ic"><use href="#i-x"/></svg></span>
+          <span class="social__btn" role="img" aria-label="LinkedIn, coming soon" title="Coming soon"><svg class="ic"><use href="#i-in"/></svg></span>
+          <span class="social__btn" role="img" aria-label="Instagram, coming soon" title="Coming soon"><svg class="ic"><use href="#i-ig"/></svg></span>
+          <span class="social__btn" role="img" aria-label="YouTube, coming soon" title="Coming soon"><svg class="ic"><use href="#i-yt"/></svg></span>
+          <small>Official accounts coming soon</small>
+        </div>
+      </div>
+      <nav class="foot__cols" aria-label="Footer">
+        <div><h2>Company</h2><a href="#about">About</a><a href="#vision">Our Vision</a><a href="#contact">Contact</a></div>
+        <div><h2>Products</h2><a href="#products">Digital Wallet</a><a href="#products">Digital Assets</a><a href="#products">Payments</a><a href="#products">Financial Insights</a></div>
+        <div><h2>Support</h2><a href="platform/index.html#help">Help centre</a><a href="#security">Security</a><a href="#fees">Fees</a><a href="#learn">Learn the basics</a></div>
+        <div><h2>Legal</h2><a href="#privacy">Privacy Policy</a><a href="#terms">Terms and Conditions</a></div>
+      </nav>
+    </div>
+    <p class="foot__legal">Aztec is in development and does not yet offer any financial service. Product previews use sample data, not real balances or live prices. Nothing on this site is financial advice. Cryptocurrency is volatile and you could lose money. Statistics: World Bank Global Findex Database 2021; S&amp;P Global FinLit Survey (2014).</p>
+    <p class="foot__base">&copy; 2026 Aztec. All rights reserved.</p>
+  </div>
+</footer>
+
+<script>
+  /* Backend hook. Leave empty to keep the waitlist as a front-end prototype
+     (entries are saved in this browser only). See README.md. */
+  window.AZTEC_CONFIG = { waitlistEndpoint: '' };
+</script>
+<script src="core.js"></script><script src="mesh.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

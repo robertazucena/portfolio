@@ -1,0 +1,639 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Aztec platform preview</title>
+<meta name="description" content="A prototype of the planned Aztec app. All balances, prices and transactions are sample data.">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#050C1F">
+<link rel="icon" href="../media/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Sora:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script>document.documentElement.classList.add('js');</script>
+<link rel="stylesheet" href="../core.css">
+<link rel="stylesheet" href="../app-ui.css">
+<link rel="stylesheet" href="platform.css">
+</head>
+<body class="tq">
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-logo" viewBox="0 0 1289 267"><path class="lg-t lg-a" fill-rule="evenodd" d="M0.0 261.2L0.2 262.2L4.5 262.5L66.0 262.2L98.5 202.8L100.0 201.5L256.8 201.5L258.2 203.2L266.5 219.8L276.2 237.2L288.0 260.2L289.5 262.2L356.0 262.2L356.0 261.2L351.5 252.8L329.8 215.0L325.0 205.8L320.5 198.8L308.2 175.8L291.2 145.8L271.2 108.2L233.2 39.8L215.5 6.5L214.0 5.5L144.2 5.5L143.0 6.8L132.5 26.8L86.5 108.0L84.2 112.8Z M179.5 55.0L229.5 147.8L233.0 155.0L233.0 156.0L232.2 156.5L124.2 156.2L124.0 155.0L134.5 135.5L148.2 111.5L178.2 55.8Z"/><path class="lg-t lg-tec" fill-rule="evenodd" d="M1101.2 58.2L1086.0 66.8L1074.8 74.8L1065.8 82.5L1055.8 93.2L1048.8 103.2L1042.8 114.0L1037.8 126.0L1034.8 138.2L1033.8 144.2L1033.2 153.2L1033.8 166.5L1035.8 178.0L1039.8 190.8L1045.5 203.0L1052.8 214.2L1059.5 222.5L1069.8 232.8L1081.0 241.5L1094.5 249.8L1105.8 255.0L1120.0 260.2L1133.2 263.8L1148.2 266.2L1157.2 267.0L1179.2 267.0L1194.0 265.5L1206.5 263.2L1221.2 259.2L1234.0 254.2L1243.0 250.0L1257.2 241.2L1266.5 234.2L1276.8 224.2L1283.8 216.0L1289.2 208.2L1289.2 207.0L1234.2 182.8L1232.8 183.5L1229.2 189.0L1224.5 194.8L1215.5 202.8L1209.0 207.0L1202.0 210.5L1189.2 214.8L1174.2 217.2L1161.8 217.5L1149.2 216.0L1134.2 212.0L1124.8 207.8L1116.8 202.8L1110.5 197.8L1103.2 189.8L1099.2 183.8L1095.0 174.5L1092.8 166.5L1091.8 158.5L1091.8 151.8L1093.8 140.0L1097.0 130.8L1101.2 122.8L1107.8 114.8L1115.8 107.5L1124.0 102.0L1133.2 97.5L1141.8 94.5L1150.0 92.5L1162.2 91.2L1177.2 91.8L1191.2 94.5L1206.5 100.5L1214.8 105.8L1219.2 109.2L1225.5 115.5L1228.5 119.2L1233.5 127.0L1234.8 127.0L1246.5 122.2L1288.2 103.5L1288.0 102.0L1281.8 93.5L1273.0 83.8L1265.8 77.0L1256.8 70.0L1239.2 59.5L1218.8 51.2L1202.8 47.0L1188.8 44.5L1171.2 43.0L1161.8 43.0L1147.2 44.2L1136.0 46.2L1120.5 50.5Z M828.5 57.5L818.2 62.8L805.2 71.0L796.0 78.2L786.8 87.2L779.2 96.2L771.5 108.5L766.2 119.8L763.2 128.5L760.5 141.0L759.5 154.5L760.2 170.2L762.2 181.0L765.5 192.0L770.8 203.5L778.8 216.0L785.5 224.2L794.5 233.0L804.8 241.0L815.8 247.8L828.2 254.0L842.0 259.2L856.2 263.2L867.0 265.2L881.8 267.0L895.8 267.2L915.0 266.5L930.2 264.2L946.0 260.2L955.2 257.0L969.8 250.2L984.5 240.8L994.8 232.2L1003.2 223.5L1010.0 215.2L1011.5 212.2L980.8 198.8L963.5 190.5L962.2 190.5L952.0 200.8L946.0 205.0L935.2 210.8L925.5 214.2L909.5 217.8L901.0 218.5L887.8 218.5L878.2 217.8L868.0 216.0L854.2 211.8L845.8 207.8L837.8 202.5L833.2 198.8L827.2 192.2L821.2 182.2L818.5 174.0L818.5 172.8L819.5 172.0L1020.8 171.8L1021.2 167.8L1021.2 148.8L1020.2 139.2L1017.2 126.0L1010.0 107.8L1000.8 92.5L994.2 84.8L985.2 75.8L978.8 70.5L969.0 63.8L961.8 59.5L950.2 54.2L939.2 50.2L917.0 45.0L905.5 43.5L887.8 43.0L875.0 44.0L861.5 46.2L849.2 49.5L839.0 53.0Z M819.0 132.5L822.5 124.0L828.2 115.0L836.0 107.2L846.5 99.8L857.5 94.5L870.2 90.5L884.5 88.2L897.2 88.2L908.0 89.5L919.2 92.0L930.0 96.2L939.2 101.5L948.0 108.5L954.2 116.0L959.5 125.0L962.2 132.2L962.2 133.5L961.8 134.0L819.8 134.2L819.0 133.5Z M629.2 0.0L628.8 0.5L628.8 49.5L627.5 50.5L607.5 50.2L593.0 50.8L592.8 97.2L593.8 98.0L627.8 98.0L628.8 98.8L628.8 200.2L629.5 210.2L630.5 215.8L634.5 227.8L637.8 234.0L641.8 239.8L650.5 248.5L660.2 254.2L671.8 258.8L682.2 261.0L694.0 262.2L755.0 262.5L756.0 261.8L756.0 211.5L755.5 211.0L721.8 214.8L711.5 214.8L707.2 214.2L700.8 212.8L694.5 209.5L690.8 205.8L688.2 201.2L686.5 195.8L686.0 191.5L686.0 99.2L687.2 98.0L755.5 97.8L756.0 97.0L756.0 51.2L755.2 50.5L687.8 50.5L686.5 49.5L686.2 0.0Z"/><path class="lg-q" d="M353.5 50.8L353.2 97.2L354.0 98.0L489.0 98.0L490.0 98.8L349.8 220.8L349.5 221.8L369.5 262.0L370.8 262.5L586.2 262.5L587.2 261.8L587.5 236.0L587.2 211.5L586.8 211.0L438.2 211.0L437.0 210.2L437.8 209.0L496.0 160.8L577.5 90.8L578.0 83.5L578.0 51.8L577.2 50.5L366.5 50.2Z"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+    <symbol id="i-home" viewBox="0 0 24 24"><path d="M3 11 12 4l9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1Z"/></symbol>
+    <symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9M10.3 21a1.9 1.9 0 0 0 3.4 0"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></symbol>
+    <symbol id="i-chart" viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-swap" viewBox="0 0 24 24"><path d="M7 4 3 8l4 4M3 8h14M17 20l4-4-4-4M21 16H7"/></symbol>
+    <symbol id="i-more" viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.4"/><circle cx="12" cy="12" r="1.4"/><circle cx="19" cy="12" r="1.4"/></symbol>
+    <symbol id="i-card" viewBox="0 0 24 24"><rect x="2.5" y="5" width="19" height="14" rx="3"/><path d="M2.5 10h19M6 15h4"/></symbol>
+    <symbol id="i-chevl" viewBox="0 0 24 24"><path d="m15 5-7 7 7 7"/></symbol>
+    <symbol id="i-chevr" viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"/></symbol>
+    <symbol id="i-chevd" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+    <symbol id="i-star" viewBox="0 0 24 24"><path d="m12 3.5 2.6 5.3 5.9.9-4.3 4.1 1 5.8-5.2-2.7-5.2 2.7 1-5.8-4.3-4.1 5.9-.9Z"/></symbol>
+    <symbol id="i-snow" viewBox="0 0 24 24"><path d="M12 2v20M4 7l16 10M20 7 4 17M9 3.5l3 2.5 3-2.5M9 20.5l3-2.5 3 2.5"/></symbol>
+    <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></symbol>
+    <symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1Z"/></symbol>
+    <symbol id="i-nfc" viewBox="0 0 24 24"><path d="M8.5 8.5a5 5 0 0 1 0 7M12 5.5a9 9 0 0 1 0 13M15.5 3a12.5 12.5 0 0 1 0 18"/></symbol>
+    <symbol id="i-fork" viewBox="0 0 24 24"><path d="M7 3v8a2 2 0 0 0 2 2v8M11 3v8a2 2 0 0 1-2 2M17 21V3c-2 1-3 4-3 8h3"/></symbol>
+    <symbol id="i-plane" viewBox="0 0 24 24"><path d="M10.2 13.8 3 11l1.5-1.5 8 1 4.2-4.2a2 2 0 0 1 2.9 2.9l-4.2 4.2 1 8L15 22.9l-2.8-7.2-3.4 3.4.5 2.4-1.4 1.4-1.8-3.6-3.6-1.8 1.4-1.4 2.4.5Z"/></symbol>
+    <symbol id="i-bus" viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="15" rx="3"/><path d="M4 11h16M8 18v3M16 18v3M8 14.5h.01M16 14.5h.01"/></symbol>
+    <symbol id="i-bag" viewBox="0 0 24 24"><path d="M5 7h14l-1 14H6L5 7ZM9 7a3 3 0 0 1 6 0"/></symbol>
+    <symbol id="i-cup" viewBox="0 0 24 24"><path d="M4 8h13v6a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5V8ZM17 10h1.5a2.5 2.5 0 0 1 0 5H17M8 2.5v2M12 2.5v2"/></symbol>
+    <symbol id="i-del" viewBox="0 0 24 24"><path d="M9 5h11a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H9l-6-7 6-7ZM12.5 9.5l5 5M17.5 9.5l-5 5"/></symbol>
+    <symbol id="i-cell" viewBox="0 0 18 12"><rect x="0" y="8" width="3" height="4" rx=".8"/><rect x="5" y="5.5" width="3" height="6.5" rx=".8"/><rect x="10" y="3" width="3" height="9" rx=".8"/><rect x="15" y="0" width="3" height="12" rx=".8"/></symbol>
+    <symbol id="i-wifi" viewBox="0 0 16 12"><path d="M8 2.4c2.3 0 4.4.9 6 2.4l1.3-1.3A10.2 10.2 0 0 0 8 .6C5.2.6 2.6 1.7.7 3.5L2 4.8a8.4 8.4 0 0 1 6-2.4Zm0 3.6c1.3 0 2.5.5 3.4 1.3l1.3-1.3A6.7 6.7 0 0 0 8 4.2c-1.8 0-3.5.7-4.7 1.8l1.3 1.3C5.5 6.5 6.7 6 8 6Zm0 3.4-2.1 2 2.1 2 2.1-2Z"/></symbol>
+    <symbol id="i-simple" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 12h8"/></symbol>
+    <symbol id="i-access" viewBox="0 0 24 24"><circle cx="12" cy="4.5" r="1.8"/><path d="M5 8.5c2.3.7 4.6 1 7 1s4.7-.3 7-1M12 9.5V14M12 14l-3 7M12 14l3 7"/></symbol>
+    <symbol id="i-spark" viewBox="0 0 24 24"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5 18 18M18 6l-2.5 2.5M8.5 15.5 6 18"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></symbol>
+    <symbol id="i-send" viewBox="0 0 24 24"><path d="M21.5 2.5 10.5 13.5M21.5 2.5l-7 19-4-8-8-4Z"/></symbol>
+    <symbol id="i-receive" viewBox="0 0 24 24"><path d="M12 4v12M6 10l6 6 6-6M5 20h14"/></symbol>
+    <symbol id="i-coins" viewBox="0 0 24 24"><circle cx="8.5" cy="8.5" r="5.5"/><path d="M18.1 10.4A5.5 5.5 0 1 1 10.4 18"/></symbol>
+    <symbol id="i-book" viewBox="0 0 24 24"><path d="M4 19.5V5a2 2 0 0 1 2-2h14v15H6.5A2.5 2.5 0 0 0 4 20.5 2.5 2.5 0 0 0 6.5 23H20"/></symbol>
+    <symbol id="i-lock" viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></symbol>
+    <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8v.01"/></symbol>
+    <symbol id="i-list" viewBox="0 0 24 24"><path d="M8 6h13M8 12h13M8 18h13M3.5 6h.01M3.5 12h.01M3.5 18h.01"/></symbol>
+    <symbol id="i-qr" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3zM20 14v.01M14 20h.01M17 20h4v-3"/></symbol>
+    <symbol id="i-copy" viewBox="0 0 24 24"><rect x="8" y="8" width="13" height="13" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"/></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+    <symbol id="i-help" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.2a2.6 2.6 0 0 1 5 .9c0 1.7-2.5 2.2-2.5 3.9M12 17h.01"/></symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3 4.5 6v5.5c0 4.6 3.2 8.4 7.5 9.5 4.3-1.1 7.5-4.9 7.5-9.5V6L12 3Z"/><path d="m9 12 2 2 4-4"/></symbol>
+    <symbol id="i-bank" viewBox="0 0 24 24"><path d="M3 10 12 4l9 6M5 10v8M9.5 10v8M14.5 10v8M19 10v8M3 20h18"/></symbol>
+    <symbol id="i-eyeoff" viewBox="0 0 24 24"><path d="M3 3l18 18M10.6 5.1A10.6 10.6 0 0 1 12 5c6.4 0 10 7 10 7a17 17 0 0 1-3.2 4.1M6.6 6.6A17 17 0 0 0 2 12s3.6 7 10 7a10 10 0 0 0 5.4-1.6M9.9 9.9a3 3 0 0 0 4.2 4.2"/></symbol>
+    <symbol id="i-doc" viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8l-5-5Z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></symbol>
+    <symbol id="i-chat" viewBox="0 0 24 24"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20.5l1.4-4.8A8 8 0 1 1 21 12Z"/></symbol>
+    <symbol id="i-device" viewBox="0 0 24 24"><rect x="6" y="2.5" width="12" height="19" rx="3"/><path d="M11 18.5h2"/></symbol>
+    <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></symbol>
+    <symbol id="i-out" viewBox="0 0 24 24"><path d="M15 4h4a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1h-4M10 16l-4-4 4-4M6 12h10"/></symbol>
+  </defs>
+</svg>
+
+<!-- Preloader: the same one on first load and on every page change. -->
+<div class="loader" aria-hidden="true">
+  <div class="loader__mark">
+    <span class="loader__num" data-loader-count>000</span>
+    <span class="loader__num loader__num--fill" data-loader-count>000</span>
+    <svg class="loader__logo" viewBox="0 0 1289 267"><use href="#i-logo"/></svg>
+  </div>
+</div>
+
+<!-- the prism: the same moving mesh as the website (../mesh.js), calmer behind the dashboard -->
+<div class="bgfx" aria-hidden="true"><canvas data-mesh data-hero="none" data-calm="0.62"></canvas></div>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<div class="shell">
+  <!-- sidebar (desktop) -->
+  <aside class="side" aria-label="Aztec">
+    <a class="side__logo" href="#dashboard" aria-label="Aztec dashboard"><svg viewBox="0 0 1289 267" aria-hidden="true"><use href="#i-logo"/></svg></a>
+    <nav class="side__nav" aria-label="Main"><a href="#dashboard" data-nav="dashboard"><svg class="ic"><use href="#i-home"/></svg>Dashboard</a><a href="#wallet" data-nav="wallet"><svg class="ic"><use href="#i-card"/></svg>Wallet</a><a href="#payments" data-nav="payments"><svg class="ic"><use href="#i-swap"/></svg>Payments</a><a href="#explore" data-nav="explore"><svg class="ic"><use href="#i-coins"/></svg>Explore</a><a href="#activity" data-nav="activity"><svg class="ic"><use href="#i-list"/></svg>Activity</a><a href="#insights" data-nav="insights"><svg class="ic"><use href="#i-chart"/></svg>Insights</a><a href="#learn" data-nav="learn"><svg class="ic"><use href="#i-book"/></svg>Learn</a></nav>
+    <nav class="side__nav side__nav--sub" aria-label="Account"><a href="#card" data-nav="card"><svg class="ic"><use href="#i-nfc"/></svg>Card</a><a href="#fees" data-nav="fees"><svg class="ic"><use href="#i-doc"/></svg>Fees</a><a href="#settings" data-nav="settings"><svg class="ic"><use href="#i-gear"/></svg>Settings</a><a href="#help" data-nav="help"><svg class="ic"><use href="#i-help"/></svg>Help</a></nav>
+    <div class="side__foot">
+      <p class="side__note"><svg class="ic"><use href="#i-info"/></svg><span>This is a preview of the planned app. Every number is sample data and no real money moves.</span></p>
+      <a class="side__link" href="../index.html"><svg class="ic"><use href="#i-out"/></svg>Back to the Aztec website</a>
+    </div>
+  </aside>
+
+  <div class="main">
+    <header class="top">
+      <a class="top__logo" href="#dashboard" aria-label="Aztec dashboard"><svg viewBox="0 0 1289 267" aria-hidden="true"><use href="#i-logo"/></svg></a>
+      <label class="top__search"><svg class="ic"><use href="#i-search"/></svg><span class="sr-only">Search</span><input type="search" placeholder="Search payments, assets or help" data-search></label>
+      <button class="a-iconbtn top__hide" type="button" aria-pressed="false" aria-label="Hide balances" title="Hide balances" data-hide><svg class="ic"><use href="#i-eye"/></svg></button>
+      <button class="a-iconbtn a-iconbtn--dot" type="button" aria-label="Notifications, 2 new" data-sheet="alerts" data-bell><svg class="ic"><use href="#i-bell"/></svg></button>
+      <button class="a-avatar top__me" type="button" data-sheet="account" aria-label="Your account, Alex Rivera">A</button>
+    </header>
+
+    <main id="main" tabindex="-1">
+
+      <!-- ═════════ DASHBOARD ═════════ -->
+      <section class="view" data-view="dashboard" aria-labelledby="dash-title">
+        <div class="hello">
+          <h1 id="dash-title" class="hello__t"><span data-greet>Good evening</span>, Alex</h1>
+          <p class="hello__s">Here’s your money at a glance. Tap anything you don’t understand and we’ll explain it.</p>
+        </div>
+
+        <div class="grid">
+          <!-- the turn: portfolio dial -->
+          <section class="pf" aria-labelledby="pf-title">
+            <div class="pf__dial" data-pf>
+              <svg viewBox="0 0 320 320" aria-hidden="true"><g data-pf-ticks></g><g data-pf-arcs></g></svg>
+              <div class="pf__c">
+                <h2 id="pf-title" class="pf__k">Total value</h2>
+                <strong class="pf__v" data-pf-total>$4,280.50</strong>
+                <span class="a-badge" data-pf-delta>+$42.10 this week</span>
+              </div>
+            </div>
+            <ul class="pf__legend" data-pf-legend></ul>
+          </section>
+
+          <!-- quick actions -->
+          <section class="qa" aria-labelledby="qa-title">
+            <h2 id="qa-title" class="h">Quick actions</h2>
+            <div class="qa__grid">
+              <button type="button" class="qa__b qa__b--main" data-sheet="add"><i><svg class="ic"><use href="#i-plus"/></svg></i><b>Add money</b><small>From a bank or card</small></button>
+              <button type="button" class="qa__b" data-sheet="send"><i><svg class="ic"><use href="#i-send"/></svg></i><b>Send</b><small>To anyone on Aztec</small></button>
+              <button type="button" class="qa__b" data-sheet="receive"><i><svg class="ic"><use href="#i-receive"/></svg></i><b>Receive</b><small>Share your Aztec tag</small></button>
+              <a class="qa__b" href="#explore"><i><svg class="ic"><use href="#i-coins"/></svg></i><b>Explore assets</b><small>Learn before you buy</small></a>
+            </div>
+          </section>
+
+          <div class="col col--l">
+          <!-- digital assets -->
+          <section class="assets panel" aria-labelledby="as-title">
+            <div class="panel__head"><h2 id="as-title" class="h">Your digital assets</h2><a class="more" href="#explore">Explore all</a></div>
+            <p class="panel__note">Sample prices, not live market data. Select an asset to see what it is in plain words.</p>
+            <div class="as" data-assets></div>
+          </section>
+
+          <!-- recent activity -->
+          <section class="act panel" aria-labelledby="act-title">
+            <div class="panel__head"><h2 id="act-title" class="h">Recent activity</h2><a class="more" href="#activity">See all</a></div>
+            <table class="tbl">
+              <caption class="sr-only">Your six most recent transactions (sample data)</caption>
+              <thead><tr><th scope="col">Description</th><th scope="col">Date</th><th scope="col">Type</th><th scope="col" class="num">Amount</th><th scope="col">Status</th></tr></thead>
+              <tbody data-activity></tbody>
+            </table>
+          </section>
+
+          </div>
+          <div class="col col--r">
+          <!-- insights -->
+          <section class="ins panel" aria-labelledby="ins-title">
+            <div class="panel__head"><h2 id="ins-title" class="h">This month</h2><a class="more" href="#insights">See insights</a></div>
+            <div class="ins__sum"><small>You’ve spent</small><strong>$1,842<span>.30</span></strong></div>
+            <ul class="ins__cats" data-cats></ul>
+            <div class="tip"><span class="a-ico a-ico--sky"><svg class="ic"><use href="#i-info"/></svg></span><p><b>You spent $136 less on eating out than in October.</b> At this pace, your cash covers about five weeks of your usual spending.</p></div>
+          </section>
+
+          <!-- getting started -->
+          <section class="start panel" aria-labelledby="st-title" data-start>
+            <div class="panel__head"><h2 id="st-title" class="h">Getting started</h2><button class="more" type="button" data-start-hide>Hide</button></div>
+            <div class="start__bar" aria-hidden="true"><i data-start-bar></i></div>
+            <p class="panel__note" data-start-count>1 of 4 done</p>
+            <ol class="start__list" data-start-list></ol>
+          </section>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═════════ WALLET ═════════ -->
+      <section class="view" data-view="wallet" hidden aria-labelledby="w-title">
+        <div class="hello"><h1 id="w-title" class="hello__t">Wallet</h1><p class="hello__s">Your cash, savings and digital assets in one place, with your card.</p></div>
+        <div class="grid">
+          <div class="col col--l">
+            <section class="panel wb" aria-labelledby="wb-title">
+              <h2 id="wb-title" class="pf__k">Available to spend</h2>
+              <strong class="wb__v" data-w-cash></strong>
+              <p class="panel__note">This is your cash. Savings and digital assets are listed separately below, so you always know what’s ready to use.</p>
+              <div class="wb__acts"><button type="button" class="a-btn" data-sheet="add">Add money</button><button type="button" class="a-btn a-btn--ghost" data-sheet="send">Send</button><button type="button" class="a-btn a-btn--ghost" data-sheet="receive">Receive</button></div>
+            </section>
+            <section class="panel" aria-labelledby="wa-title">
+              <div class="panel__head"><h2 id="wa-title" class="h">Balances</h2><span class="a-pill" data-w-total></span></div>
+              <p class="panel__note">Select a digital asset to see what it is and how much its price moves.</p>
+              <div class="as" data-w-bal></div>
+            </section>
+            <section class="panel wd" aria-labelledby="wd-title">
+              <div class="panel__head"><h2 id="wd-title" class="h">Get paid into Aztec</h2><button type="button" class="a-pill" data-copy-details>Copy details</button></div>
+              <p class="panel__note">Share these with an employer or a friend’s bank. Aztec users can just use your tag.</p>
+              <dl class="wd__kv">
+                <div><dt>Name</dt><dd>Alex Rivera</dd></div>
+                <div><dt>Aztec tag</dt><dd>@alex.rivera</dd></div>
+                <div><dt>Account number</dt><dd class="wd__num">0000 4827 1093</dd></div>
+                <div><dt>Routing number</dt><dd class="wd__num">000 000 027</dd></div>
+              </dl>
+            </section>
+          </div>
+          <div class="col col--r">
+            <section class="panel wc" aria-labelledby="wc-title">
+              <div class="panel__head"><h2 id="wc-title" class="h">Your card</h2><span class="st st--on" data-card-state>Active</span></div>
+              <div class="wc__card" data-card>
+                <div class="a-tcard"><span class="a-tcard__lines"></span><svg class="a-tcard__logo" viewBox="0 0 1289 267" aria-hidden="true"><use href="#i-logo"/></svg><svg class="ic a-tcard__nfc" aria-hidden="true"><use href="#i-nfc"/></svg><i class="a-tcard__chip"></i><span class="a-tcard__no" data-card-no>&bull;&bull;&bull;&bull; 2027</span><span class="a-tcard__type">Debit</span></div>
+                <span class="wc__frost" aria-hidden="true"><svg class="ic"><use href="#i-snow"/></svg>Frozen</span>
+              </div>
+              <div class="wc__row"><span><b id="fz-l">Freeze card</b><small>Stops new card payments. Unfreeze any time.</small></span><button type="button" class="sw" role="switch" aria-checked="false" aria-labelledby="fz-l" data-freeze><i></i></button></div>
+              <div class="wc__row"><span><b id="cn-l">Show card number</b><small>A sample number for this preview.</small></span><button type="button" class="sw" role="switch" aria-checked="false" aria-labelledby="cn-l" data-cardno><i></i></button></div>
+              <a class="a-btn a-btn--ghost wc__set" href="#card"><svg class="ic"><use href="#i-gear"/></svg>Manage card</a>
+              <div class="wc__lim"><span><small>Spent this month</small><b data-lim-spent>$1,842.30 <span>of $3,000 limit</span></b></span><div class="a-meter"><i data-lim-bar style="--w:61.4%"></i></div></div>
+            </section>
+            <section class="panel goal" aria-labelledby="gl-title">
+              <div class="panel__head"><h2 id="gl-title" class="h">Rainy day fund</h2><span class="a-pill">Savings</span></div>
+              <div class="goal__v"><b>$919.00</b><small>of your $1,500 goal</small></div>
+              <div class="a-meter"><i style="--w:61.3%"></i></div>
+              <p class="panel__note">Put aside $50 a week and you’ll reach it by mid January.</p>
+              <div class="wc__row goal__auto"><span><b id="as-l">Save $50 every Friday</b><small>Moves from your cash automatically. Pause any time.</small></span><button type="button" class="sw" role="switch" aria-checked="true" aria-labelledby="as-l" data-autosave><i></i></button></div>
+              <button type="button" class="a-btn a-btn--ghost goal__b" data-sheet="save">Move money to savings</button>
+            </section>
+            <button type="button" class="tip tip--panel" data-guide="1"><span class="a-ico a-ico--sky"><svg class="ic"><use href="#i-book"/></svg></span><p><b>New to wallets?</b>Read “What is a digital wallet?” It takes about 3 minutes.</p></button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═════════ EXPLORE ═════════ -->
+      <section class="view" data-view="explore" hidden aria-labelledby="e-title">
+        <div class="hello"><h1 id="e-title" class="hello__t">Explore</h1><p class="hello__s">Discover digital assets at your own pace. Every one shows what it is and how risky it is before any price talk.</p></div>
+        <div class="tip tip--panel tip--warn"><span class="a-ico a-ico--d"><svg class="ic"><use href="#i-info"/></svg></span><p><b>Read this before you buy anything</b>Digital asset prices can fall quickly, and they usually aren’t protected the way bank deposits are. Only put in money you could afford to lose. <button type="button" class="more" data-guide="4">Read about the risks</button></p></div>
+        <div class="bar">
+          <div class="seg" role="group" aria-label="Show" data-filter="explore">
+            <button type="button" aria-pressed="true" data-f="all">All</button><button type="button" aria-pressed="false" data-f="owned">You own</button><button type="button" aria-pressed="false" data-f="lower">Lower risk</button><button type="button" aria-pressed="false" data-f="high">High risk</button>
+          </div>
+          <p class="bar__note">Sample prices, not live market data.</p>
+        </div>
+        <div class="ex" data-explore></div>
+        <p class="empty" data-empty="[data-explore]" hidden>No assets match. Try another filter or <button type="button" class="more" data-clear>clear the search</button>.</p>
+      </section>
+
+      <!-- ═════════ ACTIVITY ═════════ -->
+      <section class="view" data-view="activity" hidden aria-labelledby="a-title">
+        <div class="hello"><h1 id="a-title" class="hello__t">Activity</h1><p class="hello__s">Every payment, transfer and purchase. Select one to see its details.</p></div>
+        <section class="panel" aria-label="All activity">
+          <div class="bar bar--in">
+            <div class="seg" role="group" aria-label="Show" data-filter="activity">
+              <button type="button" aria-pressed="true" data-f="all">All</button><button type="button" aria-pressed="false" data-f="in">Money in</button><button type="button" aria-pressed="false" data-f="out">Money out</button><button type="button" aria-pressed="false" data-f="asset">Assets</button>
+            </div>
+            <p class="bar__note" data-act-sum aria-live="polite"></p>
+            <a class="a-pill bar__dl" href="#payments"><svg class="ic"><use href="#i-swap"/></svg>Repeating</a><button type="button" class="a-pill bar__dl" data-sheet="statement"><svg class="ic"><use href="#i-doc"/></svg>Statement</button>
+          </div>
+          <table class="tbl">
+            <caption class="sr-only">All transactions in November (sample data)</caption>
+            <thead><tr><th scope="col">Description</th><th scope="col">Date</th><th scope="col">Type</th><th scope="col" class="num">Amount</th><th scope="col">Status</th></tr></thead>
+            <tbody data-activity-all></tbody>
+          </table>
+          <p class="empty" data-empty="[data-activity-all]" hidden>Nothing matches. Try another filter or <button type="button" class="more" data-clear>clear the search</button>.</p>
+        </section>
+      </section>
+
+      <!-- ═════════ ASSET (one page per digital asset: #asset/btc) ═════════ -->
+      <section class="view" data-view="asset" hidden aria-labelledby="ad-title">
+        <a class="back" href="#explore"><svg class="ic"><use href="#i-chevl"/></svg>Explore</a>
+        <div class="hello ad__hello"><span class="a-coin ad__coin" data-ad-coin aria-hidden="true"></span><div><h1 id="ad-title" class="hello__t" data-ad-name>Bitcoin</h1><p class="hello__s" data-ad-plain></p></div></div>
+        <div class="grid">
+          <div class="col col--l">
+            <section class="panel adc" aria-labelledby="adc-title">
+              <div class="adc__top">
+                <div><h2 id="adc-title" class="pf__k" data-ad-k>Price for 1 BTC</h2><strong class="adc__v" data-ad-price aria-live="polite"></strong><small class="adc__d" data-ad-delta></small></div>
+                <div class="seg" role="group" aria-label="Time range" data-ad-range><button type="button" aria-pressed="false" data-r="D">1D</button><button type="button" aria-pressed="true" data-r="W">1W</button><button type="button" aria-pressed="false" data-r="M">1M</button><button type="button" aria-pressed="false" data-r="Y">1Y</button></div>
+              </div>
+              <div class="adc__chart" data-ad-chart tabindex="0" role="img" aria-label="Price chart. Use the left and right arrow keys to read prices."></div>
+              <div class="adc__axis" aria-hidden="true"><span data-ad-from></span><span data-ad-hilo></span><span>Now</span></div>
+              <p class="panel__note">Sample prices, not live market data. Hover or use the arrow keys to read a price.</p>
+            </section>
+            <section class="panel" aria-labelledby="adh-title">
+              <div class="panel__head"><h2 id="adh-title" class="h" data-ad-hist-t>Your activity</h2><a class="more" href="#activity">All activity</a></div>
+              <table class="tbl">
+                <caption class="sr-only">Your purchases and sales of this asset (sample data)</caption>
+                <thead><tr><th scope="col">Description</th><th scope="col">Date</th><th scope="col">Type</th><th scope="col" class="num">Amount</th><th scope="col">Status</th></tr></thead>
+                <tbody data-ad-hist></tbody>
+              </table>
+              <p class="empty ad__empty" data-ad-none hidden></p>
+            </section>
+          </div>
+          <div class="col col--r">
+            <section class="panel ado" aria-labelledby="ado-title">
+              <h2 id="ado-title" class="pf__k">Your holding</h2>
+              <strong class="ado__v" data-ad-worth></strong>
+              <p class="panel__note" data-ad-own></p>
+              <dl class="kv kv--tight" data-ad-kv></dl>
+              <div class="wb__acts"><button type="button" class="a-btn a-btn--ghost" data-ad-trade="sell">Sell</button><button type="button" class="a-btn" data-ad-trade="buy">Buy</button></div>
+            </section>
+            <section class="panel" aria-labelledby="adr-title">
+              <h2 id="adr-title" class="h">How much it moves</h2>
+              <div class="a-risk ad__risk" data-ad-risk><i></i><i></i><i></i></div>
+              <p class="panel__note" data-ad-wrong></p>
+              <dl class="kv kv--tight" data-ad-facts></dl>
+            </section>
+            <section class="panel" aria-labelledby="ada-title">
+              <h2 id="ada-title" class="h">Price alert</h2>
+              <div class="wc__row ad__alert"><span><b id="ad-al-l">Tell me about big moves</b><small data-ad-al-s>When it moves more than 5% in a day</small></span><button type="button" class="sw" role="switch" aria-checked="false" aria-labelledby="ad-al-l" data-ad-alert><i></i></button></div>
+            </section>
+            <button type="button" class="tip tip--panel" data-guide="4"><span class="a-ico a-ico--sky"><svg class="ic"><use href="#i-book"/></svg></span><p><b>Before you buy</b>Read “What are the risks of investing in cryptocurrency?” It takes about 3 minutes.</p></button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═════════ PAYMENTS ═════════ -->
+      <section class="view" data-view="payments" hidden aria-labelledby="p-title">
+        <div class="hello"><h1 id="p-title" class="hello__t">Payments</h1><p class="hello__s">Send, ask for money and set up payments that repeat. Between Aztec accounts it’s always free.</p></div>
+        <div class="grid">
+          <div class="col col--l">
+            <section class="panel pm" aria-label="Start a payment">
+              <div class="pm__acts">
+                <button type="button" class="pm__b" data-sheet="send"><i><svg class="ic"><use href="#i-send"/></svg></i><b>Send</b><small>Free, arrives in seconds</small></button>
+                <button type="button" class="pm__b" data-sheet="request"><i><svg class="ic"><use href="#i-receive"/></svg></i><b>Ask for money</b><small>They get a request to pay</small></button>
+                <button type="button" class="pm__b" data-sheet="schedule"><i><svg class="ic"><use href="#i-swap"/></svg></i><b>Repeat a payment</b><small>Weekly or monthly</small></button>
+              </div>
+            </section>
+            <section class="panel" aria-labelledby="rq-title">
+              <div class="panel__head"><h2 id="rq-title" class="h">Requests</h2><span class="a-pill a-pill--note" data-rq-count></span></div>
+              <ul class="pr" data-requests></ul>
+            </section>
+            <section class="panel" aria-labelledby="sc-title">
+              <div class="panel__head"><h2 id="sc-title" class="h">Repeating payments</h2><span class="a-pill a-pill--note" data-sc-total></span></div>
+              <p class="panel__note">Switch one off to pause it. Nothing is cancelled, and you can switch it back on any time.</p>
+              <ul class="pr" data-scheduled></ul>
+            </section>
+          </div>
+          <div class="col col--r">
+            <section class="panel" aria-labelledby="pp-title">
+              <h2 id="pp-title" class="h">People</h2>
+              <ul class="pr" data-people></ul>
+            </section>
+            <section class="panel" aria-labelledby="cu-title">
+              <h2 id="cu-title" class="h">Coming up</h2>
+              <p class="panel__note">The next two weeks of repeating payments.</p>
+              <ol class="cu" data-coming></ol>
+              <div class="tip"><span class="a-ico a-ico--sky"><svg class="ic"><use href="#i-info"/></svg></span><p data-cu-left></p></div>
+            </section>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═════════ INSIGHTS ═════════ -->
+      <section class="view" data-view="insights" hidden aria-labelledby="i-title">
+        <div class="hello"><h1 id="i-title" class="hello__t">Insights</h1><p class="hello__s">Where your money went, in plain words. Pick a month to compare.</p></div>
+        <div class="bar">
+          <div class="seg" role="group" aria-label="Month" data-months><button type="button" aria-pressed="false" data-m="sep">September</button><button type="button" aria-pressed="false" data-m="oct">October</button><button type="button" aria-pressed="true" data-m="nov">November</button></div>
+          <p class="bar__note" data-in-note aria-live="polite"></p>
+        </div>
+        <div class="grid">
+          <div class="col col--l">
+            <section class="panel io" aria-labelledby="io-title">
+              <h2 id="io-title" class="sr-only">Money in and out</h2>
+              <dl class="io__sum">
+                <div><dt>Came in</dt><dd data-io-in></dd></div>
+                <div><dt>Went out</dt><dd data-io-out></dd></div>
+                <div><dt>You kept</dt><dd data-io-kept></dd></div>
+              </dl>
+              <div class="wk" data-weeks aria-label="Spending by week"></div>
+              <p class="panel__note" data-wk-note></p>
+            </section>
+            <section class="panel" aria-labelledby="bd-title">
+              <div class="panel__head"><h2 id="bd-title" class="h">Spending and budgets</h2><span class="a-pill a-pill--note" data-bd-sum></span></div>
+              <p class="panel__note">Select a category to change its monthly budget.</p>
+              <ul class="bd" data-budgets></ul>
+            </section>
+          </div>
+          <div class="col col--r">
+            <section class="panel" aria-labelledby="ex2-title">
+              <h2 id="ex2-title" class="h">Explained</h2>
+              <ul class="xp" data-explained></ul>
+            </section>
+            <section class="panel" aria-labelledby="tp-title">
+              <h2 id="tp-title" class="h">Where you spent most</h2>
+              <ul class="pr" data-places></ul>
+            </section>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═════════ CARD ═════════ -->
+      <section class="view" data-view="card" hidden aria-labelledby="c-title">
+        <div class="hello"><h1 id="c-title" class="hello__t">Card</h1><p class="hello__s">Freeze it, set limits and choose where it works. Every change applies straight away.</p></div>
+        <div class="grid">
+          <div class="col col--l">
+            <section class="panel cd" aria-labelledby="cd-title">
+              <div class="panel__head"><h2 id="cd-title" class="h">Your debit card</h2><span class="st st--on" data-card-state>Active</span></div>
+              <div class="cd__wrap">
+                <div class="wc__card cd__card" data-card>
+                  <div class="a-tcard"><span class="a-tcard__lines"></span><svg class="a-tcard__logo" viewBox="0 0 1289 267" aria-hidden="true"><use href="#i-logo"/></svg><svg class="ic a-tcard__nfc" aria-hidden="true"><use href="#i-nfc"/></svg><i class="a-tcard__chip"></i><span class="a-tcard__no" data-card-no>&bull;&bull;&bull;&bull; 2027</span><span class="a-tcard__type">Debit</span></div>
+                  <span class="wc__frost" aria-hidden="true"><svg class="ic"><use href="#i-snow"/></svg>Frozen</span>
+                </div>
+                <div class="cd__ctl">
+                  <div class="wc__row"><span><b id="fz2-l">Freeze card</b><small>Stops new card payments. Unfreeze any time.</small></span><button type="button" class="sw" role="switch" aria-checked="false" aria-labelledby="fz2-l" data-freeze><i></i></button></div>
+                  <div class="wc__row"><span><b id="cn2-l">Show card number</b><small>A sample number for this preview.</small></span><button type="button" class="sw" role="switch" aria-checked="false" aria-labelledby="cn2-l" data-cardno><i></i></button></div>
+                  <div class="wc__row"><span><b>Card PIN</b><small data-pin-s>Press and hold to see it</small></span><button type="button" class="pin" data-pin aria-describedby="pin-help"><span data-pin-v aria-live="polite">&bull;&bull;&bull;&bull;</span><i aria-hidden="true"></i></button></div>
+                  <p class="sr-only" id="pin-help">Hold the button for one second to show the PIN.</p>
+                  <button type="button" class="a-btn a-btn--ghost cd__lost" data-lost><svg class="ic"><use href="#i-snow"/></svg>Report lost or stolen</button>
+                </div>
+              </div>
+            </section>
+            <section class="panel" aria-labelledby="lim-title">
+              <div class="panel__head"><h2 id="lim-title" class="h">Monthly spending limit</h2><b class="lim__v" data-lim-v></b></div>
+              <label class="lim"><span class="sr-only">Monthly card spending limit</span><input type="range" min="500" max="5000" step="100" value="3000" data-lim></label>
+              <div class="lim__scale" aria-hidden="true"><span>$500</span><span>$5,000</span></div>
+              <div class="wc__lim"><span><small>Spent this month</small><b data-lim-spent></b></span><div class="a-meter"><i data-lim-bar></i></div></div>
+              <h3 class="sub-h">Cash machines, per day</h3>
+              <div class="seg" role="group" aria-label="Daily cash machine limit" data-atm><button type="button" aria-pressed="false" data-v="100">$100</button><button type="button" aria-pressed="true" data-v="300">$300</button><button type="button" aria-pressed="false" data-v="500">$500</button></div>
+            </section>
+          </div>
+          <div class="col col--r">
+            <section class="panel" aria-labelledby="ww-title">
+              <h2 id="ww-title" class="h">Where it works</h2>
+              <div class="sets" data-sets="card"></div>
+            </section>
+            <section class="panel vc" aria-labelledby="vc-title">
+              <h2 id="vc-title" class="h">Online-only card</h2>
+              <p class="panel__note">A separate number for shopping online. If a website leaks it, delete it and your main card keeps working.</p>
+              <div class="vc__slot" data-vc></div>
+            </section>
+            <section class="panel" aria-labelledby="cp-title">
+              <div class="panel__head"><h2 id="cp-title" class="h">Recent card payments</h2><a class="more" href="#activity">See all</a></div>
+              <table class="tbl">
+                <caption class="sr-only">Your latest card payments (sample data)</caption>
+                <thead><tr><th scope="col">Description</th><th scope="col">Date</th><th scope="col">Type</th><th scope="col" class="num">Amount</th><th scope="col">Status</th></tr></thead>
+                <tbody data-card-tx></tbody>
+              </table>
+            </section>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═════════ FEES ═════════ -->
+      <section class="view" data-view="fees" hidden aria-labelledby="f-title">
+        <div class="hello"><h1 id="f-title" class="hello__t">Fees</h1><p class="hello__s">No monthly fee and no plan to pick. A few things cost a little, and you always see the fee before you confirm.</p></div>
+        <div class="grid">
+          <div class="col col--l">
+            <section class="panel fm" aria-labelledby="fm-title">
+              <h2 id="fm-title" class="pf__k">Fees you paid in November</h2>
+              <strong class="wb__v" data-fm-total></strong>
+              <p class="panel__note" data-fm-note></p>
+              <ul class="pr fm__list" data-fm-list></ul>
+            </section>
+            <section class="panel" aria-labelledby="fa-title">
+              <h2 id="fa-title" class="h">Every fee</h2>
+              <ul class="ft" data-fee-table></ul>
+              <p class="panel__note">Planned pricing. We’ll tell you before any fee changes.</p>
+            </section>
+          </div>
+          <div class="col col--r">
+            <section class="panel fc" aria-labelledby="fc-title">
+              <h2 id="fc-title" class="h">Work it out</h2>
+              <div class="seg fc__seg" role="group" aria-label="What you’re doing" data-fc-how><button type="button" aria-pressed="true" data-h="send">Send</button><button type="button" aria-pressed="false" data-h="card">Add by card</button><button type="button" aria-pressed="false" data-h="buy">Buy crypto</button></div>
+              <label class="send__amt fc__amt"><span class="sr-only">Amount in US dollars</span><span aria-hidden="true">$</span><input inputmode="decimal" value="100" data-fc-amt></label>
+              <dl class="facts" aria-live="polite"><div><dt>Fee</dt><dd data-fc-fee></dd></div><div><dt data-fc-get-l>They get</dt><dd data-fc-get></dd></div></dl>
+            </section>
+            <section class="panel" aria-labelledby="ff-title">
+              <h2 id="ff-title" class="h">Free this month</h2>
+              <p class="panel__note">Things you did in November that cost nothing.</p>
+              <ul class="pr" data-free></ul>
+            </section>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═════════ LEARN ═════════ -->
+      <section class="view" data-view="learn" hidden aria-labelledby="l-title">
+        <div class="hello"><h1 id="l-title" class="hello__t">Learn</h1><p class="hello__s">Ten short guides that assume you’re starting from zero: digital money first, then the money basics. Read them in order or jump to the one you need.</p></div>
+        <div class="grid">
+          <div class="col col--l">
+            <section class="panel" aria-labelledby="gd-title">
+              <div class="panel__head"><h2 id="gd-title" class="h">The basics</h2><span class="a-pill" data-gd-count></span></div>
+              <div class="start__bar" aria-hidden="true"><i data-gd-bar></i></div>
+              <ol class="gd" data-guides></ol>
+              <p class="empty" data-empty="[data-guides]" hidden>No guides match your search. <button type="button" class="more" data-clear>Clear the search</button>.</p>
+            </section>
+          </div>
+          <div class="col col--r">
+            <section class="start panel" aria-labelledby="st2-title">
+              <div class="panel__head"><h2 id="st2-title" class="h">Getting started</h2></div>
+              <div class="start__bar" aria-hidden="true"><i data-start-bar></i></div>
+              <p class="panel__note" data-start-count></p>
+              <ol class="start__list" data-start-list></ol>
+            </section>
+            <section class="panel" aria-labelledby="gl2-title">
+              <h2 id="gl2-title" class="h">Words you’ll see</h2>
+              <dl class="terms" data-terms></dl>
+            </section>
+          </div>
+        </div>
+      </section>
+      <!-- ═════════ SETTINGS ═════════ -->
+      <section class="view" data-view="settings" hidden aria-labelledby="s-title">
+        <div class="hello"><h1 id="s-title" class="hello__t">Settings</h1><p class="hello__s">Your details, security and how Aztec talks to you.</p></div>
+        <div class="grid">
+          <div class="col col--l">
+            <section class="panel prof" aria-labelledby="pr-title">
+              <div class="prof__head"><span class="a-avatar a-avatar--lg">A</span><span><h2 id="pr-title" class="h">Alex Rivera</h2><small>@alex.rivera</small></span><span class="st st--pending prof__st" data-verify-badge>Not verified yet</span></div>
+              <div class="prof__cta" data-verify-cta><p>Confirm it’s you to raise your limits and buy digital assets. It takes about 3 minutes.</p><button type="button" class="a-btn" data-sheet="kyc">Confirm it’s you</button></div>
+              <dl class="kv">
+                <div><dt>Legal name</dt><dd>Alex Rivera</dd></div>
+                <div><dt>Email</dt><dd>alex.rivera@example.com</dd></div>
+                <div><dt>Phone</dt><dd>+1 ••• ••• 0142</dd></div>
+                <div><dt>Country</dt><dd>United States</dd></div>
+                <div><dt>Member since</dt><dd>November 2026</dd></div>
+              </dl>
+            </section>
+            <section class="panel" aria-labelledby="sec-title">
+              <h2 id="sec-title" class="h">Security</h2>
+              <div class="sets" data-sets="security"></div>
+              <div class="row-btn"><span><b>Passcode</b><small>Six digits, changed 3 weeks ago</small></span><button type="button" class="a-pill" data-soon="Changing your passcode">Change</button></div>
+              <h3 class="sub-h">Signed-in devices</h3>
+              <ul class="dev" data-devices></ul>
+            </section>
+            <section class="panel" aria-labelledby="nt-title">
+              <h2 id="nt-title" class="h">Notifications</h2>
+              <div class="sets" data-sets="notify"></div>
+            </section>
+          </div>
+          <div class="col col--r">
+            <section class="panel" aria-labelledby="pf2-title">
+              <h2 id="pf2-title" class="h">Preferences</h2>
+              <div class="sets" data-sets="prefs"></div>
+              <div class="row-btn"><span><b>Currency</b><small>US dollar (USD)</small></span><span class="a-pill a-pill--note">USD</span></div>
+              <div class="row-btn"><span><b>Language</b><small>English</small></span><span class="a-pill a-pill--note">EN</span></div>
+            </section>
+            <section class="panel" aria-labelledby="lm-title">
+              <h2 id="lm-title" class="h">Your limits</h2>
+              <p class="panel__note" data-limit-note>These rise once you’ve confirmed it’s you.</p>
+              <dl class="kv kv--tight" data-limits></dl>
+            </section>
+            <section class="panel" aria-labelledby="dc-title">
+              <h2 id="dc-title" class="h">Documents</h2>
+              <ul class="docs">
+                <li><button type="button" data-sheet="statement"><span class="a-ico a-ico--b"><svg class="ic"><use href="#i-doc"/></svg></span><span><b>Monthly statements</b><small>October 2026 is ready</small></span><svg class="ic start__go"><use href="#i-chevr"/></svg></button></li>
+                <li><button type="button" data-soon="The yearly tax summary"><span class="a-ico a-ico--c"><svg class="ic"><use href="#i-doc"/></svg></span><span><b>Tax summary</b><small>Ready in January 2027</small></span><svg class="ic start__go"><use href="#i-chevr"/></svg></button></li>
+              </ul>
+            </section>
+            <section class="panel" aria-labelledby="lg-title">
+              <h2 id="lg-title" class="h">Legal</h2>
+              <ul class="docs docs--links">
+                <li><a href="../index.html#terms">Terms and Conditions<svg class="ic start__go"><use href="#i-chevr"/></svg></a></li>
+                <li><a href="../index.html#privacy">Privacy Policy<svg class="ic start__go"><use href="#i-chevr"/></svg></a></li>
+                <li><button type="button" data-guide="4">Risks of digital assets<svg class="ic start__go"><use href="#i-chevr"/></svg></button></li>
+              </ul>
+              <p class="panel__note">Aztec app preview, version 0.3</p>
+            </section>
+            <div class="out-row"><button type="button" class="a-btn a-btn--ghost" data-signout><svg class="ic"><use href="#i-out"/></svg>Sign out</button><button type="button" class="more" data-sheet="close">Close account</button></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═════════ HELP ═════════ -->
+      <section class="view" data-view="help" hidden aria-labelledby="h-title">
+        <div class="hello"><h1 id="h-title" class="hello__t">Help</h1><p class="hello__s">Plain answers to common questions. Use the search at the top to find one fast.</p></div>
+        <div class="grid">
+          <div class="col col--l">
+            <section class="panel" aria-labelledby="fq-title">
+              <h2 id="fq-title" class="h">Common questions</h2>
+              <div class="faq" data-faq></div>
+              <p class="empty" data-empty="[data-faq]" hidden>No answers match. Try other words, <button type="button" class="more" data-clear>clear the search</button> or chat with us.</p>
+            </section>
+          </div>
+          <div class="col col--r">
+            <section class="panel" aria-labelledby="ct-title">
+              <h2 id="ct-title" class="h">Talk to a person</h2>
+              <ul class="docs">
+                <li><button type="button" data-sheet="chat"><span class="a-ico a-ico--sky"><svg class="ic"><use href="#i-chat"/></svg></span><span><b>Chat with us</b><small>Usually replies in about 2 minutes</small></span><svg class="ic start__go"><use href="#i-chevr"/></svg></button></li>
+                <li><button type="button" data-soon="Email support"><span class="a-ico a-ico--b"><svg class="ic"><use href="#i-send"/></svg></span><span><b>Email us</b><small>Replies within one working day</small></span><svg class="ic start__go"><use href="#i-chevr"/></svg></button></li>
+              </ul>
+            </section>
+            <section class="panel lost" aria-labelledby="ls-title">
+              <h2 id="ls-title" class="h">Lost your card?</h2>
+              <p class="panel__note">Freeze it straight away. You can unfreeze it if it turns up.</p>
+              <button type="button" class="a-btn" data-lost>Freeze my card</button>
+            </section>
+            <section class="panel" aria-labelledby="sf-title">
+              <h2 id="sf-title" class="h">Stay safe</h2>
+              <ul class="safe">
+                <li><svg class="ic"><use href="#i-shield"/></svg>Aztec will never ask for your passcode or a code we text you.</li>
+                <li><svg class="ic"><use href="#i-shield"/></svg>We’ll never ask you to move money to a “safe account”.</li>
+                <li><svg class="ic"><use href="#i-shield"/></svg>Nobody can promise a guaranteed return on crypto.</li>
+                <li><svg class="ic"><use href="#i-shield"/></svg>Not sure a message is from us? Stop and chat with us here.</li>
+              </ul>
+            </section>
+          </div>
+        </div>
+      </section>
+
+      <footer class="legal">
+        <p>This is a preview of the planned Aztec app. Every balance, price and payment is sample data and no real money moves. Aztec isn’t a bank. Digital assets are not protected like bank deposits and their value can fall as well as rise.</p>
+        <p><a href="../index.html#terms">Terms</a><a href="../index.html#privacy">Privacy</a><a href="#help">Help</a><a href="../index.html">Aztec website</a></p>
+      </footer>
+    </main>
+  </div>
+</div>
+
+<!-- mobile tab bar -->
+<nav class="a-tabs tabs" aria-label="Main"><a href="#dashboard" data-nav="dashboard"><svg class="ic"><use href="#i-home"/></svg>Dashboard</a><a href="#wallet" data-nav="wallet"><svg class="ic"><use href="#i-card"/></svg>Wallet</a><a href="#explore" data-nav="explore"><svg class="ic"><use href="#i-coins"/></svg>Explore</a><a href="#activity" data-nav="activity"><svg class="ic"><use href="#i-list"/></svg>Activity</a><a href="#learn" data-nav="learn"><svg class="ic"><use href="#i-book"/></svg>Learn</a></nav>
+
+<!-- preview sheets (send, receive, add money, alerts, asset) -->
+<dialog class="sheet" data-dialog aria-labelledby="sheet-title">
+  <div class="sheet__in">
+    <div class="sheet__head"><h2 id="sheet-title" data-sheet-title></h2><button class="a-iconbtn" type="button" data-close aria-label="Close"><svg class="ic"><use href="#i-close"/></svg></button></div>
+    <div class="sheet__body" data-sheet-body></div>
+  </div>
+</dialog>
+
+<!-- signed-out screen -->
+<div class="lock" data-lock hidden role="dialog" aria-modal="true" aria-labelledby="lock-t">
+  <div class="lock__in">
+    <svg class="lock__logo" viewBox="0 0 1289 267" aria-hidden="true"><use href="#i-logo"/></svg>
+    <span class="a-avatar a-avatar--lg">A</span>
+    <h2 id="lock-t">You’re signed out</h2>
+    <p>Welcome back, Alex. Sign in to see your money.</p>
+    <button type="button" class="a-btn" data-signin><svg class="ic"><use href="#i-lock"/></svg>Sign in with Face ID</button>
+    <a class="more" href="../index.html">Go to the Aztec website</a>
+    <small>Preview: signing in doesn’t check anything.</small>
+  </div>
+</div>
+
+<div class="toast" role="status" aria-live="polite" data-toast></div>
+
+<script src="../core.js"></script>
+<script src="../mesh.js"></script>
+<script src="platform.js"></script>
+</body>
+</html>
