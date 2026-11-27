@@ -35,14 +35,14 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="manifest" href="site.webmanifest">
 
-<script>document.documentElement.classList.add("js")</script>
+<script>document.documentElement.classList.add("js");if(!location.hash)try{history.replaceState(null,"","#home")}catch(e){}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!-- fonts load without holding up the first paint -->
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Geist:wght@300..700&family=Geist+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@300..700&family=Geist+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap" media="print" onload="this.media='all'">
 <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@300..700&family=Geist+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap"></noscript>
-<link rel="stylesheet" href="styles.css?v=202610160300">
+<link rel="stylesheet" href="styles.css?v=202611272200">
 <script type="application/ld+json">
 {
  "@context": "https://schema.org",
@@ -461,11 +461,10 @@
 </script>
 <canvas id="bg" aria-hidden="true"></canvas>
 <div class="grain" aria-hidden="true"></div>
-<div class="progress" id="progress" aria-hidden="true"></div>
 
 <header class="nav" id="nav">
   <div class="nav-in">
-    <a class="brand" href="#top" data-sec="top" aria-label="Robert Azucena, home">
+    <a class="brand" href="#home" data-sec="home" aria-label="Robert Azucena, home">
       <span class="mono-mark">Ra</span>
       <span>Robert Azucena<small>UX &amp; Digital Experience Leader</small></span>
     </a>
@@ -601,7 +600,7 @@
 <footer class="site-foot wrap">
   <div class="foot-grid">
     <ul class="foot-index">
-      <li><a href="#top" data-sec="top">Intro</a></li>
+      <li><a href="#home" data-sec="home">Intro</a></li>
       <li><a href="#work" data-sec="work">Selected work</a></li>
       <li><a href="#leadership" data-sec="leadership">Leadership</a></li>
       <li><a href="#expertise" data-sec="expertise">Expertise</a></li>
@@ -612,7 +611,7 @@
     <div class="foot-links">
       <a href="https://www.linkedin.com/in/robertazucena" target="_blank" rel="noopener">LinkedIn ↗</a>
       <a href="#contact" data-sec="contact">Email</a>
-      <a href="#top" data-sec="top">Back to top ↑</a>
+      <a href="#home" data-sec="home">Back to top ↑</a>
     </div>
   </div>
   <div class="foot-row">
@@ -653,6 +652,6 @@
     <p>Contact: <a href="mailto:robertazucena@gmail.com">robertazucena@gmail.com</a></p>
   </section>
 </noscript>
-<script src="script.js?v=202611052200"></script>
+<script src="script.js?v=202611272200"></script>
 </body>
 </html>
