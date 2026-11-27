@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="robots" content="noindex, nofollow">
+<script src="frame-top.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#eeece6">
+<meta name="color-scheme" content="light">
+<title>Howely · Logistics, end to end</title>
+<meta name="description" content="Howely is a Singapore third-party logistics partner for growing brands: freight, customs clearance, warehousing, fulfilment and last-mile delivery on one line.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Crect width='48' height='48' rx='11' fill='%230e0f11'/%3E%3Cpath d='M10 10h6.5v28H10zM31.5 10H38v28h-6.5z' fill='%23eeece6'/%3E%3Crect x='18.5' y='18.5' width='11' height='11' rx='1.5' fill='%23ff4f17'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,300..700&display=swap" rel="stylesheet">
+<link rel="preload" as="image" href="media/hero.webp">
+<link rel="stylesheet" href="styles.css">
+<script>document.documentElement.classList.add('js')</script>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="hs" viewBox="0 0 48 48"><rect width="48" height="48" rx="11" fill="var(--mk-bg)"/><path d="M10 10h6.5v28H10zM31.5 10H38v28h-6.5z" fill="var(--mk-fg)"/><rect x="18.5" y="18.5" width="11" height="11" rx="1.5" fill="var(--mk-box)"/></symbol>
+  <symbol id="arr" viewBox="0 0 16 16"><path d="M3 8h10M9 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="arr-up" viewBox="0 0 16 16"><path d="M8 13V3M4 7l4-4 4 4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="tel" viewBox="0 0 20 20"><path d="M4.6 2.5h2.8l1.4 3.8-1.9 1.2a9 9 0 0 0 5.1 5.1l1.2-1.9 3.8 1.4v2.8a2 2 0 0 1-2.1 2A14.6 14.6 0 0 1 2.6 4.6a2 2 0 0 1 2-2.1z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></symbol>
+  <symbol id="tick" viewBox="0 0 16 16"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" pathLength="1"/></symbol>
+</svg>
+
+<div class="ld" id="loader" aria-hidden="true">
+  <div class="ld__bg"></div>
+  <div class="ld__ui">
+    <div class="ld__bar"><i id="ldFill"></i></div>
+    <p class="ld__row"><span id="ldLabel">Loading Home</span><b id="ldPct">000</b></p>
+  </div>
+  <div class="ld__cube" id="ldCube">
+    <div class="parcel" id="ldParcel">
+      <div class="pf pf--front"><svg class="pf__mk"><use href="#hs"/></svg><span class="pf__tape"></span></div>
+      <div class="pf pf--back"><span class="pf__tape"></span></div>
+      <div class="pf pf--right"><div class="label"><b>HOWELY</b><span>SIN&nbsp;→&nbsp;ISLANDWIDE</span><i class="label__bars"></i><span class="label__id">HW-0348741</span></div></div>
+      <div class="pf pf--left"><span class="pf__arrows">↑↑</span></div>
+      <div class="pf pf--top"><span class="pf__tape"></span></div>
+      <div class="pf pf--bottom"></div>
+    </div>
+  </div>
+</div>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<!-- rail (desktop) / dock (phone) -->
+<aside class="rail" aria-label="Site">
+  <a class="rail__mk" href="#home" aria-label="Howely home"><svg aria-hidden="true"><use href="#hs"/></svg></a>
+  <nav class="rail__nav" aria-label="Main">
+    <a href="#home" data-route="home">Home</a>
+    <a href="#about" data-route="about">About</a>
+    <a href="#services" data-route="services">Services</a>
+    <a href="#resources" data-route="resources">Resources</a>
+    <a href="#contact" data-route="contact">Contact</a>
+    <span class="rail__box" aria-hidden="true"></span>
+  </nav>
+  <p class="rail__page" id="railPage" aria-hidden="true">Home</p>
+  <div class="rail__end">
+    <a class="rail__call" href="tel:+6590491368"><span>Call us</span>+65 9049 1368</a>
+    <a class="rail__quote" href="#contact">Get a quote<svg aria-hidden="true"><use href="#arr"/></svg></a>
+    <button class="rail__menu" id="menuBtn" type="button" aria-expanded="false" aria-controls="sheet"><span class="rail__menu-ic" aria-hidden="true"></span><span class="rail__menu-t">Menu</span></button>
+    <a class="rail__ic" href="tel:+6590491368" aria-label="Call +65 9049 1368" title="+65 9049 1368"><svg aria-hidden="true"><use href="#tel"/></svg></a>
+    <a class="rail__ic rail__ic--signal" href="#contact" aria-label="Get a quote" title="Get a quote"><svg aria-hidden="true"><use href="#arr"/></svg></a>
+  </div>
+</aside>
+
+<div class="sheet" id="sheet" hidden>
+  <nav aria-label="Mobile">
+    <a href="#home"><span>01</span>Home</a>
+    <a href="#about"><span>02</span>About</a>
+    <a href="#services"><span>03</span>Services</a>
+    <a href="#resources"><span>04</span>Resources</a>
+    <a href="#contact"><span>05</span>Contact</a>
+  </nav>
+  <div class="sheet__foot"><a href="tel:+6590491368">+65 9049 1368</a><span>3 Lorong Bakar Batu, Singapore 348741</span></div>
+</div>
+
+<main id="main" tabindex="-1">
+
+<!-- ============ HOME ============ -->
+<div class="view" data-view="home">
+
+  <section class="hero" aria-labelledby="hero-h">
+    <div class="hero__frame">
+      <div class="hero__copy">
+        <div class="hero__top" data-in="1"><a class="hero__brand" href="#home">Howely</a><span class="hero__crumb">Third-party logistics, Singapore</span></div>
+        <h1 id="hero-h" class="hero__h">
+          <span class="ln"><span data-in="2">From port</span></span>
+          <span class="ln"><span data-in="3">to porch,</span></span>
+          <span class="ln"><span data-in="4"><em>one partner.</em></span></span>
+        </h1>
+        <p class="hero__sub" data-in="5">Freight, customs clearance, warehousing and last-mile delivery for small and growing brands, run as one connected line, so you can get back to the business.</p>
+        <div class="hero__cta" data-in="6">
+          <a class="btn btn--ink" href="#contact">Book a free consultation<span class="btn__ic"><svg aria-hidden="true"><use href="#arr"/></svg></span></a>
+          <button class="link" type="button" data-scroll="#track">Follow a shipment<svg aria-hidden="true"><use href="#arr"/></svg></button>
+        </div>
+        <dl class="hero__meta" data-in="7">
+          <div><dt>Local time</dt><dd><span id="clock">--:--</span> SGT</dd></div>
+          <div><dt>Base</dt><dd>Lorong Bakar Batu</dd></div>
+          <div><dt>Built for</dt><dd>SMEs &amp; start-ups</dd></div>
+        </dl>
+      </div>
+
+      <div class="hero__media">
+        <img class="hero__img" src="media/hero.webp" alt="A forklift moving down a tall warehouse aisle stacked with wrapped pallets" width="1400" height="1859" fetchpriority="high">
+        <!-- reel.mp4: hard cuts from free Pexels clips (Pexels licence): 30261515 container yard, 9702133 stacked containers, 31751344 warehouse aisle, 5903898 conveyor, 10472351 sorting lane, 4169763 courier at van -->
+        <video class="hero__img hero__vid" data-src="media/reel.mp4" poster="media/hero.webp" width="720" height="900" muted loop playsinline preload="none" aria-label="A reel from port to porch: an aerial container yard, stacked containers, a warehouse aisle, parcels on a conveyor and in sorting crates, and a courier at his van" hidden></video>
+        <button class="hero__play" type="button" aria-label="Pause the reel" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path class="i-pause" d="M9 5v14m6-14v14"/><path class="i-play" d="M8 5l11 7-11 7z"/></svg></button>
+        <div class="hero__shade"></div>
+        <a class="hero__tel" href="tel:+6590491368" data-in="1"><svg aria-hidden="true"><use href="#tel"/></svg>+65 9049 1368</a>
+        <aside class="hero__card" data-in="8">
+          <p class="hero__card-k">Pick, pack, ship</p>
+          <p class="hero__card-v">Orders are often out the door the same day your customer places them.</p>
+        </aside>
+      </div>
+
+      <span class="dock dock--hero" data-dock aria-hidden="true"></span>
+    </div>
+  </section>
+
+  <!-- 01 · consignment log -->
+  <section class="track panel" id="track" aria-labelledby="track-h">
+    <div class="wrap">
+      <header class="sec-head sec-head--split">
+        <p class="kicker"><span>01</span>Follow a consignment</p>
+        <h2 id="track-h" class="h2" data-reveal>One shipment,<br><em>start to finish.</em></h2>
+        <p class="lede" data-reveal>An example consignment through Howely, from the ship's hold to your customer's door. Every handoff happens inside one team, so nothing waits on someone else's inbox.</p>
+      </header>
+
+      <div class="track__grid">
+        <div class="waybill" aria-hidden="true">
+          <div class="waybill__head"><span>HW-0348741</span><span>Example consignment</span></div>
+          <div class="waybill__media">
+            <img class="is-on" src="media/sea.webp" alt="" width="1200" height="675" loading="lazy">
+            <img src="media/port.webp" alt="" width="1600" height="1067" loading="lazy">
+            <img src="media/aisle.webp" alt="" width="1000" height="1328" loading="lazy">
+            <img src="media/van.webp" alt="" width="1000" height="1500" loading="lazy">
+            <img src="media/handover.webp" alt="" width="1000" height="1250" loading="lazy">
+          </div>
+          <div class="waybill__status">
+            <span class="dock dock--wb" data-dock aria-hidden="true"></span>
+            <p class="waybill__k">Status</p>
+            <p class="waybill__word" id="wbWord">At port</p>
+            <div class="waybill__bar"><i class="is-on"></i><i></i><i></i><i></i><i></i></div>
+          </div>
+          <dl class="waybill__meta">
+            <div><dt>From</dt><dd>Overseas supplier</dd></div>
+            <div><dt>To</dt><dd>Customer, islandwide</dd></div>
+            <div><dt>Service</dt><dd>3PL, end to end</dd></div>
+          </dl>
+        </div>
+
+        <ol class="log" id="log">
+          <li data-word="At port"><time>Day 1 · 06:40</time><h3>Container discharged at port</h3><p>Your stock lands in Singapore by sea or air. We booked the freight and tracked it all the way in.</p><span class="log__tag">Air &amp; sea freight</span></li>
+          <li data-word="Cleared"><time>Day 1 · 11:20</time><h3>Customs declaration cleared</h3><p>Paperwork is filed and cleared before it can hold your cargo up, then the container is released to us.</p><span class="log__tag">Customs clearance</span></li>
+          <li data-word="In storage"><time>Day 1 · 16:05</time><h3>Received, counted and stored</h3><p>Every carton is checked against your packing list, logged into inventory and put away in secured space.</p><span class="log__tag">Warehousing</span></li>
+          <li data-word="Packed"><time>Day 2 · 09:30</time><h3>Order picked and packed</h3><p>A customer orders from your store. The order reaches us by API, and we pick, pack and label it.</p><span class="log__tag">3PL fulfilment</span></li>
+          <li data-word="Delivered"><time>Day 2 · 15:45</time><h3>Delivered to the door</h3><p>Out for last-mile delivery and signed for. Your customer only ever sees your brand.</p><span class="log__tag">Door-to-door delivery</span></li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <!-- 02 · services configurator -->
+  <section class="svc" aria-labelledby="svc-h">
+    <div class="wrap">
+      <header class="sec-head sec-head--split">
+        <p class="kicker"><span>02</span>Services</p>
+        <h2 id="svc-h" class="h2" data-reveal>Ten services.<br><em>Tick what you need.</em></h2>
+        <p class="lede" data-reveal>Choose the parts of the chain you want handed over. We'll come to your free consultation with a plan for exactly that setup.</p>
+      </header>
+
+      <form class="cfg" id="cfg" onsubmit="return false">
+        <fieldset class="cfg__g" data-reveal>
+          <legend><b>Move</b>Getting it here and there</legend>
+          <label class="opt"><input type="checkbox" value="Air freight"><span class="opt__box"></span><span class="opt__t">Air freight</span><span class="opt__d">Time-critical cargo, booked and tracked door to door.</span></label>
+          <label class="opt"><input type="checkbox" value="Sea freight"><span class="opt__box"></span><span class="opt__t">Sea freight</span><span class="opt__d">Full and shared container loads, cleared on arrival.</span></label>
+          <label class="opt"><input type="checkbox" value="Courier"><span class="opt__box"></span><span class="opt__t">Courier services</span><span class="opt__d">Parcels and documents moved across the island.</span></label>
+          <label class="opt"><input type="checkbox" value="Door to door"><span class="opt__box"></span><span class="opt__t">Door-to-door delivery</span><span class="opt__d">One booking from pickup to doorstep.</span></label>
+          <label class="opt"><input type="checkbox" value="Home shifting"><span class="opt__box"></span><span class="opt__t">Home shifting</span><span class="opt__d">Domestic moves, packed and carried with care.</span></label>
+        </fieldset>
+        <fieldset class="cfg__g" data-reveal>
+          <legend><b>Store</b>Keeping it safe and counted</legend>
+          <label class="opt"><input type="checkbox" value="Warehousing"><span class="opt__box"></span><span class="opt__t">Warehousing</span><span class="opt__d">Secured storage with inventory reporting you can act on.</span></label>
+          <label class="opt"><input type="checkbox" value="Distribution"><span class="opt__box"></span><span class="opt__t">Distribution</span><span class="opt__d">Stock positioned and dispatched to every outlet.</span></label>
+          <label class="opt"><input type="checkbox" value="Contract logistics"><span class="opt__box"></span><span class="opt__t">Contract logistics</span><span class="opt__d">A dedicated operation, scoped to your volume.</span></label>
+        </fieldset>
+        <fieldset class="cfg__g" data-reveal>
+          <legend><b>Run</b>Handing over the whole chain</legend>
+          <label class="opt"><input type="checkbox" value="3PL fulfilment"><span class="opt__box"></span><span class="opt__t">3PL fulfilment</span><span class="opt__d">Receive, store, pick, pack and ship under one roof.</span></label>
+          <label class="opt"><input type="checkbox" value="Supply chain"><span class="opt__box"></span><span class="opt__t">Supply chain solutions</span><span class="opt__d">Upstream sourcing through to returns, mapped end to end.</span></label>
+        </fieldset>
+
+        <div class="setup" id="setup">
+          <span class="dock dock--setup" data-dock aria-hidden="true"></span>
+          <div class="setup__l">
+            <p class="setup__k">Your setup <span id="setupN">0 of 10</span></p>
+            <p class="setup__chain" id="setupChain" aria-live="polite">Nothing ticked yet. Pick the services you need above.</p>
+          </div>
+          <a class="btn btn--signal" id="setupGo" href="#contact">Plan this setup<span class="btn__ic"><svg aria-hidden="true"><use href="#arr"/></svg></span></a>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <!-- 03 · why + packing slip -->
+  <section class="fit" aria-labelledby="fit-h">
+    <div class="wrap fit__grid">
+      <div class="fit__copy">
+        <p class="kicker"><span>03</span>Why Howely</p>
+        <h2 id="fit-h" class="h2" data-reveal>Big-carrier reach,<br><em>small-team attention.</em></h2>
+        <p class="lede" data-reveal>We built Howely for small and medium businesses, start-ups and overseas brands landing in Singapore. You get one team that answers, and logistics priced for where you are now.</p>
+        <p class="moves" data-reveal>We move for <em>beauty</em>, <em>healthcare</em>, <em>fashion</em>, <em>perishables</em>, <em>household appliances</em> and <em>electronics</em>.</p>
+        <dl class="stats" data-reveal>
+          <div><dt>Business cost saved</dt><dd><span class="num" data-count="60">60</span><small>%</small></dd><p>Up to, by Howely's own estimate</p></div>
+          <div><dt>Services</dt><dd><span class="num" data-count="10">10</span></dd><p>Move, store and run, on one account</p></div>
+          <div><dt>Outlets served</dt><dd><span class="num" data-count="30">30</span><small>+</small></dd><p>Islandwide, for one F&amp;B client</p></div>
+        </dl>
+      </div>
+
+      <div class="slip-wrap" data-reveal>
+        <span class="dock dock--slip" data-dock aria-hidden="true"></span>
+        <div class="slip" id="slip">
+          <div class="slip__top"><span>Packing slip</span><span>No. 0348741</span></div>
+          <h3 class="slip__h">Value-added services</h3>
+          <p class="slip__sub">Add any of these to your setup.</p>
+          <ol class="slip__list">
+            <li><span class="slip__n">01</span><span class="slip__t">Quality &amp; quantity check</span><i></i><svg class="slip__tick" aria-hidden="true"><use href="#tick"/></svg></li>
+            <li><span class="slip__n">02</span><span class="slip__t">Repacking &amp; labelling</span><i></i><svg class="slip__tick" aria-hidden="true"><use href="#tick"/></svg></li>
+            <li><span class="slip__n">03</span><span class="slip__t">Secured area for sensitive stock</span><i></i><svg class="slip__tick" aria-hidden="true"><use href="#tick"/></svg></li>
+            <li><span class="slip__n">04</span><span class="slip__t">Multi-criteria inventory reports</span><i></i><svg class="slip__tick" aria-hidden="true"><use href="#tick"/></svg></li>
+            <li><span class="slip__n">05</span><span class="slip__t">Expiry date management</span><i></i><svg class="slip__tick" aria-hidden="true"><use href="#tick"/></svg></li>
+            <li><span class="slip__n">06</span><span class="slip__t">Replenishment reports</span><i></i><svg class="slip__tick" aria-hidden="true"><use href="#tick"/></svg></li>
+            <li><span class="slip__n">07</span><span class="slip__t">Serial &amp; batch tracking</span><i></i><svg class="slip__tick" aria-hidden="true"><use href="#tick"/></svg></li>
+            <li><span class="slip__n">08</span><span class="slip__t">Reverse logistics</span><i></i><svg class="slip__tick" aria-hidden="true"><use href="#tick"/></svg></li>
+          </ol>
+          <div class="slip__foot"><span>Checked by Howely</span><i class="slip__bars"></i></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 04 · cases -->
+  <section class="cases panel" aria-labelledby="cases-h">
+    <div class="wrap">
+      <header class="sec-head">
+        <p class="kicker"><span>04</span>In practice</p>
+        <h2 id="cases-h" class="h2" data-reveal>Two problems,<br><em>solved quietly.</em></h2>
+      </header>
+      <div class="cases__grid">
+        <article class="case case--signal" data-reveal>
+          <span class="dock dock--case" data-dock aria-hidden="true"></span>
+          <span class="case__ghost" aria-hidden="true">Launch</span>
+          <p class="case__k">Grocery e-commerce start-up</p>
+          <h3 class="case__h">Ready to ship before launch day.</h3>
+          <p class="case__p">We set up their upstream supply chain, helped untangle the website bugs between their store and the delivery integration, and had orders flowing before they opened.</p>
+          <ul class="case__tags"><li>Supply chain</li><li>Integration</li><li>Fulfilment</li></ul>
+        </article>
+        <article class="case case--photo" data-reveal>
+          <img src="media/courier.webp" alt="A courier in an orange jacket cycling through a city street at night" width="1000" height="1250" loading="lazy">
+          <div class="case__body">
+            <p class="case__k">Food court chain · 30+ outlets</p>
+            <h3 class="case__h">Islandwide delivery, hygiene first.</h3>
+            <p class="case__p">Order fulfilment, transport and hygiene-compliant delivery to every outlet, plus a returns loop that inspects and repacks before stock goes back out.</p>
+            <ul class="case__tags"><li>Distribution</li><li>Transport</li><li>Returns</li></ul>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- 05 · journal -->
+  <section class="journal" aria-labelledby="journal-h">
+    <div class="wrap">
+      <header class="sec-head sec-head--row">
+        <div>
+          <p class="kicker"><span>05</span>Resources</p>
+          <h2 id="journal-h" class="h2" data-reveal>Notes from<br><em>the floor.</em></h2>
+        </div>
+        <a class="link link--lg" href="#resources" data-reveal>All articles<svg aria-hidden="true"><use href="#arr"/></svg></a>
+      </header>
+      <div class="journal__grid">
+        <a class="post" href="#customs-clearance" data-reveal>
+          <span class="post__img"><img src="media/port.webp" alt="" width="1600" height="1067" loading="lazy"></span>
+          <span class="post__meta"><time datetime="2023-11-30">30 Nov 2023</time>Customs</span>
+          <span class="post__t">Effortless customs clearance: optimise your process in Singapore</span>
+        </a>
+        <a class="post" href="#warehouse-cross-docking" data-reveal>
+          <span class="post__img"><img src="media/aisle.webp" alt="" width="1000" height="1328" loading="lazy"></span>
+          <span class="post__meta"><time datetime="2023-10-31">31 Oct 2023</time>Warehousing</span>
+          <span class="post__t">Efficient warehouse cross-docking, and how it lifts productivity</span>
+        </a>
+        <a class="post" href="#supply-chain-solutions" data-reveal>
+          <span class="post__img"><img src="media/air.webp" alt="" width="1200" height="900" loading="lazy"></span>
+          <span class="post__meta"><time datetime="2023-10-03">3 Oct 2023</time>Supply chain</span>
+          <span class="post__t">Top tools for better supply chain solutions and visibility</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<!-- ============ PAGES IN PRODUCTION ============ -->
+<div class="view" data-view="about" hidden>
+
+  <section class="phero phero--photo" aria-labelledby="about-h">
+    <div class="phero__frame">
+      <img class="phero__img" src="media/port.webp" alt="Aerial view of a container yard with rows of stacked shipping containers" width="1600" height="1067">
+      <div class="phero__shade"></div>
+      <div class="phero__copy">
+        <nav class="hero__top hero__top--on" aria-label="Breadcrumb" data-in="1"><a class="hero__brand" href="#home">Howely</a><span class="hero__crumb" aria-current="page">About</span></nav>
+        <h1 id="about-h" class="phero__h">
+          <span class="ln"><span data-in="2">Connecting the dots</span></span>
+          <span class="ln"><span data-in="3"><em>for your business.</em></span></span>
+        </h1>
+      </div>
+      <div class="phero__note" data-in="4">
+        <p>Howely is a third-party logistics provider known for fast, efficient logistics at affordable prices. We join up freight, clearance, warehousing, inventory and last-mile delivery, so you can put your energy into growing revenue.</p>
+        <a class="btn btn--signal" href="#contact">Get in touch<span class="btn__ic"><svg aria-hidden="true"><use href="#arr"/></svg></span></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="roster" aria-labelledby="roster-h">
+    <div class="wrap">
+      <header class="sec-head sec-head--split">
+        <p class="kicker"><span>01</span>Why a 3PL</p>
+        <h2 id="roster-h" class="h2" data-reveal>Scale is hard<br><em>when you're small.</em></h2>
+        <p class="lede" data-reveal>Economies of scale are tough for start-ups and SMEs, so running logistics in-house rarely reaches its best cost. Flip the switch to see who does what.</p>
+      </header>
+      <div class="roster__card" data-reveal>
+        <div class="roster__head">
+          <p class="roster__title">Logistics duty roster</p>
+          <button class="switch" id="rosterSwitch" type="button" role="switch" aria-checked="false" aria-label="Show the roster with Howely">
+            <span class="switch__l">In-house</span><span class="switch__track"><i></i></span><span class="switch__r">With Howely</span>
+          </button>
+        </div>
+        <ul class="roster__list" id="roster">
+          <li><span class="roster__task">Book freight and chase carriers</span><span class="owner"><b>You</b><b>Howely</b></span></li>
+          <li><span class="roster__task">Clear customs</span><span class="owner"><b>You</b><b>Howely</b></span></li>
+          <li><span class="roster__task">Lease and run a warehouse</span><span class="owner"><b>You</b><b>Howely</b></span></li>
+          <li><span class="roster__task">Count and report inventory</span><span class="owner"><b>You</b><b>Howely</b></span></li>
+          <li><span class="roster__task">Pick, pack and label orders</span><span class="owner"><b>You</b><b>Howely</b></span></li>
+          <li><span class="roster__task">Deliver the last mile</span><span class="owner"><b>You</b><b>Howely</b></span></li>
+          <li><span class="roster__task">Handle returns</span><span class="owner"><b>You</b><b>Howely</b></span></li>
+          <li class="roster__keep"><span class="roster__task">Grow the business</span><span class="owner owner--keep"><b>You</b><b>You</b></span></li>
+        </ul>
+        <p class="roster__sum" id="rosterSum" aria-live="polite">You: 8 of 8 jobs.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="vm panel" aria-labelledby="vm-h">
+    <div class="wrap">
+      <header class="sec-head">
+        <p class="kicker"><span>02</span>Vision &amp; mission</p>
+        <h2 id="vm-h" class="sr-only">Vision and mission</h2>
+      </header>
+      <div class="vm__row" data-reveal><p class="vm__k">Vision</p><p class="vm__t">Effective, customised service that makes every customer <em>more competitive.</em></p></div>
+      <div class="vm__row" data-reveal><p class="vm__k">Mission</p><p class="vm__t">Professional, reliable, value-adding solutions, with <em>open lines</em> to every customer.</p></div>
+    </div>
+  </section>
+
+  <section class="stamps" aria-labelledby="stamps-h">
+    <div class="wrap">
+      <header class="sec-head sec-head--split">
+        <p class="kicker"><span>03</span>How we work</p>
+        <h2 id="stamps-h" class="h2" data-reveal>Four things<br><em>we sign off on.</em></h2>
+        <p class="lede" data-reveal>Every job leaves our hands checked against the same four commitments.</p>
+      </header>
+      <div class="stamps__grid">
+        <article class="stamp" data-reveal><div class="stamp__mark" style="--r:-8deg" aria-hidden="true"><svg viewBox="0 0 120 120"><defs><path id="ring1" d="M60 60m-46 0a46 46 0 1 1 92 0a46 46 0 1 1-92 0"/></defs><circle cx="60" cy="60" r="56"/><circle cx="60" cy="60" r="36"/><text><textPath href="#ring1">HOWELY · CHECKED · SINGAPORE · No.01 ·</textPath></text></svg><b>Linked</b></div><h3>Connecting the dots</h3><p>Freight, clearance, warehousing, inventory and last-mile delivery, joined up and shaped around your business model.</p></article>
+        <article class="stamp" data-reveal><div class="stamp__mark" style="--r:6deg" aria-hidden="true"><svg viewBox="0 0 120 120"><defs><path id="ring2" d="M60 60m-46 0a46 46 0 1 1 92 0a46 46 0 1 1-92 0"/></defs><circle cx="60" cy="60" r="56"/><circle cx="60" cy="60" r="36"/><text><textPath href="#ring2">HOWELY · CHECKED · SINGAPORE · No.02 ·</textPath></text></svg><b>Devoted</b></div><h3>A passionate, dedicated team</h3><p>One goal across the whole team: helping your business grow, however complex the job gets.</p></article>
+        <article class="stamp" data-reveal><div class="stamp__mark" style="--r:-3deg" aria-hidden="true"><svg viewBox="0 0 120 120"><defs><path id="ring3" d="M60 60m-46 0a46 46 0 1 1 92 0a46 46 0 1 1-92 0"/></defs><circle cx="60" cy="60" r="56"/><circle cx="60" cy="60" r="36"/><text><textPath href="#ring3">HOWELY · CHECKED · SINGAPORE · No.03 ·</textPath></text></svg><b>On call</b></div><h3>Always there for your business</h3><p>We work in tandem with you as a one-stop provider, with bespoke service that keeps you competitive.</p></article>
+        <article class="stamp" data-reveal><div class="stamp__mark" style="--r:9deg" aria-hidden="true"><svg viewBox="0 0 120 120"><defs><path id="ring4" d="M60 60m-46 0a46 46 0 1 1 92 0a46 46 0 1 1-92 0"/></defs><circle cx="60" cy="60" r="56"/><circle cx="60" cy="60" r="36"/><text><textPath href="#ring4">HOWELY · CHECKED · SINGAPORE · No.04 ·</textPath></text></svg><b>Lean</b></div><h3>Efficiency oriented</h3><p>We know SMEs. Staying fast and efficient with limited resources is exactly what we're built for.</p></article>
+      </div>
+    </div>
+  </section>
+
+  <section class="rack" aria-labelledby="rack-h">
+    <div class="wrap">
+      <header class="sec-head sec-head--split">
+        <p class="kicker"><span>04</span>Industries</p>
+        <h2 id="rack-h" class="h2" data-reveal>Every industry<br><em>gets its own aisle.</em></h2>
+        <p class="lede" data-reveal>Every business is unique and deserves attention to detail to stand out from its competitors. These are the industries we've worked with, and the services they tend to pair with.</p>
+      </header>
+      <div class="rack__frame" data-reveal>
+        <article class="bin" tabindex="0"><span class="bin__loc">A-01</span><h3>Beauty</h3><p class="bin__k">Often paired with</p><ul><li>Quality &amp; quantity check</li><li>Batch number tracking</li></ul></article>
+        <article class="bin" tabindex="0"><span class="bin__loc">A-02</span><h3>Healthcare</h3><p class="bin__k">Often paired with</p><ul><li>Secured area for sensitive products</li><li>Expiry date management</li></ul></article>
+        <article class="bin" tabindex="0"><span class="bin__loc">A-03</span><h3>Fashion</h3><p class="bin__k">Often paired with</p><ul><li>Repacking &amp; labelling</li><li>Reverse logistics</li></ul></article>
+        <article class="bin" tabindex="0"><span class="bin__loc">B-01</span><h3>Consumables &amp; perishables</h3><p class="bin__k">Often paired with</p><ul><li>Expiry date management</li><li>Replenishment reports</li></ul></article>
+        <article class="bin" tabindex="0"><span class="bin__loc">B-02</span><h3>Household appliances</h3><p class="bin__k">Often paired with</p><ul><li>Inbound inspection</li><li>Reverse logistics</li></ul></article>
+        <article class="bin" tabindex="0"><span class="bin__loc">B-03</span><h3>Electronics &amp; electrical</h3><p class="bin__k">Often paired with</p><ul><li>Serial number tracking</li><li>Secured area</li></ul></article>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div class="view" data-view="services" hidden>
+
+  <section class="phero phero--split" aria-labelledby="svcp-h">
+    <div class="phero__frame">
+      <div class="phero__copy">
+        <nav class="hero__top" aria-label="Breadcrumb" data-in="1"><a class="hero__brand" href="#home">Howely</a><span class="hero__crumb" aria-current="page">Services</span></nav>
+        <h1 id="svcp-h" class="phero__h">
+          <span class="ln"><span data-in="2">Save up to 60%.</span></span>
+          <span class="ln"><span data-in="3"><em>Spend it on growth.</em></span></span>
+        </h1>
+        <p class="hero__sub" data-in="4">A 3PL built on warehousing and distribution, for small businesses through to international brands that need mid-range to high-level contract logistics. Talk to us for a setup shaped to you, at a sustainable price.</p>
+        <div class="hero__cta" data-in="5">
+          <a class="btn btn--ink" href="#contact">Book a free consultation<span class="btn__ic"><svg aria-hidden="true"><use href="#arr"/></svg></span></a>
+          <button class="link" type="button" data-scroll="#flow">See how it works<svg aria-hidden="true"><use href="#arr"/></svg></button>
+        </div>
+      </div>
+      <div class="phero__side" data-in="6">
+        <p class="big60" aria-hidden="true">60<span>%</span></p>
+        <p class="phero__fine">Up to 60% saved on business cost, by Howely's own estimate. Results vary by volume and setup.</p>
+        <ul class="phero__notes">
+          <li>A dedicated team of logistics analysts and project managers on every account.</li>
+          <li>Your requirements first, then the solution built around them.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="cat" aria-labelledby="cat-h">
+    <div class="wrap">
+      <header class="sec-head sec-head--split">
+        <p class="kicker"><span>01</span>Catalogue</p>
+        <h2 id="cat-h" class="h2" data-reveal>Ten services,<br><em>one account.</em></h2>
+        <p class="lede" data-reveal>Pick a service to see what it covers, who it suits and what it pairs well with.</p>
+      </header>
+      <div class="cat__grid" data-reveal>
+        <div class="cat__index" role="tablist" aria-orientation="vertical" aria-label="Services">
+          <div class="cat__grp" role="presentation"><p class="cat__g" aria-hidden="true">Move</p><button class="cat__tab" type="button" role="tab" id="tab-air" aria-controls="pane-air" aria-selected="true" tabindex="0"><span>01</span>Air freight</button><button class="cat__tab" type="button" role="tab" id="tab-sea" aria-controls="pane-sea" aria-selected="false" tabindex="-1"><span>02</span>Sea freight</button><button class="cat__tab" type="button" role="tab" id="tab-courier" aria-controls="pane-courier" aria-selected="false" tabindex="-1"><span>03</span>Courier services</button><button class="cat__tab" type="button" role="tab" id="tab-door" aria-controls="pane-door" aria-selected="false" tabindex="-1"><span>04</span>Door-to-door delivery</button><button class="cat__tab" type="button" role="tab" id="tab-home" aria-controls="pane-home" aria-selected="false" tabindex="-1"><span>05</span>Home shifting</button></div><div class="cat__grp" role="presentation"><p class="cat__g" aria-hidden="true">Store</p><button class="cat__tab" type="button" role="tab" id="tab-wh" aria-controls="pane-wh" aria-selected="false" tabindex="-1"><span>06</span>Warehousing</button><button class="cat__tab" type="button" role="tab" id="tab-dist" aria-controls="pane-dist" aria-selected="false" tabindex="-1"><span>07</span>Distribution</button><button class="cat__tab" type="button" role="tab" id="tab-contract" aria-controls="pane-contract" aria-selected="false" tabindex="-1"><span>08</span>Contract logistics</button></div><div class="cat__grp" role="presentation"><p class="cat__g" aria-hidden="true">Run</p><button class="cat__tab" type="button" role="tab" id="tab-tpl" aria-controls="pane-tpl" aria-selected="false" tabindex="-1"><span>09</span>3PL fulfilment</button><button class="cat__tab" type="button" role="tab" id="tab-supply" aria-controls="pane-supply" aria-selected="false" tabindex="-1"><span>10</span>Supply chain solutions</button></div>
+        </div>
+        <div class="cat__sheet">
+          <div class="cat__pane" role="tabpanel" id="pane-air" aria-labelledby="tab-air" tabindex="0">
+            <figure class="cat__img"><img src="media/air.webp" alt="A jet parked on an airport apron" loading="lazy"><figcaption>Move · 01</figcaption></figure>
+            <div class="cat__body"><h3>Air freight</h3><p>When time matters more than cost. We book the space, prepare the paperwork and track your cargo into Singapore, then hand it straight to clearance and the warehouse.</p>
+              <dl><div><dt>Good for</dt><dd>Launch stock, urgent restocks, high-value goods</dd></div><div><dt>Pairs with</dt><dd class="cat__pairs"><button type="button" class="cat__pair" data-go="sea">Sea freight<svg aria-hidden="true"><use href="#arr"/></svg></button><button type="button" class="cat__pair" data-go="wh">Warehousing<svg aria-hidden="true"><use href="#arr"/></svg></button><button type="button" class="cat__pair" data-go="tpl">3PL fulfilment<svg aria-hidden="true"><use href="#arr"/></svg></button></dd></div></dl>
+            </div>
+          </div><div class="cat__pane" role="tabpanel" id="pane-sea" aria-labelledby="tab-sea" tabindex="0" hidden>
+            <figure class="cat__img"><img src="media/sea.webp" alt="A container ship docked at a port, seen from above" loading="lazy"><figcaption>Move · 02</figcaption></figure>
+            <div class="cat__body"><h3>Sea freight</h3><p>The cost-efficient way to move volume. Full or shared container loads, booked and tracked, then cleared and brought into storage on arrival.</p>
+              <dl><div><dt>Good for</dt><dd>Bulk inventory, regular restocks, heavy goods</dd></div><div><dt>Pairs with</dt><dd class="cat__pairs"><button type="button" class="cat__pair" data-go="air">Air freight<svg aria-hidden="true"><use href="#arr"/></svg></button><button type="button" class="cat__pair" data-go="wh">Warehousing<svg aria-hidden="true"><use href="#arr"/></svg></button><button type="button" class="cat__pair" data-go="dist">Distribution<svg aria-hidden="true"><use href="#arr"/></svg></button></dd></div></dl>
+            </div>
+          </div><div class="cat__pane" role="tabpanel" id="pane-courier" aria-labelledby="tab-courier" tabindex="0" hidden>
+            <figure class="cat__img"><img src="media/courier.webp" alt="A courier cycling through the city at night" loading="lazy"><figcaption>Move · 03</figcaption></figure>
+            <div class="cat__body"><h3>Courier services</h3><p>Parcels and documents moved across the island, collected and delivered on a schedule that suits you.</p>
+              <dl><div><dt>Good for</dt><dd>Documents, samples, small business parcels</dd></div><div><dt>Pairs with</dt><dd class="cat__pairs"><button type="button" class="cat__pair" data-go="door">Door-to-door delivery<svg aria-hidden="true"><use href="#arr"/></svg></button><button type="button" class="cat__pair" data-go="tpl">3PL fulfilment<svg aria-hidden="true"><use href="#arr"/></svg></button></dd></div></dl>
+            </div>
+          </div><div class="cat__pane" role="tabpanel" id="pane-door" aria-labelledby="tab-door" tabindex="0" hidden>
+            <figure class="cat__img"><img src="media/van.webp" alt="Boxes being loaded into a delivery van" loading="lazy"><figcaption>Move · 04</figcaption></figure>
+            <div class="cat__body"><h3>Door-to-door delivery</h3><p>One booking covers pickup, transport and delivery to the doorstep, so your customer gets a smooth handover.</p>
+              <dl><div><dt>Good for</dt><dd>Online orders, business drops, bulky items</dd></div><div><dt>Pairs with</dt><dd class="cat__pairs"><button type="button" class="cat__pair" data-go="tpl">3PL fulfilment<svg aria-hidden="true"><use href="#arr"/></svg></button><button type="button" class="cat__pair" data-go="courier">Courier services<svg aria-hidden="true"><use href="#arr"/></svg></button><button type="button" class="cat__pair" data-go="dist">Distribution<svg aria-hidden="true"><use href="#arr"/></svg></button></dd></div></dl>
+            </div>
+          </div><div class="cat__pane" role="tabpanel" id="pane-home" aria-labelledby="tab-home" tabindex="0" hidden>
+            <figure class="cat__img"><img src="media/handover.webp" alt="A person handing over a cardboard box" loading="lazy"><figcaption>Move · 05</figcaption></figure>
+            <div class="cat__body"><h3>Home shifting</h3><p>Domestic moves handled with care: packed, carried and set down in the new place.</p>
+              <dl><div><dt>Good for</dt><dd>Household moves within Singapore</dd></div><div><dt>Pairs with</dt><dd class="cat__pairs"><button type="button" class="cat__pair" data-go="door">Door-to-door delivery<svg aria-hidden="true"><use href="#arr"/></svg></button></dd></div></dl>
+            </div>
+          </div><div class="cat__pane" role="tabpanel" id="pane-wh" aria-labelledby="tab-wh" tabindex="0" hidden>
+            <figure class="cat__img"><img src="media/aisle.webp" alt="A warehouse aisle lined with tall shelves" loading="lazy"><figcaption>Store · 06</figcaption></figure>
+            <div class="cat__body"><h3>Warehousing</h3><p>Secured storage, with stock received, inspected and logged into inventory, plus reports you can actually act on.</p>
+              <dl><div><dt>Good for</dt><dd>Seasonal stock, overflow, sensitive products</dd></div><div><dt>Pairs with</dt><dd class="cat__pairs"><button type="button" class="cat__pair" data-go="tpl">3PL fulfilment<svg aria-hidden="true"><use href="#arr"/></svg></button><button type="button" class="cat__pair" data-go="dist">Distribution<svg aria-hidden="true"><use href="#arr"/></svg></button><button type="button" class="cat__pair" data-go="contract">Contract logistics<svg aria-hidden="true"><use href="#arr"/></svg></button></dd></div></dl>
+            </div>
+          </div><div class="cat__pane" role="tabpanel" id="pane-dist" aria-labelledby="tab-dist" tabindex="0" hidden>
+            <figure class="cat__img"><img src="media/hero.webp" alt="A forklift moving down a warehouse aisle" loading="lazy"><figcaption>Store · 07</figcaption></figure>
+            <div class="cat__body"><h3>Distribution</h3><p>Stock positioned and dispatched to stores, outlets and partners, so every location has what it needs.</p>
+              <dl><div><dt>Good for</dt><dd>Multi-outlet F&amp;B and retail, wholesale</dd></div><div><dt>Pairs with</dt><dd class="cat__pairs"><button type="button" class="cat__pair" data-go="wh">Warehousing<svg aria-hidden="true"><use href="#arr"/></svg></button><button type="button" class="cat__pair" data-go="door">Door-to-door delivery<svg aria-hidden="true"><use href="#arr"/></svg></button></dd></div></dl>
+            </div>
+          </div><div class="cat__pane" role="tabpanel" id="pane-contract" aria-labelledby="tab-contract" tabindex="0" hidden>
+            <figure class="cat__img"><img src="media/port.webp" alt="An aerial view of a container yard" loading="lazy"><figcaption>Store · 08</figcaption></figure>
+            <div class="cat__body"><h3>Contract logistics</h3><p>A dedicated operation for mid-range to high-level needs, scoped to your volumes, processes and service levels.</p>
+              <dl><div><dt>Good for</dt><dd>Growing brands with steady volume, overseas businesses entering Singapore</dd></div><div><dt>Pairs with</dt><dd class="cat__pairs"><button type="button" class="cat__pair" data-go="wh">Warehousing<svg aria-hidden="true"><use href="#arr"/></svg></button><button type="button" class="cat__pair" data-go="supply">Supply chain solutions<svg aria-hidden="true"><use href="#arr"/></svg></button></dd></div></dl>
+            </div>
+          </div><div class="cat__pane" role="tabpanel" id="pane-tpl" aria-labelledby="tab-tpl" tabindex="0" hidden>
+            <figure class="cat__img"><img src="media/van.webp" alt="Boxes being loaded into a delivery van" loading="lazy"><figcaption>Run · 09</figcaption></figure>
+            <div class="cat__body"><h3>3PL fulfilment</h3><p>Receive, store, pick, pack and ship under one roof. Orders reach us by API and often ship the same day they are placed.</p>
+              <dl><div><dt>Good for</dt><dd>Online stores, direct-to-consumer brands, start-ups</dd></div><div><dt>Pairs with</dt><dd class="cat__pairs"><button type="button" class="cat__pair" data-go="wh">Warehousing<svg aria-hidden="true"><use href="#arr"/></svg></button><button type="button" class="cat__pair" data-go="door">Door-to-door delivery<svg aria-hidden="true"><use href="#arr"/></svg></button><button type="button" class="cat__pair" data-go="supply">Supply chain solutions<svg aria-hidden="true"><use href="#arr"/></svg></button></dd></div></dl>
+            </div>
+          </div><div class="cat__pane" role="tabpanel" id="pane-supply" aria-labelledby="tab-supply" tabindex="0" hidden>
+            <figure class="cat__img"><img src="media/sea.webp" alt="A container ship docked at a port" loading="lazy"><figcaption>Run · 10</figcaption></figure>
+            <div class="cat__body"><h3>Supply chain solutions</h3><p>Every stage from supplier to customer, including reverse logistics and aftermarket support, mapped and improved over time.</p>
+              <dl><div><dt>Good for</dt><dd>Brands with many suppliers, complex returns</dd></div><div><dt>Pairs with</dt><dd class="cat__pairs"><button type="button" class="cat__pair" data-go="contract">Contract logistics<svg aria-hidden="true"><use href="#arr"/></svg></button><button type="button" class="cat__pair" data-go="tpl">3PL fulfilment<svg aria-hidden="true"><use href="#arr"/></svg></button><button type="button" class="cat__pair" data-go="sea">Sea freight<svg aria-hidden="true"><use href="#arr"/></svg></button></dd></div></dl>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="flow panel" id="flow" aria-labelledby="flow-h">
+    <div class="wrap">
+      <header class="sec-head sec-head--split">
+        <p class="kicker"><span>02</span>How it works</p>
+        <h2 id="flow-h" class="h2" data-reveal>One order,<br><em>through the building.</em></h2>
+        <p class="lede" data-reveal>Keep scrolling and ride the belt: this is the route every order takes with Howely, from your supplier to your customer's door.</p>
+      </header>
+    </div>
+    <div class="flow__track" id="flowTrack">
+      <div class="flow__stage">
+        <ol class="flow__signs" id="flowSigns"><li class="sign"><span class="sign__bay">Bay 01</span><p>Your business orders or makes products</p></li><li class="sign"><span class="sign__bay">Bay 02</span><p>Inventory ships to the Howely warehouse</p></li><li class="sign"><span class="sign__bay">Bay 03</span><p>We receive it and log it into stock</p></li><li class="sign"><span class="sign__bay">Bay 04</span><p>Orders reach us by API</p></li><li class="sign"><span class="sign__bay">Bay 05</span><p>Picked and packed</p></li><li class="sign"><span class="sign__bay">Bay 06</span><p>Shipped, often the same day</p></li><li class="sign"><span class="sign__bay">Bay 07</span><p>Delivered to your customers</p></li></ol>
+        <div class="flow__belt" id="flowBelt" aria-hidden="true">
+          <div class="flow__box"><div class="parcel parcel--belt"><div class="pf pf--front"><svg class="pf__mk"><use href="#hs"/></svg><span class="pf__tape"></span></div><div class="pf pf--back"><span class="pf__tape"></span></div><div class="pf pf--right"><div class="label"><b>HOWELY</b><span>BAY → DOOR</span><i class="label__bars"></i><span class="label__id">HW-0348741</span></div></div><div class="pf pf--left"></div><div class="pf pf--top"><span class="pf__tape"></span></div><div class="pf pf--bottom"></div></div></div>
+        </div>
+        <p class="flow__count" aria-hidden="true"><b id="flowN">01</b> / 07</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="plan" aria-labelledby="plan-h">
+    <div class="wrap">
+      <header class="sec-head sec-head--split">
+        <p class="kicker"><span>03</span>Inside the warehouse</p>
+        <h2 id="plan-h" class="h2" data-reveal>Walk the floor.<br><em>Tap a zone.</em></h2>
+        <p class="lede" data-reveal>Everything we do in the building, and the value-added services you can switch on, zone by zone.</p>
+      </header>
+      <div class="plan__grid" data-reveal>
+        <div class="plan__map" role="group" aria-label="Warehouse zones"><button class="zone zone--z1" type="button" data-zone="z1" aria-pressed="true"><span>Z1</span>Inbound dock</button><button class="zone zone--z2" type="button" data-zone="z2" aria-pressed="false"><span>Z2</span>Inspection</button><button class="zone zone--z3" type="button" data-zone="z3" aria-pressed="false"><span>Z3</span>Storage</button><button class="zone zone--z4" type="button" data-zone="z4" aria-pressed="false"><span>Z4</span>Secured area</button><button class="zone zone--z5" type="button" data-zone="z5" aria-pressed="false"><span>Z5</span>Pick &amp; pack</button><button class="zone zone--z6" type="button" data-zone="z6" aria-pressed="false"><span>Z6</span>Labelling</button><button class="zone zone--z7" type="button" data-zone="z7" aria-pressed="false"><span>Z7</span>Returns</button><button class="zone zone--z8" type="button" data-zone="z8" aria-pressed="false"><span>Z8</span>Outbound dock</button><span class="plan__n" aria-hidden="true">N ↑</span></div>
+        <div class="plan__detail" id="planDetail" aria-live="polite"></div>
+      </div>
+      <template id="tpl-z1"><p class="plan__code">Z1</p><h3>Inbound dock</h3><p class="plan__lede">Stock arrives and is received against your paperwork.</p><div class="plan__lists"><div><p class="plan__k">Every day</p><ul><li>Inbound processing</li></ul></div></div></template><template id="tpl-z2"><p class="plan__code">Z2</p><h3>Inspection</h3><p class="plan__lede">Every delivery is checked before it goes anywhere near a shelf.</p><div class="plan__lists"><div><p class="plan__k">Every day</p><ul><li>Inbound inspection</li></ul></div><div><p class="plan__k">On request</p><ul><li>Quality and quantity check</li></ul></div></div></template><template id="tpl-z3"><p class="plan__code">Z3</p><h3>Storage</h3><p class="plan__lede">Racked, located and counted, with reporting built in.</p><div class="plan__lists"><div><p class="plan__k">Every day</p><ul><li>Storage</li><li>Warehousing</li></ul></div><div><p class="plan__k">On request</p><ul><li>Multi-criteria inventory reporting</li><li>Inventory replenishment report</li><li>Expiry date management</li></ul></div></div></template><template id="tpl-z4"><p class="plan__code">Z4</p><h3>Secured area</h3><p class="plan__lede">A separate, controlled space for products that need it.</p><div class="plan__lists"><div><p class="plan__k">On request</p><ul><li>Secured area for sensitive products</li><li>Serial and batch number management</li></ul></div></div></template><template id="tpl-z5"><p class="plan__code">Z5</p><h3>Pick &amp; pack</h3><p class="plan__lede">Orders come in by API and are picked, packed and checked.</p><div class="plan__lists"><div><p class="plan__k">Every day</p><ul><li>Order processing</li><li>Pick &amp; pack</li><li>Packaging</li></ul></div></div></template><template id="tpl-z6"><p class="plan__code">Z6</p><h3>Labelling</h3><p class="plan__lede">Labels on, and repacks done when your packaging needs a change.</p><div class="plan__lists"><div><p class="plan__k">Every day</p><ul><li>Product labelling</li></ul></div><div><p class="plan__k">On request</p><ul><li>Repacking and labelling</li></ul></div></div></template><template id="tpl-z7"><p class="plan__code">Z7</p><h3>Returns</h3><p class="plan__lede">Returns are inspected and repackaged before going back into stock.</p><div class="plan__lists"><div><p class="plan__k">On request</p><ul><li>Reverse logistics management</li></ul></div></div></template><template id="tpl-z8"><p class="plan__code">Z8</p><h3>Outbound dock</h3><p class="plan__lede">Out the door for delivery, often the same day the order lands.</p><div class="plan__lists"><div><p class="plan__k">Every day</p><ul><li>Delivery</li><li>Last mile delivery</li></ul></div></div></template>
+    </div>
+  </section>
+
+  <section class="faq" aria-labelledby="faq-h">
+    <div class="wrap faq__grid">
+      <header>
+        <p class="kicker"><span>04</span>Questions</p>
+        <h2 id="faq-h" class="h2" data-reveal>Asked often,<br><em>answered plainly.</em></h2>
+      </header>
+      <div class="faq__list" data-reveal><details class="qa"><summary><span>01</span>What logistics services does Howely offer?<i aria-hidden="true"></i></summary><p>Transportation, warehousing, inventory management, order fulfilment and customs clearance, as one connected service or separately.</p></details><details class="qa"><summary><span>02</span>Can the services be customised?<i aria-hidden="true"></i></summary><p>Yes. Every setup is shaped to fit into the way your business already runs.</p></details><details class="qa"><summary><span>03</span>How do you make a supply chain more efficient?<i aria-hidden="true"></i></summary><p>By streamlining the process end to end: shorter transit times, lower costs and fewer handoffs between suppliers.</p></details><details class="qa"><summary><span>04</span>Do you handle international shipping?<i aria-hidden="true"></i></summary><p>Yes. We work with a network of partners to move shipments in and out of Singapore promptly and safely.</p></details><details class="qa"><summary><span>05</span>Which industries do you serve?<i aria-hidden="true"></i></summary><p>E-commerce, retail, manufacturing and healthcare among others, including beauty, fashion, perishables, appliances and electronics brands.</p></details><details class="qa"><summary><span>06</span>Can you handle large-scale operations?<i aria-hidden="true"></i></summary><p>Yes. We have the experience, resources and infrastructure for complex supply chains, from mid-range to high-level contract logistics.</p></details><details class="qa"><summary><span>07</span>How do you keep goods secure in transit?<i aria-hidden="true"></i></summary><p>GPS tracking, secure warehousing and trained people handling your stock at every stage.</p></details></div>
+    </div>
+  </section>
+</div>
+
+<!-- ============ RESOURCES ============ -->
+<div class="view" data-view="resources" hidden>
+  <section class="phero phero--split phero--short" aria-labelledby="res-h">
+    <div class="phero__frame">
+      <div class="phero__copy">
+        <nav class="hero__top" aria-label="Breadcrumb" data-in="1"><a class="hero__brand" href="#home">Howely</a><span class="hero__crumb" aria-current="page">Resources</span></nav>
+        <h1 id="res-h" class="phero__h">
+          <span class="ln"><span data-in="2">Notes from</span></span>
+          <span class="ln"><span data-in="3"><em>the floor.</em></span></span>
+        </h1>
+        <p class="hero__sub" data-in="4">Plain guides to customs, storage, transport and fulfilment, for businesses moving goods into and around Singapore.</p>
+      </div>
+      <a class="phero__side res-feat" id="resFeat" href="#customs-clearance" data-in="6"></a>
+    </div>
+  </section>
+
+  <section class="lib" aria-labelledby="lib-h">
+    <div class="wrap">
+      <header class="lib__head">
+        <h2 id="lib-h" class="h2" data-reveal>Every guide,<br><em>one manifest.</em></h2>
+        <div class="lib__filter" role="group" aria-label="Filter by topic" id="libFilter"></div>
+      </header>
+      <div class="mf" data-reveal>
+        <div class="mf__row mf__row--head" aria-hidden="true"><span>Date</span><span>Topic</span><span>Guide</span><span>Read</span><span></span></div>
+        <ol class="mf__list" id="libList"></ol>
+        <p class="mf__count" id="libCount" aria-live="polite"></p>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ============ ARTICLE (one view, filled from articles.js) ============ -->
+<div class="view" data-view="article" hidden>
+  <article class="art" id="art" aria-labelledby="art-h"></article>
+</div>
+
+<!-- ============ CONTACT ============ -->
+<div class="view" data-view="contact" hidden>
+  <section class="phero phero--split phero--short" aria-labelledby="ct-h">
+    <div class="phero__frame">
+      <div class="phero__copy">
+        <nav class="hero__top" aria-label="Breadcrumb" data-in="1"><a class="hero__brand" href="#home">Howely</a><span class="hero__crumb" aria-current="page">Contact</span></nav>
+        <h1 id="ct-h" class="phero__h">
+          <span class="ln"><span data-in="2">Let's move</span></span>
+          <span class="ln"><span data-in="3"><em>something.</em></span></span>
+        </h1>
+        <p class="hero__sub" data-in="4">The first consultation is free. Tell us what you ship and where it needs to go, and we'll come back with a plan for exactly that setup.</p>
+      </div>
+      <div class="phero__side ct-side" data-in="6">
+        <p class="foot__k">Call for a free consultation</p>
+        <a class="ct-side__tel" href="tel:+6590491368">+65 9049 1368</a>
+        <div class="ct-side__addr">
+          <p class="foot__k">Visit</p>
+          <address>3 Lorong Bakar Batu<br>Singapore 348741</address>
+          <a class="link" href="https://www.google.com/maps/search/?api=1&amp;query=3+Lorong+Bakar+Batu+Singapore+348741" target="_blank" rel="noopener">Get directions<svg aria-hidden="true"><use href="#arr"/></svg></a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="book" aria-labelledby="book-h">
+    <div class="wrap book__grid">
+      <form class="docket" id="bookForm" novalidate data-reveal>
+        <div class="docket__top"><span>Booking request</span><span id="docketNo">No. HW-0348741</span></div>
+        <h2 id="book-h" class="docket__h">Tell us what you need moved.</h2>
+
+        <fieldset class="docket__g">
+          <legend>Sender</legend>
+          <div class="fld"><label for="f-name">Full name</label><input id="f-name" name="name" autocomplete="name" required aria-describedby="e-name"><p class="fld__err" id="e-name"></p></div>
+          <div class="fld"><label for="f-email">Email address</label><input id="f-email" name="email" type="email" autocomplete="email" required aria-describedby="e-email"><p class="fld__err" id="e-email"></p></div>
+          <div class="fld"><label for="f-tel">Contact number</label><input id="f-tel" name="tel" type="tel" autocomplete="tel" inputmode="tel" required aria-describedby="e-tel"><p class="fld__err" id="e-tel"></p></div>
+          <div class="fld"><label for="f-co">Company name <span>Optional</span></label><input id="f-co" name="company" autocomplete="organization"></div>
+        </fieldset>
+
+        <fieldset class="docket__g">
+          <legend>Services <span id="tkN">0 ticked</span></legend>
+          <div class="tks"><label class="tk"><input type="checkbox" name="services" value="Air freight"><span class="opt__box"></span>Air freight</label><label class="tk"><input type="checkbox" name="services" value="Sea freight"><span class="opt__box"></span>Sea freight</label><label class="tk"><input type="checkbox" name="services" value="Courier"><span class="opt__box"></span>Courier services</label><label class="tk"><input type="checkbox" name="services" value="Door to door"><span class="opt__box"></span>Door-to-door delivery</label><label class="tk"><input type="checkbox" name="services" value="Home shifting"><span class="opt__box"></span>Home shifting</label><label class="tk"><input type="checkbox" name="services" value="Warehousing"><span class="opt__box"></span>Warehousing</label><label class="tk"><input type="checkbox" name="services" value="Distribution"><span class="opt__box"></span>Distribution</label><label class="tk"><input type="checkbox" name="services" value="Contract logistics"><span class="opt__box"></span>Contract logistics</label><label class="tk"><input type="checkbox" name="services" value="3PL fulfilment"><span class="opt__box"></span>3PL fulfilment</label><label class="tk"><input type="checkbox" name="services" value="Supply chain"><span class="opt__box"></span>Supply chain solutions</label></div>
+        </fieldset>
+
+        <fieldset class="docket__g">
+          <legend>Details</legend>
+          <div class="fld fld--wide"><label for="f-msg">Message</label><textarea id="f-msg" name="message" rows="5" placeholder="What do you ship, how much, and where does it need to go?"></textarea></div>
+          <div class="fld"><label for="f-src">How did you hear about us? <span>Optional</span></label>
+            <select id="f-src" name="source"><option value="">Choose one</option><option>Website</option><option>Google</option><option>Facebook</option><option>Newsletter</option><option>Referrals</option><option>Others</option></select></div>
+        </fieldset>
+
+        <div class="docket__foot">
+          <button class="btn btn--signal" type="submit">Send booking request<span class="btn__ic"><svg aria-hidden="true"><use href="#arr"/></svg></span></button>
+          <p>We reply within one working day.</p>
+        </div>
+        <div class="docket__done" id="bookDone" role="status" tabindex="-1" hidden></div>
+      </form>
+
+      <aside class="book__aside" data-reveal>
+        <figure class="map">
+          <iframe title="Map: 3 Lorong Bakar Batu, Singapore 348741" src="https://www.google.com/maps?q=3+Lorong+Bakar+Batu+Singapore+348741&amp;z=15&amp;output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+          <figcaption><b>Howely warehouse</b>3 Lorong Bakar Batu, Singapore 348741</figcaption>
+        </figure>
+        <dl class="book__facts">
+          <div><dt>First consultation</dt><dd>Free, with a plan for your setup</dd></div>
+          <div><dt>Who we work with</dt><dd>Small businesses, start-ups and overseas brands landing in Singapore</dd></div>
+          <div><dt>Prefer to talk?</dt><dd><a href="tel:+6590491368">+65 9049 1368</a></dd></div>
+        </dl>
+      </aside>
+    </div>
+  </section>
+</div>
+
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <div class="foot__top">
+      <span class="dock dock--foot" data-dock aria-hidden="true"></span>
+      <h2 class="foot__h">Have something to move?</h2>
+      <p>The first consultation is free. Tell us what you ship and where it needs to go.</p>
+      <a class="btn btn--signal" href="#contact">Book a free consultation<span class="btn__ic"><svg aria-hidden="true"><use href="#arr"/></svg></span></a>
+    </div>
+    <div class="foot__cols">
+      <div><p class="foot__k">Call</p><a class="foot__big" href="tel:+6590491368">+65 9049 1368</a></div>
+      <div><p class="foot__k">Visit</p><address>3 Lorong Bakar Batu<br>Singapore 348741</address><a class="link" href="https://www.google.com/maps/search/?api=1&amp;query=3+Lorong+Bakar+Batu+Singapore+348741" target="_blank" rel="noopener">Get directions<svg aria-hidden="true"><use href="#arr"/></svg></a></div>
+      <div><p class="foot__k">Pages</p><nav class="foot__nav" aria-label="Footer"><a href="#about">About</a><a href="#services">Services</a><a href="#resources">Resources</a><a href="#contact">Contact</a></nav></div>
+      <div><p class="foot__k">Latest articles</p><ul class="foot__posts"><li><a href="#customs-clearance">Effortless customs clearance in Singapore</a></li><li><a href="#warehouse-cross-docking">Warehouse cross-docking</a></li><li><a href="#supply-chain-solutions">Tools for supply chain visibility</a></li></ul></div>
+    </div>
+    <div class="foot__base">
+      <span class="dock dock--end" data-dock aria-hidden="true"></span>
+      <span class="foot__brand"><svg aria-hidden="true"><use href="#hs"/></svg>© 2026 Howely. Third-party logistics, Singapore.</span>
+      <button class="link" type="button" id="toTop">Back to top<svg aria-hidden="true"><use href="#arr-up"/></svg></button>
+    </div>
+  </div>
+</footer>
+
+<div class="pstage" id="pstage" aria-hidden="true">
+  <div class="pin">
+    <div class="parcel" id="parcel">
+      <div class="pf pf--front"><svg class="pf__mk"><use href="#hs"/></svg><span class="pf__tape"></span></div>
+          <div class="pf pf--back"><span class="pf__tape"></span></div>
+          <div class="pf pf--right">
+            <div class="label"><b>HOWELY</b><span>SIN&nbsp;→&nbsp;ISLANDWIDE</span><i class="label__bars"></i><span class="label__id">HW-0348741</span></div>
+          </div>
+          <div class="pf pf--left"><span class="pf__arrows">↑↑</span></div>
+          <div class="pf pf--top"><span class="pf__tape"></span></div>
+          <div class="pf pf--bottom"></div>
+    </div>
+    <div class="parcel-shadow"></div>
+  </div>
+</div>
+
+<script src="articles.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
